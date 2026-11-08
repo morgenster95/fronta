@@ -7,14 +7,24 @@
 import { AnimatedSprite, Container, Graphics, Sprite } from 'pixi.js';
 
 const RATE = {
-  shot: [900, 2400], // voják v záběru vystřelí (animace)
-  distant: [250, 800], // záblesk někde na linii v záběru (bez animace)
-  burst: [9000, 20000], // kulometná dávka
+  shot: [600, 1600], // voják v záběru vystřelí (vždy s animací; záblesk patří k ní)
+  distant: [250, 800], // záblesk na linii, jen při oddálení (vojáci jsou tečky)
+  burst: [7000, 16000], // kulometná dávka (jen kulometčík s animací)
   shell: [20000, 50000],
   flare: [25000, 60000],
   barrageShell: [500, 1600],
 };
 const rnd = (a, b) => a + Math.random() * (b - a);
+
+// Ústí hlavně vůči patě (px) pro animace střelby; builtin = záblesk už je nakreslený ve snímcích z PixelLabu.
+const MUZZLE = {
+  concord: { x: 5, y: -31 },
+  concord_sniper: { x: 5, y: -31 },
+  concord_machinegunner: { x: -12, y: -18, builtin: true },
+  hegemony: { x: 9, y: -17, builtin: true },
+  hegemony_sniper: { x: 10, y: -17, builtin: true },
+  hegemony_machinegunner: { x: -11, y: -25 },
+};
 const MEDIC_SPEED = 0.016; // px/ms ≈ 1 m/s
 
 // „Morning hate“: stand-to za úsvitu a za soumraku (místní čas diváka) → palba ×3
@@ -82,19 +92,18 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
 
   // --- výstřely ---
   function shoot(candidates, now) {
-    const pool = candidates.filter((s) => !s.action && !s.wounded);
+    // střílí jen ten, kdo má animaci střelby: záblesk a kouř vždy patří k pohybu postavy
+    const pool = candidates.filter((s) => s.fire && !s.action && !s.wounded && s.archetype?.id !== 'machinegunner');
     if (!pool.length) return;
     const s = pool[Math.floor(Math.random() * pool.length)];
-    if (s.fire) s.action = { frames: s.fire, t0: now, ms: 100, fireAt: Math.floor(s.fire.length / 2), fired: false };
-    else muzzle(s); // bez animace aspoň záblesk a kouř nad zákopem
+    s.action = { frames: s.fire, t0: now, ms: 100, fireAt: Math.floor(s.fire.length / 2), fired: false };
   }
   function muzzle(s) {
-    // ústí hlavně podle snímků z PixelLabu: čelem k nám (jih) vpravo ve výšce hrudi, zády (sever) nad pravým ramenem
-    const south = s.slot.d === 0 || s.slot.d === 1 || s.slot.d === 7;
-    const x = s.x + (south ? 9 : 5), y = s.y - (south ? 17 : 31);
-    flash(x, y, !(south && s.fire)); // jižní animace má záblesk v sobě
-    playFx('smoke-small', x + (south ? 4 : 0), y - 4, 0.5, 0.55);
-    tracer(x, y, south ? 1 : -1);
+    const m = MUZZLE[s.texKey] || { x: 5, y: -28 };
+    const x = s.x + m.x, y = s.y + m.y;
+    flash(x, y, !m.builtin);
+    playFx('smoke-small', x, y - 4, 0.5, 0.55);
+    tracer(x, y, s.slot.d === 0 ? 1 : -1);
   }
   function flash(x, y, visible = true) {
     if (visible) particles.push({ kind: 'flash', x, y, life: 110, max: 110 });
@@ -112,16 +121,19 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     playFx('smoke-small', x, y - 4, 0.6, 0.35);
     if (Math.random() < 0.5) tracer(x, y, f === 0 ? 1 : -1);
   }
-  // kulometná dávka: 5–9 ran po 70 ms
-  function burst(view, gunners, now) {
-    const g0 = gunners.length ? gunners[Math.floor(Math.random() * gunners.length)] : null;
-    const f = g0 ? g0.faction : Math.random() < 0.5 ? 0 : 1;
-    const x = g0 ? g0.x + 6 : rnd(view.x0, view.x1);
-    const y = g0 ? g0.y - 20 : map.front[f] * T + 8;
-    const dir = f === 0 ? 1 : -1;
-    const n = 5 + Math.floor(Math.random() * 5);
-    for (let i = 0; i < n; i++) events.push({ at: now + i * 70, run: () => { flash(x + rnd(-1, 1), y); tracer(x, y, dir); } });
-    events.push({ at: now + n * 70, run: () => playFx('smoke-small', x, y - 4, 0.5, 0.5) });
+  // kulometná dávka: animace kulometčíka + série záblesků z jeho hlavně během ní
+  function burst(gunners, now) {
+    const pool = gunners.filter((s) => s.fire && !s.action && !s.wounded);
+    if (!pool.length) return;
+    const s = pool[Math.floor(Math.random() * pool.length)];
+    const ms = 110;
+    s.action = { frames: s.fire, t0: now, ms, fireAt: -1, fired: true };
+    const m = MUZZLE[s.texKey] || { x: 6, y: -20 };
+    const x = s.x + m.x, y = s.y + m.y;
+    const dir = s.slot.d === 0 ? 1 : -1;
+    const from = Math.floor(s.fire.length * 0.25), to = Math.floor(s.fire.length * 0.75);
+    for (let t = from * ms; t < to * ms; t += 75) events.push({ at: now + t, run: () => { flash(x + rnd(-1, 1), y, !m.builtin); tracer(x, y, dir); } });
+    events.push({ at: now + to * ms, run: () => playFx('smoke-small', x, y - 4, 0.5, 0.5) });
   }
 
   // přehraje efekt z PixelLab VFX (spritesheet) jednou a odstraní ho
@@ -218,7 +230,9 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     }
   }
 
-  function update(now, dt, view, visibleSoldiers, showSprites) {
+  function update(now, dt, view, chunkSoldiers, showSprites) {
+    // jen vojáci opravdu na obrazovce (bloky mapy jsou širší než záběr)
+    const visibleSoldiers = chunkSoldiers.filter((s) => s.x > view.x0 + 8 && s.x < view.x1 - 8 && s.y > view.y0 + 30 && s.y < view.y1);
     const heat = standTo() ? 3 : 1; // morning hate
     t.shot -= dt * heat;
     t.distant -= dt * heat;
@@ -228,15 +242,15 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     if (showSprites && t.shot < 0) {
       t.shot = rnd(...RATE.shot);
       // střílí hlavně přední linie čelem k nepříteli
-      shoot(visibleSoldiers.filter((s) => s.slot.line === 'front' || s.fire), now);
+      shoot(visibleSoldiers, now);
     }
     if (t.distant < 0) {
       t.distant = rnd(...RATE.distant);
-      distantShot(view);
+      if (!showSprites) distantShot(view); // zblízka by blikalo přes vojáky bez pohybu
     }
-    if (t.burst < 0) {
+    if (showSprites && t.burst < 0) {
       t.burst = rnd(...RATE.burst);
-      burst(view, visibleSoldiers.filter((s) => s.archetype?.id === 'machinegunner' && !s.wounded), now);
+      burst(visibleSoldiers.filter((s) => s.archetype?.id === 'machinegunner'), now);
     }
     for (let i = events.length - 1; i >= 0; i--) if (events[i].at <= now) { events[i].run(); events.splice(i, 1); }
     if (t.shell < 0) {

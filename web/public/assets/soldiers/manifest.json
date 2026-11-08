@@ -231,7 +231,22 @@
   "north": "concord_machinegunner_north.png",
   "north-west": "concord_machinegunner_north-west.png",
   "west": "concord_machinegunner_west.png",
-  "south-west": "concord_machinegunner_south-west.png"
+  "south-west": "concord_machinegunner_south-west.png",
+  "anims": {
+   "fire": {
+    "north": [
+     "concord_machinegunner@fire_north_0.png",
+     "concord_machinegunner@fire_north_1.png",
+     "concord_machinegunner@fire_north_2.png",
+     "concord_machinegunner@fire_north_3.png",
+     "concord_machinegunner@fire_north_4.png",
+     "concord_machinegunner@fire_north_5.png",
+     "concord_machinegunner@fire_north_6.png",
+     "concord_machinegunner@fire_north_7.png",
+     "concord_machinegunner@fire_north_8.png"
+    ]
+   }
+  }
  },
  "hegemony_medic": {
   "south": "hegemony_medic_south.png",
@@ -297,7 +312,22 @@
   "north": "hegemony_machinegunner_north.png",
   "north-west": "hegemony_machinegunner_north-west.png",
   "west": "hegemony_machinegunner_west.png",
-  "south-west": "hegemony_machinegunner_south-west.png"
+  "south-west": "hegemony_machinegunner_south-west.png",
+  "anims": {
+   "fire": {
+    "south": [
+     "hegemony_machinegunner@fire_south_0.png",
+     "hegemony_machinegunner@fire_south_1.png",
+     "hegemony_machinegunner@fire_south_2.png",
+     "hegemony_machinegunner@fire_south_3.png",
+     "hegemony_machinegunner@fire_south_4.png",
+     "hegemony_machinegunner@fire_south_5.png",
+     "hegemony_machinegunner@fire_south_6.png",
+     "hegemony_machinegunner@fire_south_7.png",
+     "hegemony_machinegunner@fire_south_8.png"
+    ]
+   }
+  }
  },
  "concord_cook": {
   "south": "concord_cook_south.png",
@@ -387,7 +417,22 @@
   "north": "hegemony_sniper_north.png",
   "north-west": "hegemony_sniper_north-west.png",
   "west": "hegemony_sniper_west.png",
-  "south-west": "hegemony_sniper_south-west.png"
+  "south-west": "hegemony_sniper_south-west.png",
+  "anims": {
+   "fire": {
+    "south": [
+     "hegemony_sniper@fire_south_0.png",
+     "hegemony_sniper@fire_south_1.png",
+     "hegemony_sniper@fire_south_2.png",
+     "hegemony_sniper@fire_south_3.png",
+     "hegemony_sniper@fire_south_4.png",
+     "hegemony_sniper@fire_south_5.png",
+     "hegemony_sniper@fire_south_6.png",
+     "hegemony_sniper@fire_south_7.png",
+     "hegemony_sniper@fire_south_8.png"
+    ]
+   }
+  }
  },
  "hegemony_signaller": {
   "south": "hegemony_signaller_south.png",
@@ -417,6 +462,21 @@
   "north": "concord_sniper_north.png",
   "north-west": "concord_sniper_north-west.png",
   "west": "concord_sniper_west.png",
-  "south-west": "concord_sniper_south-west.png"
+  "south-west": "concord_sniper_south-west.png",
+  "anims": {
+   "fire": {
+    "north": [
+     "concord_sniper@fire_north_0.png",
+     "concord_sniper@fire_north_1.png",
+     "concord_sniper@fire_north_2.png",
+     "concord_sniper@fire_north_3.png",
+     "concord_sniper@fire_north_4.png",
+     "concord_sniper@fire_north_5.png",
+     "concord_sniper@fire_north_6.png",
+     "concord_sniper@fire_north_7.png",
+     "concord_sniper@fire_north_8.png"
+    ]
+   }
+  }
  }
 }

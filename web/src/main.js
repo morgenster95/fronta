@@ -324,8 +324,11 @@ async function boot() {
   // --- smyčka ---
   if (import.meta.env.DEV) window.__front = { life, cam, soldiers }; // ladění v konzoli
   const visibleSoldiers = [];
+  // ?slow=N zpomalí animace a efekty N× (jen pro kontrolu výstřelů na snímcích obrazovky)
+  const slow = Math.max(1, Number(new URLSearchParams(location.search).get('slow')) || 1);
+  const t0 = performance.now();
   app.ticker.add(() => {
-    const now = performance.now();
+    const now = t0 + (performance.now() - t0) / slow;
     cam.update(now);
     const z = cam.zoom;
     world.scale.set(z);
@@ -366,7 +369,7 @@ async function boot() {
     }
 
     // simulovaný život (výstřely, granáty, světlice, zdravotníci) + otřes kamery při blízkém dopadu
-    const sh = life.update(now, app.ticker.deltaMS, view, visibleSoldiers, showSprites);
+    const sh = life.update(now, app.ticker.deltaMS / slow, view, visibleSoldiers, showSprites);
     if (sh) world.position.set(world.position.x + Math.round(sh.x), world.position.y + Math.round(sh.y));
 
     // značka vybraného vojáka

@@ -60,3 +60,4 @@ Postup stejný (pro_flash čelní snímek se style_image → sprite_fix --baseli
 | animace zdravotníka: walk 4 směry, obě frakce | animate_character template walking-6-frames | | 8 |
 | VFX: shell-blast, shell-small (ground_blast přebarvený na Trench 24), smoke-small | vfx_workbench (zdarma) | efekty b15c6b50…, 6d830951…, 93a69adb… | 0 |
 Pozor: v3 animace zvětšují plátno (32 → 44 px, symetricky) → engine kotví patu výpočtem (life.js setTex).
+| animace fire (v3, 9 snímků, 44 px): concord_sniper/machinegunner (sever), hegemony_sniper/machinegunner (jih) | animate_character | | 4 |
