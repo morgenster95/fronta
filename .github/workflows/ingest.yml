@@ -27,6 +27,7 @@ jobs:
           IG_REPLY: ${{ vars.IG_REPLY }}
           SITE_URL: ${{ vars.SITE_URL }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIRESTORE: ${{ vars.FIRESTORE }}
         run: npm run ingest
       - run: npm run data:build
       - name: Commit state

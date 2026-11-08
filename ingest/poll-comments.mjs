@@ -63,8 +63,9 @@ async function* comments(mediaId, seen) {
   }
 }
 
+// Firestore (převzetí vojáků přes Google) se používá až po zapnutí: variable FIRESTORE=1
 async function firestore() {
-  if (!process.env.FIREBASE_SERVICE_ACCOUNT) return null;
+  if (!process.env.FIREBASE_SERVICE_ACCOUNT || process.env.FIRESTORE !== '1') return null;
   const { initializeApp, cert } = await import('firebase-admin/app');
   const { getFirestore } = await import('firebase-admin/firestore');
   initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)) });
@@ -128,7 +129,7 @@ async function main() {
   }
 
   // úpravy karet od převzatých hráčů (bio, zájmena) z Firestore
-  if (db) {
+  if (db) try {
     const owners = new Map(state.soldiers.filter((s) => s.ownerUid).map((s) => [s.ownerUid, s]));
     const since = new Date(state.profilesSyncedAt || 0);
     const snap = await db.collection('profiles').where('updatedAt', '>', since).get();
@@ -140,6 +141,8 @@ async function main() {
       if (['he', 'she', 'they'].includes(p.pronoun)) s.pronoun = p.pronoun;
     }
     state.profilesSyncedAt = new Date().toISOString();
+  } catch (e) {
+    console.warn('Firestore:', e.message);
   }
 
   console.log(`hotovo: +${enlisted} rekrutů, ${claimed} převzetí, celkem ${state.soldiers.length}, followers ${state.followers}`);
