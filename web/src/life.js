@@ -47,7 +47,7 @@ function setTex(sp, t) {
   sp.anchor.set(0.5, (30 + off) / t.height);
 }
 
-export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx = {}, aims = {} }) {
+export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx = {}, aims = {}, breath = {} }) {
   const layer = new Container(); // efekty nad terénem i vojáky
   world.addChild(layer);
   const particles = [];
@@ -72,7 +72,9 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
   function setupSprite(s, sp) {
     const key = s.texKey;
     const dir = dirs[s.slot.d];
-    const idle = anims[key]?.idle?.[dir];
+    const rest = tex[key][dir];
+    const inhale = breath[key]?.[dir];
+    const cycle = 2600 + Math.random() * 1400; // každý dýchá svým tempem
     // míření přímo k nepříteli: Hegemonie zepředu (jih), Concord zezadu (sever); snímek zamíření z PixelLabu
     s.aim = (s.slot.d === 0 || s.slot.d === 4) ? aims[key]?.[dir] : null;
     s.fire = null;
@@ -99,8 +101,8 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
         setTex(sp, tex[key][dir]);
       }
       if (s.wounded) return;
-      // dýchání: snímky z PixelLabu (nohy stojí), ne posun celého spritu
-      if (idle) setTex(sp, idle[Math.floor((now + phase) / 450) % idle.length]);
+      // dýchání: ramena o 1 px dolů a zpět, nohy stojí, barvy beze změny
+      if (inhale) setTex(sp, (now + phase) % cycle < cycle * 0.45 ? inhale : rest);
     };
   }
 

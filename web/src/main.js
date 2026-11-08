@@ -12,6 +12,29 @@ const SPRITE_ZOOM = 0.9; // pod tímhle zoomem jsou vojáci jen tečky
 const DETAIL_ZOOM = 0.3; // pod tímhle se terén kreslí z přehledové textury
 const MIRROR = { west: 'east', 'south-west': 'south-east', 'north-west': 'north-east' };
 
+// Dýchání jako v ručně kresleném pixel artu: horní polovina těla klesne o 1 px, nohy zůstanou.
+// Mění se jen pár desítek pixelů a barvy zůstávají přesně stejné (žádné blikání mezi snímky).
+function breathFrame(tex) {
+  const img = tex.source.resource;
+  const c = document.createElement('canvas');
+  c.width = img.width;
+  c.height = img.height;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+  const src = ctx.getImageData(0, 0, c.width, c.height);
+  const out = ctx.createImageData(c.width, c.height);
+  out.data.set(src.data);
+  let top = c.height, bottom = 0;
+  for (let y = 0; y < c.height; y++)
+    for (let x = 0; x < c.width; x++)
+      if (src.data[(y * c.width + x) * 4 + 3] > 127) { top = Math.min(top, y); bottom = Math.max(bottom, y); }
+  const waist = Math.round(top + (bottom - top) * 0.55);
+  for (let y = waist; y > top; y--) out.data.copyWithin(y * c.width * 4, (y - 1) * c.width * 4, y * c.width * 4);
+  out.data.fill(0, top * c.width * 4, (top + 1) * c.width * 4);
+  ctx.putImageData(out, 0, 0);
+  return Texture.from(c);
+}
+
 // ústí hlavně kulometu: nejvzdálenější neprůhledný pixel ve směru, kam míří; kotva = pata (spodní řádek)
 function muzzleOf(img, dir) {
   const c = document.createElement('canvas');
@@ -195,7 +218,13 @@ async function boot() {
   } catch (e) {
     console.warn('aims', e);
   }
-  const life = createLife({ world, actorLayer, theme, anims, tex, map, dirs: DIRS, fx: fxSheets, aims });
+  // dýchání pro všechny typy a směry (z rotací, ne ze šumících snímků PixelLabu)
+  const breath = {};
+  for (const [key, byDir] of Object.entries(tex)) {
+    breath[key] = {};
+    for (const [d, t] of Object.entries(byDir)) breath[key][d] = breathFrame(t);
+  }
+  const life = createLife({ world, actorLayer, theme, anims, tex, map, dirs: DIRS, fx: fxSheets, aims, breath });
   for (const s of placed) life.setupSprite(s, s.sprite);
 
   // kulometná hnízda: kulometčík v přední linii se přikrčí za kulomet na trojnožce (objekt z PixelLabu, šikmo k nepříteli)
