@@ -1,7 +1,7 @@
 # Mud & Iron — texty pro Instagram (@mudandiron)
 
 Všechny soubory: `marketing/posts/` (obrázky 1080×1350, profilovka 1080×1080), `marketing/reels/` (videa 1080×1920, 30 fps).
-Videa jsou bez zvuku → v Instagramu přidej temnou ambientní hudbu / „war drums“ / déšť z knihovny zvuků.
+**Nahrávej verze se zvukem `reels/*_sound.mp4`** (vlastní syntetizovaná hudba: temný podklad, bubny, déšť, dunění děl a výstřely v synchronu, bez autorských práv). Verze bez `_sound` jsou němé, kdybys chtěl dát hudbu z knihovny Instagramu.
 
 ---
 
@@ -28,7 +28,7 @@ Videa jsou bez zvuku → v Instagramu přidej temnou ambientní hudbu / „war d
 
 ---
 
-## Reel 1 — `reels/teaser.mp4` (22 s)
+## Reel 1 — `reels/teaser_sound.mp4` (22 s)
 ```
 The Great War ended. Here, it never did. ⚔️
 
@@ -44,7 +44,7 @@ Find yourself: link in bio.
 #pixelart #ww1 #indiegame #trenchwarfare #gamedev #pixelartgame #grimdark #interactivegame #instagramgame #mudandiron
 ```
 
-## Reel 2 — `reels/enlist.mp4` (18 s) — PŘIPNOUT, sem se píše strana
+## Reel 2 — `reels/enlist_sound.mp4` (18 s) — PŘIPNOUT, sem se píše strana
 ```
 This rifle has no name yet. 🪖
 
@@ -56,7 +56,7 @@ One comment, one soldier. Choose carefully, there's no switching sides.
 #pixelart #ww1 #indiegame #enlist #gamedev #pixelartgame #mudandiron
 ```
 
-## Reel 3 — `reels/sides.mp4` (18 s)
+## Reel 3 — `reels/sides_sound.mp4` (18 s)
 ```
 Two sides. One valley of mud. Six winters. 🩶 vs 🫒
 
@@ -68,7 +68,7 @@ Which side are you on? Comment it 👇 (it enlists you)
 #pixelart #ww1 #chooseyourside #indiegame #gamedev #mudandiron
 ```
 
-## Reel 4 — `reels/howto.mp4` (16 s)
+## Reel 4 — `reels/howto_sound.mp4` (16 s)
 ```
 How to enlist in 10 seconds 🪖
 1️⃣ Follow @mudandiron
