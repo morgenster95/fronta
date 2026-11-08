@@ -119,3 +119,8 @@ button.primary { background: var(--blood); border-color: #a85a36; }
 #dispatch .d { font-family: 'Silkscreen', monospace; font-size: 11px; color: var(--accent); display: block; }
 #vote { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--line); }
 #vote .kw { font-size: 12px; padding: 1px 6px; margin-right: 4px; }
+#dispatch { cursor: pointer; }
+#dispatch .more { display: none; }
+#dispatch.collapsed #dispatch-text, #dispatch.collapsed #vote { display: none; }
+#dispatch.collapsed .more { display: block; font-family: 'Silkscreen', monospace; font-size: 11px; color: var(--accent); }
+body.card-open #dispatch { display: none; }

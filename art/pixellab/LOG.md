@@ -45,3 +45,9 @@ Postup stejný (pro_flash čelní snímek se style_image → sprite_fix --baseli
 | concord chaplain, sniper | 1. pokus 28 px → v2 ✔ (sniper převzal červenou pásku ze stylové předlohy) | +10 |
 | hegemony cook | naběračka 1 px od ruky (QA hlásí ostrov, ponecháno) | |
 | concord (střelec) v2 | khaki Brodie místo šedomodré přilby, char 950a1f6d-d64b-488b-a833-e5571cc9bb26 | 10+1 |
+
+## test07 + tank (8. 11. 2026)
+| Soubor | Výsledek | ID | Cena |
+|---|---|---|---|
+| test07/idle_{s,n}_0..3.png | template `breathing-idle` na střelci Concordu: 32 px, pata sedí, ale šablona trochu mění pušku; přínos malý (kód už „dýchá“ o 1 px) → hromadně nepouštěno | anim group 87bfd432-8c1e-43ab-9423-4c84331798f7 | 2 |
+| tank/tank_*.png | `create_object_pro_flash` 8 směrů 128×128: ✗ není kosočtverečný Mk IV a je moc vysoký (bok 69 px ≈ 4 m, má být ~40 px). Jen koncept. Lepší měřítko má test01/tank_mk4_side_128x64.png | obj 64fbab78-875b-43dd-b256-1920479aeba2 | 8 |

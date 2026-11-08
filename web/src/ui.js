@@ -24,6 +24,10 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   // denní zpráva a hlasování
   if (roster.dispatch || roster.vote) {
     $('dispatch').hidden = false;
+    // na telefonu sbalené do jednoho řádku, klepnutím se rozbalí
+    $('dispatch-more').textContent = roster.vote ? `▸ The front decides · ${roster.vote.votes} votes` : `▸ Dispatch · Day ${roster.dispatch.day}`;
+    if (innerWidth < 600) $('dispatch').classList.add('collapsed');
+    $('dispatch').onclick = () => $('dispatch').classList.toggle('collapsed');
     if (roster.dispatch) {
       $('dispatch-text').innerHTML = `<span class="d">Dispatch · Day ${roster.dispatch.day}</span>${esc(roster.dispatch.text)}`;
     }
@@ -163,9 +167,11 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
 
   function show(id) {
     for (const el of document.querySelectorAll('.sheet')) el.hidden = el.id !== id;
+    document.body.classList.add('card-open');
   }
   function closeAll() {
     for (const el of document.querySelectorAll('.sheet')) el.hidden = true;
+    document.body.classList.remove('card-open');
   }
   function copy(text, msg) {
     navigator.clipboard?.writeText(text).then(() => toast(msg), () => toast(text));

@@ -221,6 +221,8 @@ async function boot() {
     },
   });
 
+  // o kolik posunout kameru, aby byl voják vidět nad kartou (na telefonu karta zabírá víc než půlku)
+  const cardOffset = () => cam.h * (cam.w < 600 ? 0.3 : 0.22);
   let selected = null;
   function select(s) {
     selected = s;
@@ -237,7 +239,7 @@ async function boot() {
       if (fly && s.slot) {
         // karta zakrývá spodní část obrazovky → voják ve horní třetině
         const z = Math.max(cam.zoom, 3);
-        cam.flyTo(s.x, s.y - 16 + (cam.h * 0.22) / z, z);
+        cam.flyTo(s.x, s.y - 16 + cardOffset() / z, z);
       }
     },
     onZoom: (f) => cam.zoomAt(cam.w / 2, cam.h / 2, f),
@@ -249,7 +251,7 @@ async function boot() {
   const start = (wanted && soldiers.find((s) => s.handle === wanted && s.slot)) || null;
   const initZoom = Math.min(4, Math.max(2, app.screen.width / (22 * map.tile)));
   if (start) {
-    cam.set(start.x, start.y - 16 + (cam.h * 0.22) / Math.max(initZoom, 3), Math.max(initZoom, 3));
+    cam.set(start.x, start.y - 16 + cardOffset() / Math.max(initZoom, 3), Math.max(initZoom, 3));
     select(start);
     setTimeout(() => ui.openSoldier(start, false), 400);
   } else {
@@ -258,7 +260,9 @@ async function boot() {
     const pool = soldiers.filter((s) => s.slot && s.faction === fi).slice(0, 60);
     const first = pool[Math.floor(Math.random() * pool.length)] ?? map.slots[fi][0];
     // pohled tak, aby byla vidět přední linie i kus země nikoho
-    cam.set(first.x, first.y + (fi === 0 ? 60 : -60), initZoom);
+    // na širokém displeji je vidět i země nikoho, na telefonu (na výšku) víc zákopů za linií
+    const toNml = fi === 0 ? 1 : -1;
+    cam.set(first.x, first.y + toNml * (cam.w < 600 ? -70 : 60), initZoom);
   }
 
   // --- smyčka ---

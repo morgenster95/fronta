@@ -6,7 +6,7 @@ _Aktualizováno 8. 11. 2026._
 - **Prototyp prohlížeče fronty** (PixiJS): procedurální zákopy (3 linie na stranu + spojovací zákopy, pytle, dráty, krátery, mrtvé stromy),
   4 000 falešných vojáků, úrovně detailu (zblízka sprity s „dýcháním“, zdálky tečky frakcí), přiblížený první pohled,
   hledání `@handle`, karta vojáka se služebním záznamem, odkaz `/?s=handle`, sdílení, déšť, mlha, záblesky.
-- **Jádro** (`engine/`): deterministická mapa ~4 650 míst (8 sektorů), narukování z komentáře, převzetí kódem, generátor příběhů
+- **Jádro** (`engine/`): deterministická mapa 32 sektorů (~18 600 míst, otevřeno 8), narukování z komentáře, převzetí kódem, generátor příběhů
   ze šablon (zdarma, bez AI), denní tah se zraněními, povýšením, smrtí a **nástupcem z rodu**. Testy: `npm test`.
 - **Ingest** (`ingest/poll-comments.mjs`): Instagram API (Standard Access, vlastní účet), stahování každých 30 min přes GitHub Actions,
   volitelná soukromá odpověď (Private Reply), párování převzetí přes Firestore.
@@ -29,9 +29,12 @@ _Aktualizováno 8. 11. 2026._
 4. **Service account pro nasazování z GitHubu:** Firebase Console → Project settings → Service accounts → Generate new private key
    → obsah JSON do secretu `FIREBASE_SERVICE_ACCOUNT`.
 
+## PixelLab
+Zbývá ~90 generací, propadnou **13. 11.** Nechal jsem je na tvoje rozhodnutí (např. tank, dlaždice, další varianty).
+
 ## Další kroky (můj návrh pořadí)
 1. Finální dlaždice terénu z PixelLabu (pro režim) místo procedurálních + rekvizity (dráty, pytle, kříže, bedny, kulomet).
-2. Animace (idle/walk) z PixelLabu, tank 8 směrů.
+2. Tank: 8 směrů z PixelLabu vyšlo moc vysoké a ne-kosočtverečné → zkusit čelní snímek přes `create_image_pro_flash` v měřítku (výška ~40 px) a teprve pak rotaci. Animace idle hromadně nepouštěny (malý přínos).
 3. Posun linie podle výsledků hlasování (zatím hlasování mění jen nebezpečnost dne).
-5. Renderer Reelů (headless prohlížeč nahraje průlet kamerou).
-6. Výkon na mobilu: zatím ověřeno jen na desktopu (Chrome).
+4. Renderer Reelů (headless prohlížeč nahraje průlet kamerou).
+5. Výkon na mobilu: zatím ověřeno jen na desktopu (Chrome).
