@@ -2,8 +2,8 @@
 // narukuje vojáky, spáruje kódy pro převzetí, volitelně pošle soukromou odpověď a přegeneruje statická data webu.
 //
 // Proměnné prostředí:
-//   IG_ACCESS_TOKEN   dlouhodobý token IG účtu (instagram_business_basic, instagram_business_manage_comments[, _manage_messages])
-//   IG_USER_ID        ID IG profesionálního účtu
+//   IG_ACCESS_TOKEN   systémový token z firemního portfolia (instagram_basic, instagram_manage_comments, instagram_content_publish[, _manage_messages])
+//   IG_USER_ID        ID IG účtu (Business Suite → Nastavení → Instagramové účty), @mudandiron = 17841437072520448
 //   IG_MEDIA_IDS      čárkou oddělená ID postů, které se hlídají vždy (připnutý náborový Reel); k nim posledních IG_RECENT (5)
 //   IG_REPLY=1        odpovědět veřejně pod komentář nového rekruta (šablony theme.replies)
 //   IG_SEND_DM=1      poslat Private Reply novým rekrutům
@@ -13,7 +13,9 @@
 import { loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
 import { applyComment } from '../engine/roster.js';
 
-const API = `https://graph.instagram.com/${process.env.IG_API_VERSION || 'v23.0'}`;
+// Nové aplikace Meta: Unified login + systémový token z firemního portfolia → graph.facebook.com (token nevyprší).
+// Starší token z „Instagram login“ funguje s IG_API_HOST=graph.instagram.com.
+const API = `https://${process.env.IG_API_HOST || 'graph.facebook.com'}/${process.env.IG_API_VERSION || 'v23.0'}`;
 const TOKEN = process.env.IG_ACCESS_TOKEN;
 const USER = process.env.IG_USER_ID;
 
