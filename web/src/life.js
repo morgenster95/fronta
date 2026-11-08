@@ -18,6 +18,11 @@ const rnd = (a, b) => a + Math.random() * (b - a);
 
 // Ústí hlavně vůči patě (px) pro animace střelby; builtin = záblesk už je nakreslený ve snímcích z PixelLabu.
 const MUZZLE = {
+  // šikmé výstřely (natočení k nepříteli; pro opačnou stranu se snímky zrcadlí)
+  'hegemony:diag': { x: 16, y: -17, builtin: true },
+  'hegemony_sniper:diag': { x: 16, y: -17, builtin: true },
+  'concord:diag': { x: 7, y: -24, builtin: true },
+  'concord_sniper:diag': { x: 16, y: -18, builtin: true },
   concord: { x: 5, y: -31 },
   concord_sniper: { x: 5, y: -31 },
   concord_machinegunner: { x: -12, y: -18, builtin: true },
@@ -68,13 +73,18 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     const key = s.texKey;
     const dir = dirs[s.slot.d];
     const idle = anims[key]?.idle?.[dir];
-    s.fire = anims[key]?.fire?.[dir];
+    const diagDir = s.slot.d === 0 ? 'south-east' : s.slot.d === 4 ? 'north-east' : null;
+    s.fireDiag = diagDir ? anims[key]?.fire?.[diagDir] : null;
+    s.fire = s.fireDiag || anims[key]?.fire?.[dir];
+    const baseScale = sp.scale.x;
     const phase = Math.random() * 4000;
     sp.animate = (now) => {
+      if (s.nest) return; // kulometčík u hnízda je přikrčený
       if (s.action) {
         const f = Math.floor((now - s.action.t0) / s.action.ms);
         if (f < s.action.frames.length) {
           setTex(sp, s.action.frames[f]);
+          sp.scale.x = s.action.mirror ? -1 : 1;
           if (f === s.action.fireAt && !s.action.fired) {
             s.action.fired = true;
             muzzle(s);
@@ -82,6 +92,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
           return;
         }
         s.action = null;
+        sp.scale.x = baseScale;
         setTex(sp, tex[key][dir]);
       }
       if (s.wounded) return;
@@ -93,24 +104,28 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
   // --- výstřely ---
   function shoot(candidates, now) {
     // střílí jen ten, kdo má animaci střelby: záblesk a kouř vždy patří k pohybu postavy
-    const pool = candidates.filter((s) => s.fire && !s.action && !s.wounded && s.archetype?.id !== 'machinegunner');
+    const pool = candidates.filter((s) => s.fire && !s.action && !s.wounded && !s.nest && s.archetype?.id !== 'machinegunner');
     if (!pool.length) return;
     const s = pool[Math.floor(Math.random() * pool.length)];
-    s.action = { frames: s.fire, t0: now, ms: 100, fireAt: Math.floor(s.fire.length / 2), fired: false };
+    // šikmý výstřel: snímky ukazují jednu stranu, druhou získáme zrcadlením
+    const mirror = !!s.fireDiag && Math.random() < 0.5;
+    s.action = { frames: s.fire, t0: now, ms: 100, fireAt: Math.floor(s.fire.length / 2), fired: false, mirror };
   }
   function muzzle(s) {
-    const m = MUZZLE[s.texKey] || { x: 5, y: -28 };
-    const x = s.x + m.x, y = s.y + m.y;
+    const diag = !!s.fireDiag;
+    const m = MUZZLE[`${s.texKey}${diag ? ':diag' : ''}`] || MUZZLE[s.texKey] || { x: 5, y: -28 };
+    const side = s.action?.mirror ? -1 : 1;
+    const x = s.x + m.x * side, y = s.y + m.y;
     flash(x, y, !m.builtin);
     playFx('smoke-small', x, y - 4, 0.5, 0.55);
-    tracer(x, y, s.slot.d === 0 ? 1 : -1);
+    tracer(x, y, s.slot.d === 0 ? 1 : -1, diag ? side * 0.55 : 0);
   }
   function flash(x, y, visible = true) {
     if (visible) particles.push({ kind: 'flash', x, y, life: 110, max: 110 });
     particles.push({ kind: 'glow', x, y, life: 140, max: 140 });
   }
-  function tracer(x, y, dir) {
-    particles.push({ kind: 'tracer', x, y, vx: rnd(-0.03, 0.03), vy: dir * 0.9, life: 420, max: 420 });
+  function tracer(x, y, dir, vx = 0) {
+    particles.push({ kind: 'tracer', x, y, vx: vx + rnd(-0.03, 0.03), vy: dir * 0.9, life: 420, max: 420 });
   }
   // vzdálený výstřel z linie (bez postavy, pro pocit živé fronty)
   function distantShot(view) {
@@ -121,19 +136,21 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     playFx('smoke-small', x, y - 4, 0.6, 0.35);
     if (Math.random() < 0.5) tracer(x, y, f === 0 ? 1 : -1);
   }
-  // kulometná dávka: animace kulometčíka + série záblesků z jeho hlavně během ní
-  function burst(gunners, now) {
-    const pool = gunners.filter((s) => s.fire && !s.action && !s.wounded);
+  // kulometná dávka z hnízda: série záblesků z ústí hlavně kulometu na trojnožce, zbraň se při výstřelech chvěje
+  let nests = [];
+  function burst(view, now) {
+    const pool = nests.filter((n) => n.gun.x > view.x0 && n.gun.x < view.x1 && n.gun.y > view.y0 && n.gun.y < view.y1 && !n.gunner.wounded);
     if (!pool.length) return;
-    const s = pool[Math.floor(Math.random() * pool.length)];
-    const ms = 110;
-    s.action = { frames: s.fire, t0: now, ms, fireAt: -1, fired: true };
-    const m = MUZZLE[s.texKey] || { x: 6, y: -20 };
-    const x = s.x + m.x, y = s.y + m.y;
-    const dir = s.slot.d === 0 ? 1 : -1;
-    const from = Math.floor(s.fire.length * 0.25), to = Math.floor(s.fire.length * 0.75);
-    for (let t = from * ms; t < to * ms; t += 75) events.push({ at: now + t, run: () => { flash(x + rnd(-1, 1), y, !m.builtin); tracer(x, y, dir); } });
-    events.push({ at: now + to * ms, run: () => playFx('smoke-small', x, y - 4, 0.5, 0.5) });
+    const n = pool[Math.floor(Math.random() * pool.length)];
+    const shots = 8 + Math.floor(Math.random() * 8);
+    for (let i = 0; i < shots; i++) {
+      events.push({ at: now + i * 80, run: () => {
+        n.gun.x = n.gx + (i % 2 ? 1 : 0); // zpětný ráz
+        flash(n.mx + (i % 2), n.my, true);
+        tracer(n.mx, n.my, n.dy, n.dx * 0.6);
+      } });
+    }
+    events.push({ at: now + shots * 80, run: () => { n.gun.x = n.gx; playFx('smoke-small', n.mx, n.my - 4, 0.5, 0.55); } });
   }
 
   // přehraje efekt z PixelLab VFX (spritesheet) jednou a odstraní ho
@@ -230,7 +247,10 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     }
   }
 
+  let lastNow = 0, lastView = null;
   function update(now, dt, view, chunkSoldiers, showSprites) {
+    lastNow = now;
+    lastView = view;
     // jen vojáci opravdu na obrazovce (bloky mapy jsou širší než záběr)
     const visibleSoldiers = chunkSoldiers.filter((s) => s.x > view.x0 + 8 && s.x < view.x1 - 8 && s.y > view.y0 + 30 && s.y < view.y1);
     const heat = standTo() ? 3 : 1; // morning hate
@@ -250,7 +270,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     }
     if (showSprites && t.burst < 0) {
       t.burst = rnd(...RATE.burst);
-      burst(visibleSoldiers.filter((s) => s.archetype?.id === 'machinegunner'), now);
+      burst(view, now);
     }
     for (let i = events.length - 1; i >= 0; i--) if (events[i].at <= now) { events[i].run(); events.splice(i, 1); }
     if (t.shell < 0) {
@@ -294,7 +314,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
           g.rect(Math.round(p.x), Math.round(p.y) - 3, 1, 7).fill({ color: 0xd98f3f, alpha: 0.6 });
           break;
         case 'glow':
-          g.circle(p.x, p.y, 7).fill({ color: 0xd98f3f, alpha: 0.22 * k });
+          g.circle(p.x, p.y, 4).fill({ color: 0xd98f3f, alpha: 0.18 * k });
           break;
         case 'tracer':
           g.rect(Math.round(p.x), Math.round(p.y), 1, 4).fill({ color: 0xc9c26a, alpha: 0.8 * k });
@@ -323,8 +343,9 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     setupSprite,
     update,
     setBarrage: (b) => (barrage = b),
+    setNests: (list) => (nests = list),
     shell,
     // ladění v konzoli (jen dev)
-    debug: { shoot: (list) => list.forEach((s) => shoot([s], performance.now())), sendMedic: (s) => sendMedic(s, performance.now()), actors },
+    debug: { shoot: (list) => list.forEach((s) => shoot([s], lastNow)), sendMedic: (s) => sendMedic(s, lastNow), burst: () => burst(lastView, lastNow), actors },
   };
 }

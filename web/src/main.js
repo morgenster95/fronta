@@ -12,6 +12,27 @@ const SPRITE_ZOOM = 0.9; // pod tímhle zoomem jsou vojáci jen tečky
 const DETAIL_ZOOM = 0.3; // pod tímhle se terén kreslí z přehledové textury
 const MIRROR = { west: 'east', 'south-west': 'south-east', 'north-west': 'north-east' };
 
+// ústí hlavně kulometu: nejvzdálenější neprůhledný pixel ve směru, kam míří; kotva = pata (spodní řádek)
+function muzzleOf(img, dir) {
+  const c = document.createElement('canvas');
+  c.width = img.width;
+  c.height = img.height;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+  const { data } = ctx.getImageData(0, 0, c.width, c.height);
+  const sx = dir.endsWith('east') ? 1 : -1, sy = dir.startsWith('south') ? 1 : -1;
+  let best = -Infinity, bx = 0, by = 0, minX = c.width, maxX = 0, maxY = 0;
+  for (let y = 0; y < c.height; y++)
+    for (let x = 0; x < c.width; x++) {
+      if (data[(y * c.width + x) * 4 + 3] < 128) continue;
+      minX = Math.min(minX, x); maxX = Math.max(maxX, x); maxY = Math.max(maxY, y);
+      const score = sx * x * 1.6 + sy * y; // hlaveň míří hlavně do strany
+      if (score > best) { best = score; bx = x; by = y; }
+    }
+  const ax = (minX + maxX) / 2 / c.width, ay = (maxY + 1) / c.height;
+  return { ax, ay, mx: bx - ax * c.width, my: by - ay * c.height };
+}
+
 async function boot() {
   const [theme, roster, manifest] = await Promise.all([
     fetch('/data/theme.json').then((r) => r.json()),
@@ -75,6 +96,8 @@ async function boot() {
   world.addChild(overview);
   const terrainLayer = new Container();
   world.addChild(terrainLayer);
+  const gunLayer = new Container(); // kulomety ZA vojáky (Concord míří na sever, zbraň je dál od kamery)
+  world.addChild(gunLayer);
   const soldierLayer = new Container();
   world.addChild(soldierLayer);
   const actorLayer = new Container(); // chodící postavy (zdravotníci) – v zákopu, pod jeho okrajem
@@ -95,7 +118,7 @@ async function boot() {
   const F = Object.fromEntries(roster.fields.map((f, i) => [f, i]));
   const soldiers = roster.soldiers.map((row, i) => {
     // pozice je uložená u vojáka (trvalá), mapa ji jen vykresluje
-    const slot = row[F.x] >= 0 ? { x: row[F.x], y: row[F.y], d: row[F.dir] } : null;
+    const slot = row[F.x] >= 0 ? { x: row[F.x], y: row[F.y], d: row[F.dir], line: row[F.line] } : null;
     return {
       i,
       handle: row[F.handle],
@@ -163,6 +186,41 @@ async function boot() {
   }));
   const life = createLife({ world, actorLayer, theme, anims, tex, map, dirs: DIRS, fx: fxSheets });
   for (const s of placed) life.setupSprite(s, s.sprite);
+
+  // kulometná hnízda: kulometčík v přední linii se přikrčí za kulomet na trojnožce (objekt z PixelLabu, šikmo k nepříteli)
+  const gunTex = {};
+  const gunMeta = {};
+  await Promise.all(['south-east', 'south-west', 'north-east', 'north-west'].map(async (d) => {
+    try {
+      const t = await Assets.load(`/assets/props/mg_${d}.png${V}`);
+      gunTex[d] = t;
+      gunMeta[d] = muzzleOf(t.source.resource, d);
+    } catch {
+      // bez obrázku kulometu hnízda nevzniknou
+    }
+  }));
+  const nests = [];
+  if (gunTex['south-east'] && gunTex['north-west']) {
+    for (const s of placed) {
+      if (s.archetype?.id !== 'machinegunner' || s.slot.line !== 'front' || s.wounded) continue;
+      if (s.slot.d !== 0 && s.slot.d !== 4) continue;
+      const south = s.slot.d === 0;
+      const right = Math.random() < 0.5;
+      const d = `${south ? 'south' : 'north'}-${right ? 'east' : 'west'}`;
+      const meta = gunMeta[d];
+      const gun = new Sprite(gunTex[d]);
+      gun.anchor.set(meta.ax, meta.ay);
+      // kulometčík klečí u rukojetí (zadní konec), hlaveň míří šikmo k nepříteli
+      gun.x = s.x + (right ? 12 : -12);
+      gun.y = s.y + (south ? 4 : -3);
+      (south ? actorLayer : gunLayer).addChild(gun);
+      const crouch = anims[s.texKey]?.crouch?.[south ? 'south' : 'north'];
+      if (crouch) s.sprite.texture = crouch[crouch.length - 1];
+      s.nest = true;
+      nests.push({ gun, gunner: s, gx: gun.x, mx: gun.x + meta.mx, my: gun.y + meta.my, dx: right ? 1 : -1, dy: south ? 1 : -1 });
+    }
+  }
+  life.setNests(nests);
   // bombardování: výsledek včerejšího hlasování, nebo náhled přes ?fx=barrage
   const fxParam = new URLSearchParams(location.search).get('fx');
   const disp = roster.dispatch;

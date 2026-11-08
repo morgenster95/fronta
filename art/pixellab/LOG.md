@@ -61,3 +61,7 @@ Postup stejný (pro_flash čelní snímek se style_image → sprite_fix --baseli
 | VFX: shell-blast, shell-small (ground_blast přebarvený na Trench 24), smoke-small | vfx_workbench (zdarma) | efekty b15c6b50…, 6d830951…, 93a69adb… | 0 |
 Pozor: v3 animace zvětšují plátno (32 → 44 px, symetricky) → engine kotví patu výpočtem (life.js setTex).
 | animace fire (v3, 9 snímků, 44 px): concord_sniper/machinegunner (sever), hegemony_sniper/machinegunner (jih) | animate_character | | 4 |
+| šikmý výstřel (v3 fire): hegemony + hegemony_sniper (jihovýchod), concord + concord_sniper (severovýchod); druhá strana zrcadlením | animate_character | | 4 |
+| kulometčík přikrčený (template crouching) concord sever, hegemony jih | animate_character | | 2 |
+| kulomet na trojnožce 8 směrů 48 px a 32 px | create_object_pro_flash | eb10f400…, a0c85dcb… | 12 | ✗ moc velký / vypadá jako kanon |
+| mg2/mg_se.png, mg_ne.png (32×20, nízký Maxim na saních) → props/mg_*.png (+ zrcadlené) | create_image_pro_flash | 8413a3fe…, 04a46879… | 10 | ✔ |
