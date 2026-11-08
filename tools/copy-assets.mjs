@@ -71,4 +71,6 @@ for (const [key, c] of Object.entries(cfg)) {
   }
   console.log(key, Object.keys(manifest[key]).filter((k) => k !== 'anims').length, 'směrů', manifest[key].anims ? 'animace: ' + Object.entries(manifest[key].anims).map(([a, d]) => `${a}(${Object.keys(d).join('/')})`).join(' ') : '');
 }
+// verze do adres obrázků: po přegenerování se nenačte stará verze z mezipaměti prohlížeče/CDN
+manifest._v = Date.now().toString(36);
 fs.writeFileSync(path.join(out, 'manifest.json'), JSON.stringify(manifest, null, 1));

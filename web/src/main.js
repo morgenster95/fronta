@@ -16,7 +16,7 @@ async function boot() {
   const [theme, roster, manifest] = await Promise.all([
     fetch('/data/theme.json').then((r) => r.json()),
     fetch('/data/roster.json').then((r) => r.json()),
-    fetch('/assets/soldiers/manifest.json').then((r) => r.json()),
+    fetch('/assets/soldiers/manifest.json', { cache: 'no-cache' }).then((r) => r.json()),
   ]);
   const map = generateFront(theme.map);
   const worldW = map.W * map.tile, worldH = map.H * map.tile;
@@ -37,6 +37,8 @@ async function boot() {
   document.getElementById('stage').appendChild(app.canvas);
 
   // textury vojáků: klíč = "frakce" (střelec) nebo "frakce_archetyp"; chybějící archetyp → střelec
+  const V = `?v=${manifest._v || '1'}`; // verze proti staré mezipaměti
+  delete manifest._v;
   const tex = {};
   const mirrored = {}; // směr chybí v manifestu → použije se zrcadlený protějšek
   const anims = {}; // anims[klíč][animace][směr] = [Texture]
@@ -47,20 +49,20 @@ async function boot() {
       const jobs = DIRS.map(async (d) => {
         mirrored[key][d] = !manifest[key][d] && !!manifest[key][MIRROR[d]];
         const file = manifest[key][d] ?? manifest[key][MIRROR[d]] ?? manifest[key].south;
-        tex[key][d] = await Assets.load(`/assets/soldiers/${file}`);
+        tex[key][d] = await Assets.load(`/assets/soldiers/${file}${V}`);
       });
       for (const [anim, byDir] of Object.entries(manifest[key].anims || {})) {
         anims[key] ??= {};
         anims[key][anim] = {};
         for (const [d, files] of Object.entries(byDir)) {
-          jobs.push(Promise.all(files.map((f) => Assets.load(`/assets/soldiers/${f}`))).then((t) => (anims[key][anim][d] = t)));
+          jobs.push(Promise.all(files.map((f) => Assets.load(`/assets/soldiers/${f}${V}`))).then((t) => (anims[key][anim][d] = t)));
         }
       }
       return jobs;
     }),
   );
   const loadImg = (src) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = src; });
-  const propImages = Object.fromEntries(await Promise.all(['tree', 'grave', 'crater_s', 'crater_m', 'crater_water', 'crater_huge'].map(async (k) => [k, await loadImg(`/assets/props/${k}.png`)])));
+  const propImages = Object.fromEntries(await Promise.all(['tree', 'grave', 'crater_s', 'crater_m', 'crater_water', 'crater_huge'].map(async (k) => [k, await loadImg(`/assets/props/${k}.png${V}`)])));
   const keyFor = (s) => {
     const k = `${theme.factions[s.faction].sprite}_${s.archetype?.id}`;
     return tex[k] ? k : theme.factions[s.faction].sprite;
@@ -148,8 +150,8 @@ async function boot() {
   const fxSheets = {};
   await Promise.all(['shell-blast', 'shell-small', 'smoke-small'].map(async (name) => {
     try {
-      const meta = await fetch(`/assets/fx/${name}.json`).then((r) => r.json());
-      const base = await Assets.load(`/assets/fx/${name}.png`);
+      const meta = await fetch(`/assets/fx/${name}.json`, { cache: 'no-cache' }).then((r) => r.json());
+      const base = await Assets.load(`/assets/fx/${name}.png${V}`);
       fxSheets[name] = {
         frames: meta.frames.map(({ frame: f }) => new Texture({ source: base.source, frame: new Rectangle(f.x, f.y, f.w, f.h) })),
         pivot: meta.frames[0].pivot,
