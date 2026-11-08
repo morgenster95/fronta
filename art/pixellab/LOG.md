@@ -51,3 +51,12 @@ Postup stejný (pro_flash čelní snímek se style_image → sprite_fix --baseli
 |---|---|---|---|
 | test07/idle_{s,n}_0..3.png | template `breathing-idle` na střelci Concordu: 32 px, pata sedí, ale šablona trochu mění pušku; přínos malý (kód už „dýchá“ o 1 px) → hromadně nepouštěno | anim group 87bfd432-8c1e-43ab-9423-4c84331798f7 | 2 |
 | tank/tank_*.png | `create_object_pro_flash` 8 směrů 128×128: ✗ není kosočtverečný Mk IV a je moc vysoký (bok 69 px ≈ 4 m, má být ~40 px). Jen koncept. Lepší měřítko má test01/tank_mk4_side_128x64.png | obj 64fbab78-875b-43dd-b256-1920479aeba2 | 8 |
+
+## Život na frontě (8. 11. 2026)
+| Co | Nástroj | ID | Cena |
+|---|---|---|---|
+| craters/crater_{s,m,water,huge}.png → web/public/assets/props | create_image_pro_flash, paleta | viz jobs | 4×5 |
+| animace střelce: idle (jih/sever), walk (4 směry), fire (v3, 9 snímků, plátno 44 px!), fall (jih) — obě frakce | animate_character | skupiny v get_character | ~18 |
+| animace zdravotníka: walk 4 směry, obě frakce | animate_character template walking-6-frames | | 8 |
+| VFX: shell-blast, shell-small (ground_blast přebarvený na Trench 24), smoke-small | vfx_workbench (zdarma) | efekty b15c6b50…, 6d830951…, 93a69adb… | 0 |
+Pozor: v3 animace zvětšují plátno (32 → 44 px, symetricky) → engine kotví patu výpočtem (life.js setTex).

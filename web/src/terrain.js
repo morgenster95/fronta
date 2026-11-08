@@ -32,6 +32,19 @@ export function paintChunk(map, cx, cy, images = {}) {
   const ctx = canvas.getContext('2d');
   const img = ctx.createImageData(w, h);
   const data = img.data;
+  // vrstva NAD vojáky: bližší okraj zákopu a pytle na jižní straně → vojáci stojí v zákopu
+  const overCanvas = document.createElement('canvas');
+  overCanvas.width = w;
+  overCanvas.height = h;
+  const octx = overCanvas.getContext('2d');
+  const oimg = octx.createImageData(w, h);
+  const odata = oimg.data;
+  const putOver = (px, py, ci) => {
+    if (px < 0 || py < 0 || px >= w || py >= h) return;
+    const p = PAL[ci];
+    const i = (py * w + px) * 4;
+    odata[i] = p[0]; odata[i + 1] = p[1]; odata[i + 2] = p[2]; odata[i + 3] = 255;
+  };
   const ox = cx * CHUNK * S, oy = cy * CHUNK * S; // světové px levého horního rohu
   const g = (x, y) => (x < 0 || y < 0 || x >= map.W || y >= map.H ? T.MUD : map.grid[y * map.W + x]);
   const put = (px, py, ci) => {
@@ -55,8 +68,12 @@ export function paintChunk(map, cx, cy, images = {}) {
           let c;
           if (t === T.TRENCH || t === T.DUGOUT) {
             c = trenchPixel(x, y, r, wx, wy, isTr(n), isTr(s), isTr(e), isTr(wv), t === T.DUGOUT);
+            // bližší okraj: povrch země, který zakrývá spodek zákopu (horní vrstva)
+            if (!isTr(s) && y >= LIP_FROM && g(gx, gy + 1) !== T.PARAPET) putOver(px, py, lipPixel(y, r, wx, wy));
           } else if (t === T.PARAPET) {
-            c = sandbagPixel(x, y, wx, wy, r, isTr(s), isTr(n));
+            c = sandbagPixel(wx, wy, r);
+            // pytle jižně od zákopu stojí před vojáky → horní vrstva
+            if (isTr(n)) putOver(px, py, c);
           } else {
             const nml = t === T.NML || t === T.WIRE || ((t === T.CRATER || t === T.WATER) && Math.abs(gy - map.H / 2) < map.nmlHalf);
             c = groundPixel(nml, wx, wy, r, gy, map);
@@ -68,8 +85,8 @@ export function paintChunk(map, cx, cy, images = {}) {
     }
   }
 
-  // kulaté krátery přes zem (bez zákopů)
-  for (const cr of map.craters) {
+  // kulaté krátery přes zem (bez zákopů); jen když chybí obrázky z PixelLabu
+  for (const cr of images.crater_s ? [] : map.craters) {
     const ccx = cr.x * S + 8 - ox, ccy = cr.y * S + 8 - oy, R = cr.r * S + 6;
     if (ccx < -R || ccy < -R || ccx > w + R || ccy > h + R) continue;
     for (let y = Math.max(0, Math.floor(ccy - R)); y < Math.min(h, ccy + R); y++)
@@ -87,7 +104,29 @@ export function paintChunk(map, cx, cy, images = {}) {
         put(x, y, c);
       }
   }
+  // pytle jižně od zákopu mají výšku: horní řady přesahují nad okraj zákopu (horní vrstva)
+  for (let ty = 0; ty < th; ty++)
+    for (let tx = 0; tx < tw; tx++) {
+      const gx = cx * CHUNK + tx, gy = cy * CHUNK + ty;
+      if (g(gx, gy) !== T.PARAPET || !isTr(g(gx, gy - 1))) continue;
+      for (let y = -BAG_RISE - 9 + LIP_FROM; y < 0; y++)
+        for (let x = 0; x < S; x++) {
+          const wx = ox + tx * S + x, wy = oy + ty * S + y;
+          putOver(tx * S + x, ty * S + y, sandbagPixel(wx, wy, hash2(wx, wy, 7)));
+        }
+    }
   ctx.putImageData(img, 0, 0);
+  octx.putImageData(oimg, 0, 0);
+  // krátery z PixelLabu (obrázky); bez nich zůstanou procedurální (výše)
+  if (images.crater_s) {
+    for (const cr of map.craters) {
+      const im = cr.r <= 1 ? images.crater_s : cr.r === 2 ? images.crater_m : cr.r === 3 ? images.crater_water : images.crater_huge;
+      if (!im) continue;
+      const px = cr.x * S + 8 - ox, py = cr.y * S + 8 - oy;
+      if (px < -100 || py < -80 || px > w + 100 || py > h + 80) continue;
+      ctx.drawImage(im, Math.round(px - im.width / 2), Math.round(py - im.height / 2));
+    }
+  }
   // rekvizity (stromy, trosky) v tomto chunku
   for (const p of map.props) {
     const px = p.x * S - ox, py = p.y * S - oy;
@@ -98,7 +137,18 @@ export function paintChunk(map, cx, cy, images = {}) {
     else if (p.type === 'tree') drawTree(ctx, px, py, p.x * 31 + p.y);
     else if (p.type === 'debris') drawDebris(ctx, px, py, p.x + p.y * 17);
   }
-  return canvas;
+  return { base: canvas, over: overCanvas };
+}
+
+const WALL = 14; // výška viditelné vzdálené stěny (px)
+const LIP_FROM = 7; // od kterého řádku spodní dlaždice zákopu začíná bližší okraj
+const BAG_RISE = 5; // o kolik px pytle převyšují okraj
+
+function lipPixel(y, r, wx, wy) {
+  if (y === LIP_FROM) return 6; // osvětlená hrana
+  if (y === LIP_FROM + 1) return r < 0.5 ? 5 : 4;
+  const v = vnoise(wx / 6, wy / 6, 1) * 0.7 + r * 0.3;
+  return v < 0.35 ? 3 : v < 0.8 ? 4 : 5;
 }
 
 function groundPixel(nml, wx, wy, r, gy, map) {
@@ -116,45 +166,55 @@ function groundPixel(nml, wx, wy, r, gy, map) {
 }
 
 function trenchPixel(x, y, r, wx, wy, n, s, e, w, dugout) {
-  // vzdálená (severní) stěna je vidět jako svislá plocha: obložení vodorovnými prkny a kůly
-  if (!n && y < 9) {
-    if (y === 0) return 0;
-    if (y === 1) return 6;
-    if (wx % 12 === 0 || wx % 12 === 1) return wx % 12 === 0 ? 2 : 3; // kůl
-    if ((y - 2) % 3 === 2) return 2; // spára mezi prkny
-    return r < 0.12 ? 3 : r < 0.6 ? 4 : 5;
+  // vzdálená (severní) stěna: svislá hliněná plocha s obložením, světlo shora, tma u dna
+  if (!n && y < WALL) {
+    if (y === 0) return 6; // hrana terénu
+    if (y === 1) return 3;
+    const post = wx % 13;
+    if (post === 0) return 2;
+    if (post === 1) return y < 4 ? 6 : 5; // kůl s odleskem
+    if (post === 2) return 3;
+    const shade = y / WALL; // dole tmavší
+    if ((y - 2) % 3 === 2) return shade > 0.6 ? 1 : 2; // spáry mezi prkny
+    const v = r * 0.5 + (1 - shade) * 0.6;
+    return v > 0.75 ? 5 : v > 0.45 ? 4 : v > 0.25 ? 3 : 2;
   }
-  if (!n && y === 9) return 0; // stín pod stěnou
-  if (!s && y > 13) return y === 15 ? 3 : 0; // hrana bližší stěny
-  if (!w && x < 2) return x === 0 ? 0 : 2;
-  if (!e && x > 13) return x === 15 ? 0 : 2;
+  const belowWall = !n ? y - WALL : 99; // stín vrhaný stěnou na dno
+  if (belowWall === 0) return 0;
+  // boční stěny (svislé úseky)
+  if (!w && x < 3) return x === 0 ? 6 : x === 1 ? 3 : 1;
+  if (!e && x > 12) return x === 15 ? 0 : 1;
   if (dugout) {
-    if (y < 10) return x === 2 || x === 13 || y === 1 ? 19 : 0;
+    if (y < 12) return x === 2 || x === 13 || y === 1 ? 19 : 0;
     return 1;
   }
   const horizontal = e || w;
-  // rošty jen jako úzký pruh uprostřed dna
-  if (horizontal && n && y >= 2 && y <= 9) {
-    if (y === 2 || y === 9) return 3; // podélné trámy
-    return wx % 3 === 2 ? 1 : r < 0.1 ? 4 : r < 0.14 ? 18 : 5; // příčky
+  // dřevěné rošty na dně
+  if (horizontal && n && y <= 6) {
+    if (y === 0 || y === 6) return 2;
+    return wx % 3 === 2 ? 1 : r < 0.08 ? 4 : r < 0.12 ? 18 : y < 3 ? 6 : 5;
   }
   if (!horizontal && x >= 5 && x <= 10) {
-    if (x === 5 || x === 10) return 3;
-    return wy % 3 === 2 ? 1 : r < 0.1 ? 4 : 5;
+    if (x === 5 || x === 10) return 2;
+    return wy % 3 === 2 ? 1 : r < 0.08 ? 4 : 5;
   }
   const v = hash2(wx >> 2, wy >> 2, 21);
-  if (v < 0.08) return 17; // louže
-  return v < 0.5 ? 1 : 2;
+  if (v < 0.1) return r < 0.1 ? 14 : 17; // louže
+  if (belowWall <= 2) return 1;
+  return v < 0.55 ? 1 : 2;
 }
 
-function sandbagPixel(x, y, wx, wy, r, trenchBelow, trenchAbove) {
-  // řady pytlů 6×4 px, každá druhá posunutá
-  const row = Math.floor(wy / 4);
-  const off = row % 2 ? 3 : 0;
-  const bx = (wx + off) % 6, by = wy % 4;
-  if (bx === 0 || by === 3) return 1; // spáry
-  if (by === 0) return r < 0.5 ? 7 : 8;
-  if (by === 2) return 5;
+function sandbagPixel(wx, wy, r) {
+  // řady pytlů 8×5 px, každá druhá posunutá; zaoblené rohy, světlo shora
+  const row = Math.floor(wy / 5);
+  const off = row % 2 ? 4 : 0;
+  const bx = (((wx + off) % 8) + 8) % 8, by = ((wy % 5) + 5) % 5;
+  if (by === 4) return 0; // spára pod pytlem
+  if (bx === 0) return by === 0 ? 0 : 1;
+  if ((bx === 1 || bx === 7) && by === 0) return 2; // zaoblený roh
+  if (by === 0) return r < 0.6 ? 8 : 7;
+  if (by === 1) return bx === 1 ? 6 : 7;
+  if (by === 3) return 5;
   return r < 0.85 ? 6 : 7;
 }
 

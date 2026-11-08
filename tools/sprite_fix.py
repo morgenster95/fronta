@@ -26,6 +26,8 @@ def main():
     a.files = [g for f in a.files for g in (sorted(glob.glob(f)) or [f])]
     os.makedirs(a.out, exist_ok=True)
     for f in a.files:
+        if "@" in os.path.basename(f):
+            continue  # snímky animací se neposouvají jednotlivě (rozjely by se)
         im = Image.open(f).convert("RGBA")
         removed = 0
         for comp in islands(im)[1:]:

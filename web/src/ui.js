@@ -40,6 +40,16 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     }
   }
 
+  // postup k odemčení (motivace převzít vojáka)
+  const next = (roster.unlocks || []).find((u) => !u.open);
+  if (next) {
+    $('dispatch').hidden = false;
+    const el = document.createElement('div');
+    el.className = 'unlock';
+    el.innerHTML = `<span class="d">${esc(next.label)} unlocks at ${next.need} claimed soldiers</span><span class="bar"><i style="width:${Math.min(100, (next.have / next.need) * 100)}%"></i></span><span class="muted">${next.have} / ${next.need}</span>`;
+    $('dispatch').appendChild(el);
+  }
+
   $('zoom-in').onclick = () => onZoom(1.5);
   $('zoom-out').onclick = () => onZoom(1 / 1.5);
 

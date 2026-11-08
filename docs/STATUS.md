@@ -16,6 +16,13 @@ _Aktualizováno 8. 11. 2026._
 - **Hlasování:** komentář s klíčovým slovem pod Reelem, 1 hlas na účet, vyhodnotí denní tah → denní zpráva na webu. Otevření: workflow `open-vote` (jde i z mobilu přes GitHub app).
 - **Růst fronty:** mapa má 32 sektorů, otevřeno 8; při 90% zaplnění se otevřou další 2. Voják má uloženou trvalou pozici, nikdy se nepřesune.
 
+- **Hloubka zákopů:** vzdálená stěna s obložením a stínem, bližší okraj a jižní pytle ve vrstvě NAD vojáky (stojí v zákopu, Hegemonie vykukuje přes pytle).
+- **Život na frontě** (`web/src/life.js`, jen vizuál, nikoho nezraní): dýchání (snímky z PixelLabu, nohy stojí), občasný výstřel (animace + kouř + stopa, 1× za 3,5–8 s),
+  granát do země nikoho (1× za 25–60 s, VFX z PixelLabu), světlice, zdravotník dojde ke skutečně zraněnému (stav z denního tahu) a ošetří ho.
+  Skutečná zranění dál jen v denním tahu (pomalu).
+- **Bombardování:** odemkne se při 500 převzatých vojácích (ukazatel na webu), pak jde dát do hlasování (`open-vote` s efektem `barrage`);
+  vítězství = hustá palba na cílovou frakci po celý další den + vyšší nebezpečí v denním tahu. Náhled: `/?fx=barrage`.
+
 ## Potřebuju od tebe (až se vrátíš)
 1. **Název hry + IG účet.** V `themes/front-ww1/theme.json` je zástupný `@thefront.game`.
 2. **Instagram:** profesionální (Creator/Business) účet → developers.facebook.com → aplikace typu *Business* → produkt
@@ -33,7 +40,7 @@ _Aktualizováno 8. 11. 2026._
 Zbývá ~90 generací, propadnou **13. 11.** Nechal jsem je na tvoje rozhodnutí (např. tank, dlaždice, další varianty).
 
 ## Další kroky (můj návrh pořadí)
-1. Finální dlaždice terénu z PixelLabu (pro režim) místo procedurálních + rekvizity (dráty, pytle, kříže, bedny, kulomet).
+1. Terén: zem a stěny jsou zatím kreslené kódem (krátery, stromy, hroby už z PixelLabu). Další krok: textura stěny a ostnatý drát z PixelLabu.
 2. Tank: 8 směrů z PixelLabu vyšlo moc vysoké a ne-kosočtverečné → zkusit čelní snímek přes `create_image_pro_flash` v měřítku (výška ~40 px) a teprve pak rotaci. Animace idle hromadně nepouštěny (malý přínos).
 3. Posun linie podle výsledků hlasování (zatím hlasování mění jen nebezpečnost dne).
 4. Renderer Reelů (headless prohlížeč nahraje průlet kamerou).

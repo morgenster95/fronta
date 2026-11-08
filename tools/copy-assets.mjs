@@ -43,10 +43,32 @@ for (const [key, c] of Object.entries(cfg)) {
       manifest[key][d] = `${key}_${d}.png`;
     }
   }
+  // animace: řádky "  <jméno> — ..." a pod nimi "    <směr>: <url s {i}> (i=0..N)"
+  if (c.character) {
+    const info = await mcp('get_character', { character_id: c.character });
+    let anim = null;
+    for (const line of info.split(/\r?\n/)) {
+      const head = line.match(/^  (\S+) — /);
+      if (head) { anim = head[1]; continue; }
+      const fr = line.match(/^    ([a-z-]+): (https:\S+) \(i=0\.\.(\d+)\)/);
+      if (!fr || !anim) continue;
+      const [, dir, tpl, last] = fr;
+      const files = [];
+      for (let i = 0; i <= Number(last); i++) {
+        const buf = Buffer.from(await (await fetch(tpl.replace('{i}', i))).arrayBuffer());
+        const name = `${key}@${anim}_${dir}_${i}.png`;
+        fs.writeFileSync(path.join(out, name), buf);
+        files.push(name);
+      }
+      manifest[key].anims ??= {};
+      manifest[key].anims[anim] ??= {};
+      manifest[key].anims[anim][dir] = files;
+    }
+  }
   for (const [d, file] of Object.entries(c.fixed || {})) {
     fs.copyFileSync(path.join(ROOT, file), path.join(out, `${key}_${d}.png`));
     manifest[key][d] = `${key}_${d}.png`;
   }
-  console.log(key, Object.keys(manifest[key]).join(', '));
+  console.log(key, Object.keys(manifest[key]).filter((k) => k !== 'anims').length, 'směrů', manifest[key].anims ? 'animace: ' + Object.entries(manifest[key].anims).map(([a, d]) => `${a}(${Object.keys(d).join('/')})`).join(' ') : '');
 }
 fs.writeFileSync(path.join(out, 'manifest.json'), JSON.stringify(manifest, null, 1));

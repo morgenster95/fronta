@@ -124,3 +124,7 @@ button.primary { background: var(--blood); border-color: #a85a36; }
 #dispatch.collapsed #dispatch-text, #dispatch.collapsed #vote { display: none; }
 #dispatch.collapsed .more { display: block; font-family: 'Silkscreen', monospace; font-size: 11px; color: var(--accent); }
 body.card-open #dispatch { display: none; }
+.unlock { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--line); font-size: 16px; }
+.unlock .bar { display: block; height: 4px; background: #2b2722; margin: 3px 0; }
+.unlock .bar i { display: block; height: 100%; background: var(--blood); }
+#dispatch.collapsed .unlock { display: none; }

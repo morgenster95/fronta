@@ -67,3 +67,13 @@ test('hlasování: jeden hlas na účet, platí poslední, vyhodnotí denní tah
   assert.deepEqual(ev.counts, { HOLD: 2, ATTACK: 1 });
   assert.equal(s.vote, null);
 });
+
+import { unlocks } from './roster.js';
+test('bombardování se odemkne až při dosažení počtu převzatých vojáků', () => {
+  const s = emptyState(theme);
+  for (let i = 0; i < 10; i++) applyComment(s, { id: `c${i}`, userId: `u${i}`, username: `p${i}`, text: 'CONCORD' }, theme, story, map);
+  assert.equal(unlocks(s, theme)[0].open, false);
+  const t = { ...theme, unlocks: [{ id: 'barrage', claimed: 3, label: 'B' }] };
+  s.soldiers.slice(0, 3).forEach((x) => (x.claimed = true));
+  assert.equal(unlocks(s, t)[0].open, true);
+});

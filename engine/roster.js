@@ -120,9 +120,16 @@ export function resolveVote(state) {
   // remíza nebo žádné hlasy → první možnost (výchozí „držet linii“ dej jako první)
   const winner = v.options.reduce((best, o) => (counts[o.kw] > counts[best.kw] ? o : best), v.options[0]);
   const result = { day: state.day, question: v.question, winner: winner.kw, counts, total, text: winner.outcome, danger: winner.danger ?? 1 };
+  if (winner.effect) Object.assign(result, { effect: winner.effect, target: winner.target ?? 0 });
   state.events = [...(state.events || []), result].slice(-60);
   state.vote = null;
   return result;
+}
+
+// Odemčené schopnosti komunity (např. bombardování při 500 převzatých vojácích)
+export function unlocks(state, theme) {
+  const claimed = state.soldiers.filter((s) => s.claimed).length;
+  return (theme.unlocks || []).map((u) => ({ id: u.id, label: u.label, need: u.claimed, have: claimed, open: claimed >= u.claimed }));
 }
 
 // Denní tah: nový den, zápisy, osudy, nástupci padlých.
@@ -156,6 +163,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
 export function buildPublic(state, theme) {
   const arch = theme.archetypes.map((a) => a.id);
   const roster = {
+    unlocks: unlocks(state, theme),
     day: state.day,
     followers: state.followers,
     openSectors: state.openSectors ?? 8,

@@ -213,7 +213,7 @@ export function generateFront(opts = {}) {
       const sector = Math.floor(cx / o.sectorW);
       slots.push({
         x: cx * o.tile + 16 + Math.round((rand() - 0.5) * 6),
-        y: cy * o.tile + (f === 0 ? 28 : 22),
+        y: cy * o.tile + 27, // pata ve spodní řadě zákopu: bližší okraj zakryje boty
         f,
         d,
         line: p.line,

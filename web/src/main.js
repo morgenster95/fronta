@@ -1,10 +1,10 @@
 // Prohlížeč fronty: terén po blocích, tisíce vojáků, úrovně detailu, kamera a UI.
-import { Application, Assets, Container, Graphics, Sprite, Texture, TextureSource, TilingSprite } from 'pixi.js';
+import { Application, Assets, Container, Graphics, Rectangle, Sprite, Texture, TextureSource, TilingSprite } from 'pixi.js';
 import { generateFront, openRange, DIRS } from '../../engine/mapgen.js';
-import { hash2 } from '../../engine/rng.js';
 import { Camera } from './camera.js';
 import { paintChunk, paintOverview, CHUNK } from './terrain.js';
 import { initUI } from './ui.js';
+import { createLife } from './life.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
 
@@ -38,18 +38,33 @@ async function boot() {
 
   // textury vojáků: klíč = "frakce" (střelec) nebo "frakce_archetyp"; chybějící archetyp → střelec
   const tex = {};
+  const mirrored = {}; // směr chybí v manifestu → použije se zrcadlený protějšek
+  const anims = {}; // anims[klíč][animace][směr] = [Texture]
   await Promise.all(
     Object.keys(manifest).flatMap((key) => {
       tex[key] = {};
-      return DIRS.map(async (d) => {
+      mirrored[key] = {};
+      const jobs = DIRS.map(async (d) => {
+        mirrored[key][d] = !manifest[key][d] && !!manifest[key][MIRROR[d]];
         const file = manifest[key][d] ?? manifest[key][MIRROR[d]] ?? manifest[key].south;
         tex[key][d] = await Assets.load(`/assets/soldiers/${file}`);
       });
+      for (const [anim, byDir] of Object.entries(manifest[key].anims || {})) {
+        anims[key] ??= {};
+        anims[key][anim] = {};
+        for (const [d, files] of Object.entries(byDir)) {
+          jobs.push(Promise.all(files.map((f) => Assets.load(`/assets/soldiers/${f}`))).then((t) => (anims[key][anim][d] = t)));
+        }
+      }
+      return jobs;
     }),
   );
   const loadImg = (src) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = src; });
-  const propImages = Object.fromEntries(await Promise.all(['tree', 'grave'].map(async (k) => [k, await loadImg(`/assets/props/${k}.png`)])));
-  const texFor = (s) => tex[`${theme.factions[s.faction].sprite}_${s.archetype?.id}`] ?? tex[theme.factions[s.faction].sprite];
+  const propImages = Object.fromEntries(await Promise.all(['tree', 'grave', 'crater_s', 'crater_m', 'crater_water', 'crater_huge'].map(async (k) => [k, await loadImg(`/assets/props/${k}.png`)])));
+  const keyFor = (s) => {
+    const k = `${theme.factions[s.faction].sprite}_${s.archetype?.id}`;
+    return tex[k] ? k : theme.factions[s.faction].sprite;
+  };
 
   const world = new Container();
   app.stage.addChild(world);
@@ -60,6 +75,8 @@ async function boot() {
   world.addChild(terrainLayer);
   const soldierLayer = new Container();
   world.addChild(soldierLayer);
+  const overLayer = new Container(); // bližší okraje zákopů a pytle před vojáky
+  world.addChild(overLayer);
   const dots = new Graphics();
   world.addChild(dots);
   const marker = new Graphics();
@@ -97,15 +114,24 @@ async function boot() {
   const ckey = (x, y) => `${Math.floor(x / (CHUNK * map.tile))},${Math.floor(y / (CHUNK * map.tile))}`;
   for (const s of placed.sort((a, b) => a.y - b.y)) {
     const d = DIRS[s.slot.d];
-    s.tex = texFor(s);
+    s.texKey = keyFor(s);
+    s.tex = tex[s.texKey];
     const sp = new Sprite(s.tex[d]);
     sp.anchor.set(0.5, 30 / 32);
-    if (MIRROR[d]) sp.scale.x = -1;
+    if (mirrored[s.texKey][d]) sp.scale.x = -1;
     sp.x = s.x;
     sp.y = s.y;
-    sp.tint = s.status === 1 ? 0xd8b8a8 : TINT[s.variant % TINT.length];
-    sp.baseY = s.y;
-    sp.phase = hash2(s.i, 3, 1) * 3000;
+    sp.tint = TINT[s.variant % TINT.length];
+    // raněný leží (poslední snímek pádu střelce frakce), dokud ho nedá dohromady denní tah
+    if (s.status === 1) {
+      const fall = anims[theme.factions[s.faction].sprite]?.fall?.south;
+      if (fall) {
+        s.wounded = true;
+        sp.texture = fall[fall.length - 1];
+        sp.scale.x = 1;
+      } else sp.tint = 0xd8b8a8;
+    }
+    sp.soldier = s;
     s.sprite = sp;
     const k = ckey(s.x, s.y);
     if (!chunkSoldiers.has(k)) {
@@ -116,6 +142,30 @@ async function boot() {
     }
     chunkSoldiers.get(k).addChild(sp);
   }
+  // efekty z PixelLab VFX workbench: spritesheet (TexturePacker JSON) → snímky v pořadí + kotva + fps
+  const fxSheets = {};
+  await Promise.all(['shell-blast', 'shell-small', 'smoke-small'].map(async (name) => {
+    try {
+      const meta = await fetch(`/assets/fx/${name}.json`).then((r) => r.json());
+      const base = await Assets.load(`/assets/fx/${name}.png`);
+      fxSheets[name] = {
+        frames: meta.frames.map(({ frame: f }) => new Texture({ source: base.source, frame: new Rectangle(f.x, f.y, f.w, f.h) })),
+        pivot: meta.frames[0].pivot,
+        fps: 1000 / (meta.frames[0].duration || 100),
+      };
+    } catch (e) {
+      console.warn('fx', name, e);
+    }
+  }));
+  const life = createLife({ world, theme, soldiers: placed, anims, tex, map, dirs: DIRS, fx: fxSheets });
+  for (const s of placed) life.setupSprite(s, s.sprite);
+  // bombardování: výsledek včerejšího hlasování, nebo náhled přes ?fx=barrage
+  const fxParam = new URLSearchParams(location.search).get('fx');
+  const disp = roster.dispatch;
+  if (fxParam === 'barrage' || (disp?.effect === 'barrage' && disp.day >= roster.day - 1)) {
+    life.setBarrage({ faction: disp?.target ?? 0 });
+  }
+
   // prostorový index pro klepnutí
   const grid = new Map();
   const gk = (x, y) => `${Math.floor(x / 64)},${Math.floor(y / 64)}`;
@@ -166,12 +216,16 @@ async function boot() {
       // nejdřív bloky nejblíž středu kamery
       queue.sort((a, b) => dist2(b) - dist2(a));
       const [cx, cy, entry] = queue.pop();
-      const sp = new Sprite(Texture.from(paintChunk(map, cx, cy, propImages)));
-      sp.x = cx * CHUNK * map.tile;
-      sp.y = cy * CHUNK * map.tile;
+      const { base, over } = paintChunk(map, cx, cy, propImages);
+      const sp = new Sprite(Texture.from(base));
+      const ov = new Sprite(Texture.from(over));
+      sp.x = ov.x = cx * CHUNK * map.tile;
+      sp.y = ov.y = cy * CHUNK * map.tile;
       entry.sprite = sp;
+      entry.over = ov;
       entry.queued = false;
       terrainLayer.addChild(sp);
+      overLayer.addChild(ov);
     }
   }
   const dist2 = ([cx, cy]) => {
@@ -266,6 +320,8 @@ async function boot() {
   }
 
   // --- smyčka ---
+  if (import.meta.env.DEV) window.__front = { life, cam, soldiers }; // ladění v konzoli
+  const visibleSoldiers = [];
   app.ticker.add(() => {
     const now = performance.now();
     cam.update(now);
@@ -290,17 +346,26 @@ async function boot() {
         }
       pump(queue.length > 4 ? 24 : 12);
     }
-    for (const [k, e] of chunks) if (e.sprite) e.sprite.visible = visible.has(k);
+    overLayer.visible = detail;
+    for (const [k, e] of chunks) if (e.sprite) e.sprite.visible = e.over.visible = visible.has(k);
 
     const showSprites = z >= SPRITE_ZOOM;
+    visibleSoldiers.length = 0;
     dots.visible = !showSprites;
     if (!showSprites) drawDots(z);
     for (const [k, c] of chunkSoldiers) {
       c.visible = showSprites && visible.has(k);
       if (!c.visible) continue;
       // jemné „dýchání“: posun o 1 px
-      for (const sp of c.children) sp.y = sp.baseY - ((now + sp.phase) % 3000 < 1500 ? 0 : 1);
+      for (const sp of c.children) {
+        sp.animate?.(now);
+        visibleSoldiers.push(sp.soldier);
+      }
     }
+
+    // simulovaný život (výstřely, granáty, světlice, zdravotníci) + otřes kamery při blízkém dopadu
+    const sh = life.update(now, app.ticker.deltaMS, view, visibleSoldiers, showSprites);
+    if (sh) world.position.set(world.position.x + Math.round(sh.x), world.position.y + Math.round(sh.y));
 
     // značka vybraného vojáka
     marker.clear();

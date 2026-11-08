@@ -1,0 +1,287 @@
+{
+ "frames": [
+  {
+   "filename": "smoke-small 0.png",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 22,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.45454545454545453,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "smoke-small 1.png",
+   "frame": {
+    "x": 22,
+    "y": 0,
+    "w": 22,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 22,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.45454545454545453,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "smoke-small 2.png",
+   "frame": {
+    "x": 44,
+    "y": 0,
+    "w": 22,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 22,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.45454545454545453,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "smoke-small 3.png",
+   "frame": {
+    "x": 66,
+    "y": 0,
+    "w": 22,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 22,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.45454545454545453,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "smoke-small 4.png",
+   "frame": {
+    "x": 0,
+    "y": 23,
+    "w": 22,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 22,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.45454545454545453,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "smoke-small 5.png",
+   "frame": {
+    "x": 22,
+    "y": 23,
+    "w": 22,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 22,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.45454545454545453,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "smoke-small 6.png",
+   "frame": {
+    "x": 44,
+    "y": 23,
+    "w": 22,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 22,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.45454545454545453,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "smoke-small 7.png",
+   "frame": {
+    "x": 66,
+    "y": 23,
+    "w": 22,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 22,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.45454545454545453,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "smoke-small 8.png",
+   "frame": {
+    "x": 0,
+    "y": 46,
+    "w": 22,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 22,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.45454545454545453,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "smoke-small 9.png",
+   "frame": {
+    "x": 22,
+    "y": 46,
+    "w": 22,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 22,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.45454545454545453,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "PixelLab VFX Creator",
+  "image": "smoke-small.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 88,
+   "h": 69
+  },
+  "scale": "1",
+  "anchor": {
+   "kind": "origin",
+   "x": 10,
+   "y": 11
+  },
+  "frameTags": [
+   {
+    "name": "smoke-small",
+    "from": 0,
+    "to": 9,
+    "direction": "forward"
+   }
+  ]
+ }
+}
