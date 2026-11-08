@@ -152,3 +152,6 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
 
   window.__reel = { seconds: sc.seconds, frame: (t) => { frame(t); tick(t * 1000); }, ready: true };
 }
+
+// pro tools/reel-audio (načasování zvuku podle scénáře)
+export { SCRIPTS };
