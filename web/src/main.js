@@ -553,7 +553,7 @@ async function boot() {
     app.ticker.stop();
     Ticker.shared.stop();
     startReel({
-      name: reelName, app, cam, life, map, theme, soldiers, ui,
+      name: reelName, app, cam, life, map, theme, soldiers, ui, tex, anims, select,
       tick: (ms) => {
         reelTime = ms;
         app.ticker.update(ms);

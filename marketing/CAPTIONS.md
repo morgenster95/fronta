@@ -28,6 +28,29 @@ Všechny soubory: `marketing/posts/` (obrázky 1080×1350, profilovka 1080×1080
 
 ---
 
+## Reel 0 — `reels/story_sound.mp4` (97 s, voiceover) — příběhové promo, ideálně připnout jako první
+Vypravěč provede celou hrou: dvě strany → komentář → voják s tvým jménem → karta a služební záznam → půlnoční tah
+(zranění, povýšení, smrt) → dědic z rodu → hlasování → dělostřelectvo od 500 → medaile First Wave → najdi se (link in bio).
+Výroba: `python marketing/story_vo.py` (hlas) → `node tools/record-reel.mjs story` (obraz, běží `npm run dev`) → `python marketing/reel_audio.py story`.
+```
+Six winters. One valley of mud. The war that never ended. 🪖
+
+Mud & Iron is a war fought by Instagram followers.
+Comment your side and a soldier with YOUR name takes a post on the front, for good.
+
+⚔️ Every soldier gets a role, a rank and a service record written day by day
+🌑 Every midnight the front turns: wounds, promotions, the fallen
+🩸 Fall, and the next of your family picks up the rifle
+🗳️ Vote in the comments and decide what happens next
+💥 500 claimed soldiers unlock the artillery
+🎖️ The first 100 recruits wear the First Wave medal forever
+
+Comment CONCORD or HEGEMONY below 👇
+Find yourself on the front: link in bio.
+
+#pixelart #ww1 #indiegame #trenchwarfare #gamedev #pixelartgame #grimdark #interactivegame #instagramgame #mudandiron
+```
+
 ## Reel 1 — `reels/teaser_sound.mp4` (22 s)
 ```
 The Great War ended. Here, it never did. ⚔️

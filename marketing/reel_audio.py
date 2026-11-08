@@ -1,7 +1,7 @@
 """Zvuk k promo videím: temný hudební podklad + bubny + déšť + dunění děl a výstřely načasované podle scénáře.
 
 Vše je syntetizované v kódu (žádné cizí nahrávky → žádná autorská práva). Výstup: marketing/reels/<název>_sound.mp4
-Použití: python marketing/reel_audio.py [teaser enlist sides howto]
+Použití: python marketing/reel_audio.py [teaser enlist sides howto story]
 """
 import json
 import os
@@ -161,6 +161,159 @@ def build(name):
     print("hotovo:", out)
 
 
+# --- příběhový reel s voiceoverem (story.sfx.json z nahrávání, _story_vo.wav z story_vo.py) ---
+
+def typewriter(dur):
+    out = np.zeros(int(dur * SR) + SR // 2)
+    t = 0.0
+    while t < dur:
+        n = int(0.03 * SR)
+        k = rng.standard_normal(n) * env(n, 0.0003, 0.004)
+        add(out, (k - lowpass_fast(k, 1800, 1)) * rng.uniform(0.25, 0.45), t)
+        t += rng.uniform(0.05, 0.11)
+    return out
+
+
+def bell():
+    # vzdálený zvon o půlnoci: neharmonické alikvoty, dlouhý dozvuk
+    n = int(5 * SR)
+    t = np.arange(n) / SR
+    out = np.zeros(n)
+    for f, a, d in ((196, 1, 3.5), (392 * 1.002, 0.5, 2.5), (466, 0.35, 2), (588, 0.25, 1.4), (784 * 1.01, 0.15, 1)):
+        out += a * np.sin(2 * np.pi * f * t) * np.exp(-t / d)
+    return out * env(n, 0.003, 10) * 0.35
+
+
+def stamp():
+    n = int(0.6 * SR)
+    t = np.arange(n) / SR
+    body = np.sin(2 * np.pi * (90 * np.exp(-t * 12) + 50) * t) * env(n, 0.001, 0.08)
+    slap = lowpass_fast(rng.standard_normal(n), 1200, 1) * env(n, 0.0005, 0.02)
+    return body * 0.9 + slap * 0.6
+
+
+def whistle():
+    # píšťalka důstojníka: „nad okraj!“ (kulička uvnitř = rychlý trylek)
+    n = int(1.6 * SR)
+    t = np.arange(n) / SR
+    trill = 1 + 0.5 * (np.sin(2 * np.pi * 34 * t) > 0)
+    tone = np.sin(2 * np.pi * (2750 + 60 * np.sin(2 * np.pi * 34 * t)) * t) * trill
+    e = np.minimum(1, t / 0.03) * np.clip((1.5 - t) / 0.15, 0, 1)
+    breath = (rng.standard_normal(n) - lowpass_fast(rng.standard_normal(n), 2500, 1)) * 0.08
+    return (tone * 0.18 + breath) * e
+
+
+def chime():
+    n = int(2.5 * SR)
+    t = np.arange(n) / SR
+    out = np.zeros(n)
+    for at, f in ((0, 880), (0.12, 1318.5)):
+        k = int(at * SR)
+        tt = t[: n - k]
+        out[k:] += (np.sin(2 * np.pi * f * tt) + 0.3 * np.sin(2 * np.pi * f * 2.01 * tt)) * np.exp(-tt / 0.7)
+    return out * 0.12
+
+
+def reveal():
+    # nadechnutí + tlumený úder: stanoviště dostalo jméno
+    n = int(1.4 * SR)
+    t = np.arange(n) / SR
+    swell = lowpass_fast(rng.standard_normal(n), 900, 2) * np.clip(t / 0.5, 0, 1) * np.exp(-np.maximum(0, t - 0.5) / 0.15) * 1.5
+    hit = np.zeros(n)
+    hit[int(0.5 * SR):] = drum(0.8)[: n - int(0.5 * SR)]
+    return swell + hit
+
+
+def counter(dur):
+    out = np.zeros(int(dur * SR) + SR // 4)
+    t, gap = 0.0, 0.12
+    while t < dur:
+        n = int(0.012 * SR)
+        add(out, np.sin(2 * np.pi * 1900 * np.arange(n) / SR) * env(n, 0.0003, 0.003) * 0.25, t)
+        t += gap
+        gap = max(0.035, gap * 0.93)  # zrychluje se k pětistovce
+    return out
+
+
+def build_story():
+    meta = json.load(open(os.path.join(REELS, "story.sfx.json")))
+    dur = meta["seconds"]
+    n = int(dur * SR)
+    music = drone(dur) * 1.1 + rain(dur)
+    fx = np.zeros(n)
+    beat = 60 / 70
+    # bubny: od Hegemonie, ztichnou před půlnocí a po dědicovi se rozjedou ke konci
+    t = 11.6
+    while t < dur - 3:
+        quiet = 50.4 < t < 53.5 or 59.8 < t < 63.4
+        if not quiet:
+            strength = 0.3 + 0.7 * min(1, (t - 11.6) / 75)
+            add(music, drum(strength), t)
+            if t > 63.4:
+                add(music, drum(strength * 0.5), t + beat / 2)
+        t += beat
+    for at, kind, arg in meta["sfx"]:
+        if kind == "shell":
+            add(fx, boom(bool(arg)), at)
+        elif kind == "shoot":
+            add(fx, rifle(1.0), at)
+        elif kind == "type":
+            add(fx, typewriter(arg), at)
+        elif kind == "bell":
+            add(fx, bell(), at)
+        elif kind == "stamp":
+            add(fx, stamp(), at)
+        elif kind == "whistle":
+            add(fx, whistle(), at)
+        elif kind == "tick":
+            add(fx, counter(arg), at)
+        elif kind == "medal":
+            add(fx, chime(), at)
+        elif kind == "reveal":
+            add(fx, reveal(), at - 0.5)
+        elif kind == "barrage":
+            for k in np.arange(0, arg, 0.28):
+                add(fx, boom(rng.random() < 0.4) * rng.uniform(0.5, 0.9), at + k + rng.uniform(0, 0.12))
+        elif kind == "drum":
+            add(fx, drum(1.6), at)
+            add(fx, boom(True) * 0.5, at)
+        elif kind == "end":
+            add(fx, drum(1.8), at)
+            add(fx, boom(True) * 0.7, at)
+    for at in rng.uniform(4, dur - 2, int(dur * 0.7)):
+        add(fx, rifle(rng.uniform(3, 6)), at)
+    # hlas: lehké teplo + krátká ozvěna zákopu
+    with wave.open(os.path.join(REELS, "_story_vo.wav")) as w:
+        voice = np.frombuffer(w.readframes(w.getnframes()), np.int16).astype(np.float64) / 32768
+    voice = np.pad(voice, (0, max(0, n - len(voice))))[:n]
+    wet = np.zeros(n)
+    for d, g in ((0.043, 0.16), (0.089, 0.1), (0.15, 0.06)):
+        k = int(d * SR)
+        wet[k:] += voice[:-k] * g
+    voice = voice + lowpass_fast(wet, 2500, 1)
+    voice = np.tanh(voice * 2.2) / np.tanh(2.2)
+    # ducking: hudba a efekty ustoupí, když vypravěč mluví
+    level = lowpass_fast(np.abs(voice), 4, 2)
+    duck = 1 - 0.6 * np.clip(level / (np.percentile(level[level > 1e-4], 60) + 1e-9), 0, 1)
+    bed = (music * 0.75 + fx * 0.85) * duck
+    fade = int(1.0 * SR)
+    bed[-fade:] *= np.linspace(1, 0, fade)
+    bed = np.tanh(bed * 1.3) / np.tanh(1.3)
+    mix = bed * 0.55 + voice * 0.95
+    mix = mix / (np.max(np.abs(mix)) + 1e-9) * 0.89
+    stereo = np.stack([mix, np.roll(mix, int(0.008 * SR)) * 0.97], axis=1)
+    wav = os.path.join(REELS, "_story.wav")
+    with wave.open(wav, "wb") as w:
+        w.setnchannels(2)
+        w.setsampwidth(2)
+        w.setframerate(SR)
+        w.writeframes((stereo * 32767).astype(np.int16).tobytes())
+    out = os.path.join(REELS, "story_sound.mp4")
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", os.path.join(REELS, "story.mp4"), "-i", wav,
+                    "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-shortest", out], check=True)
+    print("hotovo:", out)
+
+
 if __name__ == "__main__":
     for nm in sys.argv[1:] or ["teaser", "enlist", "sides", "howto"]:
-        build(nm)
+        build_story() if nm == "story" else build(nm)

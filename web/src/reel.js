@@ -88,7 +88,15 @@ const SCRIPTS = {
 
 const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
-export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick }) {
+export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick, tex, anims, select }) {
+  if (name === 'story') {
+    // příběhové video má vlastní scénář s překryvy (reel-story.js)
+    return import('./reel-story.js').then(({ startStoryReel }) => {
+      startStoryReel({ cam, life, map, theme, soldiers, tex, anims, select });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   const T = map.tile;
   const pick = (f) => soldiers.filter((s) => s.faction === f && s.slot?.line === 'front').sort((a, b) => a.x - b.x);
   const hs = pick(0), cs = pick(1);

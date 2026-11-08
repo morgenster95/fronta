@@ -23,6 +23,9 @@ await page.goto(`${base}/?reel=${name}&vacant=700`, { waitUntil: 'networkidle0',
 await page.waitForFunction(() => window.__reel?.ready, { timeout: 120000 });
 await page.evaluate(() => document.fonts.ready);
 const seconds = await page.evaluate(() => window.__reel.seconds);
+// zvukové značky scénáře (příběhový reel) pro marketing/reel_audio.py
+const sfx = await page.evaluate(() => window.__reel.sfx);
+if (sfx) fs.writeFileSync(path.join(ROOT, 'marketing', 'reels', `${name}.sfx.json`), JSON.stringify({ seconds, sfx }));
 // zahřátí: terén se kreslí po blocích, necháme ho dokreslit
 for (let i = 0; i < 40; i++) await page.evaluate((t) => window.__reel.frame(t), i / FPS - 40 / FPS);
 const total = Math.min(Math.round(seconds * FPS), Number(process.env.LIMIT) || Infinity);
