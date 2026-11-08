@@ -1,0 +1,54 @@
+# Nepřetržitá smyčka (nezávislá na plánovači GitHubu, který bývá nespolehlivý):
+# každých 5 min komentáře z IG → vojáci, naplánované příspěvky, 1× denně denní tah, nasazení webu.
+# Běží max. ~5,5 h, pak spustí sama sebe znovu. Veřejné repo = minuty zdarma.
+# Spuštění: Actions → front-loop → Run workflow (stačí jednou; plánovač ho jen „oživuje“, kdyby smyčka spadla).
+name: front-loop
+on:
+  workflow_dispatch:
+  schedule: [{ cron: '17 */3 * * *' }]
+concurrency: { group: front-loop, cancel-in-progress: false }
+permissions: { contents: write, actions: write }
+jobs:
+  loop:
+    if: ${{ vars.IG_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+      IG_USER_ID: ${{ secrets.IG_USER_ID }}
+      IG_MEDIA_IDS: ${{ vars.IG_MEDIA_IDS }}
+      IG_REPLY: ${{ vars.IG_REPLY }}
+      IG_SEND_DM: ${{ vars.IG_SEND_DM }}
+      SITE_URL: ${{ vars.SITE_URL }}
+      FIRESTORE: ${{ vars.FIRESTORE }}
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm i -g firebase-tools@14
+      - name: Loop
+        run: |
+          git config user.name "front-bot"
+          git config user.email "front-bot@users.noreply.github.com"
+          echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
+          END=$(( $(date +%s) + 330*60 ))
+          while [ "$(date +%s)" -lt "$END" ]; do
+            git pull -q --rebase || git rebase --abort
+            node ingest/poll-comments.mjs || echo "ingest selhal"
+            node ingest/publish.mjs --due || echo "publish selhal"
+            if [ "$(date -u +%H)" -ge 6 ]; then node ingest/daily-tick.mjs || echo "tick selhal"; fi
+            npm run -s data:build
+            git add data/state.json marketing/queue.json
+            if ! git diff --cached --quiet; then
+              git commit -qm "loop: $(date -u +%FT%TZ)" && git push -q || (git pull -q --rebase && git push -q)
+              npm run -s build && firebase deploy --only hosting --non-interactive --project fronta-ig > /dev/null && echo "nasazeno"
+            fi
+            sleep 300
+          done
+      - name: Restart loop
+        if: always()
+        run: gh workflow run front-loop --repo "$GITHUB_REPOSITORY"

@@ -2,7 +2,7 @@
 # Ručně: Actions → publish → Run → ids (mezerou oddělená ID). Automaticky každou hodinu položky s publishAt (když IG_ENABLED=true).
 name: publish
 on:
-  schedule: [{ cron: '11 * * * *' }]
+  # plánování převzala smyčka front-loop.yml; tady jen ruční spuštění
   workflow_dispatch:
     inputs:
       ids: { description: 'ID položek z marketing/queue.json (mezerou), prázdné = jen naplánované', required: false }

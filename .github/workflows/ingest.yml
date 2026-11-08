@@ -2,8 +2,7 @@
 # Repo je veřejné → minuty GitHub Actions jsou zdarma bez limitu. Tajné údaje jsou jen v GitHub Secrets.
 name: ingest
 on:
-  # každých 5 min, mimo :00 (GitHub plánované běhy na celou hodinu zdržuje)
-  schedule: [{ cron: '2-59/5 * * * *' }]
+  # plánování převzala smyčka front-loop.yml; tady jen ruční spuštění
   workflow_dispatch:
 concurrency: { group: state, cancel-in-progress: false }
 permissions: { contents: write }

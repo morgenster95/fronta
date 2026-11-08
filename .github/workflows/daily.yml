@@ -1,7 +1,7 @@
 # Jednou denně (06:00 UTC): nový den na frontě, zápisy do služebních záznamů, nasazení.
 name: daily-tick
 on:
-  schedule: [{ cron: '3 6 * * *' }]
+  # plánování převzala smyčka front-loop.yml; tady jen ruční spuštění
   workflow_dispatch:
 concurrency: { group: state, cancel-in-progress: false }
 permissions: { contents: write }
