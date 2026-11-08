@@ -77,3 +77,11 @@ test('bombardování se odemkne až při dosažení počtu převzatých vojáků
   s.soldiers.slice(0, 3).forEach((x) => (x.claimed = true));
   assert.equal(unlocks(s, t)[0].open, true);
 });
+
+test('First Wave: medaili má prvních 100 rekrutů, 101. už ne', () => {
+  const s = emptyState(theme);
+  for (let i = 0; i < 101; i++) applyComment(s, { id: `c${i}`, userId: `u${i}`, username: `fw${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
+  assert.ok(s.soldiers[0].medals.includes('first-wave'));
+  assert.ok(s.soldiers[99].medals.includes('first-wave'));
+  assert.ok(!(s.soldiers[100].medals || []).includes('first-wave'));
+});

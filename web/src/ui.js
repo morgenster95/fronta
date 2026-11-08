@@ -1,18 +1,22 @@
 // DOM vrstva: počty, hledání @handle, karta vojáka se služebním záznamem, panel „Enlist“, sdílení.
 import { shardOf } from '../../engine/roster.js';
 import { startClaim } from './claim.js';
+import { shareCard } from './share.js';
 
 const $ = (id) => document.getElementById(id);
 const STATUS = ['On the line', 'Wounded', 'Missing in action', 'Prisoner of war', 'Fallen'];
 const ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'];
 const shardCache = new Map();
 
+// Den 0 = mobilizace (nábor před začátkem války)
+const dayLabel = (d) => (d > 0 ? `Day ${d}` : 'Mobilization');
+
 export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   const [A, B] = theme.factions;
   // ampersand ve Silkscreenu vypadá jako €, proto ho sázíme písmem VT323
   $('title').innerHTML = esc(theme.title).replace('&amp;', '<span class="amp">&amp;</span>');
   document.title = theme.title;
-  $('day').textContent = `Day ${roster.day}`;
+  $('day').textContent = roster.day > 0 ? `Day ${roster.day}` : 'Mobilization · the war begins at midnight';
   const n = [0, 1].map((f) => soldiers.filter((s) => s.faction === f && !s.vacant).length);
   const vacantCount = soldiers.filter((s) => s.vacant).length;
   $('total').textContent = `${(n[0] + n[1]).toLocaleString('en')} enlisted` + (vacantCount ? ` · ${vacantCount} posts waiting` : '');
@@ -31,7 +35,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     if (innerWidth < 600) $('dispatch').classList.add('collapsed');
     $('dispatch').onclick = () => $('dispatch').classList.toggle('collapsed');
     if (roster.dispatch) {
-      $('dispatch-text').innerHTML = `<span class="d">Dispatch · Day ${roster.dispatch.day}</span>${esc(roster.dispatch.text)}`;
+      $('dispatch-text').innerHTML = `<span class="d">Dispatch · ${dayLabel(roster.dispatch.day)}</span>${esc(roster.dispatch.text)}`;
     }
     if (roster.vote) {
       const v = roster.vote;
@@ -77,7 +81,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   $('enlist-btn').onclick = () => show('enlist');
 
   // War Room: aktuální rozhodnutí, odemykání, historie rozhodnutí
-  $('wr-day').textContent = `Day ${roster.day} of the war · ${(n[0] + n[1]).toLocaleString('en')} soldiers on the line`;
+  $('wr-day').textContent = `${roster.day > 0 ? `Day ${roster.day} of the war` : 'Mobilization: the war begins at midnight'} · ${(n[0] + n[1]).toLocaleString('en')} soldiers on the line`;
   if (roster.vote) {
     $('wr-vote').innerHTML = `<p>${esc(roster.vote.question)}</p>` +
       roster.vote.options.map((o) => `<div class="vote-opt"><span class="kw">${esc(o.kw)}</span><span>${esc(o.label)}</span></div>`).join('') +
@@ -183,15 +187,16 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     if (!rec) return;
     $('card-unit').textContent = rec.unit;
     $('card-sector').textContent = `${rec.sector} · ${theme.lines[rec.line] ?? rec.line}`;
-    $('card-enlisted').textContent = `Day ${rec.enlisted}`;
+    $('card-enlisted').textContent = dayLabel(rec.enlisted);
     const fam = [];
     if (s.generation > 1) fam.push(`<b>${ORD[s.generation] || s.generation + 'th'}</b> of the House of ${esc(rec.family)} at the front.`);
     for (const p of rec.fallen || []) fam.push(`✝ ${esc(p.name)}, fell on Day ${p.day}`);
+    if (s.medals?.includes('first-wave')) fam.unshift('<span class="medal">🎖 First Wave</span> one of the first 100 to enlist');
     $('card-family').innerHTML = fam.join('<br>');
     $('card-record').innerHTML = rec.record
       .slice()
       .reverse()
-      .map(([d, t]) => `<li><span class="d">Day ${d}</span>${esc(t)}</li>`)
+      .map(([d, t]) => `<li><span class="d">${dayLabel(d)}</span>${esc(t)}</li>`)
       .join('');
   }
 
@@ -213,11 +218,29 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     }
   }
 
-  function share(s) {
+  async function share(s) {
     const url = `${location.origin}/?s=${encodeURIComponent(s.handle)}`;
-    const text = `${theme.ranks[s.rank]} ${s.name} is holding the line at ${theme.title}.`;
-    if (navigator.share) navigator.share({ title: theme.title, text, url }).catch(() => {});
-    else copy(url, 'Link copied');
+    const text = `I enlisted in ${theme.title}. ${theme.ranks[s.rank]} ${s.name}, holding the line. Find me: ${url}`;
+    const rec = await loadRecord(s.handle).catch(() => null);
+    try {
+      // obrázek pro Instagram story (1080×1920); na mobilu systémová nabídka sdílení, jinak stažení
+      const blob = await shareCard({ s, rec, theme, tex: s.tex ?? tex[theme.factions[s.faction].sprite] });
+      const file = new File([blob], `mud-and-iron-${s.handle}.png`, { type: 'image/png' });
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title: theme.title, text });
+        return;
+      }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = file.name;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      copy(url, 'Story image saved. Link copied too.');
+    } catch (e) {
+      if (e?.name === 'AbortError') return;
+      if (navigator.share) navigator.share({ title: theme.title, text, url }).catch(() => {});
+      else copy(url, 'Link copied');
+    }
   }
 
   function show(id) {

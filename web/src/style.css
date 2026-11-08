@@ -157,3 +157,4 @@ body.reel #card { bottom: 18%; width: 86%; }
 #reel-caption.con span:first-child { color: #c9c26a; font-size: 48px; }
 #reel-caption.cta { top: auto; bottom: 16%; }
 #reel-caption.cta span { background: rgba(126, 59, 42, 0.92); font-size: 34px; }
+.medal { color: var(--accent); font-family: 'Silkscreen', monospace; font-size: 13px; }

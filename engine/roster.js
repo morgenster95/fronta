@@ -10,7 +10,7 @@ export const SHARDS = 64;
 export function emptyState(theme) {
   return {
     theme: theme.id,
-    day: 1,
+    day: 0, // 0 = mobilizace, válka začíná dnem 1
     followers: 0,
     openSectors: 8, // kolik sektorů kolem středu je otevřeno; roste se zaplněním
     soldiers: [], // plné záznamy
@@ -54,11 +54,24 @@ export function applyComment(state, comment, theme, story, map) {
   placeSoldier(s, map, state);
   s.record.push([state.day, enlistEntry(s, theme, story)]);
   state.soldiers.push(s);
+  awardFirstWave(state);
   return { type: 'enlist', soldier: s };
 }
 
 // Přidělí první volné místo podle priority (střed → ven, přední linie první) v otevřených sektorech.
 // Místo je trvalé: otevření dalších sektorů nikoho nepřesune. Při zaplnění z 90 % se otevřou další 2 sektory.
+// Medaile „First Wave“: prvních 100 narukovaných (pořadí v soupisce = pořadí narukování). Idempotentní.
+export const FIRST_WAVE = 100;
+export function awardFirstWave(state) {
+  state.soldiers.slice(0, FIRST_WAVE).forEach((s) => {
+    s.medals ??= [];
+    if (!s.medals.includes('first-wave')) {
+      s.medals.push('first-wave');
+      s.record.push([state.day, `${s.name} is one of the first hundred to answer the call. He wears the ribbon of the First Wave.`.replace(' He ', s.pronoun === 'she' ? ' She ' : s.pronoun === 'they' ? ' They ' : ' He ').replace('wears', s.pronoun === 'they' ? 'wear' : 'wears')]);
+    }
+  });
+}
+
 export function placeSoldier(s, map, state) {
   // obsazenost podle pozice (ne ID): úprava generátoru mapy pak nikoho nepřesune ani nezdvojí
   const taken = new Set(state.soldiers.filter((o) => o.faction === s.faction && o.pos).map((o) => `${o.pos[0]},${o.pos[1]}`));
@@ -161,6 +174,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
 
 // Statická data pro web: kompaktní soupiska + záznamy rozdělené do shardů (načítají se až po kliknutí).
 export function buildPublic(state, theme) {
+  awardFirstWave(state);
   const arch = theme.archetypes.map((a) => a.id);
   const roster = {
     unlocks: unlocks(state, theme),
@@ -171,7 +185,7 @@ export function buildPublic(state, theme) {
     history: (state.events || []).slice(-30).reverse(),
     vote: state.vote ? { question: state.vote.question, options: state.vote.options.map((o) => ({ kw: o.kw, label: o.label })), votes: Object.keys(state.vote.tallies).length } : null,
     updated: new Date().toISOString(),
-    fields: ['handle', 'faction', 'x', 'y', 'dir', 'line', 'archetype', 'rank', 'status', 'variant', 'claimed', 'generation', 'name'],
+    fields: ['handle', 'faction', 'x', 'y', 'dir', 'line', 'medals', 'archetype', 'rank', 'status', 'variant', 'claimed', 'generation', 'name'],
     soldiers: state.soldiers.map((s) => [
       s.handle,
       s.faction,
@@ -179,6 +193,7 @@ export function buildPublic(state, theme) {
       s.pos ? s.pos[1] : -1,
       s.pos ? s.pos[2] : 0,
       s.line ?? null,
+      (s.medals || []).join(','),
       arch.indexOf(s.archetype),
       s.rank,
       ['active', 'wounded', 'missing', 'captured', 'fallen'].indexOf(s.status),

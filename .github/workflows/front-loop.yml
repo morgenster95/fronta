@@ -40,7 +40,7 @@ jobs:
             git pull -q --rebase || git rebase --abort
             node ingest/poll-comments.mjs || echo "ingest selhal"
             node ingest/publish.mjs --due || echo "publish selhal"
-            if [ "$(date -u +%H)" -ge 6 ]; then node ingest/daily-tick.mjs || echo "tick selhal"; fi
+            node ingest/daily-tick.mjs || echo "tick selhal"   # sám pozná, jestli už dnes (pražský čas) proběhl
             npm run -s data:build
             git add data/state.json marketing/queue.json
             if ! git diff --cached --quiet; then

@@ -4,8 +4,8 @@ import { dailyTick } from '../engine/roster.js';
 
 const { theme, story } = loadTheme();
 const state = loadState(theme);
-// jen jednou za den (UTC) – smyčka i ruční spuštění se tak nepřekryjí
-const today = new Date().toISOString().slice(0, 10);
+// jen jednou za den podle pražského času: nový den války začíná o půlnoci (smyčka i ruční spuštění se nepřekryjí)
+const today = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Prague' }).format(new Date());
 if (state.lastTickDate === today && !process.env.FORCE) {
   console.log(`denní tah pro ${today} už proběhl`);
   process.exit(0);

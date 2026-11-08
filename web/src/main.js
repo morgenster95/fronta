@@ -154,6 +154,7 @@ async function boot() {
       claimed: !!row[F.claimed],
       generation: row[F.generation],
       name: row[F.name],
+      medals: row[F.medals] ? row[F.medals].split(',') : [],
       slot,
       x: slot ? slot.x : null,
       y: slot ? slot.y : null,
