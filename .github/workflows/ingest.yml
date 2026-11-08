@@ -3,7 +3,7 @@
 # (Veřejné repo má minuty neomezené → lze dát */5.)
 name: ingest
 on:
-  schedule: [{ cron: '*/30 * * * *' }]
+  # schedule: [{ cron: '*/30 * * * *' }]  # zapnout po vložení IG_ACCESS_TOKEN (docs/STATUS.md)
   workflow_dispatch:
 concurrency: { group: state, cancel-in-progress: false }
 permissions: { contents: write }
