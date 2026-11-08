@@ -10,7 +10,7 @@ _Aktualizováno 8. 11. 2026._
   ze šablon (zdarma, bez AI), denní tah se zraněními, povýšením, smrtí a **nástupcem z rodu**. Testy: `npm test`.
 - **Ingest** (`ingest/poll-comments.mjs`): Instagram API (Standard Access, vlastní účet), stahování každých 30 min přes GitHub Actions,
   volitelná soukromá odpověď (Private Reply), párování převzetí přes Firestore.
-- **Firebase projekt `fronta-ig`** (Spark, zdarma), náhled: https://fronta-ig--preview-om1t1aan.web.app (platí do 8. 12.).
+- **Firebase projekt `fronta-ig`** (Spark, zdarma), náhled: https://mudandiron.web.app (živý web, Firebase Hosting zdarma; stará adresa fronta-ig.web.app přesměrovává).
 - **Grafika:** všech 10 typů vojáků × 2 frakce (střelec, důstojník, zdravotník, kulometčík, ženista, spojka, ostřelovač, spojař, kuchař, kaplan),
   8 směrů, chodidla na jednom řádku, výška 30 ±1 px. Rekvizity: hrob s přilbou, mrtvý strom. Nástroje: `tools/sprite_qa.py` (kontrola), `tools/sprite_fix.py` (plovoucí pixely, pata).
 - **Hlasování:** komentář s klíčovým slovem pod Reelem, 1 hlas na účet, vyhodnotí denní tah → denní zpráva na webu. Otevření: workflow `open-vote` (jde i z mobilu přes GitHub app).
@@ -26,14 +26,14 @@ _Aktualizováno 8. 11. 2026._
   vítězství = hustá palba na cílovou frakci po celý další den + vyšší nebezpečí v denním tahu. Náhled: `/?fx=barrage`.
 
 ## Potřebuju od tebe (až se vrátíš)
-1. **Název hry + IG účet.** V `themes/front-ww1/theme.json` je zástupný `@thefront.game`.
+1. ~~Název hry + IG účet~~ → **Mud & Iron, @mudandiron** (hotovo). Promo balíček: `marketing/` (texty v `marketing/CAPTIONS.md`), odbavení: `docs/ONBOARDING.md`.
 2. **Instagram:** profesionální (Creator/Business) účet → developers.facebook.com → aplikace typu *Business* → produkt
    *Instagram API with Instagram Login* → přidat svůj IG účet → vygenerovat token s oprávněními
    `instagram_business_basic`, `instagram_business_manage_comments` (+ `instagram_business_manage_messages` pro DM).
    Token a IG user ID vložit do GitHub Secrets (`IG_ACCESS_TOKEN`, `IG_USER_ID`). **První test:** spustit workflow `ingest` ručně.
 3. **Firebase Auth (Google):** Console → Authentication → Get started → Google → Enable. Pak vytvořit Firestore (Native, eur3)
    a webovou aplikaci → konfiguraci dát do `web/src/firebase-config.js`.
-   ⚠️ `authDomain` = doména, na které web poběží (např. `fronta-ig.web.app`), a v Google Cloud Console → Credentials → OAuth klient
+   ⚠️ `authDomain` = doména, na které web běží (`mudandiron.web.app`), a v Google Cloud Console → Credentials → OAuth klient
    „Web client (auto created…)“ přidat `https://<doména>/__/auth/handler` do Authorized redirect URIs **před nasazením**.
 4. **Service account pro nasazování z GitHubu:** Firebase Console → Project settings → Service accounts → Generate new private key
    → obsah JSON do secretu `FIREBASE_SERVICE_ACCOUNT`.

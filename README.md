@@ -1,4 +1,4 @@
-# THE FRONT (pracovní název)
+# MUD & IRON (@mudandiron)
 
 Instagramová hra: kdo pod náš Reel napíše `CONCORD` nebo `HEGEMONY`, narukuje a jeho vojáček se objeví
 na obří mapě zákopů v ponurém světě 1. světové války. Každý den nový zápis v jeho služebním záznamu, hlasuje se v komentářích.

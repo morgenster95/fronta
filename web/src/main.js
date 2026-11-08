@@ -1,10 +1,11 @@
 // Prohlížeč fronty: terén po blocích, tisíce vojáků, úrovně detailu, kamera a UI.
-import { Application, Assets, Container, Graphics, Rectangle, Sprite, Texture, TextureSource, TilingSprite } from 'pixi.js';
+import { Application, Assets, Container, Graphics, Rectangle, Sprite, Texture, TextureSource, Ticker, TilingSprite } from 'pixi.js';
 import { generateFront, openRange, DIRS } from '../../engine/mapgen.js';
 import { Camera } from './camera.js';
 import { paintChunk, paintOverview, CHUNK } from './terrain.js';
 import { initUI } from './ui.js';
 import { createLife } from './life.js';
+import { startReel } from './reel.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
 
@@ -160,7 +161,7 @@ async function boot() {
   });
   // Neobsazená stanoviště: dokud je narukovaných málo, drží linii bezejmenní vojáci. Karta každého z nich zve k naverbování
   // a místo připadne prvnímu, kdo napíše frakci do komentáře (pořadí plnění je stejné jako u skutečných vojáků).
-  const vacantTarget = theme.vacantPosts ?? 0;
+  const vacantTarget = Number(new URLSearchParams(location.search).get('vacant')) || theme.vacantPosts || 0;
   for (let f = 0; f < theme.factions.length; f++) {
     const real = soldiers.filter((s) => s.faction === f && s.slot);
     const taken = new Set(real.map((s) => `${s.x},${s.y}`));
@@ -457,8 +458,10 @@ async function boot() {
   // ?slow=N zpomalí animace a efekty N× (jen pro kontrolu výstřelů na snímcích obrazovky)
   const slow = Math.max(1, Number(new URLSearchParams(location.search).get('slow')) || 1);
   const t0 = performance.now();
+  const reelName = import.meta.env.DEV ? new URLSearchParams(location.search).get('reel') : null;
+  let reelTime = null; // ms, řízené nahrávacím skriptem
   app.ticker.add(() => {
-    const now = t0 + (performance.now() - t0) / slow;
+    const now = reelTime ?? t0 + (performance.now() - t0) / slow;
     cam.update(now);
     const z = cam.zoom;
     world.scale.set(z);
@@ -499,7 +502,7 @@ async function boot() {
     }
 
     // simulovaný život (výstřely, granáty, světlice, zdravotníci) + otřes kamery při blízkém dopadu
-    const sh = life.update(now, app.ticker.deltaMS / slow, view, visibleSoldiers, showSprites);
+    const sh = life.update(now, reelTime != null ? app.ticker.deltaMS : app.ticker.deltaMS / slow, view, visibleSoldiers, showSprites);
     if (sh) world.position.set(world.position.x + Math.round(sh.x), world.position.y + Math.round(sh.y));
 
     // značka vybraného vojáka
@@ -538,6 +541,21 @@ async function boot() {
   });
 
   document.getElementById('loading').classList.add('done');
+
+  // režim natáčení: zastavit oba tickery a krokovat čas po snímcích (efekty AnimatedSprite běží na Ticker.shared)
+  if (reelName) {
+    app.ticker.stop();
+    Ticker.shared.stop();
+    startReel({
+      name: reelName, app, cam, life, map, theme, soldiers, ui,
+      tick: (ms) => {
+        reelTime = ms;
+        app.ticker.update(ms);
+        Ticker.shared.update(ms);
+        app.render();
+      },
+    });
+  }
 }
 
 boot().catch((e) => {

@@ -140,3 +140,20 @@ body.card-open #dispatch { display: none; }
 .vote-opt .bar { flex: 1; height: 6px; background: #2b2722; align-self: center; }
 .vote-opt .bar i { display: block; height: 100%; background: var(--accent); }
 .amp { font-family: 'VT323', monospace; font-size: 1.35em; line-height: 0; position: relative; top: 0.08em; }
+
+/* režim natáčení promo videí */
+body.reel #hud, body.reel #bar, body.reel #zoom, body.reel #dispatch, body.reel #toast { display: none !important; }
+body.reel #card { bottom: 18%; width: 86%; }
+#reel-caption {
+  position: fixed; left: 0; right: 0; top: 14%; display: flex; flex-direction: column; align-items: center; gap: 10px;
+  pointer-events: none; opacity: 0; text-align: center; z-index: 50;
+}
+#reel-caption span {
+  font-family: 'Silkscreen', monospace; color: #e3d9c3; font-size: 40px; letter-spacing: 0.04em; line-height: 1.05;
+  background: rgba(14, 13, 12, 0.78); padding: 6px 14px; text-shadow: 3px 3px 0 #0e0d0c;
+}
+#reel-caption i { font-family: 'VT323', monospace; font-style: normal; font-size: 1.3em; }
+#reel-caption.heg span:first-child { color: #a7b4bb; font-size: 48px; }
+#reel-caption.con span:first-child { color: #c9c26a; font-size: 48px; }
+#reel-caption.cta { top: auto; bottom: 16%; }
+#reel-caption.cta span { background: rgba(126, 59, 42, 0.92); font-size: 34px; }
