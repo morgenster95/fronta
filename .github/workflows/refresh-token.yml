@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 jobs:
   refresh:
-    if: ${{ vars.IG_ENABLED == 'true' }}
+    if: ${{ vars.IG_TOKEN_REFRESH == 'true' }} # jen pro 60denní tokeny z Instagram login; systémový token nevyprší
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
