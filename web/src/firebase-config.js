@@ -8,4 +8,4 @@ export const firebaseConfig = {
   appId: '1:878232454698:web:4ee667630bbede0b4ea553',
   messagingSenderId: '878232454698',
 };
-export const claimEnabled = false;
+export const claimEnabled = true;
