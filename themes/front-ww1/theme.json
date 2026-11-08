@@ -1,8 +1,8 @@
 {
   "id": "front-ww1",
-  "title": "THE FRONT",
-  "subtitle": "Every follower is a soldier. Every day is a battle.",
-  "instagram": "@thefront.game",
+  "title": "MUD & IRON",
+  "subtitle": "Every follower is a soldier. Every day, the front decides.",
+  "instagram": "@mudandiron",
   "language": "en",
   "map": {
     "seed": "front-ww1",
@@ -18,7 +18,8 @@
       "color": "#8a9295",
       "dot": "#a7b4bb",
       "motto": "Iron endures.",
-      "sprite": "hegemony"
+      "sprite": "hegemony",
+      "pitch": "Order. Discipline. Iron. Stand with the Empire."
     },
     {
       "id": "concord",
@@ -27,7 +28,8 @@
       "color": "#8c8a5c",
       "dot": "#c9c26a",
       "motto": "Together, or not at all.",
-      "sprite": "concord"
+      "sprite": "concord",
+      "pitch": "Free men in the mud. Stand with the Alliance."
     }
   ],
   "archetypes": [
@@ -130,5 +132,12 @@
       "label": "Artillery barrage",
       "text": "The guns are ready. The front can vote for a barrage on the enemy lines."
     }
-  ]
+  ],
+  "lore": {
+    "tagline": "The Great War ended. Here, it never did.",
+    "short": "For six winters the Concord and the Hegemony have bled into the same valley of mud. Neither will yield. Both need men. They need you.",
+    "concord": "The Concord: a ragged alliance of free provinces in khaki and flat steel helmets. They fight for the right to go home. Together, or not at all.",
+    "hegemony": "The Hegemony: an iron empire in field grey that does not know the word retreat. Order, discipline, the long patience of steel. Iron endures."
+  },
+  "vacantPosts": 80
 }

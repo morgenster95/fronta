@@ -158,6 +158,36 @@ async function boot() {
       y: slot ? slot.y : null,
     };
   });
+  // Neobsazená stanoviště: dokud je narukovaných málo, drží linii bezejmenní vojáci. Karta každého z nich zve k naverbování
+  // a místo připadne prvnímu, kdo napíše frakci do komentáře (pořadí plnění je stejné jako u skutečných vojáků).
+  const vacantTarget = theme.vacantPosts ?? 0;
+  for (let f = 0; f < theme.factions.length; f++) {
+    const real = soldiers.filter((s) => s.faction === f && s.slot);
+    const taken = new Set(real.map((s) => `${s.x},${s.y}`));
+    let need = Math.max(0, vacantTarget - real.length);
+    for (const sl of map.slots[f]) {
+      if (need <= 0) break;
+      if (taken.has(`${sl.x},${sl.y}`)) continue;
+      need--;
+      const r = (sl.x * 31 + sl.y * 17) % 100;
+      soldiers.push({
+        i: soldiers.length,
+        vacant: true,
+        handle: null,
+        faction: f,
+        archetype: theme.archetypes[r < 70 ? 0 : r < 80 ? 1 : r < 88 ? 2 : r < 94 ? 3 : 4],
+        rank: 0,
+        status: 0,
+        variant: r % 4,
+        claimed: false,
+        generation: 1,
+        name: 'Unclaimed post',
+        slot: { x: sl.x, y: sl.y, d: sl.d, line: sl.line, label: sl.label },
+        x: sl.x,
+        y: sl.y,
+      });
+    }
+  }
   const placed = soldiers.filter((s) => s.slot && s.status !== 4 && s.status !== 2 && s.status !== 3);
   const TINT = [0xffffff, 0xf0ece4, 0xe6e2da, 0xfff4e8];
   const chunkSoldiers = new Map(); // chunk key → Container

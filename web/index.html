@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#1c1a17" />
-    <title>The Front</title>
-    <meta name="description" content="Every follower is a soldier. Comment your faction on Instagram and find yourself in the trenches." />
+    <title>Mud &amp; Iron</title>
+    <meta name="description" content="Mud &amp; Iron: every Instagram follower is a soldier in an endless trench war. Comment CONCORD or HEGEMONY on @mudandiron and find yourself on the front." />
     <link rel="icon" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,7 +18,7 @@
 
     <header id="hud">
       <div class="brand">
-        <h1 id="title">THE FRONT</h1>
+        <h1 id="title">MUD &amp; IRON</h1>
         <div id="day" class="muted">Day 1</div>
       </div>
       <div id="counts">
@@ -44,6 +44,7 @@
         <input id="search-input" type="search" placeholder="Find a soldier: @handle" spellcheck="false" autocapitalize="off" />
         <ul id="suggest" hidden></ul>
       </form>
+      <button id="warroom-btn">War Room</button>
       <button id="enlist-btn" class="primary">Enlist</button>
     </footer>
 
@@ -74,13 +75,31 @@
       </div>
     </section>
 
+    <section id="warroom" class="sheet" hidden>
+      <button class="close" data-close aria-label="Close">×</button>
+      <h2>War Room</h2>
+      <p class="muted" id="wr-day"></p>
+      <h3>The front decides</h3>
+      <div id="wr-vote"></div>
+      <h3>Unlocks</h3>
+      <div id="wr-unlocks"></div>
+      <h3>Past decisions</h3>
+      <ol id="wr-history" class="history"></ol>
+    </section>
+
     <section id="enlist" class="sheet" hidden>
       <button class="close" data-close aria-label="Close">×</button>
+      <p class="tagline" id="lore-tagline"></p>
+      <p id="lore-short"></p>
+      <div class="sides">
+        <div class="side" id="side-a"></div>
+        <div class="side" id="side-b"></div>
+      </div>
       <h2>Join the war</h2>
       <ol class="steps">
         <li>Follow <a id="ig-link" target="_blank" rel="noopener"></a> on Instagram.</li>
         <li>Comment your faction under our pinned reel:<div id="enlist-factions"></div></li>
-        <li>Within minutes your soldier appears in the trenches. Find yourself here by your @handle.</li>
+        <li>Within a few hours your soldier takes a free post in the trenches. Find yourself here by your @handle.</li>
       </ol>
       <p class="muted">Each day a new reel. Each day the front moves. Vote in the comments and decide where we go next.</p>
     </section>

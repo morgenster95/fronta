@@ -1,0 +1,35 @@
+# Ruční odbavení z mobilu (GitHub app → Actions → enlist → Run workflow), dokud nebude napojené Instagram API.
+# Do pole "recruits" napiš řádky "jmeno FRAKCE" oddělené čárkou, např.: jan.novak CONCORD, petra_k HEGEMONY
+name: enlist
+on:
+  workflow_dispatch:
+    inputs:
+      recruits: { description: 'jmeno FRAKCE, jmeno FRAKCE, …', required: true }
+concurrency: { group: state, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  enlist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Enlist
+        env: { RECRUITS: '${{ inputs.recruits }}' }
+        run: |
+          IFS=',' read -ra R <<< "$RECRUITS"
+          node tools/enlist.mjs "${R[@]}"
+      - run: |
+          git config user.name "front-bot"
+          git config user.email "front-bot@users.noreply.github.com"
+          git add data/state.json && git commit -m "enlist: manual" && git push
+      - run: npm run build
+      - name: Deploy to Firebase Hosting
+        if: ${{ env.FIREBASE_SERVICE_ACCOUNT != '' }}
+        run: |
+          echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+          GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json" npx -y firebase-tools@14 deploy --only hosting --non-interactive

@@ -9,11 +9,12 @@ const shardCache = new Map();
 
 export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   const [A, B] = theme.factions;
-  $('title').textContent = theme.title;
+  // ampersand ve Silkscreenu vypadá jako €, proto ho sázíme písmem VT323
+  $('title').innerHTML = esc(theme.title).replace('&amp;', '<span class="amp">&amp;</span>');
   document.title = theme.title;
   $('day').textContent = `Day ${roster.day}`;
-  const n = [0, 1].map((f) => soldiers.filter((s) => s.faction === f).length);
-  $('total').textContent = `${soldiers.length.toLocaleString('en')} enlisted`;
+  const n = [0, 1].map((f) => soldiers.filter((s) => s.faction === f && !s.vacant).length);
+  $('total').textContent = `${(n[0] + n[1]).toLocaleString('en')} enlisted`;
   $('split-a').style.flex = n[0] || 1;
   $('split-b').style.flex = n[1] || 1;
   $('split-a').style.background = A.color;
@@ -67,11 +68,34 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     b.onclick = () => copy(f.keyword, `${f.keyword} copied. Paste it as a comment.`);
     $('enlist-factions').appendChild(b);
   }
+  const lore = theme.lore || {};
+  $('lore-tagline').textContent = lore.tagline || '';
+  $('lore-short').textContent = lore.short || '';
+  $('side-a').innerHTML = `<b style="color:${A.color}">${esc(A.name)}</b>${esc(lore.hegemony || A.motto)}`;
+  $('side-b').innerHTML = `<b style="color:${B.color}">${esc(B.name)}</b>${esc(lore.concord || B.motto)}`;
   $('enlist-btn').onclick = () => show('enlist');
+
+  // War Room: aktuální rozhodnutí, odemykání, historie rozhodnutí
+  $('wr-day').textContent = `Day ${roster.day} of the war · ${(n[0] + n[1]).toLocaleString('en')} soldiers on the line`;
+  if (roster.vote) {
+    $('wr-vote').innerHTML = `<p>${esc(roster.vote.question)}</p>` +
+      roster.vote.options.map((o) => `<div class="vote-opt"><span class="kw">${esc(o.kw)}</span><span>${esc(o.label)}</span></div>`).join('') +
+      `<p class="muted">Comment one word under today's reel on ${esc(theme.instagram)}. One vote per account, your last comment counts. ${roster.vote.votes} votes so far.</p>`;
+  } else {
+    $('wr-vote').innerHTML = `<p class="muted">No open decision right now. The next one comes with the next reel on ${esc(theme.instagram)}.</p>`;
+  }
+  $('wr-unlocks').innerHTML = (roster.unlocks || []).map((u) =>
+    `<div class="vote-opt"><span>${esc(u.label)}</span><span class="bar"><i style="width:${Math.min(100, (u.have / u.need) * 100)}%"></i></span><span class="muted">${u.open ? 'unlocked' : `${u.have}/${u.need} claimed`}</span></div>`).join('') || '<p class="muted">—</p>';
+  $('wr-history').innerHTML = (roster.history || []).map((e) => {
+    const tot = Object.values(e.counts || {}).reduce((a, b) => a + b, 0) || 1;
+    const res = Object.entries(e.counts || {}).map(([k, v]) => `${esc(k)} ${Math.round((v / tot) * 100)}%`).join(' · ');
+    return `<li><span class="d">Day ${e.day} · ${esc(e.winner)}</span>${esc(e.question)}<br><span class="muted">${res}</span><br>${esc(e.text || '')}</li>`;
+  }).join('') || '<li class="muted">The war has just begun. The first decision is yours.</li>';
+  $('warroom-btn').onclick = () => show('warroom');
   document.querySelectorAll('[data-close]').forEach((b) => (b.onclick = () => closeAll()));
 
   // hledání
-  const index = soldiers.map((s) => s.handle);
+  const index = soldiers.map((s) => s.handle || '');
   const input = $('search-input');
   const list = $('suggest');
   let hits = [];
@@ -117,6 +141,26 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   async function openSoldier(s, fly = true) {
     onSelect(s, fly);
     const f = theme.factions[s.faction];
+    if (s.vacant) {
+      $('card-rank').textContent = 'Nobody yet';
+      $('card-name').textContent = 'Unclaimed post';
+      $('card-handle').textContent = '';
+      $('card-faction').innerHTML = `<span style="color:${f.color}">■</span> ${esc(f.name)}`;
+      $('card-role').textContent = s.archetype?.name ?? '';
+      $('card-unit').textContent = '—';
+      $('card-sector').textContent = `${s.slot.label || ''} · ${theme.lines[s.slot.line] ?? ''}`;
+      $('card-status').textContent = 'Waiting for a name';
+      $('card-enlisted').textContent = '—';
+      $('card-family').innerHTML = '';
+      $('card-record').innerHTML = `<li>This rifle has no name yet. Comment <b>${esc(f.keyword)}</b> under our pinned reel on ${esc(theme.instagram)} and the next free post on the ${esc(f.name.replace('The ', ''))} line is yours.</li>`;
+      drawPortrait(s);
+      $('card-share').onclick = () => show('enlist');
+      $('card-share').textContent = 'How to enlist';
+      $('card-claim').hidden = true;
+      show('card');
+      return;
+    }
+    $('card-share').textContent = 'Share';
     $('card-rank').textContent = theme.ranks[s.rank];
     $('card-name').textContent = s.name;
     $('card-handle').textContent = `@${s.handle}`;

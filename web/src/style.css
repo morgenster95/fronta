@@ -128,3 +128,15 @@ body.card-open #dispatch { display: none; }
 .unlock .bar { display: block; height: 4px; background: #2b2722; margin: 3px 0; }
 .unlock .bar i { display: block; height: 100%; background: var(--blood); }
 #dispatch.collapsed .unlock { display: none; }
+
+.tagline { font-family: 'Silkscreen', monospace; color: var(--accent); font-size: 15px; margin: 0 30px 6px 0; }
+.sides { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 14px; }
+.side { border: 2px solid var(--line); padding: 8px; font-size: 18px; }
+.side b { font-family: 'Silkscreen', monospace; font-weight: 400; font-size: 13px; display: block; margin-bottom: 4px; }
+.history { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.history li { border-left: 2px solid var(--line); padding-left: 10px; }
+.history .d { color: var(--accent); font-family: 'Silkscreen', monospace; font-size: 12px; display: block; }
+.vote-opt { display: flex; justify-content: space-between; gap: 8px; margin: 4px 0; }
+.vote-opt .bar { flex: 1; height: 6px; background: #2b2722; align-self: center; }
+.vote-opt .bar i { display: block; height: 100%; background: var(--accent); }
+.amp { font-family: 'VT323', monospace; font-size: 1.35em; line-height: 0; position: relative; top: 0.08em; }

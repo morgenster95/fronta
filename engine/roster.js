@@ -168,6 +168,7 @@ export function buildPublic(state, theme) {
     followers: state.followers,
     openSectors: state.openSectors ?? 8,
     dispatch: (state.events || []).slice(-1)[0] || null,
+    history: (state.events || []).slice(-30).reverse(),
     vote: state.vote ? { question: state.vote.question, options: state.vote.options.map((o) => ({ kw: o.kw, label: o.label })), votes: Object.keys(state.vote.tallies).length } : null,
     updated: new Date().toISOString(),
     fields: ['handle', 'faction', 'x', 'y', 'dir', 'line', 'archetype', 'rank', 'status', 'variant', 'claimed', 'generation', 'name'],
