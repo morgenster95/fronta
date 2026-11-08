@@ -1,0 +1,144 @@
+// Stáhne nové komentáře pod našimi posty (Instagram API s Instagram Login, Standard Access = vlastní účet),
+// narukuje vojáky, spáruje kódy pro převzetí, volitelně pošle soukromou odpověď a přegeneruje statická data webu.
+//
+// Proměnné prostředí:
+//   IG_ACCESS_TOKEN   dlouhodobý token IG účtu (instagram_business_basic, instagram_business_manage_comments[, _manage_messages])
+//   IG_USER_ID        ID IG profesionálního účtu
+//   IG_MEDIA_IDS      volitelně: čárkou oddělená ID postů; jinak posledních IG_RECENT (5) postů
+//   IG_SEND_DM=1      poslat Private Reply novým rekrutům
+//   SITE_URL          adresa webu pro odkaz v DM
+//   FIREBASE_SERVICE_ACCOUNT  JSON service accountu (pro párování převzetí přes Firestore), volitelné
+//   DRY_RUN=1         nic neukládat
+import { loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
+import { applyComment } from '../engine/roster.js';
+
+const API = `https://graph.instagram.com/${process.env.IG_API_VERSION || 'v23.0'}`;
+const TOKEN = process.env.IG_ACCESS_TOKEN;
+const USER = process.env.IG_USER_ID;
+
+async function ig(path, params = {}) {
+  const url = new URL(path.startsWith('http') ? path : `${API}/${path}`);
+  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+  if (!url.searchParams.has('access_token')) url.searchParams.set('access_token', TOKEN);
+  const r = await fetch(url);
+  const j = await r.json();
+  if (j.error) throw new Error(`IG ${path}: ${j.error.message}`);
+  return j;
+}
+
+async function igPost(path, body) {
+  const r = await fetch(`${API}/${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${TOKEN}` },
+    body: JSON.stringify(body),
+  });
+  const j = await r.json();
+  if (j.error) throw new Error(`IG POST ${path}: ${j.error.message}`);
+  return j;
+}
+
+async function mediaIds() {
+  if (process.env.IG_MEDIA_IDS) return process.env.IG_MEDIA_IDS.split(',').map((s) => s.trim()).filter(Boolean);
+  const j = await ig(`${USER}/media`, { fields: 'id,timestamp', limit: process.env.IG_RECENT || 5 });
+  return j.data.map((m) => m.id);
+}
+
+async function* comments(mediaId, seen) {
+  let next = null;
+  let page = await ig(`${mediaId}/comments`, { fields: 'id,text,username,timestamp,from', limit: 50 });
+  for (;;) {
+    let allSeen = true;
+    for (const c of page.data || []) {
+      if (!seen.has(c.id)) allSeen = false;
+      yield { id: c.id, text: c.text, username: c.username || c.from?.username, userId: c.from?.id, timestamp: c.timestamp, mediaId };
+    }
+    next = page.paging?.next;
+    // komentáře chodí od nejnovějších: když je celá stránka známá, dál nemá smysl
+    if (!next || allSeen) break;
+    page = await ig(next);
+  }
+}
+
+async function firestore() {
+  if (!process.env.FIREBASE_SERVICE_ACCOUNT) return null;
+  const { initializeApp, cert } = await import('firebase-admin/app');
+  const { getFirestore } = await import('firebase-admin/firestore');
+  initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)) });
+  return getFirestore();
+}
+
+async function main() {
+  if (!TOKEN || !USER) {
+    console.log('IG_ACCESS_TOKEN / IG_USER_ID chybí: nic se nestahuje.');
+    return;
+  }
+  const { theme, story } = loadTheme();
+  const map = loadMap(theme);
+  const state = loadState(theme);
+  const seen = new Set(state.seenComments);
+  const db = await firestore();
+  let enlisted = 0, claimed = 0;
+
+  try {
+    const prof = await ig(USER, { fields: 'followers_count,username' });
+    state.followers = prof.followers_count ?? state.followers;
+  } catch (e) {
+    console.warn(e.message);
+  }
+
+  for (const mid of await mediaIds()) {
+    for await (const c of comments(mid, seen)) {
+      const res = applyComment(state, c, theme, story, map);
+      if (!res) continue;
+      if (res.type === 'enlist') {
+        enlisted++;
+        console.log(`+ @${res.soldier.handle} → ${theme.factions[res.soldier.faction].name}, ${res.soldier.sector}`);
+        if (process.env.IG_SEND_DM === '1' && !process.env.DRY_RUN) {
+          const s = res.soldier;
+          const text = theme.dm.enlisted
+            .replace('{rank}', theme.ranks[s.rank])
+            .replace('{handle}', s.handle)
+            .replace('{unit}', s.unit)
+            .replace('{sector}', s.sector)
+            .replace('{url}', `${process.env.SITE_URL || ''}/?s=${encodeURIComponent(s.handle)}`);
+          await igPost(`${USER}/messages`, { recipient: { comment_id: c.id }, message: { text } }).catch((e) => console.warn(e.message));
+        }
+      } else if (res.type === 'claim' && db && res.soldier) {
+        const q = await db.collection('claims').where('code', '==', res.code).where('status', '==', 'pending').limit(1).get();
+        const doc = q.docs[0];
+        if (doc && doc.get('handle') === res.handle) {
+          res.soldier.claimed = true;
+          res.soldier.ownerUid = doc.get('uid');
+          await doc.ref.update({ status: 'done', verifiedAt: new Date() });
+          claimed++;
+          console.log(`✓ claim @${res.handle}`);
+        }
+      }
+    }
+  }
+
+  // úpravy karet od převzatých hráčů (bio, zájmena) z Firestore
+  if (db) {
+    const owners = new Map(state.soldiers.filter((s) => s.ownerUid).map((s) => [s.ownerUid, s]));
+    const since = new Date(state.profilesSyncedAt || 0);
+    const snap = await db.collection('profiles').where('updatedAt', '>', since).get();
+    for (const d of snap.docs) {
+      const s = owners.get(d.id);
+      if (!s) continue;
+      const p = d.data();
+      if (typeof p.bio === 'string') s.bio = p.bio.slice(0, 280);
+      if (['he', 'she', 'they'].includes(p.pronoun)) s.pronoun = p.pronoun;
+    }
+    state.profilesSyncedAt = new Date().toISOString();
+  }
+
+  console.log(`hotovo: +${enlisted} rekrutů, ${claimed} převzetí, celkem ${state.soldiers.length}, followers ${state.followers}`);
+  if (process.env.DRY_RUN) return;
+  saveState(state);
+  writePublic(state, theme);
+}
+
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

@@ -1,0 +1,58 @@
+{
+  "id": "front-ww1",
+  "title": "THE FRONT",
+  "subtitle": "Every follower is a soldier. Every day is a battle.",
+  "instagram": "@thefront.game",
+  "language": "en",
+  "map": { "seed": "front-ww1", "sectors": 8, "sectorW": 128, "height": 176 },
+  "factions": [
+    {
+      "id": "hegemony",
+      "name": "The Hegemony",
+      "keyword": "HEGEMONY",
+      "color": "#8a9295",
+      "dot": "#a7b4bb",
+      "motto": "Iron endures.",
+      "sprite": "hegemony"
+    },
+    {
+      "id": "concord",
+      "name": "The Concord",
+      "keyword": "CONCORD",
+      "color": "#8c8a5c",
+      "dot": "#c9c26a",
+      "motto": "Together, or not at all.",
+      "sprite": "concord"
+    }
+  ],
+  "archetypes": [
+    { "id": "rifleman", "name": "Rifleman", "weight": 50 },
+    { "id": "machinegunner", "name": "Machine Gunner", "weight": 8 },
+    { "id": "sapper", "name": "Sapper", "weight": 8 },
+    { "id": "medic", "name": "Stretcher Bearer", "weight": 7 },
+    { "id": "runner", "name": "Runner", "weight": 7 },
+    { "id": "sniper", "name": "Sniper", "weight": 5 },
+    { "id": "signaller", "name": "Signaller", "weight": 5 },
+    { "id": "cook", "name": "Field Cook", "weight": 4 },
+    { "id": "chaplain", "name": "Chaplain", "weight": 2 },
+    { "id": "officer", "name": "Lieutenant", "weight": 4 }
+  ],
+  "ranks": ["Private", "Lance Corporal", "Corporal", "Sergeant", "Staff Sergeant", "Second Lieutenant", "Lieutenant", "Captain"],
+  "statuses": {
+    "active": "On the line",
+    "wounded": "Wounded",
+    "missing": "Missing in action",
+    "captured": "Prisoner of war",
+    "fallen": "Fallen"
+  },
+  "lines": { "front": "Front line", "support": "Support trench", "comm": "Communication trench", "reserve": "Reserve line" },
+  "milestones": [
+    { "at": 1000, "text": "A thousand souls in the mud. The generals take notice." },
+    { "at": 2500, "text": "The front grows. New sectors are dug." },
+    { "at": 5000, "text": "Steel monsters arrive from the rear: the first tanks." }
+  ],
+  "dm": {
+    "enlisted": "{rank} @{handle}, you have been assigned to {unit}, sector {sector}. Find yourself on the front: {url}",
+    "claim": "Your claim code: {code}. Comment it under our latest post to take command of your soldier."
+  }
+}

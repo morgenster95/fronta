@@ -1,0 +1,22 @@
+{
+ "concord": {
+  "south": "concord_south.png",
+  "south-east": "concord_south-east.png",
+  "east": "concord_east.png",
+  "north-east": "concord_north-east.png",
+  "north": "concord_north.png",
+  "north-west": "concord_north-west.png",
+  "west": "concord_west.png",
+  "south-west": "concord_south-west.png"
+ },
+ "hegemony": {
+  "south": "hegemony_south.png",
+  "south-east": "hegemony_south-east.png",
+  "east": "hegemony_east.png",
+  "north-east": "hegemony_north-east.png",
+  "north": "hegemony_north.png",
+  "north-west": "hegemony_north-west.png",
+  "west": "hegemony_west.png",
+  "south-west": "hegemony_south-west.png"
+ }
+}

@@ -1,0 +1,11 @@
+{
+  "_note": "Výběr spritů pro hru. character = PixelLab ID (stáhne se 8 směrů), fixed = ručně opravené soubory, které přepíšou stažené.",
+  "concord": {
+    "character": "9b6313c1-ce86-4b7f-9cc2-103b0270f907",
+    "fixed": { "north": "art/pixellab/fixed/concord_rifleman32_north.png", "east": "art/pixellab/fixed/concord_rifleman32_east.png" }
+  },
+  "hegemony": {
+    "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4",
+    "fixed": {}
+  }
+}

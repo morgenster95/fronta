@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "public": "dist",
+    "ignore": ["firebase.json", "**/.*"],
+    "headers": [
+      { "source": "/data/**", "headers": [{ "key": "Cache-Control", "value": "public, max-age=60" }] },
+      { "source": "/assets/**", "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }] }
+    ]
+  },
+  "firestore": { "rules": "firestore.rules" }
+}

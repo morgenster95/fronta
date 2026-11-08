@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+*.local
+service-account*.json
+.firebase/
+art/pixellab/**/_prev_*.png
+art/pixellab/**/_zoom_*.png
+art/pixellab/**/_qa*.png
+web/public/data/
+data/state.fake.json

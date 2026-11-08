@@ -1,0 +1,32 @@
+# Jednou denně (06:00 UTC): nový den na frontě, zápisy do služebních záznamů, nasazení.
+name: daily-tick
+on:
+  schedule: [{ cron: '0 6 * * *' }]
+  workflow_dispatch:
+concurrency: { group: state, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm test
+      - run: npm run tick
+      - name: Commit state
+        run: |
+          git config user.name "front-bot"
+          git config user.email "front-bot@users.noreply.github.com"
+          git add data/state.json 2>/dev/null || true
+          git diff --cached --quiet || (git commit -m "tick: day $(date -u +%F)" && git push)
+      - run: npm run build
+      - name: Deploy to Firebase Hosting
+        if: ${{ env.FIREBASE_SERVICE_ACCOUNT != '' }}
+        run: |
+          echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+          GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json" npx -y firebase-tools@14 deploy --only hosting --non-interactive

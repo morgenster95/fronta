@@ -1,0 +1,20 @@
+rules_version = '2';
+// Hráč smí zapisovat jen svůj požadavek na převzetí a svůj profil. Soupisku spravuje jen ingest (service account).
+service cloud.firestore {
+  match /databases/{db}/documents {
+    match /claims/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.code is string && request.resource.data.code.size() == 11
+        && request.resource.data.handle is string && request.resource.data.handle.size() <= 40;
+    }
+    match /profiles/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['bio', 'pronoun', 'updatedAt'])
+        && (!('bio' in request.resource.data) || request.resource.data.bio.size() <= 280);
+    }
+  }
+}

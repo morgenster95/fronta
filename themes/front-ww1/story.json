@@ -1,0 +1,216 @@
+{
+  "_note": "Šablony příběhů. {placeholder} se doplní z vojáka/dne, [a|b|c] = náhodná volba. Každý zápis má váhu a podmínky (line, archetype, status). Zájmena {he}/{his}/{him}/{He}/{His} podle vojáka (výchozí he, hráč si může změnit při claimu).",
+  "firstNames": [
+    "Arno",
+    "Bram",
+    "Cyril",
+    "Dorian",
+    "Emil",
+    "Felix",
+    "Gideon",
+    "Hugo",
+    "Ivo",
+    "Jonas",
+    "Karel",
+    "Lucien",
+    "Matthias",
+    "Nils",
+    "Otto",
+    "Pavel",
+    "Quentin",
+    "Rafael",
+    "Silas",
+    "Tobias",
+    "Ulrich",
+    "Viktor",
+    "Wendel",
+    "Yann",
+    "Zeno",
+    "Albin",
+    "Benedikt",
+    "Casimir",
+    "Edmund",
+    "Florian",
+    "Gustav",
+    "Henrik",
+    "Isidor",
+    "Jakub",
+    "Konrad",
+    "Leopold",
+    "Marek",
+    "Norbert",
+    "Oskar",
+    "Roland",
+    "Severin",
+    "Teodor",
+    "Valentin",
+    "Walter",
+    "Anselm",
+    "Bastian",
+    "Clement",
+    "Dietrich"
+  ],
+  "nicknames": [
+    "Ash",
+    "Mole",
+    "Lucky",
+    "Saint",
+    "Crow",
+    "Tin",
+    "Ghost",
+    "Rabbit",
+    "Bones",
+    "Spark",
+    "Doc",
+    "Owl",
+    "Brick",
+    "Whistle",
+    "Smokes",
+    "Parson",
+    "Mud",
+    "Shadow",
+    "Button",
+    "Hollow"
+  ],
+  "places": [
+    "Verdel Ridge",
+    "the Ossuary Wood",
+    "Hill 304",
+    "the Drowned Farm",
+    "Saint-Ash crossroads",
+    "the Chalk Pits",
+    "Grey Mill",
+    "the Weeping Orchard",
+    "Blackwater Canal",
+    "the Bone Quarry"
+  ],
+  "items": [
+    "a tin of tobacco",
+    "a dented harmonica",
+    "a photograph gone soft at the edges",
+    "{his} brother's pocket watch",
+    "a rosary of rough beads",
+    "a letter {he} never sent",
+    "a stub of a pencil",
+    "a lucky button",
+    "a frozen apple",
+    "a book with the last pages torn out"
+  ],
+  "enlist": [
+    "{name} came up the line in the rain with {item} and nothing else. The sergeant wrote {him} down as {rank} and pointed at the mud.",
+    "Nobody saw {name} arrive. One morning there was simply one more helmet in {sector}, and a quiet {archetype} under it.",
+    "{name} signed the papers with a steady hand. The trench at {sector} took {him} in like it takes everyone: without a word.",
+    "They issued {name} a rifle, a spade and a number. {He} kept {item} in {his} breast pocket, where the shrapnel would have to go through it first."
+  ],
+  "daily": [
+    {
+      "w": 6,
+      "text": "Rain all night. {name} bailed water out of {sector} with a helmet until {his} hands stopped feeling anything."
+    },
+    {
+      "w": 5,
+      "text": "{name} wrote a letter home. {He} wrote about the weather. {He} did not write about the rats."
+    },
+    {
+      "w": 4,
+      "line": "front",
+      "text": "On sentry duty {name} watched the wire for six hours. Twice {he} thought the wire watched back."
+    },
+    {
+      "w": 4,
+      "line": "front",
+      "text": "A flare lit {place} like noon. {name} counted the seconds until darkness: eleven."
+    },
+    {
+      "w": 3,
+      "line": "support",
+      "text": "{name} carried duckboards up from the rear all night. {His} shoulders are a map of splinters."
+    },
+    {
+      "w": 3,
+      "line": "reserve",
+      "text": "In reserve, {name} slept nine hours in a barn. {He} dreamt of nothing, which was the best part."
+    },
+    {
+      "w": 3,
+      "text": "{name} traded {item} for two cigarettes and immediately regretted it."
+    },
+    {
+      "w": 3,
+      "text": "The cook's stew tasted of iron and smoke. {name} ate two helpings anyway."
+    },
+    {
+      "w": 2,
+      "archetype": "sapper",
+      "text": "{name} spent the night underground, listening. Somewhere beneath {place} someone else was digging too."
+    },
+    {
+      "w": 2,
+      "archetype": "medic",
+      "text": "{name} carried three men out of {sector} on a stretcher. One of them thanked {him}. Two could not."
+    },
+    {
+      "w": 2,
+      "archetype": "runner",
+      "text": "{name} ran a message through the communication trench under shellfire. The message said: 'Hold.'"
+    },
+    {
+      "w": 2,
+      "archetype": "sniper",
+      "text": "{name} lay in the ruins of {place} from dawn to dusk. {He} did not fire once. That is also a kind of victory."
+    },
+    {
+      "w": 2,
+      "archetype": "chaplain",
+      "text": "{name} buried two men at the edge of {place} and said the words twice, because the shells interrupted the first time."
+    },
+    {
+      "w": 2,
+      "archetype": "machinegunner",
+      "text": "{name} cleaned the gun for the fourth time today. The gun is the only thing in the trench that is kept dry."
+    },
+    {
+      "w": 2,
+      "archetype": "cook",
+      "text": "{name} made soup from what the rats left. The men called it the best soup on the front, and they were not joking."
+    },
+    {
+      "w": 1,
+      "text": "A shell landed close to {sector}. When the dust settled {name} was still there, holding {item}, laughing without sound."
+    },
+    {
+      "w": 1,
+      "text": "{name} found a flower growing out of a sandbag. {He} did not tell anyone. {He} checks on it every morning."
+    },
+    {
+      "w": 1,
+      "text": "A crow sat on the parapet above {name} all afternoon. The men say it chose {him}."
+    }
+  ],
+  "promotion": [
+    "For keeping {his} head when others lost theirs at {place}, {name} was promoted to {rank}.",
+    "The old {oldRank} did not come back from the wire. {name} wears {his} stripes now: {rank}."
+  ],
+  "wounded": [
+    "Shrapnel at {place}. {name} walked to the aid post himself and asked for a cigarette before the stitches.",
+    "{name} was caught by gas at {sector}. {He} coughs in {his} sleep but swears {he} will be back on the line within the week."
+  ],
+  "recovered": [
+    "{name} is back from the field hospital, thinner and quieter, with {item} still in {his} pocket."
+  ],
+  "fallen": [
+    "{name} fell at {place}. They found {item} in {his} pocket and sent it home with a letter that said {he} was brave. It was true.",
+    "The wire at {place} took {name}. {His} friends in {sector} carved {his} name into a duckboard so the mud would remember {him}."
+  ],
+  "heir": [
+    "{name} came to the front because {his} {relation} {prevName} never came home. {He} carries {item}.",
+    "The papers say {name}. The sergeant says {he} has {his} {relation}'s eyes. {prevName}'s eyes. Nobody in {sector} argues."
+  ],
+  "relations": [
+    "brother",
+    "father",
+    "cousin",
+    "uncle",
+    "older brother"
+  ]
+}

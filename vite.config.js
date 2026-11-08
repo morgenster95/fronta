@@ -1,0 +1,8 @@
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  root: 'web',
+  publicDir: 'public',
+  build: { outDir: '../dist', emptyOutDir: true, assetsInlineLimit: 0 },
+  server: { fs: { allow: ['..'] }, host: true },
+});

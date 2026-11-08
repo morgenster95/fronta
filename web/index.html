@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#1c1a17" />
+    <title>The Front</title>
+    <meta name="description" content="Every follower is a soldier. Comment your faction on Instagram and find yourself in the trenches." />
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=VT323&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="stage"></div>
+    <div id="vignette"></div>
+
+    <header id="hud">
+      <div class="brand">
+        <h1 id="title">THE FRONT</h1>
+        <div id="day" class="muted">Day 1</div>
+      </div>
+      <div id="counts">
+        <div id="total">0 enlisted</div>
+        <div id="split"><span id="split-a"></span><span id="split-b"></span></div>
+        <div id="split-labels" class="muted"><span id="lab-a"></span><span id="lab-b"></span></div>
+      </div>
+    </header>
+
+    <div id="zoom">
+      <button id="zoom-in" aria-label="Zoom in">+</button>
+      <button id="zoom-out" aria-label="Zoom out">−</button>
+    </div>
+
+    <footer id="bar">
+      <form id="search" autocomplete="off">
+        <input id="search-input" type="search" placeholder="Find a soldier: @handle" spellcheck="false" autocapitalize="off" />
+        <ul id="suggest" hidden></ul>
+      </form>
+      <button id="enlist-btn" class="primary">Enlist</button>
+    </footer>
+
+    <section id="card" class="sheet" hidden aria-live="polite">
+      <button class="close" data-close aria-label="Close">×</button>
+      <div class="card-head">
+        <canvas id="card-portrait" width="32" height="32"></canvas>
+        <div>
+          <div id="card-rank" class="muted"></div>
+          <h2 id="card-name"></h2>
+          <a id="card-handle" target="_blank" rel="noopener"></a>
+        </div>
+      </div>
+      <dl class="facts">
+        <dt>Faction</dt><dd id="card-faction"></dd>
+        <dt>Role</dt><dd id="card-role"></dd>
+        <dt>Unit</dt><dd id="card-unit"></dd>
+        <dt>Position</dt><dd id="card-sector"></dd>
+        <dt>Status</dt><dd id="card-status"></dd>
+        <dt>Enlisted</dt><dd id="card-enlisted"></dd>
+      </dl>
+      <div id="card-family"></div>
+      <h3>Service record</h3>
+      <ol id="card-record"></ol>
+      <div class="actions">
+        <button id="card-share">Share</button>
+        <button id="card-claim" class="primary">This is me: claim</button>
+      </div>
+    </section>
+
+    <section id="enlist" class="sheet" hidden>
+      <button class="close" data-close aria-label="Close">×</button>
+      <h2>Join the war</h2>
+      <ol class="steps">
+        <li>Follow <a id="ig-link" target="_blank" rel="noopener"></a> on Instagram.</li>
+        <li>Comment your faction under our pinned reel:<div id="enlist-factions"></div></li>
+        <li>Within minutes your soldier appears in the trenches. Find yourself here by your @handle.</li>
+      </ol>
+      <p class="muted">Each day a new reel. Each day the front moves. Vote in the comments and decide where we go next.</p>
+    </section>
+
+    <div id="toast" hidden></div>
+    <div id="loading">Digging trenches…</div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
