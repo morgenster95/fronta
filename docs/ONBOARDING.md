@@ -48,3 +48,16 @@ Do té doby stačí, že voják nese @jméno.
 | dopoledne | odbavit nové komentáře (fáze A) |
 | odpoledne | Reel dne: co se stalo na frontě + otázka k hlasování (open-vote) |
 | večer | odbavit, odpovědět v komentářích, story s výsledky |
+
+## Zapnutí automatiky — krok za krokem
+1. **Instagram:** @mudandiron přepnout na profesionální účet (Nastavení → Typ účtu → Creator nebo Business), účet veřejný.
+2. **Meta aplikace:** developers.facebook.com → My Apps → Create app → případ užití *Manage messaging & content on Instagram* → typ Business.
+   V aplikaci: *Instagram → API setup with Instagram login* → **Add account** (přihlásit @mudandiron) → **Generate token** → zkopírovat.
+   Aplikace může zůstat ve vývojovém režimu (Standard Access stačí pro vlastní účet).
+3. **GitHub** → repo `fronta` → Settings → Secrets and variables → Actions:
+   - Secrets: `IG_ACCESS_TOKEN` (token z kroku 2), `FIREBASE_SERVICE_ACCOUNT` (Firebase Console → Project settings → Service accounts → Generate new private key → celý obsah JSON),
+     volitelně `GH_PAT` (fine-grained token s právem *Secrets: read & write* pro repo → token se bude sám obnovovat).
+4. **Kontrola:** Actions → **ig-check** → Run. V logu bude `IG_USER_ID` a ID postů → `IG_USER_ID` ulož jako secret,
+   ID připnutého náborového Reelu jako variable `IG_MEDIA_IDS`.
+5. **Zapnout:** Variables → `IG_ENABLED = true` (a `IG_REPLY = 1` pro automatické odpovědi pod komentáře).
+   Od té chvíle: komentáře každých 30 min, denní tah v 06:00 UTC, obnova tokenu každé pondělí, web se nasazuje sám.

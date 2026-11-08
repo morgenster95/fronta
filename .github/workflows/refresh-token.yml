@@ -1,0 +1,21 @@
+# Instagram token platí 60 dní. Jednou týdně ho obnoví a uloží zpět do GitHub Secrets.
+# Potřebuje secret GH_PAT (fine-grained token s oprávněním Secrets: Read and write pro tohle repo).
+name: refresh-ig-token
+on:
+  schedule: [{ cron: '0 4 * * 1' }]
+  workflow_dispatch:
+jobs:
+  refresh:
+    if: ${{ vars.IG_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Refresh long-lived token
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          NEW=$(curl -s "https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=$IG_ACCESS_TOKEN" | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))")
+          if [ -z "$NEW" ]; then echo "obnova selhala"; exit 1; fi
+          gh secret set IG_ACCESS_TOKEN --repo "$GITHUB_REPOSITORY" --body "$NEW"
+          echo "token obnoven"

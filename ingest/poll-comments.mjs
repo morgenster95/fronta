@@ -4,7 +4,8 @@
 // Proměnné prostředí:
 //   IG_ACCESS_TOKEN   dlouhodobý token IG účtu (instagram_business_basic, instagram_business_manage_comments[, _manage_messages])
 //   IG_USER_ID        ID IG profesionálního účtu
-//   IG_MEDIA_IDS      volitelně: čárkou oddělená ID postů; jinak posledních IG_RECENT (5) postů
+//   IG_MEDIA_IDS      čárkou oddělená ID postů, které se hlídají vždy (připnutý náborový Reel); k nim posledních IG_RECENT (5)
+//   IG_REPLY=1        odpovědět veřejně pod komentář nového rekruta (šablony theme.replies)
 //   IG_SEND_DM=1      poslat Private Reply novým rekrutům
 //   SITE_URL          adresa webu pro odkaz v DM
 //   FIREBASE_SERVICE_ACCOUNT  JSON service accountu (pro párování převzetí přes Firestore), volitelné
@@ -37,10 +38,11 @@ async function igPost(path, body) {
   return j;
 }
 
+// připnuté posty (IG_MEDIA_IDS) + nejnovější posty; připnutý Reel by jinak časem vypadl z „posledních 5“
 async function mediaIds() {
-  if (process.env.IG_MEDIA_IDS) return process.env.IG_MEDIA_IDS.split(',').map((s) => s.trim()).filter(Boolean);
+  const pinned = (process.env.IG_MEDIA_IDS || '').split(',').map((s) => s.trim()).filter(Boolean);
   const j = await ig(`${USER}/media`, { fields: 'id,timestamp', limit: process.env.IG_RECENT || 5 });
-  return j.data.map((m) => m.id);
+  return [...new Set([...pinned, ...j.data.map((m) => m.id)])];
 }
 
 async function* comments(mediaId, seen) {
@@ -93,6 +95,12 @@ async function main() {
       if (res.type === 'enlist') {
         enlisted++;
         console.log(`+ @${res.soldier.handle} → ${theme.factions[res.soldier.faction].name}, ${res.soldier.sector}`);
+        if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN && theme.replies) {
+          const s = res.soldier;
+          const pool = theme.replies[theme.factions[s.faction].id] || theme.replies.any;
+          const text = pool[Math.floor(Math.random() * pool.length)].replace('{handle}', s.handle).replace('{sector}', s.sector).replace('{rank}', theme.ranks[s.rank]);
+          await igPost(`${c.id}/replies`, { message: text }).catch((e) => console.warn(e.message));
+        }
         if (process.env.IG_SEND_DM === '1' && !process.env.DRY_RUN) {
           const s = res.soldier;
           const text = theme.dm.enlisted

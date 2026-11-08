@@ -1,12 +1,13 @@
 # Jednou denně (06:00 UTC): nový den na frontě, zápisy do služebních záznamů, nasazení.
 name: daily-tick
 on:
-  # schedule: [{ cron: '0 6 * * *' }]  # zapnout po spuštění hry
+  schedule: [{ cron: '0 6 * * *' }]
   workflow_dispatch:
 concurrency: { group: state, cancel-in-progress: false }
 permissions: { contents: write }
 jobs:
   tick:
+    if: ${{ vars.IG_ENABLED == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
