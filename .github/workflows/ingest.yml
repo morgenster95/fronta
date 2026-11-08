@@ -1,10 +1,9 @@
-# Každých 30 min: stáhne komentáře z IG, narukuje vojáky, uloží stav do repa a nasadí web.
-# Interval 30 min = cca 1 500 min/měsíc → vejde se do 2 000 bezplatných minut soukromého repa.
-# (Veřejné repo má minuty neomezené → lze dát */5.)
+# Každých 5 min: stáhne komentáře z IG, narukuje vojáky, uloží stav do repa a nasadí web.
+# Repo je veřejné → minuty GitHub Actions jsou zdarma bez limitu. Tajné údaje jsou jen v GitHub Secrets.
 name: ingest
 on:
   # lichá minuta: GitHub spouští plánované běhy na :00/:30 se zpožděním
-  schedule: [{ cron: '7,37 * * * *' }]
+  schedule: [{ cron: '2-59/5 * * * *' }]
   workflow_dispatch:
 concurrency: { group: state, cancel-in-progress: false }
 permissions: { contents: write }
