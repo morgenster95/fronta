@@ -230,6 +230,11 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
         await navigator.share({ files: [file], title: theme.title, text });
         return;
       }
+      // prohlížeč uvnitř Instagramu/Facebooku neumí sdílet soubory → obrázek přes celou obrazovku s návodem
+      if (/Instagram|FBAN|FBAV|FB_IAB/i.test(navigator.userAgent) || /iPhone|iPad|Android/i.test(navigator.userAgent)) {
+        showShareOverlay(URL.createObjectURL(blob), url);
+        return;
+      }
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = file.name;
@@ -264,6 +269,19 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   }
 
   return { openSoldier, closeAll, toast };
+}
+
+function showShareOverlay(src, url) {
+  document.getElementById('share-overlay')?.remove();
+  const o = document.createElement('div');
+  o.id = 'share-overlay';
+  o.innerHTML = `<button class="close" aria-label="Close">×</button>
+    <img src="${src}" alt="Your Mud & Iron soldier card">
+    <p><b>Press and hold the image → Save to Photos</b>, then post it to your Instagram Story and tag @mudandiron.</p>
+    <p class="muted">Tip: open this page in Safari or Chrome (••• → Open in browser) to share it to your Story in one tap.</p>`;
+  o.querySelector('.close').onclick = () => { o.remove(); URL.revokeObjectURL(src); };
+  document.body.appendChild(o);
+  navigator.clipboard?.writeText(url).catch(() => {});
 }
 
 function esc(s) {
