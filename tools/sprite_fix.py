@@ -1,6 +1,7 @@
 """Automatické opravy spritů: smaže odtržené kousky (plovoucí pixely) do --max px.
 
-Použití: python tools/sprite_fix.py <vstup.png ...> --out art/pixellab/fixed [--max 4]
+Použití: python tools/sprite_fix.py <vstup.png ...> --out art/pixellab/fixed [--max 4] [--baseline]
+--baseline posune sprite svisle (bez škálování), aby chodidla byla na předposledním řádku (kotva enginu).
 Výsledek zkontroluj okem (tools/sprite_qa.py --sheet), velký odtržený kus může být záměr (např. jiskra, kouř).
 """
 import argparse
@@ -18,6 +19,7 @@ def main():
     ap.add_argument("files", nargs="+")
     ap.add_argument("--out", required=True)
     ap.add_argument("--max", type=int, default=4)
+    ap.add_argument("--baseline", action="store_true")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     for f in a.files:
@@ -28,10 +30,20 @@ def main():
                 for p in comp:
                     im.putpixel(p, (0, 0, 0, 0))
                 removed += len(comp)
-        if removed:
+        shift = 0
+        bbox = im.getbbox()
+        if a.baseline and bbox:
+            shift = (im.height - 1) - bbox[3]  # kladné = dolů
+            if shift < 0 and bbox[1] + shift < 0:
+                shift = -bbox[1]  # nahoře není místo, posuň aspoň co jde
+            if shift:
+                moved = Image.new("RGBA", im.size, (0, 0, 0, 0))
+                moved.paste(im, (0, shift))
+                im = moved
+        if removed or shift:
             dst = os.path.join(a.out, os.path.basename(f))
             im.save(dst)
-            print(f"{dst}: smazáno {removed} px")
+            print(f"{dst}: smazáno {removed} px, posun {shift:+d} px")
 
 
 if __name__ == "__main__":

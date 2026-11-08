@@ -58,12 +58,13 @@ export function applyComment(state, comment, theme, story, map) {
 // Přidělí první volné místo podle priority (střed → ven, přední linie první) v otevřených sektorech.
 // Místo je trvalé: otevření dalších sektorů nikoho nepřesune. Při zaplnění z 90 % se otevřou další 2 sektory.
 export function placeSoldier(s, map, state) {
-  const taken = new Set(state.soldiers.filter((o) => o.faction === s.faction && o.slot != null).map((o) => o.slot));
+  // obsazenost podle pozice (ne ID): úprava generátoru mapy pak nikoho nepřesune ani nezdvojí
+  const taken = new Set(state.soldiers.filter((o) => o.faction === s.faction && o.pos).map((o) => `${o.pos[0]},${o.pos[1]}`));
   let slot = null;
   for (;;) {
     const [from, to] = openRange(map, state.openSectors ?? 8);
     const open = map.slots[s.faction].filter((x) => x.sector >= from && x.sector < to);
-    const free = open.filter((x) => !taken.has(x.id));
+    const free = open.filter((x) => !taken.has(`${x.x},${x.y}`));
     if (free.length && (free.length - 1) / open.length >= 0.1) { slot = free[0]; break; }
     if ((state.openSectors ?? 8) >= map.sectors) { slot = free[0] ?? null; break; }
     state.openSectors = Math.min(map.sectors, (state.openSectors ?? 8) + 2);
@@ -71,11 +72,13 @@ export function placeSoldier(s, map, state) {
   }
   if (slot) {
     s.slot = slot.id;
+    s.pos = [slot.x, slot.y, slot.d]; // trvalá pozice ve světě (px) a směr pohledu
     s.sector = slot.label;
     s.line = slot.line;
     s.unit = unitName(s.order);
   } else {
     s.slot = null;
+    s.pos = null;
     s.sector = 'Rear camp';
     s.line = 'camp';
     s.unit = 'Replacement depot';
@@ -120,11 +123,13 @@ export function buildPublic(state, theme) {
     followers: state.followers,
     openSectors: state.openSectors ?? 8,
     updated: new Date().toISOString(),
-    fields: ['handle', 'faction', 'slot', 'archetype', 'rank', 'status', 'variant', 'claimed', 'generation', 'name'],
+    fields: ['handle', 'faction', 'x', 'y', 'dir', 'archetype', 'rank', 'status', 'variant', 'claimed', 'generation', 'name'],
     soldiers: state.soldiers.map((s) => [
       s.handle,
       s.faction,
-      s.slot ?? -1,
+      s.pos ? s.pos[0] : -1,
+      s.pos ? s.pos[1] : -1,
+      s.pos ? s.pos[2] : 0,
       arch.indexOf(s.archetype),
       s.rank,
       ['active', 'wounded', 'missing', 'captured', 'fallen'].indexOf(s.status),

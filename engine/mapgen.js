@@ -176,6 +176,19 @@ export function generateFront(opts = {}) {
     if (t === T.NML || t === T.MUD || t === T.CRATER) props.push({ type: rand() < 0.6 ? 'tree' : 'debris', x, y });
   }
 
+  // polní hřbitovy za záložní linií (řady hrobů)
+  for (let f = 0; f < 2; f++) {
+    const rd = rearDir[f];
+    for (let x = 40 + Math.floor(rand() * 60); x < W - 20; x += 180 + Math.floor(rand() * 120)) {
+      const y0 = front[f] + rd * 44;
+      for (let r = 0; r < 2 + Math.floor(rand() * 2); r++)
+        for (let c = 0; c < 4 + Math.floor(rand() * 4); c++) {
+          const gx = x + c * 2, gy = y0 + rd * r * 3;
+          if (get(gx, gy) === T.MUD) props.push({ type: 'grave', x: gx, y: gy });
+        }
+    }
+  }
+
   // sloty pro vojáky
   const slots = [];
   const centerSector = (o.sectors - 1) / 2;

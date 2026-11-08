@@ -48,6 +48,6 @@ test('při zaplnění se otevřou další sektory a nikdo se nepřesune', () => 
   }
   assert.ok(s.openSectors > 8);
   for (const [sol, slot] of first) assert.equal(sol.slot, slot);
-  const slots = s.soldiers.map((x) => x.slot);
+  const slots = s.soldiers.map((x) => x.pos.join(','));
   assert.equal(new Set(slots).size, slots.length, 'dva vojáci na jednom místě');
 });

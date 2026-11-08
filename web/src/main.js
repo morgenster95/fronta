@@ -47,6 +47,8 @@ async function boot() {
       });
     }),
   );
+  const loadImg = (src) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = src; });
+  const propImages = Object.fromEntries(await Promise.all(['tree', 'grave'].map(async (k) => [k, await loadImg(`/assets/props/${k}.png`)])));
   const texFor = (s) => tex[`${theme.factions[s.faction].sprite}_${s.archetype?.id}`] ?? tex[theme.factions[s.faction].sprite];
 
   const world = new Container();
@@ -71,7 +73,8 @@ async function boot() {
   // --- vojáci ---
   const F = Object.fromEntries(roster.fields.map((f, i) => [f, i]));
   const soldiers = roster.soldiers.map((row, i) => {
-    const slot = map.slots[row[F.faction]][row[F.slot]];
+    // pozice je uložená u vojáka (trvalá), mapa ji jen vykresluje
+    const slot = row[F.x] >= 0 ? { x: row[F.x], y: row[F.y], d: row[F.dir] } : null;
     return {
       i,
       handle: row[F.handle],
@@ -163,7 +166,7 @@ async function boot() {
       // nejdřív bloky nejblíž středu kamery
       queue.sort((a, b) => dist2(b) - dist2(a));
       const [cx, cy, entry] = queue.pop();
-      const sp = new Sprite(Texture.from(paintChunk(map, cx, cy)));
+      const sp = new Sprite(Texture.from(paintChunk(map, cx, cy, propImages)));
       sp.x = cx * CHUNK * map.tile;
       sp.y = cy * CHUNK * map.tile;
       entry.sprite = sp;
@@ -251,7 +254,9 @@ async function boot() {
     setTimeout(() => ui.openSoldier(start, false), 400);
   } else {
     const fi = Math.random() < 0.5 ? 0 : 1;
-    const first = map.slots[fi][Math.floor(Math.random() * Math.min(60, placed.length / 2))] || map.slots[fi][0];
+    // prvních ~60 narukovaných stojí v přední linii uprostřed; prázdná soupiska → střed mapy
+    const pool = soldiers.filter((s) => s.slot && s.faction === fi).slice(0, 60);
+    const first = pool[Math.floor(Math.random() * pool.length)] ?? map.slots[fi][0];
     // pohled tak, aby byla vidět přední linie i kus země nikoho
     cam.set(first.x, first.y + (fi === 0 ? 60 : -60), initZoom);
   }

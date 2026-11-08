@@ -43,5 +43,45 @@
   "hegemony_machinegunner": {
     "character": "3a323a11-d6a9-42dc-a66f-7e8d9ce0102b",
     "fixed": {}
+  },
+  "concord_cook": {
+    "character": "288935c9-c136-47e6-a37e-89ccbd65de3c",
+    "fixed": {}
+  },
+  "concord_runner": {
+    "character": "70bc903b-6b34-4846-9cfc-c799b9ec690c",
+    "fixed": {}
+  },
+  "concord_sapper": {
+    "character": "1975012f-fa42-41f8-ad01-e168f62d8f4f",
+    "fixed": {}
+  },
+  "concord_signaller": {
+    "character": "def6613d-a2ad-49a8-bc13-950f2828d7ca",
+    "fixed": {}
+  },
+  "hegemony_chaplain": {
+    "character": "9abee545-09d3-4e64-b9aa-acb23cd3221f",
+    "fixed": {}
+  },
+  "hegemony_cook": {
+    "character": "f7411133-bf34-4b8f-bf44-6ede64b9f131",
+    "fixed": {}
+  },
+  "hegemony_runner": {
+    "character": "6b649917-c83c-4d40-b225-ebbfce1c7f2c",
+    "fixed": {}
+  },
+  "hegemony_sapper": {
+    "character": "9daa47a7-1ec1-4d4f-9d47-b939cb54dc65",
+    "fixed": {}
+  },
+  "hegemony_sniper": {
+    "character": "93e28abe-340b-4c8e-b194-ff873f67bb8c",
+    "fixed": {}
+  },
+  "hegemony_signaller": {
+    "character": "8ffd6cd3-2c61-41f8-b711-2938fa8a6a99",
+    "fixed": {}
   }
 }

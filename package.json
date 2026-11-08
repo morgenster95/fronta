@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "data:fake": "node tools/fake-roster.mjs 4000",
     "data:build": "node tools/build-data.mjs",
-    "assets": "node tools/copy-assets.mjs",
+    "assets": "node tools/copy-assets.mjs && python tools/sprite_fix.py web/public/assets/soldiers/*.png --out web/public/assets/soldiers --baseline",
     "ingest": "node ingest/poll-comments.mjs",
     "tick": "node ingest/daily-tick.mjs",
     "test": "node --test engine/engine.test.js"

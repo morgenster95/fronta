@@ -21,7 +21,7 @@ function vnoise(x, y, seed) {
   return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
 }
 
-export function paintChunk(map, cx, cy) {
+export function paintChunk(map, cx, cy, images = {}) {
   const S = map.tile;
   const tw = Math.min(CHUNK, map.W - cx * CHUNK);
   const th = Math.min(CHUNK, map.H - cy * CHUNK);
@@ -92,7 +92,10 @@ export function paintChunk(map, cx, cy) {
   for (const p of map.props) {
     const px = p.x * S - ox, py = p.y * S - oy;
     if (px < -40 || py < -60 || px > w + 40 || py > h + 20) continue;
-    if (p.type === 'tree') drawTree(ctx, px, py, p.x * 31 + p.y);
+    // obrázky z PixelLabu (patou na spodní hraně dlaždice), jinak procedurální náhrada
+    const img = images[p.type];
+    if (img) ctx.drawImage(img, Math.round(px + 8 - img.width / 2), py + 16 - img.height);
+    else if (p.type === 'tree') drawTree(ctx, px, py, p.x * 31 + p.y);
     else if (p.type === 'debris') drawDebris(ctx, px, py, p.x + p.y * 17);
   }
   return canvas;
