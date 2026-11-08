@@ -1,0 +1,34 @@
+# Publikování na Instagram z fronty marketing/queue.json.
+# Ručně: Actions → publish → Run → ids (mezerou oddělená ID). Automaticky každou hodinu položky s publishAt (když IG_ENABLED=true).
+name: publish
+on:
+  schedule: [{ cron: '5 * * * *' }]
+  workflow_dispatch:
+    inputs:
+      ids: { description: 'ID položek z marketing/queue.json (mezerou), prázdné = jen naplánované', required: false }
+concurrency: { group: state, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  publish:
+    if: ${{ vars.IG_ENABLED == 'true' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+      IG_USER_ID: ${{ secrets.IG_USER_ID }}
+      SITE_URL: ${{ vars.SITE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Publish
+        env: { IDS: '${{ inputs.ids }}' }
+        run: |
+          if [ -n "$IDS" ]; then node ingest/publish.mjs $IDS; else node ingest/publish.mjs --due; fi
+      - name: Save queue
+        if: always()
+        run: |
+          git config user.name "front-bot"
+          git config user.email "front-bot@users.noreply.github.com"
+          git add marketing/queue.json
+          git diff --cached --quiet || (git commit -m "publish: queue update" && git push)
