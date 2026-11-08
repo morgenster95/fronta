@@ -91,6 +91,17 @@ export async function shareCard({ s, rec, theme, tex }) {
   text(ctx, 'IRON', W / 2 + 170, 52, 64, PAL.white);
   text(ctx, 'I ENLISTED', W / 2, 130, 34, PAL.gold);
 
+  // medaile First Wave: stuha přes horní okraj scény
+  if (s.medals?.includes('first-wave')) {
+    const y0 = 196;
+    ctx.fillStyle = PAL.rust;
+    ctx.fillRect(W / 2 - 260, y0, 520, 72);
+    ctx.fillStyle = PAL.gold;
+    ctx.fillRect(W / 2 - 260, y0, 520, 6);
+    ctx.fillRect(W / 2 - 260, y0 + 66, 520, 6);
+    text(ctx, 'FIRST WAVE', W / 2, y0 + 16, 40, PAL.white);
+  }
+
   // jméno a hodnost
   const rank = theme.ranks[s.rank].toUpperCase();
   text(ctx, rank, W / 2, 1140, 38, PAL.bone);
@@ -98,8 +109,8 @@ export async function shareCard({ s, rec, theme, tex }) {
   const nameLines = wrap(ctx, s.name.toUpperCase(), W - 120);
   nameLines.forEach((l, i) => text(ctx, l, W / 2, 1192 + i * 76, 64, PAL.white));
   let y = 1192 + nameLines.length * 76 + 6;
-  text(ctx, `@${s.handle}`, W / 2, y, 40, PAL.gold, { font: 'VT323' });
-  y += 70;
+  text(ctx, `@${s.handle}`, W / 2, y, 56, PAL.gold, { font: 'VT323' });
+  y += 78;
 
   // frakce, jednotka, stanoviště
   text(ctx, f.name.toUpperCase(), W / 2, y, 44, fcol);
@@ -108,18 +119,6 @@ export async function shareCard({ s, rec, theme, tex }) {
   for (const t of facts) {
     text(ctx, t.toUpperCase(), W / 2, y, 30, PAL.bone, { shadow: false });
     y += 44;
-  }
-
-  // medaile First Wave
-  if (s.medals?.includes('first-wave')) {
-    y += 20;
-    ctx.fillStyle = PAL.rust;
-    ctx.fillRect(W / 2 - 300, y, 600, 74);
-    ctx.fillStyle = PAL.gold;
-    ctx.fillRect(W / 2 - 300, y, 600, 6);
-    ctx.fillRect(W / 2 - 300, y + 68, 600, 6);
-    text(ctx, 'FIRST WAVE', W / 2, y + 16, 40, PAL.white);
-    y += 100;
   }
 
   // výzva
