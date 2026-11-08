@@ -47,7 +47,7 @@ function setTex(sp, t) {
   sp.anchor.set(0.5, (30 + off) / t.height);
 }
 
-export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx = {} }) {
+export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx = {}, aims = {} }) {
   const layer = new Container(); // efekty nad terénem i vojáky
   world.addChild(layer);
   const particles = [];
@@ -73,26 +73,29 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     const key = s.texKey;
     const dir = dirs[s.slot.d];
     const idle = anims[key]?.idle?.[dir];
-    const diagDir = s.slot.d === 0 ? 'south-east' : s.slot.d === 4 ? 'north-east' : null;
-    s.fireDiag = diagDir ? anims[key]?.fire?.[diagDir] : null;
-    s.fire = s.fireDiag || anims[key]?.fire?.[dir];
+    // míření přímo k nepříteli: Hegemonie zepředu (jih), Concord zezadu (sever); snímek zamíření z PixelLabu
+    s.aim = (s.slot.d === 0 || s.slot.d === 4) ? aims[key]?.[dir] : null;
+    s.fire = null;
     const baseScale = sp.scale.x;
     const phase = Math.random() * 4000;
     sp.animate = (now) => {
       if (s.nest) return; // kulometčík u hnízda je přikrčený
       if (s.action) {
-        const f = Math.floor((now - s.action.t0) / s.action.ms);
-        if (f < s.action.frames.length) {
-          setTex(sp, s.action.frames[f]);
-          sp.scale.x = s.action.mirror ? -1 : 1;
-          if (f === s.action.fireAt && !s.action.fired) {
-            s.action.fired = true;
+        const a = s.action;
+        const t = now - a.t0;
+        if (t < a.end) {
+          setTex(sp, s.aim.tex);
+          // jeden snímek výstřelu: ráz o 1 px dozadu (od nepřítele) + záblesk přesně na ústí hlavně
+          const firing = t >= a.fireAt && t < a.fireAt + 70;
+          sp.y = s.y + (firing ? (s.slot.d === 0 ? -1 : 1) : 0);
+          if (firing && !a.fired) {
+            a.fired = true;
             muzzle(s);
           }
           return;
         }
         s.action = null;
-        sp.scale.x = baseScale;
+        sp.y = s.y;
         setTex(sp, tex[key][dir]);
       }
       if (s.wounded) return;
@@ -104,21 +107,19 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
   // --- výstřely ---
   function shoot(candidates, now) {
     // střílí jen ten, kdo má animaci střelby: záblesk a kouř vždy patří k pohybu postavy
-    const pool = candidates.filter((s) => s.fire && !s.action && !s.wounded && !s.nest && s.archetype?.id !== 'machinegunner');
+    const pool = candidates.filter((s) => s.aim && !s.action && !s.wounded);
     if (!pool.length) return;
     const s = pool[Math.floor(Math.random() * pool.length)];
-    // šikmý výstřel: snímky ukazují jednu stranu, druhou získáme zrcadlením
-    const mirror = !!s.fireDiag && Math.random() < 0.5;
-    s.action = { frames: s.fire, t0: now, ms: 100, fireAt: Math.floor(s.fire.length / 2), fired: false, mirror };
+    // zamíří, chvíli drží, vystřelí, ještě chvíli drží a skloní zbraň
+    const hold = rnd(350, 900);
+    s.action = { t0: now, fireAt: hold, end: hold + rnd(250, 600), fired: false };
   }
   function muzzle(s) {
-    const diag = !!s.fireDiag;
-    const m = MUZZLE[`${s.texKey}${diag ? ':diag' : ''}`] || MUZZLE[s.texKey] || { x: 5, y: -28 };
-    const side = s.action?.mirror ? -1 : 1;
-    const x = s.x + m.x * side, y = s.y + m.y;
-    flash(x, y, !m.builtin);
-    playFx('smoke-small', x, y - 4, 0.5, 0.55);
-    tracer(x, y, s.slot.d === 0 ? 1 : -1, diag ? side * 0.55 : 0);
+    // ústí hlavně je změřené ze snímku zamíření (aims[key][dir].mx/my, vůči patě)
+    const x = s.x + s.aim.mx, y = s.y + s.aim.my;
+    particles.push({ kind: 'flash', x, y, life: 70, max: 70, back: s.slot.d === 4 });
+    // jen pár drobných obláčků, které rychle zmizí
+    for (let i = 0; i < 3; i++) particles.push({ kind: 'puff', x: x + rnd(-1, 1), y: y + rnd(-1, 1), vx: rnd(-0.003, 0.003), vy: -rnd(0.004, 0.008), life: rnd(450, 750), max: 750 });
   }
   function flash(x, y, visible = true) {
     if (visible) particles.push({ kind: 'flash', x, y, life: 110, max: 110 });
@@ -268,10 +269,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
       t.distant = rnd(...RATE.distant);
       if (!showSprites) distantShot(view); // zblízka by blikalo přes vojáky bez pohybu
     }
-    if (showSprites && t.burst < 0) {
-      t.burst = rnd(...RATE.burst);
-      burst(view, now);
-    }
+    // kulometná hnízda jsou dočasně vypnutá (čekají na přesnou kresbu kulometu zepředu a zezadu)
     for (let i = events.length - 1; i >= 0; i--) if (events[i].at <= now) { events[i].run(); events.splice(i, 1); }
     if (t.shell < 0) {
       t.shell = rnd(...RATE.shell);
@@ -308,10 +306,18 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
       const k = p.life / p.max;
       if (p.vx !== undefined) { p.x += p.vx * dt; p.y += p.vy * dt; }
       switch (p.kind) {
-        case 'flash':
-          g.rect(Math.round(p.x) - 1, Math.round(p.y) - 1, 3, 3).fill({ color: 0xe3d9c3 });
-          g.rect(Math.round(p.x) - 3, Math.round(p.y), 7, 1).fill({ color: 0xd98f3f, alpha: 0.9 });
-          g.rect(Math.round(p.x), Math.round(p.y) - 3, 1, 7).fill({ color: 0xd98f3f, alpha: 0.6 });
+        case 'flash': {
+          // pixelová hvězdička: bílé jádro, žluto-oranžové paprsky (zezadu je vidět jen část nad hlavní)
+          const fx0 = Math.round(p.x), fy0 = Math.round(p.y);
+          g.rect(fx0 - 1, fy0 - 1, 2, 2).fill({ color: 0xe3d9c3 });
+          g.rect(fx0 - 2, fy0 - 1, 1, 2).fill({ color: 0xd98f3f });
+          g.rect(fx0 + 1, fy0 - 1, 1, 2).fill({ color: 0xd98f3f });
+          g.rect(fx0 - 1, fy0 - 2, 2, 1).fill({ color: 0xc9c26a });
+          if (!p.back) g.rect(fx0 - 1, fy0 + 1, 2, 1).fill({ color: 0xc9c26a });
+          break;
+        }
+        case 'puff':
+          g.rect(Math.round(p.x), Math.round(p.y), k > 0.5 ? 2 : 1, k > 0.5 ? 2 : 1).fill({ color: 0xa39782, alpha: 0.35 * k });
           break;
         case 'glow':
           g.circle(p.x, p.y, 4).fill({ color: 0xd98f3f, alpha: 0.18 * k });

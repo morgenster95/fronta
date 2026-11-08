@@ -184,7 +184,18 @@ async function boot() {
       console.warn('fx', name, e);
     }
   }));
-  const life = createLife({ world, actorLayer, theme, anims, tex, map, dirs: DIRS, fx: fxSheets });
+  // snímky zamíření (přesná střelba): props/aim_<klíč>_<směr>.png + ústí hlavně z jejich JSON
+  const aims = {};
+  try {
+    const meta = await fetch(`/assets/soldiers/aims.json${V}`, { cache: 'no-cache' }).then((r) => r.json());
+    await Promise.all(Object.entries(meta).map(async ([key, byDir]) => {
+      aims[key] = {};
+      for (const [d, m] of Object.entries(byDir)) aims[key][d] = { tex: await Assets.load(`/assets/soldiers/${m.file}${V}`), mx: m.mx, my: m.my };
+    }));
+  } catch (e) {
+    console.warn('aims', e);
+  }
+  const life = createLife({ world, actorLayer, theme, anims, tex, map, dirs: DIRS, fx: fxSheets, aims });
   for (const s of placed) life.setupSprite(s, s.sprite);
 
   // kulometná hnízda: kulometčík v přední linii se přikrčí za kulomet na trojnožce (objekt z PixelLabu, šikmo k nepříteli)
@@ -200,7 +211,7 @@ async function boot() {
     }
   }));
   const nests = [];
-  if (gunTex['south-east'] && gunTex['north-west']) {
+  if (false && gunTex['south-east'] && gunTex['north-west']) { // hnízda vypnutá, viz life.js
     for (const s of placed) {
       if (s.archetype?.id !== 'machinegunner' || s.slot.line !== 'front' || s.wounded) continue;
       if (s.slot.d !== 0 && s.slot.d !== 4) continue;

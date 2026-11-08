@@ -1,0 +1,4 @@
+{
+  "hegemony": { "south": { "file": "aim_hegemony_south.png", "mx": 0, "my": -20 } },
+  "concord": { "north": { "file": "aim_concord_north.png", "mx": 3, "my": -26 } }
+}

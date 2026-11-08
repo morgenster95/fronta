@@ -65,3 +65,11 @@ Pozor: v3 animace zvětšují plátno (32 → 44 px, symetricky) → engine kotv
 | kulometčík přikrčený (template crouching) concord sever, hegemony jih | animate_character | | 2 |
 | kulomet na trojnožce 8 směrů 48 px a 32 px | create_object_pro_flash | eb10f400…, a0c85dcb… | 12 | ✗ moc velký / vypadá jako kanon |
 | mg2/mg_se.png, mg_ne.png (32×20, nízký Maxim na saních) → props/mg_*.png (+ zrcadlené) | create_image_pro_flash | 8413a3fe…, 04a46879… | 10 | ✔ |
+
+## Přesná střelba (9. 11. 2026)
+Šikmé/boční v3 animace střelby nahrazeny ručně řízenou sekvencí ze snímku zamíření (klid → zamíření → 1 snímek výstřelu se zábleskem
+na změřeném ústí + ráz 1 px → zpět). Kulometná hnízda dočasně vypnuta.
+| Soubor | Nástroj | ID | Cena |
+|---|---|---|---|
+| aim/heg_aim_v1.png → soldiers/aim_hegemony_south.png (míří přímo na diváka, ústí 0/−20) | create_image_pro_flash + style_image | f7c8e749… | 5 |
+| aim/con_aim_v1.png → soldiers/aim_concord_north.png (zezadu, hlaveň nahoru, ústí +3/−26, pata srovnána) | create_image_pro_flash + style_image | c174cdfa… | 5 |
