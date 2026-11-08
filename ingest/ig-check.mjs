@@ -17,7 +17,7 @@ async function ig(path, params = {}) {
 const me = await ig(USER, { fields: 'username,followers_count,media_count,website,biography' });
 console.log(`účet: @${me.username}, followers ${me.followers_count}, postů ${me.media_count}
 web v biu: ${me.website ?? '(žádný)'}
-bio: ${(me.biography || '').replace(/s+/g, ' ')}`);
+bio: ${(me.biography || '').replace(/\s+/g, ' ')}`);
 const perms = await ig('me/permissions').catch(() => null);
 if (perms) console.log('oprávnění:', perms.data.filter((p) => p.status === 'granted').map((p) => p.permission).join(', '));
 const media = await ig(`${USER}/media`, { fields: 'id,caption,media_type,timestamp,permalink,comments_count', limit: 10 });
