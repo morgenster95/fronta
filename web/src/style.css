@@ -111,3 +111,11 @@ button.primary { background: var(--blood); border-color: #a85a36; }
   h1 { font-size: 18px; }
   #zoom { top: auto; bottom: 90px; transform: none; }
 }
+
+#dispatch {
+  position: fixed; left: var(--gap); top: calc(env(safe-area-inset-top) + 64px); max-width: min(420px, calc(100% - 32px));
+  background: var(--panel); border-left: 3px solid var(--accent); padding: 6px 10px; font-size: 19px; pointer-events: auto;
+}
+#dispatch .d { font-family: 'Silkscreen', monospace; font-size: 11px; color: var(--accent); display: block; }
+#vote { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--line); }
+#vote .kw { font-size: 12px; padding: 1px 6px; margin-right: 4px; }

@@ -4,6 +4,7 @@ Použití: python tools/sprite_qa.py <sprite.png ...> [--height 30] [--palette a
 Odtržený kousek (ostrov) typicky znamená přerušenou zbraň: hlaveň oddělená od pažby průhlednou mezerou.
 """
 import argparse
+import glob
 import sys
 from collections import deque
 
@@ -111,6 +112,8 @@ def main():
     ap.add_argument("--sheet")
     ap.add_argument("--height", type=int, help="požadovaná výška postavy v px (voják: 30)")
     a = ap.parse_args()
+    # Windows shell (npm) neexpanduje hvězdičky → expanduj tady
+    a.files = [g for f in a.files for g in (sorted(glob.glob(f)) or [f])]
     palette = None
     if a.palette:
         palette = {tuple(int(l[i:i + 2], 16) for i in (0, 2, 4)) for l in open(a.palette).read().split()}

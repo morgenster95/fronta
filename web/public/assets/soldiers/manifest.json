@@ -78,5 +78,125 @@
   "north-west": "hegemony_machinegunner_north-west.png",
   "west": "hegemony_machinegunner_west.png",
   "south-west": "hegemony_machinegunner_south-west.png"
+ },
+ "concord_cook": {
+  "south": "concord_cook_south.png",
+  "south-east": "concord_cook_south-east.png",
+  "east": "concord_cook_east.png",
+  "north-east": "concord_cook_north-east.png",
+  "north": "concord_cook_north.png",
+  "north-west": "concord_cook_north-west.png",
+  "west": "concord_cook_west.png",
+  "south-west": "concord_cook_south-west.png"
+ },
+ "concord_runner": {
+  "south": "concord_runner_south.png",
+  "south-east": "concord_runner_south-east.png",
+  "east": "concord_runner_east.png",
+  "north-east": "concord_runner_north-east.png",
+  "north": "concord_runner_north.png",
+  "north-west": "concord_runner_north-west.png",
+  "west": "concord_runner_west.png",
+  "south-west": "concord_runner_south-west.png"
+ },
+ "concord_sapper": {
+  "south": "concord_sapper_south.png",
+  "south-east": "concord_sapper_south-east.png",
+  "east": "concord_sapper_east.png",
+  "north-east": "concord_sapper_north-east.png",
+  "north": "concord_sapper_north.png",
+  "north-west": "concord_sapper_north-west.png",
+  "west": "concord_sapper_west.png",
+  "south-west": "concord_sapper_south-west.png"
+ },
+ "concord_signaller": {
+  "south": "concord_signaller_south.png",
+  "south-east": "concord_signaller_south-east.png",
+  "east": "concord_signaller_east.png",
+  "north-east": "concord_signaller_north-east.png",
+  "north": "concord_signaller_north.png",
+  "north-west": "concord_signaller_north-west.png",
+  "west": "concord_signaller_west.png",
+  "south-west": "concord_signaller_south-west.png"
+ },
+ "hegemony_chaplain": {
+  "south": "hegemony_chaplain_south.png",
+  "south-east": "hegemony_chaplain_south-east.png",
+  "east": "hegemony_chaplain_east.png",
+  "north-east": "hegemony_chaplain_north-east.png",
+  "north": "hegemony_chaplain_north.png",
+  "north-west": "hegemony_chaplain_north-west.png",
+  "west": "hegemony_chaplain_west.png",
+  "south-west": "hegemony_chaplain_south-west.png"
+ },
+ "hegemony_cook": {
+  "south": "hegemony_cook_south.png",
+  "south-east": "hegemony_cook_south-east.png",
+  "east": "hegemony_cook_east.png",
+  "north-east": "hegemony_cook_north-east.png",
+  "north": "hegemony_cook_north.png",
+  "north-west": "hegemony_cook_north-west.png",
+  "west": "hegemony_cook_west.png",
+  "south-west": "hegemony_cook_south-west.png"
+ },
+ "hegemony_runner": {
+  "south": "hegemony_runner_south.png",
+  "south-east": "hegemony_runner_south-east.png",
+  "east": "hegemony_runner_east.png",
+  "north-east": "hegemony_runner_north-east.png",
+  "north": "hegemony_runner_north.png",
+  "north-west": "hegemony_runner_north-west.png",
+  "west": "hegemony_runner_west.png",
+  "south-west": "hegemony_runner_south-west.png"
+ },
+ "hegemony_sapper": {
+  "south": "hegemony_sapper_south.png",
+  "south-east": "hegemony_sapper_south-east.png",
+  "east": "hegemony_sapper_east.png",
+  "north-east": "hegemony_sapper_north-east.png",
+  "north": "hegemony_sapper_north.png",
+  "north-west": "hegemony_sapper_north-west.png",
+  "west": "hegemony_sapper_west.png",
+  "south-west": "hegemony_sapper_south-west.png"
+ },
+ "hegemony_sniper": {
+  "south": "hegemony_sniper_south.png",
+  "south-east": "hegemony_sniper_south-east.png",
+  "east": "hegemony_sniper_east.png",
+  "north-east": "hegemony_sniper_north-east.png",
+  "north": "hegemony_sniper_north.png",
+  "north-west": "hegemony_sniper_north-west.png",
+  "west": "hegemony_sniper_west.png",
+  "south-west": "hegemony_sniper_south-west.png"
+ },
+ "hegemony_signaller": {
+  "south": "hegemony_signaller_south.png",
+  "south-east": "hegemony_signaller_south-east.png",
+  "east": "hegemony_signaller_east.png",
+  "north-east": "hegemony_signaller_north-east.png",
+  "north": "hegemony_signaller_north.png",
+  "north-west": "hegemony_signaller_north-west.png",
+  "west": "hegemony_signaller_west.png",
+  "south-west": "hegemony_signaller_south-west.png"
+ },
+ "concord_chaplain": {
+  "south": "concord_chaplain_south.png",
+  "south-east": "concord_chaplain_south-east.png",
+  "east": "concord_chaplain_east.png",
+  "north-east": "concord_chaplain_north-east.png",
+  "north": "concord_chaplain_north.png",
+  "north-west": "concord_chaplain_north-west.png",
+  "west": "concord_chaplain_west.png",
+  "south-west": "concord_chaplain_south-west.png"
+ },
+ "concord_sniper": {
+  "south": "concord_sniper_south.png",
+  "south-east": "concord_sniper_south-east.png",
+  "east": "concord_sniper_east.png",
+  "north-east": "concord_sniper_north-east.png",
+  "north": "concord_sniper_north.png",
+  "north-west": "concord_sniper_north-west.png",
+  "west": "concord_sniper_west.png",
+  "south-west": "concord_sniper_south-west.png"
  }
 }

@@ -51,3 +51,19 @@ test('při zaplnění se otevřou další sektory a nikdo se nepřesune', () => 
   const slots = s.soldiers.map((x) => x.pos.join(','));
   assert.equal(new Set(slots).size, slots.length, 'dva vojáci na jednom místě');
 });
+
+import { openVote } from './roster.js';
+test('hlasování: jeden hlas na účet, platí poslední, vyhodnotí denní tah', () => {
+  const s = emptyState(theme);
+  openVote(s, { mediaId: 'm1', question: 'Attack?', options: [
+    { kw: 'HOLD', label: 'Hold', danger: 0.5, outcome: 'held' },
+    { kw: 'ATTACK', label: 'Attack', danger: 2, outcome: 'attacked' },
+  ] });
+  const c = (id, u, text, mediaId = 'm1') => applyComment(s, { id, userId: u, username: u, text, mediaId }, theme, story, map);
+  c('1', 'a', 'attack!'); c('2', 'b', 'ATTACK'); c('3', 'c', 'hold'); c('4', 'b', 'hold now'); c('5', 'd', 'ATTACK', 'other');
+  dailyTick(s, theme, story);
+  const ev = s.events.at(-1);
+  assert.equal(ev.winner, 'HOLD');
+  assert.deepEqual(ev.counts, { HOLD: 2, ATTACK: 1 });
+  assert.equal(s.vote, null);
+});

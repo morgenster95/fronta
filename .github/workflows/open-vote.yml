@@ -1,0 +1,35 @@
+# Otevře hlasování pod Reelem (dá se spustit i z mobilu: GitHub app → Actions → open-vote → Run workflow).
+name: open-vote
+on:
+  workflow_dispatch:
+    inputs:
+      media_id: { description: 'ID Reelu (z IG API nebo z logu ingestu)', required: true }
+      question: { description: 'Otázka (anglicky)', required: true }
+      option_a: { description: 'KW|popis|nebezpečí|výsledek  (např. HOLD|Hold the line|0.7|The line held…)', required: true }
+      option_b: { description: 'KW|popis|nebezpečí|výsledek', required: true }
+      option_c: { description: 'volitelná třetí možnost', required: false }
+concurrency: { group: state, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  vote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Open vote
+        env:
+          MEDIA: ${{ inputs.media_id }}
+          Q: ${{ inputs.question }}
+          A: ${{ inputs.option_a }}
+          B: ${{ inputs.option_b }}
+          C: ${{ inputs.option_c }}
+        run: |
+          if [ -n "$C" ]; then node tools/open-vote.mjs "$MEDIA" "$Q" "$A" "$B" "$C"; else node tools/open-vote.mjs "$MEDIA" "$Q" "$A" "$B"; fi
+      - run: |
+          git config user.name "front-bot"
+          git config user.email "front-bot@users.noreply.github.com"
+          git add data/state.json && git commit -m "vote: $Q" && git push
+        env: { Q: '${{ inputs.question }}' }

@@ -35,3 +35,13 @@ Postup: `create_image_pro_flash` 32×32 se `style_image` = jih střelce frakce (
 | test04/prop_grave, prop_tree | ✔ | jobs d2b6f771…, 3a74feef… | 10 |
 | test04/prop_crates | ✗ vypadá jako kameny | job 9ff21a60… | 5 |
 | test04/prop_wire | ~ moc tmavé | job c5e9d5d5… | 5 |
+
+## test05–06 (8. 11. 2026) — zbylé archetypy + nový střelec Concordu
+Postup stejný (pro_flash čelní snímek se style_image → sprite_fix --baseline → v3 rotace). Všech 20 spritů (10 typů × 2 frakce) v `art/sprites.json`.
+| Typ | Poznámka | Cena |
+|---|---|---|
+| concord/hegemony: sapper, runner, signaller, cook | ✔ (pata srovnána posunem ±1 px) | 12×5 + rotace |
+| hegemony: chaplain, sniper | ✔ | |
+| concord chaplain, sniper | 1. pokus 28 px → v2 ✔ (sniper převzal červenou pásku ze stylové předlohy) | +10 |
+| hegemony cook | naběračka 1 px od ruky (QA hlásí ostrov, ponecháno) | |
+| concord (střelec) v2 | khaki Brodie místo šedomodré přilby, char 950a1f6d-d64b-488b-a833-e5571cc9bb26 | 10+1 |

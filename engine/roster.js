@@ -39,6 +39,8 @@ export function applyComment(state, comment, theme, story, map) {
   if (state.seenComments.includes(comment.id)) return null;
   state.seenComments.push(comment.id);
   if (state.seenComments.length > 20000) state.seenComments.splice(0, 5000);
+  const vote = castVote(state, comment);
+  if (vote) return vote;
   const parsed = parseComment(comment.text, theme);
   if (!parsed) return null;
   const handle = (comment.username || '').toLowerCase();
@@ -92,8 +94,43 @@ export function unitName(order) {
   return `${ORD(platoon)} Platoon, ${ORD(company)} Company`;
 }
 
+// --- hlasování v komentářích pod Reelem ---
+// state.vote = { mediaId, question, options: [{ kw, label, danger, outcome }], tallies: { handle: kw } }
+export function openVote(state, { mediaId, question, options }) {
+  state.vote = { mediaId, question, options, tallies: {}, openedDay: state.day };
+}
+
+function castVote(state, comment) {
+  const v = state.vote;
+  if (!v || !comment.mediaId || comment.mediaId !== v.mediaId) return null;
+  const t = (comment.text || '').toUpperCase();
+  const opt = v.options.find((o) => new RegExp(`\\b${o.kw}\\b`).test(t));
+  const handle = (comment.username || '').toLowerCase();
+  if (!opt || !handle) return null;
+  v.tallies[handle] = opt.kw; // platí poslední hlas
+  return { type: 'vote', handle, kw: opt.kw };
+}
+
+export function resolveVote(state) {
+  const v = state.vote;
+  if (!v) return null;
+  const counts = Object.fromEntries(v.options.map((o) => [o.kw, 0]));
+  for (const kw of Object.values(v.tallies)) counts[kw] = (counts[kw] || 0) + 1;
+  const total = Object.values(counts).reduce((a, b) => a + b, 0);
+  // remíza nebo žádné hlasy → první možnost (výchozí „držet linii“ dej jako první)
+  const winner = v.options.reduce((best, o) => (counts[o.kw] > counts[best.kw] ? o : best), v.options[0]);
+  const result = { day: state.day, question: v.question, winner: winner.kw, counts, total, text: winner.outcome, danger: winner.danger ?? 1 };
+  state.events = [...(state.events || []), result].slice(-60);
+  state.vote = null;
+  return result;
+}
+
 // Denní tah: nový den, zápisy, osudy, nástupci padlých.
 export function dailyTick(state, theme, story, ctx = {}) {
+  const decided = resolveVote(state);
+  if (decided) {
+    ctx = { ...ctx, danger: ctx.danger ?? decided.danger };
+  }
   state.day++;
   const day = state.day;
   const active = new Set(ctx.activeIds || []);
@@ -122,6 +159,8 @@ export function buildPublic(state, theme) {
     day: state.day,
     followers: state.followers,
     openSectors: state.openSectors ?? 8,
+    dispatch: (state.events || []).slice(-1)[0] || null,
+    vote: state.vote ? { question: state.vote.question, options: state.vote.options.map((o) => ({ kw: o.kw, label: o.label })), votes: Object.keys(state.vote.tallies).length } : null,
     updated: new Date().toISOString(),
     fields: ['handle', 'faction', 'x', 'y', 'dir', 'archetype', 'rank', 'status', 'variant', 'claimed', 'generation', 'name'],
     soldiers: state.soldiers.map((s) => [

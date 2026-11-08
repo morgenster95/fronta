@@ -11,7 +11,10 @@ _Aktualizováno 8. 11. 2026._
 - **Ingest** (`ingest/poll-comments.mjs`): Instagram API (Standard Access, vlastní účet), stahování každých 30 min přes GitHub Actions,
   volitelná soukromá odpověď (Private Reply), párování převzetí přes Firestore.
 - **Firebase projekt `fronta-ig`** (Spark, zdarma), náhled: https://fronta-ig--preview-om1t1aan.web.app (platí do 8. 12.).
-- **Grafika:** Concord a Hegemony střelec, 8 směrů, výška 30 px, kontrola pixelů (`tools/sprite_qa.py`).
+- **Grafika:** všech 10 typů vojáků × 2 frakce (střelec, důstojník, zdravotník, kulometčík, ženista, spojka, ostřelovač, spojař, kuchař, kaplan),
+  8 směrů, chodidla na jednom řádku, výška 30 ±1 px. Rekvizity: hrob s přilbou, mrtvý strom. Nástroje: `tools/sprite_qa.py` (kontrola), `tools/sprite_fix.py` (plovoucí pixely, pata).
+- **Hlasování:** komentář s klíčovým slovem pod Reelem, 1 hlas na účet, vyhodnotí denní tah → denní zpráva na webu. Otevření: workflow `open-vote` (jde i z mobilu přes GitHub app).
+- **Růst fronty:** mapa má 32 sektorů, otevřeno 8; při 90% zaplnění se otevřou další 2. Voják má uloženou trvalou pozici, nikdy se nepřesune.
 
 ## Potřebuju od tebe (až se vrátíš)
 1. **Název hry + IG účet.** V `themes/front-ww1/theme.json` je zástupný `@thefront.game`.
@@ -28,8 +31,7 @@ _Aktualizováno 8. 11. 2026._
 
 ## Další kroky (můj návrh pořadí)
 1. Finální dlaždice terénu z PixelLabu (pro režim) místo procedurálních + rekvizity (dráty, pytle, kříže, bedny, kulomet).
-2. Ostatní archetypy vojáků (8 na frakci) podle `docs/PIXELLAB_BRIEF.md` + animace idle/walk.
-3. Růst mapy po sektorech bez přesouvání stávajících vojáků (teď se pořadí plnění počítá od středu pro pevný počet sektorů).
-4. Hlasování z komentářů pod denním Reelem → událost dne → `danger` a posun linie.
+2. Animace (idle/walk) z PixelLabu, tank 8 směrů.
+3. Posun linie podle výsledků hlasování (zatím hlasování mění jen nebezpečnost dne).
 5. Renderer Reelů (headless prohlížeč nahraje průlet kamerou).
 6. Výkon na mobilu: zatím ověřeno jen na desktopu (Chrome).

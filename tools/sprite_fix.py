@@ -5,6 +5,7 @@ Použití: python tools/sprite_fix.py <vstup.png ...> --out art/pixellab/fixed [
 Výsledek zkontroluj okem (tools/sprite_qa.py --sheet), velký odtržený kus může být záměr (např. jiskra, kouř).
 """
 import argparse
+import glob
 import os
 import sys
 
@@ -21,6 +22,8 @@ def main():
     ap.add_argument("--max", type=int, default=4)
     ap.add_argument("--baseline", action="store_true")
     a = ap.parse_args()
+    # Windows shell (npm) neexpanduje hvězdičky → expanduj tady
+    a.files = [g for f in a.files for g in (sorted(glob.glob(f)) or [f])]
     os.makedirs(a.out, exist_ok=True)
     for f in a.files:
         im = Image.open(f).convert("RGBA")

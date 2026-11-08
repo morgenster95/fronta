@@ -81,8 +81,8 @@ export function paintChunk(map, cx, cy, images = {}) {
         if (d > 1) continue;
         const rr = hash2(x + ox, y + oy, 13);
         let c;
-        if (d > 0.9) c = dy < 0 ? (rr < 0.35 ? 5 : rr < 0.8 ? 4 : 3) : rr < 0.5 ? 2 : 3; // val: horní osvětlený, spodní ve stínu
-        else if (cr.r >= 2 && d < 0.55) c = d < 0.5 ? (rr < 0.04 ? 16 : dy < -R * 0.2 ? 14 : 17) : 1; // voda
+        if (d > 0.9) c = dy < 0 ? (rr < 0.12 ? 5 : rr < 0.7 ? 4 : 3) : rr < 0.5 ? 2 : 3; // val: horní osvětlený, spodní ve stínu
+        else if (cr.r >= 2 && d < 0.55) c = d < 0.5 ? (rr < 0.006 ? 15 : vnoise((x + ox) / 6, (y + oy) / 2, 4) < 0.35 ? 14 : 17) : 1; // voda
         else c = dy < 0 ? 1 : rr < 0.5 ? 2 : 3;
         put(x, y, c);
       }

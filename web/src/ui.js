@@ -21,6 +21,21 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   $('lab-a').textContent = `${A.name.replace('The ', '')} ${n[0].toLocaleString('en')}`;
   $('lab-b').textContent = `${B.name.replace('The ', '')} ${n[1].toLocaleString('en')}`;
 
+  // denní zpráva a hlasování
+  if (roster.dispatch || roster.vote) {
+    $('dispatch').hidden = false;
+    if (roster.dispatch) {
+      $('dispatch-text').innerHTML = `<span class="d">Dispatch · Day ${roster.dispatch.day}</span>${esc(roster.dispatch.text)}`;
+    }
+    if (roster.vote) {
+      const v = roster.vote;
+      $('vote').hidden = false;
+      $('vote').innerHTML = `<span class="d">The front decides</span>${esc(v.question)}<br>` +
+        v.options.map((o) => `<span class="kw" title="${esc(o.label)}">${esc(o.kw)}</span>`).join('') +
+        `<span class="muted"> comment under today's reel · ${v.votes} votes</span>`;
+    }
+  }
+
   $('zoom-in').onclick = () => onZoom(1.5);
   $('zoom-out').onclick = () => onZoom(1 / 1.5);
 

@@ -1,11 +1,8 @@
 {
   "_note": "Výběr spritů pro hru. Klíč = frakce (střelec) nebo frakce_archetyp. character = PixelLab ID (stáhne se 8 směrů), fixed = ručně opravené soubory, které přepíšou stažené.",
   "concord": {
-    "character": "9b6313c1-ce86-4b7f-9cc2-103b0270f907",
-    "fixed": {
-      "north": "art/pixellab/fixed/concord_rifleman32_north.png",
-      "east": "art/pixellab/fixed/concord_rifleman32_east.png"
-    }
+    "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26",
+    "fixed": {}
   },
   "hegemony": {
     "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4",
@@ -82,6 +79,14 @@
   },
   "hegemony_signaller": {
     "character": "8ffd6cd3-2c61-41f8-b711-2938fa8a6a99",
+    "fixed": {}
+  },
+  "concord_chaplain": {
+    "character": "e6c7fe1f-61d9-43fb-8f2e-8ac7fc270499",
+    "fixed": {}
+  },
+  "concord_sniper": {
+    "character": "7426cf4a-3535-479b-96f6-9991c20b37ad",
     "fixed": {}
   }
 }
