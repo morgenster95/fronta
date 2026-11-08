@@ -17,8 +17,10 @@ _Aktualizováno 8. 11. 2026._
 - **Růst fronty:** mapa má 32 sektorů, otevřeno 8; při 90% zaplnění se otevřou další 2. Voják má uloženou trvalou pozici, nikdy se nepřesune.
 
 - **Hloubka zákopů:** vzdálená stěna s obložením a stínem, bližší okraj a jižní pytle ve vrstvě NAD vojáky (stojí v zákopu, Hegemonie vykukuje přes pytle).
-- **Život na frontě** (`web/src/life.js`, jen vizuál, nikoho nezraní): dýchání (snímky z PixelLabu, nohy stojí), občasný výstřel (animace + kouř + stopa, 1× za 3,5–8 s),
-  granát do země nikoho (1× za 25–60 s, VFX z PixelLabu), světlice, zdravotník dojde ke skutečně zraněnému (stav z denního tahu) a ošetří ho.
+- **Život na frontě** (`web/src/life.js`, jen vizuál, nikoho nezraní): dýchání (snímky z PixelLabu, nohy stojí); střelba podle klidného dne
+  na západní frontě: voják v záběru vystřelí každých ~1–2,5 s, vzdálené záblesky po linii každých ~0,3–0,8 s, kulometná dávka 1× za 9–20 s,
+  při ranním a večerním stand-to („morning hate“, 5:30–6:15 a 18:30–19:15 místního času) palba ×3; granát 1× za 20–50 s, světlice;
+  zdravotník jde ke skutečně zraněnému po trase zákopu (i cikcakem), chodí pod okrajem zákopu, ošetří ho a vrátí se.
   Skutečná zranění dál jen v denním tahu (pomalu).
 - **Bombardování:** odemkne se při 500 převzatých vojácích (ukazatel na webu), pak jde dát do hlasování (`open-vote` s efektem `barrage`);
   vítězství = hustá palba na cílovou frakci po celý další den + vyšší nebezpečí v denním tahu. Náhled: `/?fx=barrage`.

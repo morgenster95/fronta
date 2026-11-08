@@ -75,6 +75,8 @@ async function boot() {
   world.addChild(terrainLayer);
   const soldierLayer = new Container();
   world.addChild(soldierLayer);
+  const actorLayer = new Container(); // chodící postavy (zdravotníci) – v zákopu, pod jeho okrajem
+  world.addChild(actorLayer);
   const overLayer = new Container(); // bližší okraje zákopů a pytle před vojáky
   world.addChild(overLayer);
   const dots = new Graphics();
@@ -157,7 +159,7 @@ async function boot() {
       console.warn('fx', name, e);
     }
   }));
-  const life = createLife({ world, theme, soldiers: placed, anims, tex, map, dirs: DIRS, fx: fxSheets });
+  const life = createLife({ world, actorLayer, theme, anims, tex, map, dirs: DIRS, fx: fxSheets });
   for (const s of placed) life.setupSprite(s, s.sprite);
   // bombardování: výsledek včerejšího hlasování, nebo náhled přes ?fx=barrage
   const fxParam = new URLSearchParams(location.search).get('fx');

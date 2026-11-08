@@ -1,12 +1,27 @@
-// Simulovaný život na frontě: dýchání, občasný výstřel, granát, světlice, zdravotník u raněného, bombardování.
+// Simulovaný život na frontě: dýchání, střelba, kulometné dávky, granáty, světlice, zdravotník u raněného, bombardování.
 // Čistě vizuální a jen ve viditelné části mapy: nikoho to nezraní. Skutečné osudy řeší denní tah (pomalu).
+//
+// Tempo podle klidného dne na západní frontě: průběžná ojedinělá palba (odstřelovači, hlídky; plánovalo se ~4 náboje
+// na pušku denně, tj. při tisících vojáků výstřel každých pár sekund někde na linii), občasné kulometné dávky
+// a „morning hate“ při ranním a večerním stand-to, kdy obě strany pálí naplno.
 import { AnimatedSprite, Container, Graphics, Sprite } from 'pixi.js';
 
-const DIRS_BY_FACING = { 0: 'south', 4: 'north' };
-
-// pomalé tempo: výstřel jednou za pár sekund, granát jednou za půl minuty až minutu
-const RATE = { shot: [3500, 8000], shell: [25000, 60000], flare: [30000, 70000], barrageShell: [500, 1600] };
+const RATE = {
+  shot: [900, 2400], // voják v záběru vystřelí (animace)
+  distant: [250, 800], // záblesk někde na linii v záběru (bez animace)
+  burst: [9000, 20000], // kulometná dávka
+  shell: [20000, 50000],
+  flare: [25000, 60000],
+  barrageShell: [500, 1600],
+};
 const rnd = (a, b) => a + Math.random() * (b - a);
+const MEDIC_SPEED = 0.016; // px/ms ≈ 1 m/s
+
+// „Morning hate“: stand-to za úsvitu a za soumraku (místní čas diváka) → palba ×3
+export function standTo(date = new Date()) {
+  const m = date.getHours() * 60 + date.getMinutes();
+  return (m >= 330 && m < 375) || (m >= 1110 && m < 1155);
+}
 
 // Animace z PixelLabu můžou mít větší plátno (např. 44 px, rozšířené symetricky).
 // Pata je vždy na řádku 30 původního 32px plátna → kotvu dopočítáme z velikosti snímku.
@@ -17,22 +32,32 @@ function setTex(sp, t) {
   sp.anchor.set(0.5, (30 + off) / t.height);
 }
 
-export function createLife({ world, theme, soldiers, anims, tex, map, dirs, fx = {} }) {
+export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx = {} }) {
   const layer = new Container(); // efekty nad terénem i vojáky
   world.addChild(layer);
   const particles = [];
-  const actors = []; // dočasní chodící zdravotníci
-  const t = { shot: rnd(...RATE.shot), shell: rnd(...RATE.shell), flare: rnd(4000, 12000), barrage: 0 };
+  const actors = []; // dočasní chodící zdravotníci (ve vrstvě pod okrajem zákopu)
+  const events = []; // naplánované výstřely kulometné dávky
+  const t = { shot: rnd(...RATE.shot), distant: 0, burst: rnd(...RATE.burst), shell: rnd(...RATE.shell), flare: rnd(4000, 12000), barrage: 0 };
   const g = new Graphics();
   layer.addChild(g);
   let barrage = null; // { faction: cílová frakce }
+  let shake = 0;
+  const T = map.tile;
+  const cellPos = ([cx, cy]) => ({ x: cx * T + 16, y: cy * T + 27 }); // stejně jako sloty vojáků
+
+  // index buněk zákopů → (trasa, pořadí), aby zdravotník chodil po zákopu včetně cikcaku
+  const cellIndex = new Map();
+  map.paths.forEach((p, pi) => p.cells.forEach(([cx, cy], ci) => {
+    const k = `${cx},${cy}`;
+    if (!cellIndex.has(k)) cellIndex.set(k, { pi, ci });
+  }));
 
   // --- animace postav: dýchání (idle) a jednorázová akce (výstřel) ---
   function setupSprite(s, sp) {
     const key = s.texKey;
     const dir = dirs[s.slot.d];
     const idle = anims[key]?.idle?.[dir];
-    s.idle = idle;
     s.fire = anims[key]?.fire?.[dir];
     const phase = Math.random() * 4000;
     sp.animate = (now) => {
@@ -50,27 +75,53 @@ export function createLife({ world, theme, soldiers, anims, tex, map, dirs, fx =
         setTex(sp, tex[key][dir]);
       }
       if (s.wounded) return;
-      // dýchání: 4 snímky po ~450 ms, nohy stojí (snímky z PixelLabu), ne posun celého spritu
+      // dýchání: snímky z PixelLabu (nohy stojí), ne posun celého spritu
       if (idle) setTex(sp, idle[Math.floor((now + phase) / 450) % idle.length]);
     };
   }
 
-  // --- výstřel: animace + záblesk + kouř + stopa ---
+  // --- výstřely ---
   function shoot(candidates, now) {
-    const pool = candidates.filter((s) => s.fire && !s.action && !s.wounded);
+    const pool = candidates.filter((s) => !s.action && !s.wounded);
     if (!pool.length) return;
     const s = pool[Math.floor(Math.random() * pool.length)];
-    s.action = { frames: s.fire, t0: now, ms: 100, fireAt: Math.floor(s.fire.length / 2), fired: false };
+    if (s.fire) s.action = { frames: s.fire, t0: now, ms: 100, fireAt: Math.floor(s.fire.length / 2), fired: false };
+    else muzzle(s); // bez animace aspoň záblesk a kouř nad zákopem
   }
   function muzzle(s) {
     // ústí hlavně podle snímků z PixelLabu: čelem k nám (jih) vpravo ve výšce hrudi, zády (sever) nad pravým ramenem
-    const south = s.slot.d === 0;
+    const south = s.slot.d === 0 || s.slot.d === 1 || s.slot.d === 7;
     const x = s.x + (south ? 9 : 5), y = s.y - (south ? 17 : 31);
-    if (!south) particles.push({ kind: 'flash', x, y, life: 90, max: 90 }); // jižní snímky mají záblesk v sobě
-    const puff = playFx('smoke-small', x + (south ? 4 : 0), y - 4, 0.5, 0.55);
-    if (!puff)
-      for (let i = 0; i < 4; i++) particles.push({ kind: 'smoke', x: x + rnd(-2, 2), y, vx: rnd(-0.004, 0.004), vy: -rnd(0.006, 0.012), life: rnd(900, 1500), max: 1500, size: rnd(1.5, 3) });
-    particles.push({ kind: 'tracer', x, y, vx: rnd(-0.02, 0.02), vy: (south ? 1 : -1) * 0.55, life: 260, max: 260 });
+    flash(x, y, !(south && s.fire)); // jižní animace má záblesk v sobě
+    playFx('smoke-small', x + (south ? 4 : 0), y - 4, 0.5, 0.55);
+    tracer(x, y, south ? 1 : -1);
+  }
+  function flash(x, y, visible = true) {
+    if (visible) particles.push({ kind: 'flash', x, y, life: 110, max: 110 });
+    particles.push({ kind: 'glow', x, y, life: 140, max: 140 });
+  }
+  function tracer(x, y, dir) {
+    particles.push({ kind: 'tracer', x, y, vx: rnd(-0.03, 0.03), vy: dir * 0.9, life: 420, max: 420 });
+  }
+  // vzdálený výstřel z linie (bez postavy, pro pocit živé fronty)
+  function distantShot(view) {
+    const f = Math.random() < 0.5 ? 0 : 1;
+    const y = map.front[f] * T + (f === 0 ? 10 : 6);
+    const x = rnd(view.x0, view.x1);
+    flash(x, y);
+    playFx('smoke-small', x, y - 4, 0.6, 0.35);
+    if (Math.random() < 0.5) tracer(x, y, f === 0 ? 1 : -1);
+  }
+  // kulometná dávka: 5–9 ran po 70 ms
+  function burst(view, gunners, now) {
+    const g0 = gunners.length ? gunners[Math.floor(Math.random() * gunners.length)] : null;
+    const f = g0 ? g0.faction : Math.random() < 0.5 ? 0 : 1;
+    const x = g0 ? g0.x + 6 : rnd(view.x0, view.x1);
+    const y = g0 ? g0.y - 20 : map.front[f] * T + 8;
+    const dir = f === 0 ? 1 : -1;
+    const n = 5 + Math.floor(Math.random() * 5);
+    for (let i = 0; i < n; i++) events.push({ at: now + i * 70, run: () => { flash(x + rnd(-1, 1), y); tracer(x, y, dir); } });
+    events.push({ at: now + n * 70, run: () => playFx('smoke-small', x, y - 4, 0.5, 0.5) });
   }
 
   // přehraje efekt z PixelLab VFX (spritesheet) jednou a odstraní ho
@@ -90,86 +141,107 @@ export function createLife({ world, theme, soldiers, anims, tex, map, dirs, fx =
     return true;
   }
 
-  // --- granát: záblesk, sloup bláta, kouř ---
+  // --- granát: VFX z PixelLabu (sloup bláta, kouř), jinak jednoduchý záblesk ---
   function shell(x, y, big = false) {
-    if (playFx(big ? 'shell-blast' : 'shell-small', x, y)) {
-      shake = Math.max(shake, big ? 3 : 1.5);
-      return;
-    }
-    particles.push({ kind: 'boom', x, y, life: 220, max: 220, r: big ? 22 : 14 });
-    const n = big ? 26 : 16;
-    for (let i = 0; i < n; i++) {
-      const a = -Math.PI / 2 + rnd(-0.9, 0.9);
-      const v = rnd(0.05, big ? 0.16 : 0.12);
-      particles.push({ kind: 'dirt', x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: rnd(600, 1100), max: 1100, g: 0.00028 });
-    }
-    for (let i = 0; i < (big ? 10 : 6); i++) particles.push({ kind: 'smoke', x: x + rnd(-6, 6), y: y - rnd(0, 6), vx: rnd(-0.006, 0.006), vy: -rnd(0.004, 0.01), life: rnd(2500, 4500), max: 4500, size: rnd(3, big ? 7 : 5) });
+    if (!playFx(big ? 'shell-blast' : 'shell-small', x, y)) particles.push({ kind: 'boom', x, y, life: 220, max: 220, r: big ? 22 : 14 });
     shake = Math.max(shake, big ? 3 : 1.5);
   }
 
   // --- světlice: stoupá, visí, osvětluje okolí, pomalu klesá ---
   function flare(view) {
-    const x = rnd(view.x0, view.x1);
-    const mid = (map.front[0] + map.front[1]) / 2 * map.tile + 16;
-    particles.push({ kind: 'flare', x, y: mid + rnd(-60, 60), vy: -0.05, life: 7000, max: 7000 });
+    const mid = ((map.front[0] + map.front[1]) / 2) * T + 16;
+    particles.push({ kind: 'flare', x: rnd(view.x0, view.x1), y: mid + rnd(-60, 60), vy: -0.05, life: 7000, max: 7000 });
   }
 
-  // --- zdravotník: dojde ke zraněnému, chvíli u něj klečí, odejde ---
+  // --- zdravotník: přijde po zákopu (po buňkách trasy, i cikcak), ošetří raněného, odejde zpět ---
   function sendMedic(s, now) {
-    const f = theme.factions[s.faction].sprite;
-    const key = anims[`${f}_medic`] ? `${f}_medic` : f;
+    const fk = theme.factions[s.faction].sprite;
+    const key = anims[`${fk}_medic`] ? `${fk}_medic` : fk;
     const walk = anims[key]?.walk;
     if (!walk) return;
-    const from = s.x + (Math.random() < 0.5 ? -1 : 1) * rnd(80, 140);
+    const cx = Math.round((s.x - 16) / T), cy = Math.round((s.y - 27) / T);
+    let hit = null;
+    for (let dy = -1; dy <= 1 && !hit; dy++) for (let dx = -1; dx <= 1 && !hit; dx++) hit = cellIndex.get(`${cx + dx},${cy + dy}`);
+    if (!hit) return;
+    const cells = map.paths[hit.pi].cells;
+    const dirSign = Math.random() < 0.5 ? -1 : 1;
+    let from = hit.ci + dirSign * Math.round(rnd(14, 26));
+    from = Math.max(0, Math.min(cells.length - 1, from));
+    if (Math.abs(from - hit.ci) < 4) return;
+    // trasa po buňkách od startu k buňce vedle raněného
+    const stop = hit.ci - Math.sign(hit.ci - from) * 1;
+    const route = [];
+    for (let i = from; i !== stop; i += Math.sign(stop - from)) route.push(cellPos(cells[i]));
+    route.push(cellPos(cells[stop]));
     const sp = new Sprite(tex[key].south);
     sp.anchor.set(0.5, 30 / 32);
-    sp.x = from;
-    sp.y = s.y;
-    layer.addChild(sp);
-    actors.push({ sp, walk, idle: tex[key], target: s, x: from, phase: 'go', t0: now, back: from });
+    sp.x = route[0].x;
+    sp.y = route[0].y;
+    actorLayer.addChild(sp);
+    actors.push({ sp, walk, idle: tex[key], target: s, route, i: 0, x: route[0].x, y: route[0].y, phase: 'go', t0: now });
     s.medicOn = true;
   }
   function updateActors(now, dt) {
-    for (let i = actors.length - 1; i >= 0; i--) {
-      const a = actors[i];
-      const goal = a.phase === 'go' ? a.target.x + 10 : a.phase === 'back' ? a.back : a.x;
-      const dx = goal - a.x;
+    for (let k = actors.length - 1; k >= 0; k--) {
+      const a = actors[k];
       if (a.phase === 'tend') {
-        setTex(a.sp, a.idle.west);
-        a.sp.scale.x = 1;
-        if (now - a.t0 > 9000) { a.phase = 'back'; a.target.medicOn = false; }
+        const face = a.target.x > a.x ? 'east' : 'west';
+        setTex(a.sp, a.idle[face]);
+        if (now - a.t0 > 9000) {
+          a.phase = 'back';
+          a.route.reverse();
+          a.i = 0;
+          a.target.medicOn = false;
+        }
         continue;
       }
-      if (Math.abs(dx) < 1) {
-        if (a.phase === 'go') { a.phase = 'tend'; a.t0 = now; continue; }
-        layer.removeChild(a.sp);
-        actors.splice(i, 1);
-        continue;
+      let budget = dt * MEDIC_SPEED;
+      let dir = null;
+      while (budget > 0 && a.i < a.route.length - 1) {
+        const n = a.route[a.i + 1];
+        const dx = n.x - a.x, dy = n.y - a.y;
+        const d = Math.hypot(dx, dy);
+        dir = Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 'east' : 'west') : dy > 0 ? 'south' : 'north';
+        if (d <= budget) { a.x = n.x; a.y = n.y; a.i++; budget -= d; }
+        else { a.x += (dx / d) * budget; a.y += (dy / d) * budget; budget = 0; }
       }
-      const step = Math.sign(dx) * Math.min(Math.abs(dx), dt * 0.018); // ~1 m/s
-      a.x += step;
       a.sp.x = Math.round(a.x);
-      const dir = step > 0 ? 'east' : 'west';
-      const frames = a.walk[dir] || a.walk.east;
-      a.sp.scale.x = !a.walk[dir] && dir === 'west' ? -1 : 1;
-      setTex(a.sp, frames[Math.floor(now / 110) % frames.length]);
+      a.sp.y = Math.round(a.y);
+      if (dir) {
+        const frames = a.walk[dir] || a.walk.east;
+        setTex(a.sp, frames[Math.floor(now / 110) % frames.length]);
+      }
+      if (a.i >= a.route.length - 1) {
+        if (a.phase === 'go') { a.phase = 'tend'; a.t0 = now; }
+        else { a.sp.destroy(); actors.splice(k, 1); }
+      }
     }
   }
 
-  let shake = 0;
-
   function update(now, dt, view, visibleSoldiers, showSprites) {
-    // časovače
-    t.shot -= dt;
+    const heat = standTo() ? 3 : 1; // morning hate
+    t.shot -= dt * heat;
+    t.distant -= dt * heat;
+    t.burst -= dt * heat;
     t.shell -= dt;
     t.flare -= dt;
     if (showSprites && t.shot < 0) {
       t.shot = rnd(...RATE.shot);
-      shoot(visibleSoldiers.filter((s) => s.slot.line === 'front' || s.slot.d === 0 || s.slot.d === 4), now);
+      // střílí hlavně přední linie čelem k nepříteli
+      shoot(visibleSoldiers.filter((s) => s.slot.line === 'front' || s.fire), now);
     }
+    if (t.distant < 0) {
+      t.distant = rnd(...RATE.distant);
+      distantShot(view);
+    }
+    if (t.burst < 0) {
+      t.burst = rnd(...RATE.burst);
+      burst(view, visibleSoldiers.filter((s) => s.archetype?.id === 'machinegunner' && !s.wounded), now);
+    }
+    for (let i = events.length - 1; i >= 0; i--) if (events[i].at <= now) { events[i].run(); events.splice(i, 1); }
     if (t.shell < 0) {
       t.shell = rnd(...RATE.shell);
-      const mid = (map.front[0] + map.front[1]) / 2 * map.tile + 16;
+      const mid = ((map.front[0] + map.front[1]) / 2) * T + 16;
       shell(rnd(view.x0, view.x1), mid + rnd(-map.nmlHalf * 10, map.nmlHalf * 10));
     }
     if (t.flare < 0) {
@@ -181,14 +253,14 @@ export function createLife({ world, theme, soldiers, anims, tex, map, dirs, fx =
       if (t.barrage < 0) {
         t.barrage = rnd(...RATE.barrageShell);
         // dopady na stranu cílové frakce: přední linie a země nikoho před ní
-        const fy = map.front[barrage.faction] * map.tile + 16;
+        const fy = map.front[barrage.faction] * T + 16;
         const toRear = barrage.faction === 0 ? -1 : 1;
         shell(rnd(view.x0 - 100, view.x1 + 100), fy + toRear * rnd(-140, 260), Math.random() < 0.35);
       }
     }
     // zdravotníci k viditelným raněným (max 3 najednou)
     if (showSprites && actors.length < 3) {
-      const w = visibleSoldiers.find((s) => s.wounded && !s.medicOn && Math.random() < 0.01);
+      const w = visibleSoldiers.find((s) => s.wounded && !s.medicOn && Math.random() < 0.02);
       if (w) sendMedic(w, now);
     }
     updateActors(now, dt);
@@ -201,21 +273,17 @@ export function createLife({ world, theme, soldiers, anims, tex, map, dirs, fx =
       if (p.life <= 0) { particles.splice(i, 1); continue; }
       const k = p.life / p.max;
       if (p.vx !== undefined) { p.x += p.vx * dt; p.y += p.vy * dt; }
-      if (p.g) p.vy += p.g * dt;
       switch (p.kind) {
         case 'flash':
           g.rect(Math.round(p.x) - 1, Math.round(p.y) - 1, 3, 3).fill({ color: 0xe3d9c3 });
-          g.rect(Math.round(p.x) - 2, Math.round(p.y), 5, 1).fill({ color: 0xd98f3f, alpha: 0.9 });
+          g.rect(Math.round(p.x) - 3, Math.round(p.y), 7, 1).fill({ color: 0xd98f3f, alpha: 0.9 });
+          g.rect(Math.round(p.x), Math.round(p.y) - 3, 1, 7).fill({ color: 0xd98f3f, alpha: 0.6 });
+          break;
+        case 'glow':
+          g.circle(p.x, p.y, 7).fill({ color: 0xd98f3f, alpha: 0.22 * k });
           break;
         case 'tracer':
-          g.rect(Math.round(p.x), Math.round(p.y), 1, 3).fill({ color: 0xc9c26a, alpha: k });
-          break;
-        case 'smoke':
-          g.rect(Math.round(p.x - p.size / 2), Math.round(p.y - p.size / 2), Math.ceil(p.size), Math.ceil(p.size)).fill({ color: 0x857a68, alpha: 0.45 * k });
-          p.size += dt * 0.002;
-          break;
-        case 'dirt':
-          g.rect(Math.round(p.x), Math.round(p.y), 2, 2).fill({ color: k > 0.5 ? 0x3d3730 : 0x524a3f });
+          g.rect(Math.round(p.x), Math.round(p.y), 1, 4).fill({ color: 0xc9c26a, alpha: 0.8 * k });
           break;
         case 'boom': {
           const r = p.r * (1 - k * 0.5);
@@ -241,9 +309,8 @@ export function createLife({ world, theme, soldiers, anims, tex, map, dirs, fx =
     setupSprite,
     update,
     setBarrage: (b) => (barrage = b),
-    shootNow: (list) => list.forEach((s) => shoot([s], performance.now())), // ladění
     shell,
+    // ladění v konzoli (jen dev)
+    debug: { shoot: (list) => list.forEach((s) => shoot([s], performance.now())), sendMedic: (s) => sendMedic(s, performance.now()), actors },
   };
 }
-
-export { DIRS_BY_FACING };
