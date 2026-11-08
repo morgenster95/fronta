@@ -1,11 +1,11 @@
 // Převzetí vojáka: přihlášení Googlem → kód ENLIST-XXXX → hráč ho napíše jako komentář na IG → ingest spáruje.
 // Firebase se načte až při kliknutí (nezatěžuje první načtení mapy). Konfigurace v web/src/firebase-config.js.
-import { firebaseConfig } from './firebase-config.js';
+import { firebaseConfig, claimEnabled } from './firebase-config.js';
 
 const IN_APP = /Instagram|FBAN|FBAV|FB_IAB|Line\/|Twitter/i;
 
 export async function startClaim(soldier, theme, toast) {
-  if (!firebaseConfig.apiKey) {
+  if (!claimEnabled || !firebaseConfig.apiKey) {
     toast('Claiming opens soon. Your soldier is safe in the trench.');
     return;
   }

@@ -1,8 +1,11 @@
-// Veřejná konfigurace Firebase webové aplikace (není tajná). Prázdné apiKey = převzetí vypnuto.
-// authDomain MUSÍ být doména, na které web běží (kvůli přihlášení v PWA na iPhonu), viz docs/DESIGN.md.
+// Veřejná konfigurace Firebase webové aplikace (není tajná).
+// authDomain = doména, na které web běží (přihlášení přes redirect v PWA na iPhonu, viz docs/STATUS.md).
+// claimEnabled zapnout až po: Google přihlášení ve Firebase + autorizovaná doména + redirect URI u OAuth klienta.
 export const firebaseConfig = {
-  apiKey: '',
-  authDomain: '',
-  projectId: '',
-  appId: '',
+  apiKey: 'AIzaSyBcByl96KI___xFnsVYQhvLf_JYO80kJKE',
+  authDomain: 'mudandiron.web.app',
+  projectId: 'fronta-ig',
+  appId: '1:878232454698:web:4ee667630bbede0b4ea553',
+  messagingSenderId: '878232454698',
 };
+export const claimEnabled = false;
