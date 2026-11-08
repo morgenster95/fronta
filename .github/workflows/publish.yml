@@ -2,7 +2,7 @@
 # Ručně: Actions → publish → Run → ids (mezerou oddělená ID). Automaticky každou hodinu položky s publishAt (když IG_ENABLED=true).
 name: publish
 on:
-  schedule: [{ cron: '5 * * * *' }]
+  schedule: [{ cron: '11 * * * *' }]
   workflow_dispatch:
     inputs:
       ids: { description: 'ID položek z marketing/queue.json (mezerou), prázdné = jen naplánované', required: false }

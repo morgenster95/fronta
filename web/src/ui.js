@@ -14,7 +14,8 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   document.title = theme.title;
   $('day').textContent = `Day ${roster.day}`;
   const n = [0, 1].map((f) => soldiers.filter((s) => s.faction === f && !s.vacant).length);
-  $('total').textContent = `${(n[0] + n[1]).toLocaleString('en')} enlisted`;
+  const vacantCount = soldiers.filter((s) => s.vacant).length;
+  $('total').textContent = `${(n[0] + n[1]).toLocaleString('en')} enlisted` + (vacantCount ? ` · ${vacantCount} posts waiting` : '');
   $('split-a').style.flex = n[0] || 1;
   $('split-b').style.flex = n[1] || 1;
   $('split-a').style.background = A.color;

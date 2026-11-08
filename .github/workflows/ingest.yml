@@ -3,7 +3,8 @@
 # (Veřejné repo má minuty neomezené → lze dát */5.)
 name: ingest
 on:
-  schedule: [{ cron: '*/30 * * * *' }]
+  # lichá minuta: GitHub spouští plánované běhy na :00/:30 se zpožděním
+  schedule: [{ cron: '7,37 * * * *' }]
   workflow_dispatch:
 concurrency: { group: state, cancel-in-progress: false }
 permissions: { contents: write }
