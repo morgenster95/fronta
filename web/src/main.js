@@ -1,6 +1,6 @@
 // Prohlížeč fronty: terén po blocích, tisíce vojáků, úrovně detailu, kamera a UI.
 import { Application, Assets, Container, Graphics, Sprite, Texture, TextureSource, TilingSprite } from 'pixi.js';
-import { generateFront, DIRS } from '../../engine/mapgen.js';
+import { generateFront, openRange, DIRS } from '../../engine/mapgen.js';
 import { hash2 } from '../../engine/rng.js';
 import { Camera } from './camera.js';
 import { paintChunk, paintOverview, CHUNK } from './terrain.js';
@@ -20,6 +20,10 @@ async function boot() {
   ]);
   const map = generateFront(theme.map);
   const worldW = map.W * map.tile, worldH = map.H * map.tile;
+  // otevřené sektory; zbytek mapy je „neprozkoumaný“ (ztmavený) a kamera tam nepustí
+  const [openFrom, openTo] = openRange(map, roster.openSectors ?? 8);
+  const sectorPx = map.sectorW * map.tile;
+  const openX0 = openFrom * sectorPx, openX1 = openTo * sectorPx;
 
   const app = new Application();
   await app.init({
@@ -32,17 +36,18 @@ async function boot() {
   });
   document.getElementById('stage').appendChild(app.canvas);
 
-  // textury vojáků
+  // textury vojáků: klíč = "frakce" (střelec) nebo "frakce_archetyp"; chybějící archetyp → střelec
   const tex = {};
   await Promise.all(
-    theme.factions.flatMap((f) => {
-      tex[f.sprite] = {};
+    Object.keys(manifest).flatMap((key) => {
+      tex[key] = {};
       return DIRS.map(async (d) => {
-        const file = manifest[f.sprite]?.[d] ?? manifest[f.sprite]?.[MIRROR[d]] ?? manifest[f.sprite]?.south;
-        tex[f.sprite][d] = await Assets.load(`/assets/soldiers/${file}`);
+        const file = manifest[key][d] ?? manifest[key][MIRROR[d]] ?? manifest[key].south;
+        tex[key][d] = await Assets.load(`/assets/soldiers/${file}`);
       });
     }),
   );
+  const texFor = (s) => tex[`${theme.factions[s.faction].sprite}_${s.archetype?.id}`] ?? tex[theme.factions[s.faction].sprite];
 
   const world = new Container();
   app.stage.addChild(world);
@@ -57,11 +62,16 @@ async function boot() {
   world.addChild(dots);
   const marker = new Graphics();
   world.addChild(marker);
+  // neprozkoumané sektory po stranách: tma a mlha
+  const uncharted = new Graphics();
+  uncharted.rect(openX0 - sectorPx * 2, 0, sectorPx * 2, worldH).fill({ color: 0x0e0d0c, alpha: 0.75 });
+  uncharted.rect(openX1, 0, sectorPx * 2, worldH).fill({ color: 0x0e0d0c, alpha: 0.75 });
+  world.addChild(uncharted);
 
   // --- vojáci ---
   const F = Object.fromEntries(roster.fields.map((f, i) => [f, i]));
   const soldiers = roster.soldiers.map((row, i) => {
-    const slot = map.slots[row[F.faction]][row[F.order]];
+    const slot = map.slots[row[F.faction]][row[F.slot]];
     return {
       i,
       handle: row[F.handle],
@@ -83,9 +93,9 @@ async function boot() {
   const chunkSoldiers = new Map(); // chunk key → Container
   const ckey = (x, y) => `${Math.floor(x / (CHUNK * map.tile))},${Math.floor(y / (CHUNK * map.tile))}`;
   for (const s of placed.sort((a, b) => a.y - b.y)) {
-    const f = theme.factions[s.faction];
     const d = DIRS[s.slot.d];
-    const sp = new Sprite(tex[f.sprite][d]);
+    s.tex = texFor(s);
+    const sp = new Sprite(s.tex[d]);
     sp.anchor.set(0.5, 30 / 32);
     if (MIRROR[d]) sp.scale.x = -1;
     sp.x = s.x;
@@ -195,11 +205,12 @@ async function boot() {
   let flashT = 0, nextFlash = 3000;
 
   // --- kamera ---
-  const minZoom = Math.min(app.screen.width / worldW, app.screen.height / worldH);
+  const openW = openX1 - openX0;
+  const minZoom = Math.min(app.screen.width / openW, app.screen.height / worldH);
   const cam = new Camera(app.canvas, {
     minZoom: Math.max(minZoom, 0.05),
     maxZoom: 6,
-    bounds: { w: worldW, h: worldH },
+    bounds: { x0: openX0 - sectorPx * 0.25, y0: 0, w: openW + sectorPx * 0.5, h: worldH },
     onTap: (p) => {
       const s = pickAt(p.x, p.y);
       if (s) ui.openSoldier(s);

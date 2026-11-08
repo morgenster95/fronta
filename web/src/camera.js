@@ -26,9 +26,10 @@ export class Camera {
   set(x, y, zoom = this.zoom) {
     this.zoom = Math.min(this.maxZoom, Math.max(this.minZoom, zoom));
     const halfW = this.w / 2 / this.zoom, halfH = this.h / 2 / this.zoom;
-    const b = this.bounds;
-    this.x = b.w > halfW * 2 ? Math.min(b.w - halfW, Math.max(halfW, x)) : b.w / 2;
-    this.y = b.h > halfH * 2 ? Math.min(b.h - halfH, Math.max(halfH, y)) : b.h / 2;
+    const b = this.bounds; // {x0, y0, w, h}
+    const x0 = b.x0 || 0, y0 = b.y0 || 0;
+    this.x = b.w > halfW * 2 ? Math.min(x0 + b.w - halfW, Math.max(x0 + halfW, x)) : x0 + b.w / 2;
+    this.y = b.h > halfH * 2 ? Math.min(y0 + b.h - halfH, Math.max(y0 + halfH, y)) : y0 + b.h / 2;
     this.onChange?.();
   }
 

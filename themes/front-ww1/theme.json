@@ -4,7 +4,7 @@
   "subtitle": "Every follower is a soldier. Every day is a battle.",
   "instagram": "@thefront.game",
   "language": "en",
-  "map": { "seed": "front-ww1", "sectors": 8, "sectorW": 128, "height": 176 },
+  "map": { "seed": "front-ww1", "sectors": 32, "sectorW": 128, "height": 176 },
   "factions": [
     {
       "id": "hegemony",

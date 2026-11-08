@@ -19,3 +19,19 @@
 | test02/heg_front_41a74172….png | create_image_pro_flash | 32×32, style_image = concord south, seed 11 → šedý ✔, ale výška 28 px | job 41a74172-351c-4ce9-93a1-bf600eb46e48 | 5 |
 | test02/heg_front_4c660e65….png | create_image_pro_flash | seed 23 → přilba jako klobouk ✗ | job 4c660e65-5be6-4c6b-a338-59f81e2b6f1b | 5 |
 | test02/heg_ref_*.png | create_character | v3 + reference_image (rotace kandidáta 1) → jednotné úhly ✔, výška 28 px | d88102ec-91fe-4aab-85db-4efd2f93b24d | 1 |
+
+## test03–04 (8. 11. 2026) — finální střelec Hegemony, archetypy, rekvizity
+Postup: `create_image_pro_flash` 32×32 se `style_image` = jih střelce frakce (5 gen) → QA → `create_character` v3 + reference (1 gen, 8 směrů).
+| Soubor | Výsledek | ID (job / postava) | Cena |
+|---|---|---|---|
+| test03/heg_front_af2c1efe.png → hegemony (hra) | ✔ 30 px, šedomodrá | job af2c1efe… / char 2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4 | 5+1 |
+| test03/heg_front_44408cff.png | rezerva | job 44408cff… | 5 |
+| test04/concord_medic | ✔ | char 1c2e3717-6107-4501-90a0-f12a33ff6432 | 5+1 |
+| test04/concord_officer | ✔ (čepice 31 px) | char dc3ddbe4-b5a4-4de5-b05d-fd89d36197cb | 5+1 |
+| test04/concord_machinegunner | ✗ 32 px → v2 ✔ (kulomet v rukou) | char f7a54b6c-d1b8-4ed1-b634-2074bcb72938 | 10+1 |
+| test04/hegemony_medic | ✔ | char d2f80eb4-eedd-4552-8bdd-1934d6548f2a | 5+1 |
+| test04/hegemony_machinegunner | ✔ | char 3a323a11-d6a9-42dc-a66f-7e8d9ce0102b | 5+1 |
+| test04/hegemony_officer | ✗ divná čepice → v2 ✔ (ručně smazán 1 px) | char 950bb8f7-6aa9-4f47-9fe7-58bae4f1f330 | 10+1 |
+| test04/prop_grave, prop_tree | ✔ | jobs d2b6f771…, 3a74feef… | 10 |
+| test04/prop_crates | ✗ vypadá jako kameny | job 9ff21a60… | 5 |
+| test04/prop_wire | ~ moc tmavé | job c5e9d5d5… | 5 |

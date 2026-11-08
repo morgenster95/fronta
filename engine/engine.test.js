@@ -38,3 +38,16 @@ test('denní tah přidá zápisy a v textech nezůstanou zástupné znaky', () =
   assert.ok(all.length > 300);
   assert.ok(!all.some((t) => /\{\w+\}/.test(t)), all.find((t) => /\{\w+\}/.test(t)));
 });
+
+test('při zaplnění se otevřou další sektory a nikdo se nepřesune', () => {
+  const s = emptyState(theme);
+  const first = [];
+  for (let i = 0; i < 2600; i++) {
+    const r = applyComment(s, { id: `c${i}`, userId: `u${i}`, username: `p${i}`, text: 'CONCORD' }, theme, story, map);
+    if (i < 50) first.push([r.soldier, r.soldier.slot]);
+  }
+  assert.ok(s.openSectors > 8);
+  for (const [sol, slot] of first) assert.equal(sol.slot, slot);
+  const slots = s.soldiers.map((x) => x.slot);
+  assert.equal(new Set(slots).size, slots.length, 'dva vojáci na jednom místě');
+});

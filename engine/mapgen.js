@@ -20,7 +20,7 @@ export const LINES = ['front', 'support', 'comm', 'reserve'];
 
 export const DEFAULTS = {
   seed: 'front-ww1',
-  sectors: 8,
+  sectors: 32, // celková šířka mapy; otevírají se postupně od středu (state.openSectors)
   sectorW: 128,
   height: 176,
   tile: 16,
@@ -213,13 +213,15 @@ export function generateFront(opts = {}) {
   // pořadí plnění: od středového sektoru ven, v sektoru přední linie první
   slots.sort((a, b) => a.pri - b.pri || a.cx - b.cx);
   const byFaction = [slots.filter((s) => s.f === 0), slots.filter((s) => s.f === 1)];
+  // trvalé ID místa = pořadí v tomhle (pevném) seznamu; voják si ho nese ve stavu
+  byFaction.forEach((list) => list.forEach((s, i) => (s.id = i)));
   for (const list of byFaction) {
     // označení místa: sektor-linie+číslo úseku zleva, např. "D-F12" (sektor D, přední linie, 12. úsek)
     const counters = {};
     [...list].sort((a, b) => a.x - b.x).forEach((s) => {
       const key = s.sector + s.line;
       counters[key] = (counters[key] || 0) + 1;
-      s.label = `${SECTOR_NAMES[s.sector % SECTOR_NAMES.length]}-${s.line[0].toUpperCase()}${Math.ceil(counters[key] / 4)}`;
+      s.label = `${sectorName(s.sector)}-${s.line[0].toUpperCase()}${Math.ceil(counters[key] / 4)}`;
     });
   }
 
@@ -227,3 +229,14 @@ export function generateFront(opts = {}) {
 }
 
 export const SECTOR_NAMES = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+
+export function sectorName(i) {
+  return i < SECTOR_NAMES.length ? SECTOR_NAMES[i] : SECTOR_NAMES[Math.floor(i / SECTOR_NAMES.length) - 1] + SECTOR_NAMES[i % SECTOR_NAMES.length];
+}
+
+// Otevřené sektory: n sektorů kolem středu → rozsah indexů [from, to)
+export function openRange(map, n) {
+  const c = Math.floor(map.sectors / 2);
+  const from = Math.max(0, c - Math.ceil(n / 2));
+  return [from, Math.min(map.sectors, from + n)];
+}

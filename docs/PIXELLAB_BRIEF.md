@@ -50,11 +50,12 @@ Test 1 ukázal, že bez toho vyjde Hegemony olivově zelená a přilby jsou si p
 - **odtržené kousky** (hlaveň oddělená od pažby, plovoucí pixely) → vždy chyba,
 - **díry a zářezy** (průhledný pixel uvnitř nebo ze 3 stran obklopený) → zkontrolovat v archu `_qa.png` (zeleně označené).
   Mezera mezi nohama nebo mezi puškou a pláštěm je v pořádku, mezera uvnitř zbraně ne,
-- **špatnou výšku** (voják musí mít přesně 30 px),
+- **špatnou výšku a patu**: chodidla vždy na řádku 30 (kotva enginu), výška 30 ±1 px (čepice/přilba),
 - poloprůhledné pixely a barvy mimo paletu.
 
 Zkontroluj taky ručně, že zbraň v každém úhlu **pokračuje celá**: hlaveň → předpažbí → ruka → pažba, žádný „hnědý blob“ bez návaznosti.
 Opravy dělej ručně po pixelech do `art/pixellab/fixed/` (originál zůstává). Příklad: `fixed/concord_rifleman32_east.png`.
+Konzistence Concordu: archetypy vyšly s hnědou plochou přilbou (Brodie), střelec má šedomodrou → střelce časem přegenerovat se stejnou přilbou.
 Prevence: na 32 px volit pózy, kde je puška jasně čitelná (svisle u boku, pažba na zemi). Puška přes záda dělá v otočených pohledech nejvíc chyb.
 
 ## 4. Postup pro sjednocený vzhled (ověřeno v test02)
@@ -62,7 +63,8 @@ Prevence: na 32 px volit pózy, kde je puška jasně čitelná (svisle u boku, p
 **Schválený vzor = Concord střelec** (`test01/concord_rifleman32_south.png`). Každá další postava:
 1. `create_image_pro_flash` 32×32, `style_image` = vzor (`color_palette: false`, ostatní true), 2 seedy → vybrat (5 gen/kus).
    V promptu: „figure fills the full canvas height, helmet touches the top row, boots on the bottom row“. Pro Flash výšku nehlídá (vyšlo 28 místo 30).
-2. QA (výška 30, zbraň celá). Když nesedí, neotáčet, vygenerovat znovu.
+2. QA (chodidla na řádku 30, výška 30 ±1, zbraň celá). Když nesedí, neotáčet, vygenerovat znovu (jiný seed).
+   Těžké zbraně držet nízko v rukou, ne na rameni (na rameni přerůstají výšku).
 3. `create_character` v3 + `reference_image` = vybraný předek → 8 směrů za **1 gen**. Úhly vyjdou jednotné, což neplatí pro v3 z textu (test01 Hegemony: na každém úhlu něco).
 4. QA všech 8 směrů + ruční opravy → teprve pak animace.
 

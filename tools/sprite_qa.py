@@ -74,8 +74,12 @@ def check(path, palette, height=None):
         if off:
             issues.append(f"{len(off)} barev mimo paletu")
     bbox = im.getbbox()
-    if bbox and height and bbox[3] - bbox[1] != height:
-        issues.append(f"výška postavy {bbox[3] - bbox[1]} px, má být {height} px")
+    if bbox and height:
+        # chodidla musí být na předposledním řádku (kotva enginu); výška ±1 px kvůli čepici/přilbě
+        if bbox[3] != im.height - 1:
+            issues.append(f"chodidla na řádku {bbox[3] - 1}, mají být na {im.height - 2}")
+        if abs(bbox[3] - bbox[1] - height) > 1:
+            issues.append(f"výška postavy {bbox[3] - bbox[1]} px, má být {height} ±1 px")
     if bbox:
         issues.append(f"info: výška postavy {bbox[3] - bbox[1]} px, spodní řádek {bbox[3] - 1}")
     return im, comps, issues

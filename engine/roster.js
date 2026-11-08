@@ -3,6 +3,7 @@
 import { createSoldier, tickSoldier, heir, selectForStory } from './soldier.js';
 import { enlistEntry } from './story.js';
 import { hashString } from './rng.js';
+import { openRange } from './mapgen.js';
 
 export const SHARDS = 64;
 
@@ -11,6 +12,7 @@ export function emptyState(theme) {
     theme: theme.id,
     day: 1,
     followers: 0,
+    openSectors: 8, // kolik sektorů kolem středu je otevřeno; roste se zaplněním
     soldiers: [], // plné záznamy
     seenComments: [], // ID zpracovaných komentářů (posledních pár tisíc)
     votes: {}, // { voteId: { optionKeyword: [handles] } }
@@ -47,19 +49,33 @@ export function applyComment(state, comment, theme, story, map) {
   const f = parsed.faction;
   const order = state.soldiers.filter((s) => s.faction === f).length;
   const s = createSoldier({ id: comment.userId || handle, handle, faction: f, day: state.day, order }, theme, story);
-  placeSoldier(s, map);
+  placeSoldier(s, map, state);
   s.record.push([state.day, enlistEntry(s, theme, story)]);
   state.soldiers.push(s);
   return { type: 'enlist', soldier: s };
 }
 
-export function placeSoldier(s, map) {
-  const slot = map.slots[s.faction][s.order];
+// Přidělí první volné místo podle priority (střed → ven, přední linie první) v otevřených sektorech.
+// Místo je trvalé: otevření dalších sektorů nikoho nepřesune. Při zaplnění z 90 % se otevřou další 2 sektory.
+export function placeSoldier(s, map, state) {
+  const taken = new Set(state.soldiers.filter((o) => o.faction === s.faction && o.slot != null).map((o) => o.slot));
+  let slot = null;
+  for (;;) {
+    const [from, to] = openRange(map, state.openSectors ?? 8);
+    const open = map.slots[s.faction].filter((x) => x.sector >= from && x.sector < to);
+    const free = open.filter((x) => !taken.has(x.id));
+    if (free.length && (free.length - 1) / open.length >= 0.1) { slot = free[0]; break; }
+    if ((state.openSectors ?? 8) >= map.sectors) { slot = free[0] ?? null; break; }
+    state.openSectors = Math.min(map.sectors, (state.openSectors ?? 8) + 2);
+    state.log?.push([state.day, `front expanded to ${state.openSectors} sectors`]);
+  }
   if (slot) {
+    s.slot = slot.id;
     s.sector = slot.label;
     s.line = slot.line;
     s.unit = unitName(s.order);
   } else {
+    s.slot = null;
     s.sector = 'Rear camp';
     s.line = 'camp';
     s.unit = 'Replacement depot';
@@ -102,12 +118,13 @@ export function buildPublic(state, theme) {
   const roster = {
     day: state.day,
     followers: state.followers,
+    openSectors: state.openSectors ?? 8,
     updated: new Date().toISOString(),
-    fields: ['handle', 'faction', 'order', 'archetype', 'rank', 'status', 'variant', 'claimed', 'generation', 'name'],
+    fields: ['handle', 'faction', 'slot', 'archetype', 'rank', 'status', 'variant', 'claimed', 'generation', 'name'],
     soldiers: state.soldiers.map((s) => [
       s.handle,
       s.faction,
-      s.order,
+      s.slot ?? -1,
       arch.indexOf(s.archetype),
       s.rank,
       ['active', 'wounded', 'missing', 'captured', 'fallen'].indexOf(s.status),

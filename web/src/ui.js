@@ -124,7 +124,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   function drawPortrait(s) {
     const c = $('card-portrait').getContext('2d');
     c.clearRect(0, 0, 32, 32);
-    const t = tex[theme.factions[s.faction].sprite].south;
+    const t = (s.tex ?? tex[theme.factions[s.faction].sprite]).south;
     const src = t.source.resource;
     if (src) c.drawImage(src, 0, 0);
   }

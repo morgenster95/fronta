@@ -1,11 +1,47 @@
 {
-  "_note": "Výběr spritů pro hru. character = PixelLab ID (stáhne se 8 směrů), fixed = ručně opravené soubory, které přepíšou stažené.",
+  "_note": "Výběr spritů pro hru. Klíč = frakce (střelec) nebo frakce_archetyp. character = PixelLab ID (stáhne se 8 směrů), fixed = ručně opravené soubory, které přepíšou stažené.",
   "concord": {
     "character": "9b6313c1-ce86-4b7f-9cc2-103b0270f907",
-    "fixed": { "north": "art/pixellab/fixed/concord_rifleman32_north.png", "east": "art/pixellab/fixed/concord_rifleman32_east.png" }
+    "fixed": {
+      "north": "art/pixellab/fixed/concord_rifleman32_north.png",
+      "east": "art/pixellab/fixed/concord_rifleman32_east.png"
+    }
   },
   "hegemony": {
     "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4",
+    "fixed": {}
+  },
+  "concord_medic": {
+    "character": "1c2e3717-6107-4501-90a0-f12a33ff6432",
+    "fixed": {
+      "north-east": "art/pixellab/fixed/concord_medic_north-east.png",
+      "north-west": "art/pixellab/fixed/concord_medic_north-west.png",
+      "south-west": "art/pixellab/fixed/concord_medic_south-west.png"
+    }
+  },
+  "concord_officer": {
+    "character": "dc3ddbe4-b5a4-4de5-b05d-fd89d36197cb",
+    "fixed": {
+      "east": "art/pixellab/fixed/concord_officer_east.png",
+      "south-east": "art/pixellab/fixed/concord_officer_south-east.png",
+      "south-west": "art/pixellab/fixed/concord_officer_south-west.png",
+      "west": "art/pixellab/fixed/concord_officer_west.png"
+    }
+  },
+  "concord_machinegunner": {
+    "character": "f7a54b6c-d1b8-4ed1-b634-2074bcb72938",
+    "fixed": {}
+  },
+  "hegemony_medic": {
+    "character": "d2f80eb4-eedd-4552-8bdd-1934d6548f2a",
+    "fixed": {}
+  },
+  "hegemony_officer": {
+    "character": "950bb8f7-6aa9-4f47-9fe7-58bae4f1f330",
+    "fixed": {}
+  },
+  "hegemony_machinegunner": {
+    "character": "3a323a11-d6a9-42dc-a66f-7e8d9ce0102b",
     "fixed": {}
   }
 }

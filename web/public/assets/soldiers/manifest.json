@@ -18,5 +18,65 @@
   "north-west": "hegemony_north-west.png",
   "west": "hegemony_west.png",
   "south-west": "hegemony_south-west.png"
+ },
+ "concord_medic": {
+  "south": "concord_medic_south.png",
+  "south-east": "concord_medic_south-east.png",
+  "east": "concord_medic_east.png",
+  "north-east": "concord_medic_north-east.png",
+  "north": "concord_medic_north.png",
+  "north-west": "concord_medic_north-west.png",
+  "west": "concord_medic_west.png",
+  "south-west": "concord_medic_south-west.png"
+ },
+ "concord_officer": {
+  "south": "concord_officer_south.png",
+  "south-east": "concord_officer_south-east.png",
+  "east": "concord_officer_east.png",
+  "north-east": "concord_officer_north-east.png",
+  "north": "concord_officer_north.png",
+  "north-west": "concord_officer_north-west.png",
+  "west": "concord_officer_west.png",
+  "south-west": "concord_officer_south-west.png"
+ },
+ "concord_machinegunner": {
+  "south": "concord_machinegunner_south.png",
+  "south-east": "concord_machinegunner_south-east.png",
+  "east": "concord_machinegunner_east.png",
+  "north-east": "concord_machinegunner_north-east.png",
+  "north": "concord_machinegunner_north.png",
+  "north-west": "concord_machinegunner_north-west.png",
+  "west": "concord_machinegunner_west.png",
+  "south-west": "concord_machinegunner_south-west.png"
+ },
+ "hegemony_medic": {
+  "south": "hegemony_medic_south.png",
+  "south-east": "hegemony_medic_south-east.png",
+  "east": "hegemony_medic_east.png",
+  "north-east": "hegemony_medic_north-east.png",
+  "north": "hegemony_medic_north.png",
+  "north-west": "hegemony_medic_north-west.png",
+  "west": "hegemony_medic_west.png",
+  "south-west": "hegemony_medic_south-west.png"
+ },
+ "hegemony_officer": {
+  "south": "hegemony_officer_south.png",
+  "south-east": "hegemony_officer_south-east.png",
+  "east": "hegemony_officer_east.png",
+  "north-east": "hegemony_officer_north-east.png",
+  "north": "hegemony_officer_north.png",
+  "north-west": "hegemony_officer_north-west.png",
+  "west": "hegemony_officer_west.png",
+  "south-west": "hegemony_officer_south-west.png"
+ },
+ "hegemony_machinegunner": {
+  "south": "hegemony_machinegunner_south.png",
+  "south-east": "hegemony_machinegunner_south-east.png",
+  "east": "hegemony_machinegunner_east.png",
+  "north-east": "hegemony_machinegunner_north-east.png",
+  "north": "hegemony_machinegunner_north.png",
+  "north-west": "hegemony_machinegunner_north-west.png",
+  "west": "hegemony_machinegunner_west.png",
+  "south-west": "hegemony_machinegunner_south-west.png"
  }
 }
