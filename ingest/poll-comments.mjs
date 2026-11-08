@@ -123,6 +123,9 @@ async function main() {
           await doc.ref.update({ status: 'done', verifiedAt: new Date() });
           claimed++;
           console.log(`✓ claim @${res.handle}`);
+          if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) {
+            await igPost(`${c.id}/replies`, { message: `✓ @${res.handle}, ${res.soldier.name} is now yours. Your claim is confirmed, soldier. Edit your card on the front (link in bio).` }).catch((e) => console.warn(e.message));
+          }
         }
       }
     }
