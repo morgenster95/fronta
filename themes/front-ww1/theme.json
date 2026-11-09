@@ -37,61 +37,154 @@
       "id": "rifleman",
       "name": "Rifleman",
       "weight": 50,
-      "desc": "The backbone of the line. Sentry, raids, mud."
+      "desc": "The backbone of the line. Sentry, raids, mud.",
+      "aliases": [
+        "rifle",
+        "riflemen",
+        "infantry",
+        "infantryman",
+        "foot soldier",
+        "grunt"
+      ]
     },
     {
       "id": "machinegunner",
       "name": "Machine Gunner",
       "weight": 8,
-      "desc": "Holds the line with the gun. Feared by both sides."
+      "desc": "Holds the line with the gun. Feared by both sides.",
+      "aliases": [
+        "machine gun",
+        "machinegun",
+        "machinegunner",
+        "machine-gunner",
+        "machine-gun",
+        "mg",
+        "mgs",
+        "mg gunner",
+        "gunner",
+        "hmg",
+        "lmg",
+        "maxim",
+        "vickers"
+      ]
     },
     {
       "id": "sapper",
       "name": "Sapper",
       "weight": 8,
-      "desc": "Digs tunnels under no man's land. Listens to the earth."
+      "desc": "Digs tunnels under no man's land. Listens to the earth.",
+      "aliases": [
+        "engineer",
+        "combat engineer",
+        "miner",
+        "tunneler",
+        "tunneller",
+        "digger",
+        "demolition",
+        "demolitions"
+      ]
     },
     {
       "id": "medic",
       "name": "Stretcher Bearer",
       "weight": 7,
-      "desc": "Carries the wounded out. Saves other players' soldiers."
+      "desc": "Carries the wounded out. Saves other players' soldiers.",
+      "aliases": [
+        "medic",
+        "medics",
+        "doctor",
+        "doc",
+        "nurse",
+        "surgeon",
+        "healer",
+        "paramedic",
+        "field medic",
+        "combat medic",
+        "corpsman",
+        "stretcher",
+        "medical"
+      ]
     },
     {
       "id": "runner",
       "name": "Runner",
       "weight": 7,
-      "desc": "Carries orders under fire. Knows every trench."
+      "desc": "Carries orders under fire. Knows every trench.",
+      "aliases": [
+        "messenger",
+        "courier",
+        "dispatch runner"
+      ]
     },
     {
       "id": "sniper",
       "name": "Sniper",
       "weight": 5,
-      "desc": "Patient, alone, deadly. Duels across the wire."
+      "desc": "Patient, alone, deadly. Duels across the wire.",
+      "aliases": [
+        "marksman",
+        "sharpshooter",
+        "sharp shooter",
+        "sniper rifle"
+      ]
     },
     {
       "id": "signaller",
       "name": "Signaller",
       "weight": 5,
-      "desc": "Keeps the wires alive. Hears what others don't."
+      "desc": "Keeps the wires alive. Hears what others don't.",
+      "aliases": [
+        "signaler",
+        "signalman",
+        "radio",
+        "radioman",
+        "radio operator",
+        "telegraph",
+        "telegraphist",
+        "comms",
+        "communications",
+        "wireless"
+      ]
     },
     {
       "id": "cook",
       "name": "Field Cook",
       "weight": 4,
-      "desc": "Feeds the line. Everyone's friend, nobody's target."
+      "desc": "Feeds the line. Everyone's friend, nobody's target.",
+      "aliases": [
+        "chef",
+        "field cook",
+        "cooking"
+      ]
     },
     {
       "id": "chaplain",
       "name": "Chaplain",
       "weight": 2,
-      "desc": "Buries the dead, writes the letters, keeps faith."
+      "desc": "Buries the dead, writes the letters, keeps faith.",
+      "aliases": [
+        "priest",
+        "padre",
+        "pastor",
+        "reverend",
+        "preacher",
+        "monk",
+        "vicar"
+      ]
     },
     {
       "id": "officer",
       "name": "Lieutenant",
       "weight": 4,
-      "desc": "Earned by promotion only."
+      "desc": "Earned by promotion only.",
+      "aliases": [
+        "lieutenant",
+        "captain",
+        "commander",
+        "colonel",
+        "officer",
+        "commanding officer"
+      ]
     }
   ],
   "ranks": [

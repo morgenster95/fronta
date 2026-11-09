@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { generateFront } from './mapgen.js';
-import { emptyState, applyComment, parseComment, dailyTick } from './roster.js';
+import { emptyState, applyComment, parseComment, dailyTick, parseRole, roleReply } from './roster.js';
 
 const theme = JSON.parse(fs.readFileSync(new URL('../themes/front-ww1/theme.json', import.meta.url)));
 const story = JSON.parse(fs.readFileSync(new URL('../themes/front-ww1/story.json', import.meta.url)));
@@ -233,4 +233,46 @@ test('výpravy: vyhlášení, přihlášky komentářem, vyhodnocení, převzat�
   assert.equal(ch.blocks[0].kind, 'expedition');
   assert.ok(!JSON.stringify(ch).match(/\{\w+\}|undefined/));
   assert.ok(resolveExpedition);
+});
+
+test('přání role v komentáři: rozpoznání, první volba zdarma, důstojník ne', () => {
+  const r = (t) => parseRole(t, theme);
+  assert.equal(r('CONCORD I want to be a machine gunner'), 'machinegunner');
+  assert.equal(r('HEGEMONY MG'), 'machinegunner');
+  assert.equal(r('Concord! doctor please 🙏'), 'medic');
+  assert.equal(r('can I be a medic?'), 'medic');
+  assert.equal(r('HEGEMONY sniper rifle'), 'sniper');
+  assert.equal(r('let him cook 🔥'), null);
+  assert.equal(r('medic or sniper?'), null);
+  assert.equal(r('the medic in yesterday’s story was so brave and funny lol'), null);
+  assert.equal(r('CONCORD'), null);
+  assert.equal(r('make me a lieutenant'), 'officer');
+
+  const s = emptyState(theme);
+  const a = applyComment(s, { id: 'c1', userId: 'u1', username: 'jan', text: 'CONCORD, I wanna be a medic' }, theme, story, map);
+  assert.equal(a.type, 'enlist');
+  assert.equal(a.soldier.archetype, 'medic');
+  assert.equal(a.roleWish.reason, a.roleWish.reason === 'same' ? 'same' : 'granted');
+  const b = applyComment(s, { id: 'c2', userId: 'u2', username: 'eva', text: 'HEGEMONY' }, theme, story, map).soldier;
+  const was = b.archetype;
+  const want = was === 'sniper' ? 'cook' : 'sniper';
+  const c = applyComment(s, { id: 'c3', userId: 'u2', username: 'eva', text: `I want to be a ${want}` }, theme, story, map);
+  assert.equal(c.type, 'role');
+  assert.equal(c.reason, b.archetype === 'officer' && was === 'officer' ? 'locked' : 'granted');
+  if (c.reason === 'granted') {
+    assert.equal(b.archetype, want);
+    assert.match(b.record.at(-1)[1], new RegExp(theme.archetypes.find((x) => x.id === want).name.toLowerCase()));
+    const d = applyComment(s, { id: 'c4', userId: 'u2', username: 'eva', text: 'actually make me a runner' }, theme, story, map);
+    assert.equal(d.reason, 'used', 'druhá změna jen převelením z karty');
+  }
+  const e = applyComment(s, { id: 'c5', userId: 'u9', username: 'nobody', text: 'can I be a doctor?' }, theme, story, map);
+  assert.equal(e.reason, 'notEnlisted');
+  assert.equal(s.soldiers.length, 2);
+  const f = applyComment(s, { id: 'c6', userId: 'u7', username: 'boss', text: 'CONCORD make me captain' }, theme, story, map);
+  assert.equal(f.roleWish.reason, 'officer');
+  for (const x of [a, c, e, f]) {
+    const w = x.type === 'enlist' ? x.roleWish : x;
+    const t = roleReply(theme, x.soldier, w.role, w.reason);
+    if (t) assert.doesNotMatch(t, /undefined|\{/);
+  }
 });

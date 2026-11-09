@@ -12,7 +12,7 @@
 //   DRY_RUN=1         nic neukládat
 import fs from 'node:fs';
 import { loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
-import { applyComment, requestTransfer, applyTransfers } from '../engine/roster.js';
+import { applyComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 
 // Nové aplikace Meta: Unified login + systémový token z firemního portfolia → graph.facebook.com (token nevyprší).
@@ -135,6 +135,12 @@ async function main() {
           await replyOnce(c.id, text).catch((e) => console.warn(e.message));
         }
       }
+      if (res.type === 'role' || res.roleWish) {
+        const w = res.type === 'role' ? res : res.roleWish;
+        console.log(`⚒ role @${res.soldier.handle} → ${w.role}: ${w.reason}`);
+        const text = res.type === 'role' && roleReply(theme, res.soldier, w.role, w.reason);
+        if (text && process.env.IG_REPLY === '1' && !process.env.DRY_RUN) await replyOnce(c.id, text).catch((e) => console.warn(e.message));
+      }
       if (res.type === 'enlist') {
         enlisted++;
         console.log(`+ @${res.soldier.handle} → ${theme.factions[res.soldier.faction].name}, ${res.soldier.sector}`);
@@ -142,7 +148,11 @@ async function main() {
         if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN && theme.replies) {
           const s = res.soldier;
           const pool = theme.replies[theme.factions[s.faction].id] || theme.replies.any;
-          const text = pool[Math.floor(Math.random() * pool.length)].replace('{handle}', s.handle).replace('{sector}', s.sector).replace('{rank}', theme.ranks[s.rank]);
+          let text = pool[Math.floor(Math.random() * pool.length)].replace('{handle}', s.handle).replace('{sector}', s.sector).replace('{rank}', theme.ranks[s.rank]);
+          const rw = res.roleWish;
+          const role = theme.archetypes.find((a) => a.id === s.archetype).name;
+          const extra = rw?.reason === 'granted' || rw?.reason === 'same' ? ` Role: ${role}, as you asked.` : rw?.reason === 'officer' ? ` Lieutenants are made by promotion only, so you start as ${role}.` : '';
+          text += extra;
           await replyOnce(c.id, text).catch((e) => console.warn(e.message));
         }
         if (process.env.IG_SEND_DM === '1' && !process.env.DRY_RUN) {
@@ -187,6 +197,33 @@ async function main() {
     }
     // post zpracován: zapamatovat počet komentářů (příště se stáhne jen při změně)
     if (count !== undefined) state.mediaCounts[mid] = count;
+  }
+
+  // jednorázově: přání rolí ze starších (už zpracovaných) komentářů, od nejstarších; první přání platí
+  if (!state.roleBackfill) try {
+    const all = [];
+    let page = await ig(`${USER}/media`, { fields: 'id', limit: 100 });
+    for (;;) {
+      for (const m of page.data || []) for await (const c of comments(m.id, new Set())) if (seen.has(c.id)) all.push(c);
+      if (!page.paging?.next) break;
+      page = await ig(page.paging.next);
+    }
+    all.sort((a, b) => String(a.timestamp).localeCompare(String(b.timestamp)));
+    let granted = 0;
+    for (const c of all) {
+      const role = parseRole(c.text, theme);
+      const s = role && findOwnSoldier(state, c.userId, (c.username || '').toLowerCase());
+      if (!s || s === TAKEN) continue;
+      const reason = wishRole(state, s, role, theme, story);
+      if (reason !== 'granted') continue;
+      granted++;
+      console.log(`⚒ role (zpětně) @${s.handle} → ${role}`);
+      if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) await replyOnce(c.id, roleReply(theme, s, role, reason), `${c.id}:role`).catch((e) => console.warn(e.message));
+    }
+    console.log(`přání rolí zpětně: ${all.length} komentářů, splněno ${granted}`);
+    state.roleBackfill = new Date().toISOString();
+  } catch (e) {
+    console.warn('role backfill:', e.message);
   }
 
   // úpravy karet od převzatých hráčů (bio, zájmena, převelení) z Firestore

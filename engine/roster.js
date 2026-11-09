@@ -26,6 +26,69 @@ export function emptyState(theme) {
 
 const CLAIM_RE = /\bENLIST-([A-Z0-9]{4})\b/i;
 
+// --- přání role v komentáři („CONCORD, I want to be a medic“, „MG please“) ---
+// Role se pozná podle id, jména nebo aliasu (theme.archetypes[].aliases). Delší výrazy mají přednost a „spotřebují“ text
+// („sniper rifle“ → sniper, ne rifleman). Víc různých rolí v jednom komentáři = nejasné → nic.
+// Proti náhodným shodám („let him cook“) platí jen u krátkého komentáře (≤ 6 slov) nebo s výrazem přání (want, be, make me…).
+const WISH_RE = /\b(want|wanna|would like|i'?d like|make me|let me be|can i|could i|may i|i'?ll be|i will be|be an?|as an?|join as|sign me|put me|assign|role|please|pls|plz|choose|pick)\b/;
+const NOT_A_WISH = /\blet (him|her|them|me|us) cook\b/g;
+export function parseRole(text, theme) {
+  let t = ` ${(text || '').toLowerCase().replace(NOT_A_WISH, ' ').replace(/[^a-z0-9' -]+/g, ' ')} `;
+  const words = t.trim().split(/\s+/).filter(Boolean).length;
+  const terms = theme.archetypes
+    .flatMap((a) => [a.id, a.name, ...(a.aliases || [])].map((w) => [w.toLowerCase().replace(/[^a-z0-9' -]+/g, ' ').trim(), a.id]))
+    .filter(([w]) => w)
+    .sort((a, b) => b[0].length - a[0].length);
+  const found = new Set();
+  for (const [w, id] of terms) {
+    const re = new RegExp(`(^|[^a-z0-9])${w.replace(/[-]/g, '[- ]?').replace(/ /g, '[ -]?')}s?(?=[^a-z0-9]|$)`, 'g');
+    if (re.test(t)) {
+      found.add(id);
+      t = t.replace(re, '$1 ');
+    }
+  }
+  if (found.size !== 1) return null;
+  if (words > 6 && !WISH_RE.test(` ${(text || '').toLowerCase()} `)) return null;
+  return [...found][0];
+}
+
+// Splní přání role: první volba je zdarma a hned (i bez převzetí karty), další změny už jen převelením z karty.
+// Vrací důvod: granted | same | officer | used | fallen | locked
+export function wishRole(state, s, role, theme, story) {
+  if (role === 'officer') return 'officer';
+  if (!s || s.status === 'fallen') return 'fallen';
+  const fresh = !s.record.length; // právě vzniká (komentář s heslem frakce)
+  if (s.archetype === 'officer' && !fresh) return 'locked';
+  if (role === s.archetype) return 'same';
+  if (s.roleWish || s.transferDay != null) return 'used';
+  const nameOf = (id) => theme.archetypes.find((a) => a.id === id)?.name.toLowerCase();
+  const oldRole = nameOf(s.archetype);
+  if (s.archetype === 'officer') s.rank = 0;
+  s.archetype = role;
+  s.roleWish = role;
+  s.pendingRole = null;
+  s.arc = null;
+  // nováček (narukoval dnes) nedostane zápis o převelení, rovnou začíná v nové roli
+  if (!fresh) {
+    s.record.push([state.day, eventEntry('transfer', s, state.day, theme, story, { role: nameOf(role), oldRole })]);
+  }
+  return 'granted';
+}
+
+// Veřejná odpověď pod komentář s přáním role (null = neodpovídat)
+export function roleReply(theme, s, role, reason) {
+  const name = theme.archetypes.find((a) => a.id === role)?.name;
+  const kw = theme.factions.map((f) => f.keyword).join(' or ');
+  switch (reason) {
+    case 'granted': return `@${s.handle} Granted. ${s.name} now serves as ${name}. Find your soldier on the front, link in bio.`;
+    case 'same': return `@${s.handle} ${s.name} already serves as ${name}, soldier.`;
+    case 'officer': return `@${s.handle} Lieutenants are made by promotion only. Survive, get decorated, and the bars will come.`;
+    case 'used': return `@${s.handle} ${s.name} already chose a role. Claim your soldier on the front (link in bio) to request a transfer to ${name}.`;
+    case 'notEnlisted': return `@${s.handle} Pick a side first: comment ${kw} together with ${name} and you'll be enlisted straight into that role.`;
+    default: return null;
+  }
+}
+
 export function parseComment(text, theme) {
   const t = (text || '').toUpperCase();
   const claim = t.match(CLAIM_RE);
@@ -54,14 +117,21 @@ export function applyComment(state, comment, theme, story, map) {
   if (parsed?.type === 'claim') return { type: 'claim', handle: existing?.handle ?? handle, code: parsed.code, soldier: existing };
   // heslo otevřené výpravy (např. CHURCH): přihláška dobrovolníka
   const raid = raidKeyword(state, theme, comment.text);
+  const wish = parseRole(comment.text, theme);
   if (!parsed || existing) {
-    if (raid && existing) return { type: 'volunteer', handle, soldier: existing, ...volunteer(state, theme, existing, 'comment') };
+    // přání role od už narukovaného (před přihláškou na výpravu: role se hned počítá)
+    const role = existing && wish ? { role: wish, reason: wishRole(state, existing, wish, theme, story) } : null;
+    if (raid && existing) return { type: 'volunteer', handle, soldier: existing, ...volunteer(state, theme, existing, 'comment'), roleWish: role };
     if (raid && !parsed) return { type: 'volunteer', handle, soldier: { handle }, ok: false, reason: 'notEnlisted' }; // nejdřív narukovat
+    if (role) return { type: 'role', handle, soldier: existing, ...role };
+    if (wish && !existing) return { type: 'role', handle, soldier: { handle }, role: wish, reason: 'notEnlisted' };
     return null; // každý jen jednou, frakce se nemění
   }
   const f = parsed.faction;
   const order = state.soldiers.filter((s) => s.faction === f).length;
   const s = createSoldier({ id: comment.userId || handle, handle, faction: f, day: state.day, order }, theme, story);
+  // „CONCORD medic“: rovnou v té roli (důstojník jen povýšením)
+  const roleWish = wish ? { role: wish, reason: wishRole(state, s, wish, theme, story) } : null;
   placeSoldier(s, map, state);
   // nováček nedostane stejný úvod jako ti, kdo narukovali těsně před ním
   s.record.push([state.day, enlistEntry(s, theme, story, recentKeys(state, story.enlist.length - 1))]);
@@ -70,7 +140,7 @@ export function applyComment(state, comment, theme, story, map) {
   awardHonors(state, theme);
   const victory = checkRace(state, theme, story, s);
   const raidRes = raid ? volunteer(state, theme, s, 'comment') : null;
-  return { type: 'enlist', soldier: s, victory, raid: raidRes };
+  return { type: 'enlist', soldier: s, victory, raid: raidRes, roleWish };
 }
 
 // Přidělí první volné místo podle priority (střed → ven, přední linie první) v otevřených sektorech.
