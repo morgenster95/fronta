@@ -1,0 +1,64 @@
+# Výroba reelu v cloudu (bez vlastního počítače): natočí scénář web/src/reel-<name>.js, přidá voiceover a zvuk,
+# výsledek uloží do marketing/promo/reel_<name>.mp4 (commit do main) a nasadí na GitHub Pages:
+#   https://morgenster95.github.io/fronta/reel_<name>.mp4  (dá se pustit v mobilu)
+# Spuštění: Actions → reel → Run workflow, `gh workflow run reel -f name=raid`,
+# nebo commit souboru marketing/reels/render.json  {"name": "raid"}  do main (jde i z Claude Code na webu/v mobilu).
+# Nic nepublikuje na Instagram: to dělá až položka v marketing/queue.json (publishAt) se souhlasem uživatele.
+name: reel
+on:
+  workflow_dispatch:
+    inputs:
+      name: { description: 'scénář (raid, day1, story…)', required: true }
+      crf: { description: 'kvalita (nižší = lepší/větší)', default: '29' }
+      commit: { description: 'uložit do marketing/promo a nasadit', type: boolean, default: true }
+  push:
+    branches: [main]
+    paths: ['marketing/reels/render.json']
+permissions: { contents: write, actions: write }
+concurrency: { group: reel, cancel-in-progress: false }
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: pip install -q edge-tts numpy
+      - run: npm ci --no-audit --no-fund
+      - id: p
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "name=$(node -p "require('./marketing/reels/render.json').name")" >> $GITHUB_OUTPUT
+            echo "crf=$(node -p "require('./marketing/reels/render.json').crf || 29")" >> $GITHUB_OUTPUT
+            echo "commit=true" >> $GITHUB_OUTPUT
+          else
+            echo "name=${{ inputs.name }}" >> $GITHUB_OUTPUT
+            echo "crf=${{ inputs.crf }}" >> $GITHUB_OUTPUT
+            echo "commit=${{ inputs.commit }}" >> $GITHUB_OUTPUT
+          fi
+      - run: bash tools/make-reel.sh "${{ steps.p.outputs.name }}" "${{ steps.p.outputs.crf }}"
+      - uses: actions/upload-artifact@v4
+        with: { name: 'reel_${{ steps.p.outputs.name }}', path: 'marketing/promo/reel_${{ steps.p.outputs.name }}.mp4' }
+      - if: steps.p.outputs.commit == 'true'
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          f="marketing/promo/reel_${{ steps.p.outputs.name }}.mp4"
+          git config user.name "reel-bot"; git config user.email "actions@users.noreply.github.com"
+          n="${{ steps.p.outputs.name }}"; keep="$RUNNER_TEMP/keep"; mkdir -p "$keep"
+          cp "$f" marketing/reels/$n.*.json "$keep/" 2>/dev/null || cp "$f" "$keep/"
+          for i in 1 2 3 4 5; do
+            # vždy nad čerstvým main (smyčka mezitím commituje), přidat jen vlastní soubory
+            git fetch -q origin main && git checkout -q -f origin/main
+            cp "$keep/reel_$n.mp4" "$f"; cp "$keep"/$n.*.json marketing/reels/ 2>/dev/null || true
+            git add "$f" marketing/reels/$n.*.json 2>/dev/null || git add "$f"
+            git diff --cached --quiet && break
+            git commit -q -m "reel: $n" && git push -q origin HEAD:main && break
+            sleep 5
+          done
+          # push z GITHUB_TOKEN nespouští jiné workflow → Pages nasadit ručně
+          gh workflow run media.yml --ref main
+          echo "Video: https://morgenster95.github.io/fronta/reel_${{ steps.p.outputs.name }}.mp4" >> $GITHUB_STEP_SUMMARY

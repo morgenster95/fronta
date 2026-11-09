@@ -11,12 +11,12 @@ const name = process.argv[2] || 'teaser';
 const out = process.argv[3] || path.join(ROOT, 'marketing', 'reels', `${name}.mp4`);
 const base = process.env.REEL_URL || 'http://localhost:5187';
 const FPS = 30;
-const CHROME = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const CHROME = process.env.CHROME || (process.platform === 'win32' ? 'C:/Program Files/Google/Chrome/Application/chrome.exe' : '/usr/bin/google-chrome');
 const tmp = path.join(ROOT, 'marketing', 'reels', `_frames_${name}`);
 fs.rmSync(tmp, { recursive: true, force: true });
 fs.mkdirSync(tmp, { recursive: true });
 
-const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, protocolTimeout: 600000, args: ['--enable-gpu', '--ignore-gpu-blocklist', '--use-angle=d3d11'] });
+const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, protocolTimeout: 600000, args: process.platform === 'win32' ? ['--enable-gpu', '--ignore-gpu-blocklist', '--use-angle=d3d11'] : ['--no-sandbox', '--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
 const page = await browser.newPage();
 await page.setViewport({ width: 540, height: 960, deviceScaleFactor: 1 });
 await page.goto(`${base}/?reel=${name}&vacant=700`, { waitUntil: 'networkidle0', timeout: 120000 });
