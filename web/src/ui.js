@@ -263,6 +263,9 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       $('card-claim').hidden = true;
       $('card-transfer').hidden = true;
       $('card-transfer-box').hidden = true;
+      $('card-transfer-box').innerHTML = '';
+      $('card-account').hidden = true;
+      $('card-name').dataset.handle = '';
       show('card');
       return;
     }
@@ -286,6 +289,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     // převelení: jen převzatý voják, ne důstojník
     $('card-transfer').hidden = true;
     $('card-transfer-box').hidden = true;
+    $('card-transfer-box').innerHTML = '';
     $('card-account').hidden = true;
     $('card-name').dataset.handle = s.handle;
     renderAccount(s);
@@ -356,7 +360,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     if (!box.hidden) { box.hidden = true; return; }
     // výběr ukázat jen majiteli vojáka (přihlášení + kontrola převzetí)
     const owner = await signInAsOwner(s, toast).catch(() => null);
-    if (!owner) return;
+    if (!owner || $('card-name').dataset.handle !== s.handle) return; // mezitím otevřená jiná karta
     const wait = rec.nextTransfer != null && rec.nextTransfer > roster.day ? rec.nextTransfer - roster.day : 0;
     const days = (n) => `${n} day${n > 1 ? 's' : ''}`;
     box.innerHTML = '<h3>Request a transfer</h3>' +

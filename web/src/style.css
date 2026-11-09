@@ -1,3 +1,5 @@
+/* atribut hidden vždy skryje, i když prvek má v CSS display: grid/flex */
+[hidden] { display: none !important; }
 :root {
   --ink: #e3d9c3;
   --muted: #a39782;
