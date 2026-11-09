@@ -194,7 +194,7 @@
     "_note": "Denní rytmus v UTC (pevně, bez letního času). editionUtc = nový den války: denní tah, nové číslo novin, vyhodnocení hlasování. reelUtc = večerní reel/příspěvek (fronta marketing/queue.json)."
   },
   "valley": {
-    "_note": "Výpravy (docs/MAP_MISSIONS.md). Každé `every` dny ranní noviny vyhlásí výpravu, přihlášky do dalšího vydání, `slots` míst na frakci. Místo: x,y v mřížce mapy 192×120, img v web/public/assets/locations (bez obrázku se nakreslí náhradní ikona). perk: observe|morale|supplies|intel|crossing|cover|hospital|tunnels; demolition = ženista +3 útok.",
+    "_note": "Výpravy (docs/MAP_MISSIONS.md). Každé `every` dny ranní noviny vyhlásí výpravu, přihlášky do dalšího vydání, `slots` míst na frakci. Místo: x,y v mřížce mapy 192×120, img v web/public/assets/locations (size = velikost v buňkách; bez obrázku se nakreslí náhradní ikona). perk: observe|morale|supplies|intel|crossing|cover|hospital|tunnels; demolition = ženista +3 útok.",
     "every": 3,
     "firstDay": 2,
     "slots": 5,
@@ -298,7 +298,8 @@
         "demolition": true,
         "perk": "observe",
         "desc": "A shelled church with half a bell tower. The only high point in the valley.",
-        "perkText": "The tower sees for miles: signallers of the side that holds it can call down artillery on every raid."
+        "perkText": "The tower sees for miles: signallers of the side that holds it can call down artillery on every raid.",
+        "size": 36
       },
       {
         "id": "cemetery",
@@ -309,7 +310,9 @@
         "y": 44,
         "perk": "morale",
         "desc": "Graves torn open by shells behind the church. Both sides bury their dead here at night.",
-        "perkText": "Morale: fewer losses on the line while under bombardment."
+        "perkText": "Morale: fewer losses on the line while under bombardment.",
+        "img": "cemetery.png",
+        "size": 28
       },
       {
         "id": "town",
@@ -320,7 +323,9 @@
         "y": 34,
         "perk": "supplies",
         "desc": "What is left of the town of Verdel: cellars, chimneys and one stubborn bakery oven.",
-        "perkText": "Supplies from the cellars: fewer wounded on the line every day."
+        "perkText": "Supplies from the cellars: fewer wounded on the line every day.",
+        "img": "town.png",
+        "size": 34
       },
       {
         "id": "outpost",
@@ -331,7 +336,9 @@
         "y": 62,
         "perk": "intel",
         "desc": "A sandbagged hole far out in no man's land with a periscope and a field telephone.",
-        "perkText": "Intelligence: the side that holds it moves first on every raid, and its signallers can call artillery."
+        "perkText": "Intelligence: the side that holds it moves first on every raid, and its signallers can call artillery.",
+        "img": "outpost.png",
+        "size": 30
       },
       {
         "id": "mill",
@@ -342,19 +349,23 @@
         "y": 78,
         "perk": "crossing",
         "desc": "A stone mill by the canal. The only bridge left standing.",
-        "perkText": "The canal road: raiders arrive rested, +2 health for everyone on every raid."
+        "perkText": "The canal road: raiders arrive rested, +2 health for everyone on every raid.",
+        "img": "mill.png",
+        "size": 32
       },
       {
         "id": "brickworks",
         "name": "The Brickworks",
         "short": "the Brickworks",
         "keyword": "BRICKWORKS",
-        "x": 24,
-        "y": 70,
+        "x": 22,
+        "y": 72,
         "demolition": true,
         "perk": "cover",
         "desc": "Kilns and a tall chimney. Walls thick enough to stop a shell.",
-        "perkText": "Cover: the front line of the side that holds it is safer."
+        "perkText": "Cover: the front line of the side that holds it is safer.",
+        "img": "brickworks.png",
+        "size": 34
       },
       {
         "id": "hospital",
@@ -365,7 +376,9 @@
         "y": 28,
         "perk": "hospital",
         "desc": "A farmhouse with red crosses painted on the roof. Not everyone respects them.",
-        "perkText": "The wounded of the side that holds it recover faster."
+        "perkText": "The wounded of the side that holds it recover faster.",
+        "img": "hospital.png",
+        "size": 32
       },
       {
         "id": "quarry",
@@ -377,7 +390,9 @@
         "demolition": true,
         "perk": "tunnels",
         "desc": "A chalk quarry full of old tunnels. Some say they run under both lines.",
-        "perkText": "Tunnels: sappers of the side that holds it get +2 attack on every raid."
+        "perkText": "Tunnels: sappers of the side that holds it get +2 attack on every raid.",
+        "img": "quarry.png",
+        "size": 32
       }
     ]
   }

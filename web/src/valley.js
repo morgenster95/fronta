@@ -3,7 +3,7 @@
 // nebo náhradní pixelové ikony, dokud obrázek není.
 import { signInClaimed, sendVolunteer } from './claim.js';
 
-const GW = 192, GH = 120, PX = 3;
+const GW = 192, GH = 120, PX = 6; // mřížka 192×120, plátno ×6 (ostré i na telefonu s retinou)
 const W = GW * PX, H = GH * PX;
 const $ = (id) => document.getElementById(id);
 
@@ -164,7 +164,15 @@ export function initValley({ theme, roster, soldiers, openSoldier, toast, show }
       const img = new Image();
       img.src = `/assets/locations/${loc.img}`;
       await img.decode().catch(() => null);
-      if (img.naturalWidth) g.drawImage(img, Math.round(loc.x * PX - img.naturalWidth / 2), Math.round((loc.y + 10) * PX - img.naturalHeight));
+      if (img.naturalWidth) {
+        // obrázek se vejde do čtverce size×size buněk, pata na y+10
+        const k = ((loc.size ?? 32) * PX) / Math.max(img.naturalWidth, img.naturalHeight);
+        const w = Math.round(img.naturalWidth * k), h = Math.round(img.naturalHeight * k);
+        g.imageSmoothingEnabled = true;
+        g.imageSmoothingQuality = 'high';
+        g.drawImage(img, Math.round(loc.x * PX - w / 2), Math.round((loc.y + 10) * PX - h), w, h);
+        g.imageSmoothingEnabled = false;
+      }
       else drawIcon(g, loc);
     }
   }
