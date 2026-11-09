@@ -59,12 +59,25 @@ export async function startClaim(soldier, theme, toast) {
   showCode(code, theme, toast);
 }
 
-// Převelení: zapíše přání do profilu přihlášeného hráče; smyčka ho provede, jen pokud voják patří jemu.
-export async function sendTransfer(soldier, role, toast) {
+// Patří voják přihlášenému hráči? Hráč smí číst jen svůj dokument claims/{uid} (pravidla Firestore).
+// Vrací { app, user } majitele, nebo null (a hráči vysvětlí proč).
+export async function signInAsOwner(soldier, toast) {
   const s = await signIn(soldier, toast, 'transfer');
-  if (!s) return false;
+  if (!s) return null;
+  const { getFirestore, doc, getDoc } = await import('firebase/firestore');
+  const c = await getDoc(doc(getFirestore(s.app), 'claims', s.user.uid)).catch(() => null);
+  const d = c?.exists() ? c.data() : null;
+  if (!d || d.handle !== soldier.handle || d.status !== 'done') {
+    toast(`Only the soldier's owner can request a transfer. ${d?.status === 'done' ? `Your soldier is @${d.handle}.` : ''}`.trim());
+    return null;
+  }
+  return s;
+}
+
+// Převelení: zapíše přání do profilu majitele; smyčka ho provede u jeho vojáka.
+export async function sendTransfer(owner, role) {
   const { getFirestore, doc, setDoc, serverTimestamp } = await import('firebase/firestore');
-  await setDoc(doc(getFirestore(s.app), 'profiles', s.user.uid), { role, updatedAt: serverTimestamp() }, { merge: true });
+  await setDoc(doc(getFirestore(owner.app), 'profiles', owner.user.uid), { role, updatedAt: serverTimestamp() }, { merge: true });
   return true;
 }
 

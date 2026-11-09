@@ -1,6 +1,6 @@
 // DOM vrstva: počty, hledání @handle, karta vojáka se služebním záznamem, panel „Enlist“, sdílení.
 import { shardOf } from '../../engine/roster.js';
-import { startClaim, sendTransfer } from './claim.js';
+import { startClaim, sendTransfer, signInAsOwner } from './claim.js';
 import { shareCard } from './share.js';
 
 const $ = (id) => document.getElementById(id);
@@ -274,9 +274,12 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   }
 
   // výběr nového povolání (zápis do Firestore, smyčka ho provede do pár minut)
-  function openTransfer(s, rec) {
+  async function openTransfer(s, rec) {
     const box = $('card-transfer-box');
     if (!box.hidden) { box.hidden = true; return; }
+    // výběr ukázat jen majiteli vojáka (přihlášení + kontrola převzetí)
+    const owner = await signInAsOwner(s, toast).catch(() => null);
+    if (!owner) return;
     const wait = rec.nextTransfer != null && rec.nextTransfer > roster.day ? rec.nextTransfer - roster.day : 0;
     const days = (n) => `${n} day${n > 1 ? 's' : ''}`;
     box.innerHTML = '<h3>Request a transfer</h3>' +
@@ -289,7 +292,10 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       const b = ev.target.closest('button[data-role]');
       if (!b || b.classList.contains('on')) return;
       box.querySelectorAll('button').forEach((x) => (x.disabled = true));
-      const ok = await sendTransfer(s, b.dataset.role, toast).catch(() => false);
+      const ok = await sendTransfer(owner, b.dataset.role).catch(() => {
+        toast('Orders could not be sent. Try again.');
+        return false;
+      });
       box.querySelectorAll('button').forEach((x) => (x.disabled = false));
       if (ok) {
         const role = esc(b.querySelector('b').textContent);
