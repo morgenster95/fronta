@@ -1,6 +1,6 @@
 # Stav projektu a co je potřeba od tebe
 
-_Aktualizováno 8. 11. 2026._
+_Aktualizováno 9. 11. 2026._
 
 ## Hotovo
 - **Prototyp prohlížeče fronty** (PixiJS): procedurální zákopy (3 linie na stranu + spojovací zákopy, pytle, dráty, krátery, mrtvé stromy),
@@ -24,6 +24,17 @@ _Aktualizováno 8. 11. 2026._
   Skutečná zranění dál jen v denním tahu (pomalu).
 - **Bombardování:** odemkne se při 500 převzatých vojácích (ukazatel na webu), pak jde dát do hlasování (`open-vote` s efektem `barrage`);
   vítězství = hustá palba na cílovou frakci po celý další den + vyšší nebezpečí v denním tahu. Náhled: `/?fx=barrage`.
+
+- **Deník fronty (Front Diary)** – tlačítko *Diary* na webu, odkaz `/?diary`. Dva druhy zápisů:
+  1. **ruční** (píšeme my): `data/diary.json` → `entries: [{ day, title, text, by?, draft? }]`, odstavce `
+
+`, `@handle` se změní na odkaz
+     na vojáka. Zápis s budoucím `day` se ukáže až ten den (jde psát dopředu). Upravit jde i z mobilu na GitHubu; smyčka do 5 min nasadí.
+  2. **automatická kronika dne** (`engine/chronicle.js`), píše ji denní tah: počasí, noví vojáci jménem, až 5 nejzajímavějších zápisů dne
+     (padlí, nástupci, konce příběhů, nezvěstní, setkání s nepřítelem…), ztráty a síla frakcí.
+- **Příběhy v2:** počasí dne (6 druhů, mění i déšť/mlhu na mapě; náhled `/?wx=fog`), vícedenní příběhové linky (13: krysa, dopisy, vrána, pes,
+  píseň přes dráty, fotka z území nikoho, karty; podle povolání tunel, souboj ostřelovačů, chlapec, ukradená šunka, odposlech, deník),
+  společné příhody dvou skutečných hráčů (spolubojovník / nepřítel přes dráty, zápis dostanou oba), nový stav **nezvěstný** (vrátí se do 4 dnů).
 
 ## Potřebuju od tebe (až se vrátíš)
 1. ~~Název hry + IG účet~~ → **Mud & Iron, @mudandiron** (hotovo). Promo balíček: `marketing/` (texty v `marketing/CAPTIONS.md`), odbavení: `docs/ONBOARDING.md`.

@@ -1,5 +1,5 @@
 {
-  "_note": "Šablony příběhů. {placeholder} se doplní z vojáka/dne, [a|b|c] = náhodná volba. Každý zápis má váhu a podmínky (line, archetype, status). Zájmena {he}/{his}/{him}/{He}/{His} podle vojáka (výchozí he, hráč si může změnit při claimu).",
+  "_note": "Šablony příběhů. {placeholder} se doplní z vojáka/dne, [a|b|c] = náhodná volba. daily: váha w a podmínky line/archetype/weather. comrade/enemy: {a} a {b} jsou jména dvou skutečných hráčů (stejný text jde do záznamu obou, proto bez zájmen). arcs: vícedenní příběhové linky, kroky jdou po sobě s odstupem 1–3 dny, vars se vylosují jednou na začátku linky. weather: počasí dne (stejné pro celou frontu). Zájmena {he}/{his}/{him}/{He}/{His} podle vojáka.",
   "firstNames": [
     "Arno",
     "Bram",
@@ -82,7 +82,13 @@
     "Grey Mill",
     "the Weeping Orchard",
     "Blackwater Canal",
-    "the Bone Quarry"
+    "the Bone Quarry",
+    "the Hanging Bridge",
+    "Calvary Farm",
+    "the Sunken Road",
+    "Lantern Hill",
+    "the Brickworks",
+    "Sorrow Copse"
   ],
   "items": [
     "a tin of tobacco",
@@ -94,18 +100,35 @@
     "a stub of a pencil",
     "a lucky button",
     "a frozen apple",
-    "a book with the last pages torn out"
+    "a book with the last pages torn out",
+    "a tin whistle",
+    "a pressed cornflower",
+    "a lock of hair in a matchbox",
+    "a cracked shaving mirror",
+    "a pack of cards missing the queen of hearts",
+    "a child's drawing of a horse",
+    "{his} mother's thimble",
+    "a bullet that missed {him}",
+    "a pocket Bible with a hole in it",
+    "a key to a house that is no longer there"
   ],
   "enlist": [
     "{name} came up the line in the rain with {item} and nothing else. The sergeant wrote {him} down as {rank} and pointed at the mud.",
     "Nobody saw {name} arrive. One morning there was simply one more helmet in {sector}, and a quiet {archetype} under it.",
     "{name} signed the papers with a steady hand. The trench at {sector} took {him} in like it takes everyone: without a word.",
-    "They issued {name} a rifle, a spade and a number. {He} kept {item} in {his} breast pocket, where the shrapnel would have to go through it first."
+    "They issued {name} a rifle, a spade and a number. {He} kept {item} in {his} breast pocket, where the shrapnel would have to go through it first.",
+    "{name} arrived with the evening ration party, carrying {item} and a borrowed greatcoat two sizes too big.",
+    "The new {archetype} gave {his} name as {name}. The corporal looked at {his} boots, then at the mud, and laughed for the first time in a week.",
+    "{name} stepped off the supply cart at {sector} and stood very still, listening to the guns as if they were saying {his} name.",
+    "Nobody asked {name} why {he} came. Nobody in {sector} asks that. {He} was handed a spade before {he} was handed a rifle.",
+    "{name} took the place of a man nobody would talk about. The dugout still had his blanket. {He} kept it folded.",
+    "{name} reported to {sector} with {item} sewn into {his} tunic lining. The sergeant pretended not to notice."
   ],
   "daily": [
     {
       "w": 6,
-      "text": "Rain all night. {name} bailed water out of {sector} with a helmet until {his} hands stopped feeling anything."
+      "text": "Rain all night. {name} bailed water out of {sector} with a helmet until {his} hands stopped feeling anything.",
+      "weather": "rain"
     },
     {
       "w": 5,
@@ -185,26 +208,318 @@
     {
       "w": 1,
       "text": "A crow sat on the parapet above {name} all afternoon. The men say it chose {him}."
+    },
+    {
+      "w": 5,
+      "weather": "rain",
+      "text": "The rain did not stop once. {name} slept standing up, wedged against the wall of {sector}, and dreamt of dry socks."
+    },
+    {
+      "w": 4,
+      "weather": "rain",
+      "text": "{name} lost a boot to the mud at {sector}. It took two men and a rifle sling to get it back. The mud kept the sock."
+    },
+    {
+      "w": 3,
+      "weather": "rain",
+      "text": "Water rose to the second step of the dugout. {name} moved {item} to the highest shelf and sat beside it like a guard."
+    },
+    {
+      "w": 5,
+      "weather": "fog",
+      "text": "Fog so thick that {name} could not see the end of {his} own rifle. Somewhere out there, someone was whistling."
+    },
+    {
+      "w": 4,
+      "weather": "fog",
+      "text": "In the fog a figure walked along the parapet of {sector}. When {name} challenged it, there was nobody there."
+    },
+    {
+      "w": 3,
+      "weather": "fog",
+      "text": "The fog lifted at noon and {name} saw {place} clearly for the first time. {He} wished it had stayed."
+    },
+    {
+      "w": 5,
+      "weather": "frost",
+      "text": "Frost on the wire made it sing in the wind. {name} could not stop listening to it."
+    },
+    {
+      "w": 4,
+      "weather": "frost",
+      "text": "{name} woke with {his} hair frozen to the sandbags. The cook brought tea so hot it hurt. Nobody complained."
+    },
+    {
+      "w": 3,
+      "weather": "frost",
+      "text": "The mud froze hard overnight. For one morning {name} could walk on top of it, like a man walking on water."
+    },
+    {
+      "w": 5,
+      "weather": "clear",
+      "text": "A clear sky. {name} kept {his} head low all day: on clear days the snipers do not miss."
+    },
+    {
+      "w": 3,
+      "weather": "clear",
+      "text": "Sun on {sector}. {name} took off {his} boots for the first time in nine days and the whole bay applauded."
+    },
+    {
+      "w": 3,
+      "weather": "clear",
+      "text": "Clear night. {name} counted stars until a flare went up and drowned them all."
+    },
+    {
+      "w": 5,
+      "weather": "storm",
+      "text": "Lightning lit {place} and {name} saw the enemy wire, the enemy trench, and a man in it looking straight back."
+    },
+    {
+      "w": 4,
+      "weather": "storm",
+      "text": "Thunder all night. {name} kept flinching. The old hands said that is how you tell the new ones: they flinch at God."
+    },
+    {
+      "w": 5,
+      "weather": "wind",
+      "text": "The east wind brought the smell of the other trenches: smoke, lime and somebody's cooking. {name} was hungry and furious about it."
+    },
+    {
+      "w": 3,
+      "weather": "wind",
+      "text": "The wind tore a sheet of corrugated iron off the dugout roof at {sector}. {name} chased it halfway down the communication trench."
+    },
+    {
+      "w": 4,
+      "text": "{name} spent the night filling sandbags. By dawn {he} could no longer close {his} hands. By noon the shells had emptied half of them again."
+    },
+    {
+      "w": 3,
+      "text": "{name} had a letter from home. {He} read it four times and then once more out loud, for the men who never get any."
+    },
+    {
+      "w": 3,
+      "text": "A rat stole {name}'s cheese ration while {he} watched. {He} let it. The rat looked hungrier."
+    },
+    {
+      "w": 3,
+      "text": "{name} was on wiring party in no man's land. Every time a flare went up {he} froze like a scarecrow. It worked."
+    },
+    {
+      "w": 3,
+      "text": "{name} lost at cards to the corporal and now owes him a week of tobacco and one favour, unspecified."
+    },
+    {
+      "w": 2,
+      "text": "Rumour reached {sector} that the war would be over by spring. {name} has heard it before. So has everyone."
+    },
+    {
+      "w": 2,
+      "text": "{name} carved {his} initials into the trench wall next to a hundred others. Some of them are only half finished."
+    },
+    {
+      "w": 2,
+      "text": "{name} spent the afternoon delousing {his} shirt over a candle. The lice won on points."
+    },
+    {
+      "w": 2,
+      "text": "{name} sang under {his} breath on sentry. Across the wire, very quietly, somebody sang the next line."
+    },
+    {
+      "w": 2,
+      "text": "A shell hit the latrine at {sector}. Nobody was hurt. {name} says it was the best day of the war."
+    },
+    {
+      "w": 2,
+      "text": "Officers came to inspect {sector}. {name} polished {his} buttons with mud, which is the only polish there is."
+    },
+    {
+      "w": 2,
+      "text": "{name} found an old map of {place} from before the war. There was a school on it, and an orchard. {He} looked for them. {He} did not find them."
+    },
+    {
+      "w": 1,
+      "text": "{name} turned a year older today. The bay sang for {him}, badly, and the cook found a candle."
+    },
+    {
+      "w": 1,
+      "text": "{name} saw a hare run the whole length of no man's land and nobody on either side fired at it."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "{name} stood to at dawn with the rest of {sector}, bayonet fixed, staring into the grey. Nothing came. Nothing came yesterday, either."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "Listening post, three in the morning. {name} heard boots, then whispering, then nothing. Just a fox, the corporal said. {He} did not sleep afterwards."
+    },
+    {
+      "w": 2,
+      "line": "front",
+      "text": "A trench raid went out from {sector}. {name} waited at the gap in the wire, counting heads as they came back."
+    },
+    {
+      "w": 3,
+      "line": "support",
+      "text": "{name} hauled ammunition boxes up the communication trench all night. {His} back filed a formal complaint."
+    },
+    {
+      "w": 2,
+      "line": "support",
+      "text": "{name} repaired a collapsed traverse at {sector} with sandbags, boards and language not fit for letters home."
+    },
+    {
+      "w": 3,
+      "line": "reserve",
+      "text": "Behind the lines {name} had a bath in a beer vat with eleven other men. The water was brown before {he} got in."
+    },
+    {
+      "w": 2,
+      "line": "reserve",
+      "text": "In the reserve billet {name} played football against the sappers. The ball was a sandbag stuffed with straw. The sappers cheated."
+    },
+    {
+      "w": 2,
+      "archetype": "sapper",
+      "text": "{name} drew the counter-mine plans by candlelight. Below {place} the earth is now a maze, and {he} knows every turn."
+    },
+    {
+      "w": 2,
+      "archetype": "sapper",
+      "text": "{name} set a charge under the enemy listening post. Then {he} waited all night for an order that did not come."
+    },
+    {
+      "w": 2,
+      "archetype": "medic",
+      "text": "{name} splinted a broken leg with a rifle and two puttees. The patient asked if {he} was a real doctor. {He} said yes. {He} was lying."
+    },
+    {
+      "w": 2,
+      "archetype": "medic",
+      "text": "The aid post ran out of morphine at four. {name} held a boy's hand until six. Then {he} went back for the next one."
+    },
+    {
+      "w": 2,
+      "archetype": "runner",
+      "text": "{name} ran six messages in one night. The last one was a request for more runners."
+    },
+    {
+      "w": 2,
+      "archetype": "runner",
+      "text": "{name} took the long way round {place} because the short way had a sniper on it. The long way had two."
+    },
+    {
+      "w": 2,
+      "archetype": "sniper",
+      "text": "{name} spent the day watching one loophole in the enemy line. At dusk a periscope rose in it. {He} let it go. Tomorrow."
+    },
+    {
+      "w": 2,
+      "archetype": "sniper",
+      "text": "{name} moved {his} hide three times today. Snipers who stay in one place do not stay anywhere for long."
+    },
+    {
+      "w": 2,
+      "archetype": "machinegunner",
+      "text": "The machine gun jammed at the worst moment. {name} cleared it with a bent nail and words the chaplain pretended not to hear."
+    },
+    {
+      "w": 2,
+      "archetype": "machinegunner",
+      "text": "{name} fired three short bursts at nothing to keep the enemy honest. The enemy fired three back to keep {him} honest too."
+    },
+    {
+      "w": 3,
+      "archetype": "signaller",
+      "text": "The telephone wire to {sector} was cut by shelling four times. {name} crawled out and spliced it four times."
+    },
+    {
+      "w": 2,
+      "archetype": "signaller",
+      "text": "{name} sent a pigeon back to headquarters. The pigeon came back two hours later. {name} took it personally."
+    },
+    {
+      "w": 2,
+      "archetype": "signaller",
+      "text": "{name} flashed a lamp signal to the battery behind the ridge. The answer came back: a single word, misspelled."
+    },
+    {
+      "w": 2,
+      "archetype": "cook",
+      "text": "The cook's fire went out in the rain. {name} relit it under {his} own greatcoat and served stew that tasted of wool."
+    },
+    {
+      "w": 2,
+      "archetype": "cook",
+      "text": "{name} carried hot tea up to the front line in petrol cans. Everyone could taste the petrol. Everyone drank it."
+    },
+    {
+      "w": 2,
+      "archetype": "chaplain",
+      "text": "{name} held a service in a shell hole. Eleven men came. Two of them had never prayed before. Both of them asked for another."
+    },
+    {
+      "w": 2,
+      "archetype": "chaplain",
+      "text": "{name} wrote letters for men who could not write, and some for men who could but did not know the words."
+    },
+    {
+      "w": 3,
+      "archetype": "officer",
+      "text": "{name} studied the trench map until the candle died, then walked {sector} in the dark to learn it by heart."
+    },
+    {
+      "w": 2,
+      "archetype": "officer",
+      "text": "{name} had orders to attack at dawn. {He} wrote back asking for artillery first. The orders were cancelled. Nobody knows which of {his} words did it."
+    },
+    {
+      "w": 2,
+      "archetype": "officer",
+      "text": "{name} censored the men's letters tonight. {He} crossed out the place names and left in all the love."
     }
   ],
   "promotion": [
     "For keeping {his} head when others lost theirs at {place}, {name} was promoted to {rank}.",
-    "The old {oldRank} did not come back from the wire. {name} wears {his} stripes now: {rank}."
+    "The old {oldRank} did not come back from the wire. {name} wears {his} stripes now: {rank}.",
+    "{name} brought back a wounded man and a lost machine gun from {place} in one trip. {He} is {rank} now.",
+    "Nobody else in {sector} wanted the stripes. {name} said yes. {rank}.",
+    "The colonel asked who held the line at {place} last night. Every finger pointed at {name}. {rank}.",
+    "{name} was made {rank}. {He} celebrated by sleeping four hours in a row."
   ],
   "wounded": [
-    "Shrapnel at {place}. {name} walked to the aid post himself and asked for a cigarette before the stitches.",
-    "{name} was caught by gas at {sector}. {He} coughs in {his} sleep but swears {he} will be back on the line within the week."
+    "Shrapnel at {place}. {name} walked to the aid post on {his} own feet and asked for a cigarette before the stitches.",
+    "{name} was caught by gas at {sector}. {He} coughs in {his} sleep but swears {he} will be back on the line within the week.",
+    "A rifle grenade burst above {sector}. {name} took a splinter in the arm and refused to leave until the next man was bandaged.",
+    "{name} was buried by a shell at {place}. They dug {him} out after twenty minutes, deaf in one ear and still holding {item}.",
+    "Trench foot. {name} can no longer feel {his} toes and the medical officer has ordered {him} to the rear, swearing at the mud.",
+    "{name} was hit by a sniper at {place}. The bullet went through {his} shoulder and, somehow, missed everything that mattered.",
+    "A fever swept through {sector}. {name} was carried out shaking and talking to people who were not there.",
+    "Barbed wire at {place} opened {name}'s leg from knee to ankle. {He} limped back in carrying the wire-cutters, as ordered."
   ],
   "recovered": [
-    "{name} is back from the field hospital, thinner and quieter, with {item} still in {his} pocket."
+    "{name} is back from the field hospital, thinner and quieter, with {item} still in {his} pocket.",
+    "{name} came back to {sector} with a new scar and an old joke. The bay was glad of both.",
+    "The field hospital let {name} go. {He} came back up the line on foot because the lorry would not wait.",
+    "{name} returned from hospital carrying letters, chocolate and rumours, and handed out all three.",
+    "Back with {his} platoon, {name} found that someone had kept {his} place on the fire step. Nobody admitted who."
   ],
   "fallen": [
     "{name} fell at {place}. They found {item} in {his} pocket and sent it home with a letter that said {he} was brave. It was true.",
-    "The wire at {place} took {name}. {His} friends in {sector} carved {his} name into a duckboard so the mud would remember {him}."
+    "The wire at {place} took {name}. {His} friends in {sector} carved {his} name into a duckboard so the mud would remember {him}.",
+    "{name} went over the top at {place} and did not come back. The roll was called twice. Nobody answered for {him}.",
+    "A shell found {name} in the dugout at {sector}. The men put {his} helmet on a cross by the road. It is still there.",
+    "{name} died at the aid post at dawn, holding {item}. The chaplain says {he} was smiling. The chaplain says that about everyone, but this time it was true.",
+    "{name} was lost in the mine explosion under {place}. There was nothing to bury. They buried {his} name instead."
   ],
   "heir": [
     "{name} came to the front because {his} {relation} {prevName} never came home. {He} carries {item}.",
-    "The papers say {name}. The sergeant says {he} has {his} {relation}'s eyes. {prevName}'s eyes. Nobody in {sector} argues."
+    "The papers say {name}. The sergeant says {he} has {his} {relation}'s eyes. {prevName}'s eyes. Nobody in {sector} argues.",
+    "A letter came with {name}: \"I am {prevName}'s {relation}. I have come to finish what {he} started.\" Nobody had the heart to tell {him} it never finishes.",
+    "{name} took the same post at {sector} where {prevName} stood. {He} found {his} {relation}'s initials carved in the wall and put {his} own beneath them.",
+    "The House of {family} sent another. {name}, {relation} of {prevName}, arrived with the same eyes and the same stubborn silence."
   ],
   "relations": [
     "brother",
@@ -212,5 +527,321 @@
     "cousin",
     "uncle",
     "older brother"
+  ],
+  "missing": [
+    "{name} went out with a patrol to {place} and did not come back with it. {He} is listed as missing. The men leave {his} rations untouched.",
+    "After the raid on {place}, {name} was not at the roll call. Somebody saw {him} in a shell hole. Somebody else says that was someone else.",
+    "{name} took a message across {place} at dusk. The message arrived. {name} did not."
+  ],
+  "returned": [
+    "{name} crawled back into {sector} at dawn after two nights in a shell hole at {place}, covered in mud and carrying {item}. {He} asked if {he} had missed breakfast.",
+    "The sentry nearly shot {name} coming in through the wire. {He} had been lost in the fog at {place}, living on rainwater and stubbornness.",
+    "{name} turned up at a neighbouring battalion, having walked the wrong way for a day and a half. {He} came home to {sector} with three new friends and no explanation."
+  ],
+  "comrade": [
+    "{a} and {b} shared the last tin of bully beef in the bay, counting the bites out loud to keep it fair.",
+    "{a} kept watch so that {b} could sleep. Then {bs} kept watch so that {as} could. Neither slept.",
+    "{a} taught {b} to play the harmonica. The bay has asked them both, formally, to stop.",
+    "{a} pulled {b} out of a flooded shell hole at {place}. Neither of them has mentioned it since. Both of them remember.",
+    "{a} and {b} argued all night about whose home town has the better beer. The argument has been adjourned until after the war.",
+    "{a} cut {b}'s hair with a bayonet and a cracked mirror. It is not good. It is, however, short.",
+    "{a} wrote a letter for {b}'s mother, because {bs} could not find the words. {bs} signed it.",
+    "{a} and {b} carved a chessboard into an ammunition box. The pieces are bullets, buttons and one very patient beetle.",
+    "{a} and {b} made a pact on sentry tonight: whoever gets home first visits the other's family. They shook on it with frozen hands.",
+    "{a} saw {b} freeze on the fire step at {place}. {as} said nothing, just stood closer. It was enough."
+  ],
+  "enemy": [
+    "At {place}, {a} of the {af} and {b} of the {bf} traded insults across the wire for an hour. By the end they were trading recipes.",
+    "{a} ({af}) and {b} ({bf}) met in the same shell hole at {place} during a raid. They stared at each other. Then each crawled home, and neither has told anyone.",
+    "{b} of the {bf} threw a tin of tobacco into the {af} trench with a note: \"for the one who sings\". {a} kept the tin.",
+    "{a} had {b} of the {bf} in {his} sights at {place} for a long second. {b} was lighting a pipe. {a} let the match burn all the way down.",
+    "A football came over the parapet from the {bf} side with {b}'s name scratched on it. {a} kicked it back. It did not come again.",
+    "On a quiet night {a} ({af}) and {b} ({bf}) called out their names across no man's land, just to hear another voice. Now each knows exactly who is out there."
+  ],
+  "arcs": [
+    {
+      "id": "rat",
+      "w": 3,
+      "vars": {
+        "pet": [
+          "Bishop",
+          "Captain",
+          "Duchess",
+          "Napoleon",
+          "Little Sergeant",
+          "Margarethe"
+        ]
+      },
+      "steps": [
+        "A rat has started sitting on the ammunition box next to {name}'s bunk. {He} has named it {pet}.",
+        "{pet} the rat now waits for {name} at stand-to every morning. {He} shares crumbs with it. The corporal calls this desertion of rations.",
+        "{pet} ran squealing out of the dugout at three in the morning. {name} followed, cursing, seconds before a shell came through the roof. {He} owes {pet} {his} life.",
+        "{name} has not seen {pet} for two days. {He} tells everyone rats come and go. {He} still leaves crumbs on the box."
+      ]
+    },
+    {
+      "id": "letters",
+      "w": 3,
+      "vars": {
+        "love": [
+          "Clara",
+          "Ilse",
+          "Marguerite",
+          "Anna",
+          "Rosa",
+          "Helene",
+          "Josef",
+          "Elias"
+        ]
+      },
+      "steps": [
+        "{name} got a letter from {love}. Two pages, one of them only about the weather back home. {He} read that page most.",
+        "{name} wrote back to {love} and tore it up three times. The fourth version says almost nothing, which is how {he} knows it is the right one.",
+        "No post for {name} this week. {He} checks the sack anyway, every day, and pretends {he} was only looking for tobacco.",
+        "A parcel from {love}: socks, a cake gone hard as a brick, and a pressed flower. {name} ate the cake and kept the flower in {item}'s place."
+      ]
+    },
+    {
+      "id": "crow",
+      "w": 2,
+      "vars": {
+        "crow": [
+          "Old Tom",
+          "the Parson",
+          "Inkwell",
+          "the Judge"
+        ]
+      },
+      "steps": [
+        "A one-eyed crow landed on the parapet above {name}. The men named it {crow} and said it had chosen {him}.",
+        "{crow} the crow follows {name} along the trench now. When {crow} flies off, men duck. They are usually right to.",
+        "Somebody in {sector} wanted to shoot {crow} for the pot. {name} stood in front of the rifle. The matter has been dropped."
+      ]
+    },
+    {
+      "id": "dog",
+      "w": 2,
+      "vars": {
+        "dog": [
+          "Biscuit",
+          "Shrapnel",
+          "Kaiser",
+          "Mercy",
+          "Lump"
+        ]
+      },
+      "steps": [
+        "A muddy dog crawled into {sector} through the wire. {name} gave it half {his} bread. It has not left {his} side since. The men call it {dog}.",
+        "{dog} has learned to carry messages in a tin on its collar. {name} is very proud. {dog} is mainly proud of the biscuits.",
+        "{dog} barked at nothing in the dark at four in the morning, and kept barking. A raiding party was twenty yards from the wire. {sector} was ready for them."
+      ]
+    },
+    {
+      "id": "song",
+      "w": 2,
+      "steps": [
+        "{name} hummed an old song from home on sentry. From the other side of the wire, very faintly, someone hummed it back.",
+        "{name} sang the first verse tonight, out loud. The other side sang the second. Nobody fired for an hour.",
+        "An officer heard about the singing and forbade it. Tonight {name} only whistled the first bar. Across the wire, someone whistled the last."
+      ]
+    },
+    {
+      "id": "photo",
+      "w": 2,
+      "vars": {
+        "stranger": [
+          "a woman in a white dress",
+          "two small boys on a bench",
+          "an old man with a dog",
+          "a wedding party"
+        ]
+      },
+      "steps": [
+        "{name} found a photograph in the mud of no man's land: {stranger}, and a name on the back that is not from {his} side of the wire.",
+        "{name} keeps the photograph in {his} pocket next to {item}. {He} says {he} will give it back after the war. Nobody asks to whom.",
+        "{name} left the photograph on a stake in the wire at {place}, wrapped in oilcloth. In the morning it was gone. In its place: a single cigarette."
+      ]
+    },
+    {
+      "id": "debt",
+      "w": 2,
+      "vars": {
+        "stake": [
+          "his boots",
+          "a week of rum",
+          "a gold tooth",
+          "a pocket watch that does not work"
+        ]
+      },
+      "steps": [
+        "{name} won {stake} at cards from a lance corporal in {sector}. The lance corporal wants a rematch.",
+        "Rematch. {name} lost everything {he} won, plus {item}. The whole dugout watched.",
+        "Third game, by candlelight, with the shelling for a clock. {name} won back {item} and nothing else. {He} says that was all {he} was playing for."
+      ]
+    },
+    {
+      "id": "tunnel",
+      "w": 3,
+      "archetype": "sapper",
+      "steps": [
+        "{name} pressed {his} ear to the tunnel wall under {place} and heard it: tapping. Someone is digging toward {him}.",
+        "The tapping under {place} is closer. {name} and two others work in silence, in socks, by the light of one candle.",
+        "{name} broke through into the enemy gallery at dawn. It was empty. A lamp was still warm. {He} blew it out and placed the charge.",
+        "The mine under {place} went up at noon. The whole front felt it. {name} sat at the tunnel mouth afterwards and did not speak until dark."
+      ]
+    },
+    {
+      "id": "duel",
+      "w": 3,
+      "archetype": "sniper",
+      "vars": {
+        "foe": [
+          "the Magpie",
+          "the Clockmaker",
+          "the Widow",
+          "Grey Hat"
+        ]
+      },
+      "steps": [
+        "There is a sniper across the way the men call {foe}. Three helmets went up on sticks today. {foe} hit all three. {name} watched where the shots came from.",
+        "{name} lay in the ruins of {place} all day. {foe} did not fire once. Neither did {name}. Both of them know.",
+        "At dusk a glint from the ridge. {name} fired once. The front has been quiet ever since, and nobody talks about {foe} any more."
+      ]
+    },
+    {
+      "id": "boy",
+      "w": 3,
+      "archetype": "medic",
+      "vars": {
+        "boy": [
+          "Pip",
+          "young Anton",
+          "the drummer",
+          "little Weiss"
+        ]
+      },
+      "steps": [
+        "{name} carried in {boy}, who lied about his age to enlist. {boy} kept asking whether his mother would be told.",
+        "{boy} has a fever. {name} sits with him after every shift and reads to him from a book with the last pages missing.",
+        "{boy} was put on the hospital train today, alive. He gave {name} a button from his tunic. {name} wears it on {his} own."
+      ]
+    },
+    {
+      "id": "ham",
+      "w": 3,
+      "archetype": "cook",
+      "vars": {
+        "prize": [
+          "the colonel's ham",
+          "a crate of officers' wine",
+          "the brigadier's Christmas pudding"
+        ]
+      },
+      "steps": [
+        "{name} learned that {prize} is stored in the cellar at battalion headquarters. {He} has been making careful drawings.",
+        "{name} volunteered for a supply run to headquarters. {He} came back with exactly what was ordered and a suspiciously large greatcoat.",
+        "The whole of {sector} ate well tonight. {prize} has been reported missing. {name} has been reported as a very good cook."
+      ]
+    },
+    {
+      "id": "wire",
+      "w": 3,
+      "archetype": "signaller",
+      "steps": [
+        "The line to the battery keeps going dead at the same spot near {place}. {name} suspects it is not the shelling.",
+        "{name} crawled out along the wire at night and found the break: neat, cut, recent. Someone is listening in.",
+        "{name} laid a second line, deep, by a different route, and left the old one live with false orders on it. Tomorrow the enemy shells an empty farm."
+      ]
+    },
+    {
+      "id": "diary",
+      "w": 2,
+      "steps": [
+        "{name} started keeping a diary in the back of a field service book. First entry: \"Still here.\"",
+        "{name}'s diary, day nine: \"Still here. Rain. A rat called the Major. Nothing else worth writing, which is the point.\"",
+        "{name} read {his} diary from the start tonight and laughed at how frightened {he} was back then. Then {he} stopped laughing and wrote: \"Still here.\""
+      ]
+    }
+  ],
+  "weather": [
+    {
+      "id": "rain",
+      "w": 5,
+      "label": "Rain",
+      "titles": [
+        "Rain on {place}",
+        "The water rises",
+        "Another wet night"
+      ],
+      "diary": [
+        "It rained from dusk to dawn. The communication trenches are knee-deep again and the duckboards float.",
+        "Rain all day, steady and patient. The mud has swallowed two more boots and a mule."
+      ]
+    },
+    {
+      "id": "fog",
+      "w": 3,
+      "label": "Fog",
+      "titles": [
+        "Fog over {place}",
+        "Shapes in the grey"
+      ],
+      "diary": [
+        "Fog sat in the valley until noon. Sentries on both sides fired at shapes that were not there.",
+        "A grey wall of fog from dawn to dusk. Patrols went out blind and came back counting each other twice."
+      ]
+    },
+    {
+      "id": "frost",
+      "w": 2,
+      "label": "Frost",
+      "titles": [
+        "Hard frost at {place}",
+        "The mud freezes"
+      ],
+      "diary": [
+        "A hard frost. The mud froze into ridges sharp enough to cut boots, and the wire sang in the wind.",
+        "Ice on the water in the shell holes. The men stamped their feet all night to keep the blood moving."
+      ]
+    },
+    {
+      "id": "clear",
+      "w": 2,
+      "label": "Clear",
+      "titles": [
+        "A clear day over {place}",
+        "Sniper's weather"
+      ],
+      "diary": [
+        "A clear, cold day. Good for snipers and observers, bad for everyone else.",
+        "Blue sky over the front for the first time in a week. Both sides used it to shell each other with great accuracy."
+      ]
+    },
+    {
+      "id": "storm",
+      "w": 1,
+      "label": "Storm",
+      "titles": [
+        "Thunder over {place}",
+        "The sky joins in"
+      ],
+      "diary": [
+        "Thunder all night, and nobody could tell which of it was the sky.",
+        "A storm broke over the ridge at midnight. Lightning showed the whole front for a heartbeat at a time: wire, craters, men."
+      ]
+    },
+    {
+      "id": "wind",
+      "w": 2,
+      "label": "Wind",
+      "titles": [
+        "East wind",
+        "Wind over {place}"
+      ],
+      "diary": [
+        "A cold wind from the east carried the smell of the other trenches: smoke, lime and cooking.",
+        "Gale all day. Sandbags slid, roofs lifted, and the gas sentries watched the wind direction like hawks."
+      ]
+    }
   ]
 }

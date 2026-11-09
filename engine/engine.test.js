@@ -85,3 +85,17 @@ test('First Wave: medaili má prvních 100 rekrutů, 101. už ne', () => {
   assert.ok(s.soldiers[99].medals.includes('first-wave'));
   assert.ok(!(s.soldiers[100].medals || []).includes('first-wave'));
 });
+
+test('příběhové linky, dvojice, počasí a kronika dne', () => {
+  const s = emptyState(theme);
+  for (let i = 0; i < 200; i++) applyComment(s, { id: `c${i}`, userId: `u${i}`, username: `user${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
+  for (let d = 0; d < 40; d++) dailyTick(s, theme, story, { activeIds: s.soldiers.slice(0, 50).map((x) => x.id) });
+  const all = s.soldiers.flatMap((x) => x.record.map((r) => r[1]));
+  assert.ok(!all.some((t) => /\{\w+\}|\[[^\]]*\|/.test(t)), all.find((t) => /\{\w+\}|\[[^\]]*\|/.test(t)));
+  assert.ok(s.soldiers.some((x) => (x.arcsDone || []).length), 'aspoň jedna dokončená linka');
+  assert.equal(s.chronicle.length, 40);
+  const txt = JSON.stringify(s.chronicle);
+  assert.ok(!/\{\w+\}/.test(txt), txt.match(/.{40}\{\w+\}.{20}/)?.[0]);
+  assert.ok(/@user\d+/.test(txt));
+  assert.ok(s.chronicle.every((c) => c.title && c.blocks.length >= 2));
+});

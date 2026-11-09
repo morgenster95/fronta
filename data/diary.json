@@ -1,0 +1,17 @@
+{
+  "_note": "Deník fronty: ručně psané zápisy (anglicky). Každý zápis: day (den války), title, text (odstavce oddělené \\n\\n; @handle se na webu změní na odkaz na vojáka), volitelně by (podpis, výchozí 'Field HQ') a draft: true (nezveřejní se). Zápis s day větším než dnešní den se ukáže až ten den, takže jde psát dopředu. Automatickou kroniku dne píše denní tah sám, sem patří jen to, co píšeme my.",
+  "entries": [
+    {
+      "day": 0,
+      "title": "Mobilization",
+      "by": "Field HQ",
+      "text": "The posters went up at dusk. By midnight five names were on the rolls, and the sergeants were already arguing over who got them.\n\nThe first to sign was @hodnepijumaloctu, who took a post on the Hegemony front line and was called Crow before he had even unpacked. @hanka_b97, @_milan_kvasnicka_ and @zaboravljeninemanjic followed him into the same trench. The Concord answered with a single rifle: @k4a.gr, alone opposite four men, and not in the least worried about it.\n\nEvery one of the first hundred wears the ribbon of the First Wave. There are still places left in it."
+    },
+    {
+      "day": 1,
+      "title": "The first morning",
+      "by": "Field HQ",
+      "text": "Day one of the war. Nobody on either side quite believed it would start, and then the guns opened at dawn and everybody believed it. Twenty-three more volunteers came up the line before nightfall.\n\nThe Hegemony holds the centre of Verdel Ridge with fifteen rifles. The Concord holds the low ground opposite with thirteen and says it prefers it that way. @masis_xiii has the only machine gun in the sector. The Concord has a sapper (@yee.zle) and a cook (@knightowlvt), which may matter more than it sounds.\n\nFrom tonight this diary is kept every day: the weather, the new arrivals, who was hurt, who came back, and the stories from the service records. If your name is in it, you were there."
+    }
+  ]
+}

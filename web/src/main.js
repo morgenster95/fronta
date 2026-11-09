@@ -397,7 +397,12 @@ async function boot() {
   fx.addChild(rain);
   const flash = new Graphics();
   fx.addChild(flash);
-  const drops = Array.from({ length: 160 }, () => ({ x: Math.random(), y: Math.random(), v: 0.6 + Math.random() * 0.6 }));
+  // počasí dne z denního tahu (bez údaje = déšť jako dřív)
+  const wx = new URLSearchParams(location.search).get('wx') || roster.weather;
+  const raining = !wx || wx === 'rain' || wx === 'storm';
+  const tint = { fog: [0xa39782, 0.13], frost: [0xc4d6e4, 0.07], clear: [0xffe6b0, 0.03] }[wx];
+  fog.alpha = wx === 'clear' || wx === 'frost' ? 0.5 : 1;
+  const drops = Array.from({ length: wx === 'storm' ? 260 : 160 }, () => ({ x: Math.random(), y: Math.random(), v: 0.6 + Math.random() * 0.6 }));
   let flashT = 0, nextFlash = 3000;
 
   // --- kamera ---
@@ -529,17 +534,18 @@ async function boot() {
     fog.tilePosition.x = -cam.x * z * 0.3 + now * 0.004;
     fog.tilePosition.y = -cam.y * z * 0.3;
     rain.clear();
-    for (const d of drops) {
+    if (tint) rain.rect(0, 0, W, H).fill({ color: tint[0], alpha: tint[1] });
+    if (raining) for (const d of drops) {
       d.y += 0.012 * d.v;
       d.x -= 0.002 * d.v;
       if (d.y > 1) { d.y = 0; d.x = Math.random() * 1.1; }
       rain.moveTo(d.x * W, d.y * H).lineTo(d.x * W - 3, d.y * H + 12 * d.v);
     }
-    rain.stroke({ color: 0xa39782, alpha: 0.25, width: 1 });
+    if (raining) rain.stroke({ color: 0xa39782, alpha: 0.25, width: 1 });
     // vzdálené záblesky
     flash.clear();
     nextFlash -= app.ticker.deltaMS;
-    if (nextFlash < 0) { flashT = 1; nextFlash = 2500 + Math.random() * 7000; }
+    if (nextFlash < 0) { flashT = 1; nextFlash = wx === 'storm' ? 900 + Math.random() * 3000 : 2500 + Math.random() * 7000; }
     if (flashT > 0) {
       flash.rect(0, 0, W, H).fill({ color: 0xd98f3f, alpha: 0.07 * flashT });
       flashT -= app.ticker.deltaMS / 400;

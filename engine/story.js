@@ -31,6 +31,7 @@ export function soldierVars(soldier, theme, story, extra = {}) {
   const rand = rngFor(soldier.id, 'vars');
   return {
     name: soldier.name,
+    family: soldier.family ?? '',
     rank: theme.ranks[soldier.rank],
     archetype: theme.archetypes.find((a) => a.id === soldier.archetype)?.name.toLowerCase() ?? 'soldier',
     sector: soldier.sector ?? 'the line',
@@ -47,12 +48,23 @@ export function enlistEntry(soldier, theme, story) {
   return fill(pick(rand, story.enlist), soldierVars(soldier, theme, story), rand);
 }
 
-export function dailyEntry(soldier, day, theme, story) {
+// Počasí dne: stejné pro celou frontu, deterministické podle tématu a dne.
+export function weatherFor(theme, story, day) {
+  const list = story.weather || [];
+  if (!list.length) return null;
+  return weighted(rngFor(theme.id, 'weather', day), list.map((w) => [w, w.w]));
+}
+
+export function dailyEntry(soldier, day, theme, story, weather = null) {
   const rand = rngFor(soldier.id, 'day', day);
   const pool = story.daily.filter(
-    (e) => (!e.line || e.line === soldier.line) && (!e.archetype || e.archetype === soldier.archetype),
+    (e) =>
+      (!e.line || e.line === soldier.line) &&
+      (!e.archetype || e.archetype === soldier.archetype) &&
+      (!e.weather || e.weather === weather),
   );
-  const tpl = weighted(rand, pool.map((e) => [e.text, e.w * (e.archetype ? 2 : 1)]));
+  // povolání a počasí mají přednost před obecnými zápisy
+  const tpl = weighted(rand, pool.map((e) => [e.text, e.w * (e.archetype ? 2 : 1) * (e.weather ? 1.5 : 1)]));
   const vars = soldierVars(soldier, theme, story, { place: pick(rand, story.places) });
   return fill(tpl, vars, rand);
 }

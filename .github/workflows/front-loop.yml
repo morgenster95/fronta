@@ -45,7 +45,10 @@ jobs:
             git add data/state.json marketing/queue.json
             if ! git diff --cached --quiet; then
               git commit -qm "loop: $(date -u +%FT%TZ)" && git push -q || (git pull -q --rebase && git push -q)
-              npm run -s build && firebase deploy --only hosting --non-interactive --project fronta-ig > /dev/null && echo "nasazeno"
+            fi
+            # nasadit, kdykoli se změnil obsah (i ruční zápis do deníku data/diary.json nebo nový kód)
+            if [ "$(git rev-parse HEAD)" != "${DEPLOYED:-}" ]; then
+              npm run -s build && firebase deploy --only hosting --non-interactive --project fronta-ig > /dev/null && echo "nasazeno" && DEPLOYED=$(git rev-parse HEAD)
             fi
             sleep 300
           done

@@ -1,7 +1,7 @@
 // Voják: vznik z komentáře, vzhled z hashe IG ID, denní tah (zápisy, povýšení, zranění, smrt a nástupce z rodu).
 
 import { rngFor, pick, weighted } from './rng.js';
-import { dailyEntry, eventEntry } from './story.js';
+import { dailyEntry, eventEntry, soldierVars, fill } from './story.js';
 
 export const STATUS = ['active', 'wounded', 'missing', 'captured', 'fallen'];
 
@@ -57,13 +57,27 @@ export function selectForStory(soldiers, day, activeIds = new Set()) {
 }
 
 // Jeden den pro jednoho vojáka. `ctx.active` = hráč se vrací (hlasoval, otevřel kartu) → chrání ho to.
+// ctx: { danger, active, weather, events: [] (pro kroniku dne), comrade(s, rand), foe(s, rand) }
 export function tickSoldier(s, day, theme, story, ctx = {}) {
   const rand = rngFor(s.id, 'fate', day);
   const out = [];
+  const ev = (type, text, extra = {}) => {
+    ctx.events?.push({ type, handle: s.handle, faction: s.faction, text, ...extra });
+    return text;
+  };
   if (s.status === 'wounded') {
     if (rand() < 0.35) {
       s.status = 'active';
-      out.push(eventEntry('recovered', s, day, theme, story));
+      out.push(ev('recovered', eventEntry('recovered', s, day, theme, story)));
+    }
+    return out;
+  }
+  if (s.status === 'missing') {
+    // nezvěstný se vrátí do pár dnů (nejpozději čtvrtý den)
+    if (rand() < 0.45 || day - (s.missingDay ?? day) >= 4) {
+      s.status = 'active';
+      delete s.missingDay;
+      out.push(ev('returned', eventEntry('returned', s, day, theme, story)));
     }
     return out;
   }
@@ -71,23 +85,91 @@ export function tickSoldier(s, day, theme, story, ctx = {}) {
 
   const danger = (ctx.danger ?? 1) * (s.line === 'front' ? 1.5 : s.line === 'reserve' ? 0.4 : 1);
   const protect = ctx.active || s.claimed ? 0.35 : 1; // aktivní hráči padají ~3× méně
+  const wound = 0.03 * danger;
+  const lost = wound + (story.missing ? 0.006 * danger : 0);
   const r = rand();
   if (r < 0.004 * danger * protect && day - s.enlisted >= 5) {
     // padl: smrt nikdy z ničeho nic, jen po aspoň 5 dnech služby
     s.status = 'fallen';
     s.fallenDay = day;
-    out.push(eventEntry('fallen', s, day, theme, story));
-  } else if (r < 0.03 * danger) {
+    s.arc = null;
+    out.push(ev('fallen', eventEntry('fallen', s, day, theme, story)));
+  } else if (r < wound) {
     s.status = 'wounded';
-    out.push(eventEntry('wounded', s, day, theme, story));
+    out.push(ev('wounded', eventEntry('wounded', s, day, theme, story)));
+  } else if (r < lost && day - s.enlisted >= 2) {
+    s.status = 'missing';
+    s.missingDay = day;
+    out.push(ev('missing', eventEntry('missing', s, day, theme, story)));
   } else if (r > 0.985 && s.rank < 4) {
     const oldRank = theme.ranks[s.rank];
     s.rank++;
-    out.push(eventEntry('promotion', s, day, theme, story, { oldRank }));
+    out.push(ev('promotion', eventEntry('promotion', s, day, theme, story, { oldRank })));
   } else {
-    out.push(dailyEntry(s, day, theme, story));
+    out.push(storyDay(s, day, theme, story, ctx, ev));
   }
   return out;
+}
+
+// Běžný den: pokračování příběhové linky > nová linka > příhoda se spolubojovníkem / nepřítelem > zápis dne.
+function storyDay(s, day, theme, story, ctx, ev) {
+  const rand = rngFor(s.id, 'story', day);
+  if (s.arc && day >= s.arc.next) return arcStep(s, day, theme, story, rand, ev);
+  const r = rand();
+  if (!s.arc && story.arcs && r < 0.12) {
+    const done = new Set(s.arcsDone || []);
+    const pool = story.arcs.filter((a) => !done.has(a.id) && (!a.archetype || a.archetype === s.archetype));
+    if (pool.length) {
+      const a = weighted(rand, pool.map((x) => [x, x.w * (x.archetype ? 2 : 1)]));
+      const v = {};
+      for (const [k, opts] of Object.entries(a.vars || {})) v[k] = pick(rand, opts);
+      s.arc = { id: a.id, step: 0, next: day, v };
+      return arcStep(s, day, theme, story, rand, ev);
+    }
+  }
+  if (r >= 0.12 && r < 0.27 && story.comrade && ctx.comrade) {
+    const o = ctx.comrade(s, rand);
+    if (o) return pairEntry('comrade', s, o, day, theme, story, rand, ev);
+  }
+  if (r >= 0.27 && r < 0.34 && story.enemy && ctx.foe) {
+    const o = ctx.foe(s, rand);
+    if (o) return pairEntry('enemy', s, o, day, theme, story, rand, ev);
+  }
+  return dailyEntry(s, day, theme, story, ctx.weather?.id);
+}
+
+function arcStep(s, day, theme, story, rand, ev) {
+  const a = story.arcs?.find((x) => x.id === s.arc.id);
+  if (!a) {
+    s.arc = null;
+    return dailyEntry(s, day, theme, story);
+  }
+  const vars = soldierVars(s, theme, story, { place: pick(rngFor(s.id, 'arcplace', a.id), story.places), ...s.arc.v });
+  const text = fill(a.steps[s.arc.step], vars, rand);
+  const last = s.arc.step >= a.steps.length - 1;
+  ev(last ? 'arc-end' : s.arc.step === 0 ? 'arc-start' : 'arc', text, { arc: a.id, tpl: `${a.id}${s.arc.step}` });
+  if (last) {
+    s.arcsDone = [...(s.arcsDone || []), a.id];
+    s.arc = null;
+  } else {
+    s.arc.step++;
+    s.arc.next = day + 1 + Math.floor(rand() * 3); // další díl za 1–3 dny
+  }
+  return text;
+}
+
+// Dva skuteční hráči v jednom zápisu: stejný text jde do záznamu obou.
+function pairEntry(kind, s, o, day, theme, story, rand, ev) {
+  const short = (f) => theme.factions[f].name.replace(/^The /, '');
+  const shortName = (x) => x.nick || x.first || x.name;
+  const vars = soldierVars(s, theme, story, {
+    place: pick(rand, story.places), a: s.name, b: o.name, as: shortName(s), bs: shortName(o), af: short(s.faction), bf: short(o.faction),
+  });
+  const tpl = Math.floor(rand() * story[kind].length);
+  const text = fill(story[kind][tpl], vars, rand);
+  o.record.push([day, text]);
+  ev(kind, text, { other: o.handle, tpl: `${kind}${tpl}` });
+  return text;
 }
 
 // Nástupce z rodu: stejné IG jméno i místo, nové křestní jméno, odkaz na padlého.
@@ -104,6 +186,8 @@ export function heir(s, day, theme, story) {
     enlisted: day,
     fallenDay: undefined,
     fallen: [...s.fallen, prev],
+    arc: null,
+    arcsDone: [],
     record: [],
   };
   n.name = displayName(n);

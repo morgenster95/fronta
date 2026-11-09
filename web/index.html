@@ -44,6 +44,7 @@
         <input id="search-input" type="search" placeholder="Find a soldier: @handle" spellcheck="false" autocapitalize="off" />
         <ul id="suggest" hidden></ul>
       </form>
+      <button id="diary-btn">Diary</button>
       <button id="warroom-btn">War Room</button>
       <button id="enlist-btn" class="primary">Enlist</button>
     </footer>
@@ -85,6 +86,13 @@
       <div id="wr-unlocks"></div>
       <h3>Past decisions</h3>
       <ol id="wr-history" class="history"></ol>
+    </section>
+
+    <section id="diary" class="sheet" hidden>
+      <button class="close" data-close aria-label="Close">×</button>
+      <h2>Front Diary</h2>
+      <p class="muted">What happened on the line, day by day. If your name is in it, you were there.</p>
+      <div id="diary-list"><p class="muted">Fetching the diary…</p></div>
     </section>
 
     <section id="enlist" class="sheet" hidden>

@@ -1,7 +1,9 @@
 // Stav světa (soupiska) a jeho změny: komentář → narukování, kód → převzetí, denní tah, export statických dat pro web.
 
 import { createSoldier, tickSoldier, heir, selectForStory } from './soldier.js';
-import { enlistEntry } from './story.js';
+import { enlistEntry, weatherFor } from './story.js';
+import { writeChronicle } from './chronicle.js';
+import { pick } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
 
@@ -145,7 +147,7 @@ export function unlocks(state, theme) {
   return (theme.unlocks || []).map((u) => ({ id: u.id, label: u.label, need: u.claimed, have: claimed, open: claimed >= u.claimed }));
 }
 
-// Denní tah: nový den, zápisy, osudy, nástupci padlých.
+// Denní tah: nový den, zápisy, osudy, nástupci padlých, kronika dne do Deníku fronty.
 export function dailyTick(state, theme, story, ctx = {}) {
   const decided = resolveVote(state);
   if (decided) {
@@ -153,22 +155,40 @@ export function dailyTick(state, theme, story, ctx = {}) {
   }
   state.day++;
   const day = state.day;
+  const weather = weatherFor(theme, story, day);
+  state.weather = weather?.id ?? null;
+  const events = [];
   const active = new Set(ctx.activeIds || []);
   const chosen = new Set(selectForStory(state.soldiers, day, active).map((s) => s.id));
+  // kdo je dnes k dispozici pro společné příhody (stav na začátku dne)
+  const onLine = theme.factions.map((_, f) => state.soldiers.filter((s) => s.faction === f && s.status === 'active'));
+  const comrade = (s, rand) => {
+    const mates = onLine[s.faction].filter((o) => o !== s && o.status === 'active');
+    if (!mates.length) return null;
+    const near = mates.filter((o) => o.sector === s.sector);
+    return pick(rand, near.length && rand() < 0.7 ? near : mates);
+  };
+  const foe = (s, rand) => {
+    const them = onLine[1 - s.faction]?.filter((o) => o.status === 'active') || [];
+    return them.length ? pick(rand, them) : null;
+  };
   for (let i = 0; i < state.soldiers.length; i++) {
     let s = state.soldiers[i];
     if (s.status === 'fallen') {
       // nástupce dorazí 2. den po smrti
       if (day - s.fallenDay >= 2) {
         state.soldiers[i] = s = heir(s, day, theme, story);
+        events.push({ type: 'heir', handle: s.handle, faction: s.faction, text: s.record.at(-1)[1] });
       }
       continue;
     }
     if (!chosen.has(s.id) && s.status === 'active') continue;
-    for (const text of tickSoldier(s, day, theme, story, { active: active.has(s.id), danger: ctx.danger })) {
+    const sctx = { active: active.has(s.id), danger: ctx.danger, weather, events, comrade, foe };
+    for (const text of tickSoldier(s, day, theme, story, sctx)) {
       s.record.push([day, text]);
     }
   }
+  state.chronicle = [...(state.chronicle || []), writeChronicle(state, day, { theme, story, weather, events, decided })].slice(-60);
   return state;
 }
 
@@ -182,6 +202,7 @@ export function buildPublic(state, theme) {
     followers: state.followers,
     openSectors: state.openSectors ?? 8,
     dispatch: (state.events || []).slice(-1)[0] || null,
+    weather: state.weather ?? null,
     history: (state.events || []).slice(-30).reverse(),
     vote: state.vote ? { question: state.vote.question, options: state.vote.options.map((o) => ({ kw: o.kw, label: o.label })), votes: Object.keys(state.vote.tallies).length } : null,
     updated: new Date().toISOString(),

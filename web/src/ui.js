@@ -97,6 +97,58 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     return `<li><span class="d">Day ${e.day} · ${esc(e.winner)}</span>${esc(e.question)}<br><span class="muted">${res}</span><br>${esc(e.text || '')}</li>`;
   }).join('') || '<li class="muted">The war has just begun. The first decision is yours.</li>';
   $('warroom-btn').onclick = () => show('warroom');
+
+  // Deník fronty: ruční zápisy + kronika dne; @handle → karta vojáka
+  const byHandle = new Map(soldiers.filter((s) => s.handle).map((s) => [s.handle, s]));
+  let diaryLoaded = null;
+  const WEATHER = { rain: '🌧', fog: '🌫', frost: '❄', clear: '☀', storm: '⛈', wind: '💨' };
+  const linkify = (html) =>
+    html.replace(/@([a-z0-9._]+[a-z0-9_])/gi, (m, h) => (byHandle.has(h.toLowerCase()) ? `<a href="?s=${h}" data-h="${h.toLowerCase()}">@${h}</a>` : m));
+  const para = (t) => String(t).split(/\n\n+/).map((p) => `<p>${linkify(esc(p))}</p>`).join('');
+  async function openDiary() {
+    show('diary');
+    diaryLoaded ??= fetch('/data/diary.json', { cache: 'no-cache' }).then((r) => r.json()).catch(() => null);
+    const d = await diaryLoaded;
+    const list = $('diary-list');
+    if (!d?.entries?.length) {
+      list.innerHTML = '<p class="muted">The diary is still blank. The first entry comes at midnight.</p>';
+      return;
+    }
+    list.innerHTML = d.entries.map((e) => {
+      const head = `<div class="d">${dayLabel(e.day)}${e.weather ? ` · ${WEATHER[e.weather] || ''} ${esc(e.weather)}` : ''} · ${esc(e.by || '')}</div><h4>${esc(e.title || '')}</h4>`;
+      const body = e.kind === 'note'
+        ? para(e.text)
+        : (e.blocks || []).map((b) =>
+            (b.h ? `<h5>${esc(b.h)}</h5>` : '') +
+            (b.items ? `<ul>${b.items.map((i) => `<li>${linkify(esc(i))}</li>`).join('')}</ul>` : `<p>${linkify(esc(b.text))}</p>`)).join('');
+      return `<article class="entry ${e.kind}">${head}${body}</article>`;
+    }).join('');
+    list.onclick = (ev) => {
+      const a = ev.target.closest('a[data-h]');
+      if (!a) return;
+      ev.preventDefault();
+      const s = byHandle.get(a.dataset.h);
+      if (s) openSoldier(s);
+    };
+  }
+  $('diary-btn').onclick = openDiary;
+  if (roster.diary) {
+    // upoutávka na poslední zápis v horním panelu
+    $('dispatch').hidden = false;
+    const el = document.createElement('div');
+    el.className = 'diary-teaser';
+    el.innerHTML = `<span class="d">Front Diary · ${dayLabel(roster.diary.day)}</span>${esc(roster.diary.title)} <span class="muted">· read</span>`;
+    el.onclick = (ev) => { ev.stopPropagation(); openDiary(); };
+    $('dispatch').prepend(el);
+    if (!roster.dispatch && !roster.vote) $('dispatch-more').textContent = `▸ Front Diary · ${dayLabel(roster.diary.day)}`;
+  }
+  // na telefonu je horní panel vždy sbalený do jednoho řádku, klepnutím se rozbalí
+  if (!$('dispatch').hidden && !$('dispatch').onclick) {
+    if (!$('dispatch-more').textContent) $('dispatch-more').textContent = '▸ News from the front';
+    if (innerWidth < 600) $('dispatch').classList.add('collapsed');
+    $('dispatch').onclick = () => $('dispatch').classList.toggle('collapsed');
+  }
+  if (new URLSearchParams(location.search).has('diary')) setTimeout(openDiary, 600);
   document.querySelectorAll('[data-close]').forEach((b) => (b.onclick = () => closeAll()));
 
   // hledání

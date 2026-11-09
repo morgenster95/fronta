@@ -165,3 +165,24 @@ body.reel #card { bottom: 18%; width: 86%; }
 #share-overlay img { max-height: 70vh; max-width: 100%; image-rendering: pixelated; border: 2px solid var(--line); -webkit-touch-callout: default; }
 #share-overlay p { margin: 0; max-width: 420px; font-size: 18px; }
 #share-overlay .close { position: absolute; top: 10px; right: 10px; font-size: 30px; background: none; border: 0; }
+
+/* Deník fronty */
+#diary-list { display: grid; gap: 18px; margin-top: 8px; }
+#diary-list .entry { border-left: 2px solid var(--line); padding-left: 12px; }
+#diary-list .entry.note { border-left-color: var(--accent); }
+#diary-list .d { color: var(--accent); font-family: 'Silkscreen', monospace; font-size: 12px; }
+#diary-list h4 { margin: 2px 0 6px; font-size: 1.15em; font-weight: 400; }
+#diary-list h5 { margin: 10px 0 2px; color: var(--muted); font-weight: 400; font-family: 'Silkscreen', monospace; font-size: 11px; text-transform: uppercase; }
+#diary-list p { margin: 0 0 8px; }
+#diary-list ul { margin: 0; padding-left: 16px; display: grid; gap: 6px; }
+#diary-list a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 2px; }
+.diary-teaser { cursor: pointer; margin-bottom: 6px; }
+.diary-teaser .d { color: var(--accent); font-family: 'Silkscreen', monospace; font-size: 12px; display: block; }
+#dispatch.collapsed .diary-teaser { display: none; }
+@media (max-width: 420px) {
+  #bar { gap: 6px; }
+  #bar button { padding-left: 8px; padding-right: 8px; }
+  #search { min-width: 84px; }
+  #search-input { padding: 6px 6px; }
+}
+@media (max-width: 420px) { #dispatch { top: calc(env(safe-area-inset-top) + 86px); } }
