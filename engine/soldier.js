@@ -1,7 +1,7 @@
 // Voják: vznik z komentáře, vzhled z hashe IG ID, denní tah (zápisy, povýšení, zranění, smrt a nástupce z rodu).
 
 import { rngFor, pick, weighted } from './rng.js';
-import { dailyEntry, eventEntry, soldierVars, fill } from './story.js';
+import { dailyEntry, eventEntry, soldierVars, fill, pickVaried, tplKey } from './story.js';
 
 export const STATUS = ['active', 'wounded', 'missing', 'captured', 'fallen'];
 
@@ -68,7 +68,7 @@ export function tickSoldier(s, day, theme, story, ctx = {}) {
   if (s.status === 'wounded') {
     if (rand() < 0.35) {
       s.status = 'active';
-      out.push(ev('recovered', eventEntry('recovered', s, day, theme, story)));
+      out.push(ev('recovered', eventEntry('recovered', s, day, theme, story, {}, ctx.today)));
     }
     return out;
   }
@@ -77,7 +77,7 @@ export function tickSoldier(s, day, theme, story, ctx = {}) {
     if (rand() < 0.45 || day - (s.missingDay ?? day) >= 4) {
       s.status = 'active';
       delete s.missingDay;
-      out.push(ev('returned', eventEntry('returned', s, day, theme, story)));
+      out.push(ev('returned', eventEntry('returned', s, day, theme, story, {}, ctx.today)));
     }
     return out;
   }
@@ -93,18 +93,18 @@ export function tickSoldier(s, day, theme, story, ctx = {}) {
     s.status = 'fallen';
     s.fallenDay = day;
     s.arc = null;
-    out.push(ev('fallen', eventEntry('fallen', s, day, theme, story)));
+    out.push(ev('fallen', eventEntry('fallen', s, day, theme, story, {}, ctx.today)));
   } else if (r < wound) {
     s.status = 'wounded';
-    out.push(ev('wounded', eventEntry('wounded', s, day, theme, story)));
+    out.push(ev('wounded', eventEntry('wounded', s, day, theme, story, {}, ctx.today)));
   } else if (r < lost && day - s.enlisted >= 2) {
     s.status = 'missing';
     s.missingDay = day;
-    out.push(ev('missing', eventEntry('missing', s, day, theme, story)));
+    out.push(ev('missing', eventEntry('missing', s, day, theme, story, {}, ctx.today)));
   } else if (r > 0.985 && s.rank < 4) {
     const oldRank = theme.ranks[s.rank];
     s.rank++;
-    out.push(ev('promotion', eventEntry('promotion', s, day, theme, story, { oldRank })));
+    out.push(ev('promotion', eventEntry('promotion', s, day, theme, story, { oldRank }, ctx.today)));
   } else {
     out.push(storyDay(s, day, theme, story, ctx, ev));
   }
@@ -114,35 +114,37 @@ export function tickSoldier(s, day, theme, story, ctx = {}) {
 // Běžný den: pokračování příběhové linky > nová linka > příhoda se spolubojovníkem / nepřítelem > zápis dne.
 function storyDay(s, day, theme, story, ctx, ev) {
   const rand = rngFor(s.id, 'story', day);
-  if (s.arc && day >= s.arc.next) return arcStep(s, day, theme, story, rand, ev);
+  if (s.arc && day >= s.arc.next) return arcStep(s, day, theme, story, rand, ev, ctx.today);
   const r = rand();
   if (!s.arc && story.arcs && r < 0.12) {
     const done = new Set(s.arcsDone || []);
     const pool = story.arcs.filter((a) => !done.has(a.id) && (!a.archetype || a.archetype === s.archetype));
     if (pool.length) {
-      const a = weighted(rand, pool.map((x) => [x, x.w * (x.archetype ? 2 : 1)]));
+      // linku, kterou dnes začal někdo jiný, dostane druhý jen zřídka
+      const a = weighted(rand, pool.map((x) => [x, x.w * (x.archetype ? 2 : 1) * (ctx.today?.has(`arc:${x.id}`) ? 0.1 : 1)]));
+      ctx.today?.add(`arc:${a.id}`);
       const v = {};
       for (const [k, opts] of Object.entries(a.vars || {})) v[k] = pick(rand, opts);
       s.arc = { id: a.id, step: 0, next: day, v };
-      return arcStep(s, day, theme, story, rand, ev);
+      return arcStep(s, day, theme, story, rand, ev, ctx.today);
     }
   }
   if (r >= 0.12 && r < 0.27 && story.comrade && ctx.comrade) {
     const o = ctx.comrade(s, rand);
-    if (o) return pairEntry('comrade', s, o, day, theme, story, rand, ev);
+    if (o) return pairEntry('comrade', s, o, day, theme, story, rand, ev, ctx.today);
   }
   if (r >= 0.27 && r < 0.34 && story.enemy && ctx.foe) {
     const o = ctx.foe(s, rand);
-    if (o) return pairEntry('enemy', s, o, day, theme, story, rand, ev);
+    if (o) return pairEntry('enemy', s, o, day, theme, story, rand, ev, ctx.today);
   }
-  return dailyEntry(s, day, theme, story, ctx.weather?.id);
+  return dailyEntry(s, day, theme, story, ctx.weather?.id, ctx.today);
 }
 
-function arcStep(s, day, theme, story, rand, ev) {
+function arcStep(s, day, theme, story, rand, ev, today = null) {
   const a = story.arcs?.find((x) => x.id === s.arc.id);
   if (!a) {
     s.arc = null;
-    return dailyEntry(s, day, theme, story);
+    return dailyEntry(s, day, theme, story, null, today);
   }
   const vars = soldierVars(s, theme, story, { place: pick(rngFor(s.id, 'arcplace', a.id), story.places), ...s.arc.v });
   const text = fill(a.steps[s.arc.step], vars, rand);
@@ -159,21 +161,25 @@ function arcStep(s, day, theme, story, rand, ev) {
 }
 
 // Dva skuteční hráči v jednom zápisu: stejný text jde do záznamu obou.
-function pairEntry(kind, s, o, day, theme, story, rand, ev) {
+function pairEntry(kind, s, o, day, theme, story, rand, ev, today = null) {
   const short = (f) => theme.factions[f].name.replace(/^The /, '');
   const shortName = (x) => x.nick || x.first || x.name;
   const vars = soldierVars(s, theme, story, {
     place: pick(rand, story.places), a: s.name, b: o.name, as: shortName(s), bs: shortName(o), af: short(s.faction), bf: short(o.faction),
   });
-  const tpl = Math.floor(rand() * story[kind].length);
-  const text = fill(story[kind][tpl], vars, rand);
+  // šablona, kterou neměl ani jeden z dvojice a dnes ji nedostal nikdo jiný
+  const seenO = new Set(o.seen || []);
+  const raw = pickVaried(rand, story[kind].map((x) => [x, seenO.has(tplKey(x)) ? 0.02 : 1]), s, today);
+  o.seen = [...(o.seen || []), tplKey(raw)].slice(-200);
+  const tpl = story[kind].indexOf(raw);
+  const text = fill(raw, vars, rand);
   o.record.push([day, text]);
   ev(kind, text, { other: o.handle, tpl: `${kind}${tpl}` });
   return text;
 }
 
 // Nástupce z rodu: stejné IG jméno i místo, nové křestní jméno, odkaz na padlého.
-export function heir(s, day, theme, story) {
+export function heir(s, day, theme, story, today = null) {
   const rand = rngFor(s.id, 'heir', s.generation);
   const prev = { name: s.name, day: s.fallenDay, rank: s.rank };
   const n = {
@@ -192,6 +198,6 @@ export function heir(s, day, theme, story) {
   };
   n.name = displayName(n);
   const relation = pick(rand, story.relations);
-  n.record.push([day, eventEntry('heir', n, day, theme, story, { relation, prevName: prev.name })]);
+  n.record.push([day, eventEntry('heir', n, day, theme, story, { relation, prevName: prev.name }, today)]);
   return n;
 }

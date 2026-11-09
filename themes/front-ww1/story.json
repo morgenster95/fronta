@@ -843,5 +843,14 @@
         "Gale all day. Sandbags slid, roofs lifted, and the gas sentries watched the wind direction like hawks."
       ]
     }
+  ],
+  "firstWave": [
+    "{name} is one of the first hundred to answer the call. {He} wears the ribbon of the First Wave.",
+    "Volunteer number {n}. The quartermaster pinned the First Wave ribbon on {name}'s tunic and said: 'Don't let the mud have it.'",
+    "{name} was among the first hundred through the depot gates. The First Wave ribbon is the only clean thing {he} owns.",
+    "The colonel shook hands with the first hundred, one by one. {name} was number {n}. {He} still remembers how cold the colonel's glove was.",
+    "First Wave. {name} signed when the posters were still wet. {He} keeps the ribbon wrapped in oilcloth with {item}.",
+    "{name} answered the first call, number {n} on the rolls. Somebody chalked the number on {his} helmet. It has not washed off yet.",
+    "{name} was in the first hundred. The old hands in {sector} call them 'the early birds', and not always kindly."
   ]
 }

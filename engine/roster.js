@@ -1,7 +1,7 @@
 // Stav světa (soupiska) a jeho změny: komentář → narukování, kód → převzetí, denní tah, export statických dat pro web.
 
 import { createSoldier, tickSoldier, heir, selectForStory } from './soldier.js';
-import { enlistEntry, weatherFor } from './story.js';
+import { enlistEntry, weatherFor, eventEntry, tplKey } from './story.js';
 import { writeChronicle } from './chronicle.js';
 import { pick } from './rng.js';
 import { hashString } from './rng.js';
@@ -54,9 +54,10 @@ export function applyComment(state, comment, theme, story, map) {
   const order = state.soldiers.filter((s) => s.faction === f).length;
   const s = createSoldier({ id: comment.userId || handle, handle, faction: f, day: state.day, order }, theme, story);
   placeSoldier(s, map, state);
-  s.record.push([state.day, enlistEntry(s, theme, story)]);
+  // nováček nedostane stejný úvod jako ti, kdo narukovali těsně před ním
+  s.record.push([state.day, enlistEntry(s, theme, story, recentKeys(state, story.enlist.length - 1))]);
   state.soldiers.push(s);
-  awardFirstWave(state);
+  awardFirstWave(state, theme, story);
   return { type: 'enlist', soldier: s };
 }
 
@@ -64,14 +65,24 @@ export function applyComment(state, comment, theme, story, map) {
 // Místo je trvalé: otevření dalších sektorů nikoho nepřesune. Při zaplnění z 90 % se otevřou další 2 sektory.
 // Medaile „First Wave“: prvních 100 narukovaných (pořadí v soupisce = pořadí narukování). Idempotentní.
 export const FIRST_WAVE = 100;
-export function awardFirstWave(state) {
-  state.soldiers.slice(0, FIRST_WAVE).forEach((s) => {
+export function awardFirstWave(state, theme = null, story = null) {
+  state.soldiers.slice(0, FIRST_WAVE).forEach((s, i) => {
     s.medals ??= [];
     if (!s.medals.includes('first-wave')) {
       s.medals.push('first-wave');
-      s.record.push([state.day, `${s.name} is one of the first hundred to answer the call. He wears the ribbon of the First Wave.`.replace(' He ', s.pronoun === 'she' ? ' She ' : s.pronoun === 'they' ? ' They ' : ' He ').replace('wears', s.pronoun === 'they' ? 'wear' : 'wears')]);
+      const text = story?.firstWave
+        ? eventEntry('firstWave', s, state.day, theme, story, { n: String(i + 1) }, recentKeys(state, 6, s))
+        : `${s.name} is one of the first hundred to answer the call. ${s.pronoun === 'she' ? 'She wears' : s.pronoun === 'they' ? 'They wear' : 'He wears'} the ribbon of the First Wave.`;
+      s.record.push([state.day, text]);
     }
   });
+}
+
+// klíče šablon, které použili poslední narukovaní (aby nováčci po sobě neměli stejné věty)
+function recentKeys(state, n, except = null) {
+  const keys = new Set();
+  for (const o of state.soldiers.slice(-n - 1)) if (o !== except) for (const k of (o.seen || []).slice(0, 2)) keys.add(k);
+  return keys;
 }
 
 export function placeSoldier(s, map, state) {
@@ -158,6 +169,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
   const weather = weatherFor(theme, story, day);
   state.weather = weather?.id ?? null;
   const events = [];
+  const today = new Set(); // šablony použité dnes (rozmanitost mezi vojáky)
   const active = new Set(ctx.activeIds || []);
   const chosen = new Set(selectForStory(state.soldiers, day, active).map((s) => s.id));
   // kdo je dnes k dispozici pro společné příhody (stav na začátku dne)
@@ -177,13 +189,13 @@ export function dailyTick(state, theme, story, ctx = {}) {
     if (s.status === 'fallen') {
       // nástupce dorazí 2. den po smrti
       if (day - s.fallenDay >= 2) {
-        state.soldiers[i] = s = heir(s, day, theme, story);
+        state.soldiers[i] = s = heir(s, day, theme, story, today);
         events.push({ type: 'heir', handle: s.handle, faction: s.faction, text: s.record.at(-1)[1] });
       }
       continue;
     }
     if (!chosen.has(s.id) && s.status === 'active') continue;
-    const sctx = { active: active.has(s.id), danger: ctx.danger, weather, events, comrade, foe };
+    const sctx = { active: active.has(s.id), danger: ctx.danger, weather, events, comrade, foe, today };
     for (const text of tickSoldier(s, day, theme, story, sctx)) {
       s.record.push([day, text]);
     }
@@ -194,7 +206,6 @@ export function dailyTick(state, theme, story, ctx = {}) {
 
 // Statická data pro web: kompaktní soupiska + záznamy rozdělené do shardů (načítají se až po kliknutí).
 export function buildPublic(state, theme) {
-  awardFirstWave(state);
   const arch = theme.archetypes.map((a) => a.id);
   const roster = {
     unlocks: unlocks(state, theme),

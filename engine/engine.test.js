@@ -99,3 +99,25 @@ test('příběhové linky, dvojice, počasí a kronika dne', () => {
   assert.ok(/@user\d+/.test(txt));
   assert.ok(s.chronicle.every((c) => c.title && c.blocks.length >= 2));
 });
+
+test('rozmanitost: nováčci ani vojáci v jednom dni nemají stejné zápisy, voják neopakuje své', () => {
+  const s = emptyState(theme);
+  for (let i = 0; i < 60; i++) applyComment(s, { id: `c${i}`, userId: `u${i}`, username: `user${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
+  const strip = (x, t) => t.split(x.name).join('#');
+  // úvody: v každé skupině po sobě jdoucích nováčků se neopakují
+  const intros = s.soldiers.map((x) => strip(x, x.record[0][1]).replace(/at [A-Z]-F\d+|in [A-Z]-F\d+/g, ''));
+  for (let i = 0; i + story.enlist.length <= intros.length; i += story.enlist.length) {
+    const grp = intros.slice(i, i + story.enlist.length).map((t) => t.slice(0, 25));
+    assert.ok(new Set(grp).size >= grp.length - 2, grp.join('\n'));
+  }
+  for (let d = 0; d < 20; d++) dailyTick(s, theme, story, { activeIds: s.soldiers.map((x) => x.id) });
+  for (let d = 2; d <= 20; d++) {
+    const texts = s.soldiers.flatMap((x) => x.record.filter((r) => r[0] === d).map((r) => strip(x, r[1]).slice(0, 30)));
+    const uniq = new Set(texts).size;
+    assert.ok(uniq / texts.length > 0.7, `den ${d}: ${uniq}/${texts.length} různých`);
+  }
+  for (const x of s.soldiers) {
+    const own = x.record.map((r) => strip(x, r[1]).slice(0, 30));
+    assert.ok(new Set(own).size >= own.length - 2, own.join('\n'));
+  }
+});
