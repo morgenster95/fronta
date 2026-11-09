@@ -52,6 +52,7 @@ function simulate(sc, run, print) {
   }
   for (let d = 0; d < DAYS; d++) {
     const status = new Map(s.soldiers.map((x) => [x.id, x.status]));
+    const gens = new Map(s.soldiers.map((x) => [x.id, x.generation || 1]));
     const before = new Map(s.soldiers.map((x) => [x.id, x.record.length]));
     dailyTick(s, theme, story);
     const day = s.day;
@@ -59,10 +60,13 @@ function simulate(sc, run, print) {
     for (const x of s.soldiers) {
       const k = m[x.faction];
       const newEntries = x.record.slice(before.get(x.id) ?? 0).filter(([dd]) => dd === day).map(([, t]) => t);
-      if (x.status === 'fallen' && status.get(x.id) !== 'fallen') {
+      const died = (x.status === 'fallen' && status.get(x.id) !== 'fallen') || (x.generation || 1) > gens.get(x.id);
+      if (died) {
         k.dead++;
         k.deadNames.push(x.handle);
-        lines.push(`  ✝ @${x.handle} (${short(x.faction)}) PADL: ${newEntries[0] ?? ''}`);
+        const p = x.fallen?.at(-1);
+        lines.push(`  ✝ @${x.handle} (${short(x.faction)}) PADL ${p ? `${p.name}, ${p.days} dní na frontě` : ''}: ${newEntries[0] ?? ''}`);
+        if (x.generation > (gens.get(x.id) || 1)) lines.push(`  ↳ nástupce ${x.name} (${x.archetype}) nastoupil hned: ${newEntries.at(-1) ?? ''}`);
       } else if (x.wound && x.wound.day === day) {
         k.hits++;
         k[x.wound.sev]++;

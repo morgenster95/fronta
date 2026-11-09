@@ -491,3 +491,63 @@ test('hlasování po frakcích staví: HOSPITAL postaví dugout jen té straně,
   assert.ok(!s.battle.sides[1].built.dugout);
   assert.match(s.events.at(-1).text, /hospital dugout/);
 });
+
+import { heir as heirOf, lifeRecord, fallSoldier } from './soldier.js';
+import { leaderboards, rollOfHonour } from './roster.js';
+test('rod: nástupce je nový voják – nic nedědí, dny od nuly, přijde hned ve stejném vydání', () => {
+  const s = emptyState(theme);
+  enlist(s, 4, 'fam');
+  s.day = 20;
+  const x = s.soldiers[0];
+  Object.assign(x, { archetype: 'medic', rank: 3, medals: ['first-wave', 'obj:ridge'], titles: ['Hero of Verdel Ridge'], scars: 2, tough: 5, treated: 14, woundsTaken: 3, raids: 2, claimed: true });
+  x.wound = { sev: 'crit', day: 20, wait: 1, shell: true };
+  x.record.push([21, 'Every bed was taken. He died waiting on a stretcher.']);
+  fallSoldier(x, 21, 'nobed'); // zemřel v boji dnešního tahu (den 21)
+  const gen = x.generation;
+  dailyTick(s, theme, story);
+  const n = s.soldiers[0];
+  assert.equal(n.generation, gen + 1, 'nástupce už je ve hře');
+  assert.equal(n.status, 'active');
+  assert.equal(n.enlisted, s.day, 'dny na frontě od nuly');
+  assert.deepEqual(n.medals, []);
+  assert.deepEqual(n.titles, []);
+  assert.ok(!n.scars && !n.treated && !n.woundsTaken && !n.raids && n.tough == null, 'žádné jizvy, zkušenosti ani výdrž po předkovi');
+  assert.equal(n.rank, 0);
+  assert.equal(n.claimed, true, 'hráč (převzetí) zůstává');
+  assert.equal(n.handle, x.handle);
+  const p = n.fallen.at(-1);
+  assert.equal(p.archetype, 'medic');
+  assert.deepEqual(p.medals, ['first-wave', 'obj:ridge']);
+  assert.equal(p.cause.kind, 'nobed');
+  assert.equal(p.cause.shell, true);
+  assert.equal(p.days, 20 - x.enlisted + 1);
+  assert.equal(p.treated, 14);
+  assert.match(n.record.at(-1)[1], new RegExp(p.name.split(' ')[0]), 'příchod nástupce zmiňuje padlého');
+  assert.equal(n.recFrom, n.record.length - 1, 'deník nástupce začíná jeho příchodem');
+  const [a, b] = p.rec;
+  assert.ok(b > a && n.record.slice(a, b).some(([, t]) => /stretcher|died|waiting/.test(t)), 'rozsah deníku padlého obsahuje jeho smrt');
+  const honour = rollOfHonour(s);
+  assert.equal(honour[0].name, p.name);
+  assert.equal(honour[0].cause.kind, 'nobed');
+});
+
+test('žebříčky: nejdéle na frontě, nejstarší rody, vyznamenaní, přeživší, medici', () => {
+  const s = emptyState(theme);
+  enlist(s, 6, 'lb');
+  s.day = 30;
+  s.soldiers.forEach((x) => { x.enlisted = 25; x.medals = []; });
+  s.soldiers[0].enlisted = 2;
+  s.soldiers[1].enlisted = 10;
+  s.soldiers[2].medals = ['first-wave', 'x'];
+  s.soldiers[3].scars = 2;
+  s.soldiers[4].archetype = 'medic'; s.soldiers[4].treated = 9;
+  s.soldiers[5].fallen = [{ name: 'Old One', day: 15, days: 40, medals: ['a', 'b', 'c'] }];
+  const b = leaderboards(s, theme);
+  assert.equal(b.longest[0].handle, s.soldiers[0].handle);
+  assert.equal(b.longest[0].value, 28);
+  assert.equal(b.houses[0].handle, s.soldiers[5].handle, 'rod se počítá i s padlými předky');
+  assert.equal(b.decorated[0].handle, s.soldiers[2].handle);
+  assert.equal(b.houseHonours[0].handle, s.soldiers[5].handle);
+  assert.equal(b.survivors[0].handle, s.soldiers[3].handle);
+  assert.equal(b.medics[0].value, 9);
+});

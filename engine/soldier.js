@@ -6,6 +6,30 @@ import { dailyEntry, eventEntry, soldierVars, fill, pickVaried, tplKey, makeBack
 
 export const STATUS = ['active', 'wounded', 'missing', 'captured', 'fallen'];
 
+// Smrt vojáka. cause: nobed (zemřel na nosítkách, lůžka plná) | wounds (zemřel na lůžku) | raid (na výpravě) | line (starý model)
+// extra: { shell: true } = zasažen při bombardování, place = kde
+export function fallSoldier(s, day, cause, extra = {}) {
+  s.status = 'fallen';
+  s.fallenDay = day;
+  s.arc = null;
+  s.cause = { kind: cause, ...(s.wound?.shell ? { shell: true } : {}), ...(s.sector ? { sector: s.sector } : {}), ...extra };
+  s.wound = null;
+}
+
+// Záznam o jedné generaci rodu (zůstává navždy v s.fallen; name/day/rank kvůli starším datům a webu)
+export function lifeRecord(s) {
+  return {
+    name: s.name, day: s.fallenDay, rank: s.rank,
+    gen: s.generation, first: s.first, nick: s.nick || null, archetype: s.archetype, variant: s.variant,
+    enlisted: s.enlisted, days: Math.max(0, (s.fallenDay ?? s.enlisted) - s.enlisted),
+    cause: s.cause || { kind: 'line' }, relation: s.relation || null,
+    medals: s.medals || [], titles: s.titles || [], scars: s.scars || 0, wounds: s.woundsTaken || 0,
+    treated: s.treated || 0, raids: s.raids || 0, sector: s.sector || null,
+    rec: [s.recFrom || 0, s.record.length], // rozsah zápisů této generace v deníku rodu
+    last: s.record.at(-1)?.[1] || null,
+  };
+}
+
 // Příjmení rodu z IG jména: "jan.novak_92" → "Novak"
 export function familyName(handle) {
   const parts = handle
@@ -115,10 +139,8 @@ export function tickSoldier(s, day, theme, story, ctx = {}) {
   }
   if (r < 0.004 * danger * protect && day - s.enlisted >= 5) {
     // padl: smrt nikdy z ničeho nic, jen po aspoň 5 dnech služby
-    s.status = 'fallen';
-    s.fallenDay = day;
-    s.arc = null;
     out.push(ev('fallen', eventEntry('fallen', s, day, theme, story, {}, ctx.today)));
+    fallSoldier(s, day, 'line');
   } else if (r < wound) {
     s.status = 'wounded';
     out.push(ev('wounded', eventEntry('wounded', s, day, theme, story, {}, ctx.today)));
@@ -204,26 +226,35 @@ function pairEntry(kind, s, o, day, theme, story, rand, ev, today = null) {
 }
 
 // Nástupce z rodu: stejné IG jméno i místo, nové křestní jméno, odkaz na padlého.
+// Nástupce z rodu: NOVÝ voják. Nic nedědí (medaile, tituly, jizvy, výdrž, zkušenosti, role, hodnost), dny se mu počítají od nuly.
+// Zůstává jen rod: hráč (IG účet, převzetí), příjmení, stanoviště na frontě, domov a deník rodu (zápisy padlých se nemažou).
 export function heir(s, day, theme, story, today = null) {
   const rand = rngFor(s.id, 'heir', s.generation);
-  const prev = { name: s.name, day: s.fallenDay, rank: s.rank };
+  const prev = lifeRecord(s);
+  const gen = s.generation + 1;
+  const roles = theme.archetypes.filter((a) => a.id !== 'officer').map((a) => [a.id, a.weight]);
   const n = {
-    ...s,
-    generation: s.generation + 1,
+    id: s.id, handle: s.handle, faction: s.faction, order: s.order, family: s.family, pronoun: s.pronoun,
+    claimed: s.claimed, ownerUid: s.ownerUid, bio: s.bio, slot: s.slot, pos: s.pos, sector: s.sector, line: s.line, unit: s.unit, seen: s.seen,
+    generation: gen,
     first: pick(rand, story.firstNames.filter((f) => f !== s.first)),
-    nick: null,
+    nick: rand() < 0.35 ? pick(rand, story.nicknames) : null,
+    archetype: weighted(rand, roles),
     rank: 0,
     status: 'active',
     enlisted: day,
-    fallenDay: undefined,
-    fallen: [...s.fallen, prev],
+    variant: Math.floor(rand() * 4),
+    medals: [],
+    titles: [],
+    fallen: [...(s.fallen || []), prev],
     arc: null,
     arcsDone: [],
-    bg: s.bg ? { ...makeBackground({ id: `${s.id}#${s.generation + 1}` }, story), home: s.bg.home } : undefined,
+    bg: s.bg ? { ...makeBackground({ id: `${s.id}#${gen}` }, story), home: s.bg.home } : undefined,
     record: [...s.record], // deník rodu pokračuje: zápisy padlého se nikdy nemažou
+    recFrom: s.record.length,
   };
   n.name = displayName(n);
-  const relation = pick(rand, story.relations);
-  n.record.push([day, eventEntry('heir', n, day, theme, story, { relation, prevName: prev.name }, today)]);
+  n.relation = pick(rand, story.relations);
+  n.record.push([day, eventEntry('heir', n, day, theme, story, { relation: n.relation, prevName: prev.name }, today)]);
   return n;
 }

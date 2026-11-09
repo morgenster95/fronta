@@ -335,8 +335,8 @@ export function dailyTick(state, theme, story, ctx = {}) {
   for (let i = 0; i < state.soldiers.length; i++) {
     let s = state.soldiers[i];
     if (s.status === 'fallen') {
-      // nástupce dorazí 2. den po smrti
-      if (day - s.fallenDay >= 2) {
+      // nástupce z rodu: hned ve stejném vydání, kdy se hráč o smrti dozví (theme.heirDelay dní, výchozí 0)
+      if (day - s.fallenDay >= (theme.heirDelay ?? 0)) {
         state.soldiers[i] = s = heir(s, day, theme, story, today);
         events.push({ type: 'heir', handle: s.handle, faction: s.faction, text: s.record.at(-1)[1] });
       }
@@ -355,6 +355,38 @@ export function dailyTick(state, theme, story, ctx = {}) {
   state.news = [];
   state.chronicle = [...(state.chronicle || []), writeChronicle(state, day, { theme, story, weather, events, decided, news })]; // celá historie, nic se nemaže
   return state;
+}
+
+// Žebříčky pro web (top N): nejdéle na frontě (živí), nejstarší rody, nejvíc vyznamenaní, přeživší (jizvy), medici (ošetření)
+export function leaderboards(state, theme, n = 20) {
+  const live = state.soldiers.filter((s) => s.status !== 'fallen');
+  const row = (s, value) => ({ handle: s.handle, name: s.name, faction: s.faction, gen: s.generation || 1, value });
+  const top = (list, fn) => list.map((s) => [s, fn(s)]).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1] || a[0].handle.localeCompare(b[0].handle)).slice(0, n).map(([s, v]) => row(s, v));
+  const honours = (x) => (x.medals || []).length + (x.titles || []).length;
+  return {
+    longest: top(live, (s) => state.day - s.enlisted), // dní na frontě bez přestávky (nástupce začíná od nuly)
+    houses: top(state.soldiers, (s) => (s.fallen || []).reduce((a, p) => a + (p.days || 0), 0) + Math.max(0, state.day - s.enlisted)), // dní rodu celkem
+    decorated: top(live, honours),
+    houseHonours: top(state.soldiers, (s) => honours(s) + (s.fallen || []).reduce((a, p) => a + (p.medals || []).length + (p.titles || []).length, 0)),
+    survivors: top(live, (s) => s.scars || 0),
+    medics: top(live.filter((s) => s.archetype === 'medic'), (s) => s.treated || 0),
+  };
+}
+
+// Pamětní listina: všichni padlí (nejnovější nahoře)
+export function rollOfHonour(state, n = 300) {
+  const all = [];
+  for (const s of state.soldiers) {
+    for (const p of s.fallen || []) {
+      all.push({ handle: s.handle, family: s.family, faction: s.faction, name: p.name, gen: p.gen || 1, day: p.day, days: p.days ?? null,
+        archetype: p.archetype || null, rank: p.rank, cause: p.cause || null });
+    }
+    if (s.status === 'fallen') {
+      all.push({ handle: s.handle, family: s.family, faction: s.faction, name: s.name, gen: s.generation || 1, day: s.fallenDay,
+        days: s.fallenDay - s.enlisted, archetype: s.archetype, rank: s.rank, cause: s.cause || null });
+    }
+  }
+  return all.sort((a, b) => b.day - a.day || a.name.localeCompare(b.name)).slice(0, n);
 }
 
 // Statická data pro web: kompaktní soupiska + záznamy rozdělené do shardů (načítají se až po kliknutí).
@@ -407,6 +439,8 @@ export function buildPublic(state, theme) {
       ...(state.vote.perFaction ? { perFaction: true } : {}), ...(state.vote.note ? { note: state.vote.note } : {}),
     } : null,
     battle: battlePublic(state, theme),
+    boards: leaderboards(state, theme),
+    honour: rollOfHonour(state, 300),
     orders: (state.orders || []).filter((o) => state.day + 1 <= o.to).map(({ faction, kw, label, from, to }) => ({ faction, kw, label, from, to })),
     updated: new Date().toISOString(),
     nextEdition: nextEdition(state, theme),
@@ -448,6 +482,15 @@ export function buildPublic(state, theme) {
       titles: s.titles || [],
       nextTransfer: s.transferDay != null ? s.transferDay + TRANSFER_COOLDOWN : null,
       raids: s.raids || 0,
+      // rod: kolikátá generace, odkud v deníku začíná, vztah k předchozímu, vlastní čísla této generace
+      generation: s.generation || 1,
+      recFrom: s.recFrom || 0,
+      relation: s.relation || null,
+      archetype: s.archetype,
+      days: Math.max(0, state.day - s.enlisted),
+      scars: s.scars || 0,
+      wounds: s.woundsTaken || 0,
+      treated: s.treated || 0,
     };
   }
   return { roster, shards, older, valley: valley.file };

@@ -2,6 +2,7 @@
 // souboj družstev 5 na 5 se staty rolí, následky (zranění, nezvěstní, zajatí, výjimečně padlí), článek do ranních novin.
 // Deterministické (seed = id výpravy), bez AI. Nastavení v theme.valley, texty v story.expedition.
 
+import { fallSoldier } from './soldier.js';
 import { rngFor, pick } from './rng.js';
 import { fill, soldierVars } from './story.js';
 import { activeBarrage } from './race.js';
@@ -350,7 +351,7 @@ function applyFates(state, theme, story, r, loc, day) {
       if (fate === 'wounded') s.status = 'wounded';
       else if (fate === 'missing') { s.status = 'missing'; s.missingDay = day; }
       else if (fate === 'captured') { s.status = 'captured'; s.capturedDay = day; }
-      else if (fate === 'fallen') { s.status = 'fallen'; s.fallenDay = day; s.arc = null; }
+      else if (fate === 'fallen') fallSoldier(s, day, 'raid', { place: loc.short });
       events.push({ type: fate === 'ok' ? 'raid' : fate, handle: h, faction: f, text, raid: true });
     }
   });
