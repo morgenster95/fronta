@@ -19,6 +19,7 @@
 import { rngFor } from './rng.js';
 import { eventEntry } from './story.js';
 import { activeBarrage } from './race.js';
+import { fallSoldier } from './soldier.js';
 
 const B = (theme) => theme.battle;
 const short = (theme, f) => theme.factions[f].name.replace(/^The /, '');
@@ -63,7 +64,7 @@ export function canBuild(state, theme, f, id) {
 }
 
 const isWounded = (s) => s.status !== 'fallen' && !!s.wound;
-const toughOf = (s) => (s.tough ??= 1 + Math.floor(rngFor(s.id, 'tough')() * 4)); // 1–4, jizvy až 5
+const toughOf = (s) => (s.tough ??= 1 + Math.floor(rngFor(s.id, 'tough', s.generation || 1)() * 4)); // 1–4, jizvy až 5 (každá generace jiná)
 
 // práce mediků a potřeba (pro web i pro výpočet)
 export function medicCover(state, theme, f, busy = new Set()) {
@@ -85,11 +86,9 @@ function sectorsOf(state, f) {
 }
 
 function die(s, day, kind, theme, story, ev, today) {
-  s.status = 'fallen';
-  s.fallenDay = day;
-  s.arc = null;
-  s.wound = null;
-  return ev('fallen', eventEntry(kind, s, day, theme, story, {}, today));
+  const text = ev('fallen', eventEntry(kind, s, day, theme, story, {}, today));
+  fallSoldier(s, day, kind === 'diedNoBed' ? 'nobed' : 'wounds');
+  return text;
 }
 
 // ctx: { dangerOf(s) → násobek nebezpečí, careOf(s) → násobek léčení (Calvary Farm, rozkazy), busy: Set (výprava) }
@@ -143,6 +142,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     if (underShells) shellHits.push(s);
     if (sev === 'crit') s.lastCrit = day;
     s.wound = { sev, day, wait: 0, ...(underShells ? { shell: true } : {}) };
+    s.woundsTaken = (s.woundsTaken || 0) + 1;
     if (sev !== 'light') s.status = 'wounded';
     const kind = { light: 'hitLight', heavy: 'hitHeavy', crit: 'hitCrit' }[sev];
     const shellKind = underShells && story[`shell${kind.slice(3)}`] ? `shell${kind.slice(3)}` : kind; // shellLight / shellHeavy / shellCrit
