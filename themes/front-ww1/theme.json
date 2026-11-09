@@ -523,7 +523,8 @@
     "stretcher": {
       "heavyWorsen": 0.25,
       "critSurvive": 0.3,
-      "critCover": 0.5
+      "critCover": 0.5,
+      "heavyHeal": 0.3
     },
     "critDays": 3,
     "heavyMinDays": 2,
