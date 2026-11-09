@@ -4,10 +4,19 @@ import { dailyTick } from '../engine/roster.js';
 
 const { theme, story } = loadTheme();
 const state = loadState(theme);
-// jen jednou za den podle pražského času: nový den války začíná o půlnoci (smyčka i ruční spuštění se nepřekryjí)
-const today = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Prague' }).format(new Date());
-if (state.lastTickDate === today && !process.env.FORCE) {
-  console.log(`denní tah pro ${today} už proběhl`);
+// Nový den války začíná jednou denně v pevnou hodinu UTC (theme.schedule.editionUtc, ranní noviny pro USA/UK).
+// Klíč dne = datum UTC posunuté o tuto hodinu: smyčka i ruční spuštění se nepřekryjí a nezáleží na letním čase.
+const H = theme.schedule?.editionUtc ?? 0;
+const key = new Date(Date.now() - H * 3600e3).toISOString().slice(0, 10);
+if (!state.lastTickKey) {
+  // přechod ze starého pravidla (pražská půlnoc): dnešní den už proběhl, další vydání v nejbližší editionUtc
+  state.lastTickKey = key;
+  if (!process.env.DRY_RUN) saveState(state);
+  console.log(`denní tah: přechod na ${H}:00 UTC, další vydání po ${H}:00 UTC`);
+  process.exit(0);
+}
+if (state.lastTickKey === key && !process.env.FORCE) {
+  console.log(`denní tah pro ${key} už proběhl (další v ${H}:00 UTC)`);
   process.exit(0);
 }
 const before = state.soldiers.reduce((n, s) => n + s.record.length, 0);
@@ -15,7 +24,7 @@ const before = state.soldiers.reduce((n, s) => n + s.record.length, 0);
 dailyTick(state, theme, story, { activeIds: state.soldiers.filter((s) => s.claimed).map((s) => s.id) });
 const after = state.soldiers.reduce((n, s) => n + s.record.length, 0);
 console.log(`den ${state.day}: ${after - before} nových zápisů, ${state.soldiers.length} vojáků`);
-state.lastTickDate = today;
+state.lastTickKey = key;
 if (!process.env.DRY_RUN) {
   saveState(state);
   writePublic(state, theme);

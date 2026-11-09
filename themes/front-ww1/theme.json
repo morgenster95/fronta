@@ -187,5 +187,10 @@
       }
     ]
   },
-  "honors": {}
+  "honors": {},
+  "schedule": {
+    "editionUtc": 13,
+    "reelUtc": 23,
+    "_note": "Denní rytmus v UTC (pevně, bez letního času). editionUtc = nový den války: denní tah, nové číslo novin, vyhodnocení hlasování. reelUtc = večerní reel/příspěvek (fronta marketing/queue.json)."
+  }
 }

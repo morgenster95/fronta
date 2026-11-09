@@ -17,7 +17,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   // ampersand ve Silkscreenu vypadá jako €, proto ho sázíme písmem VT323
   $('title').innerHTML = esc(theme.title).replace('&amp;', '<span class="amp">&amp;</span>');
   document.title = theme.title;
-  $('day').textContent = roster.day > 0 ? `Day ${roster.day}` : 'Mobilization · the war begins at midnight';
+  $('day').textContent = roster.day > 0 ? `Day ${roster.day}` : 'Mobilization';
   const n = [0, 1].map((f) => soldiers.filter((s) => s.faction === f && !s.vacant).length);
   const vacantCount = soldiers.filter((s) => s.vacant).length;
   $('total').textContent = `${(n[0] + n[1]).toLocaleString('en')} enlisted` + (vacantCount ? ` · ${vacantCount} posts waiting` : '');
@@ -87,7 +87,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   $('enlist-btn').onclick = () => show('enlist');
 
   // War Room: aktuální rozhodnutí, odemykání, historie rozhodnutí
-  $('wr-day').textContent = `${roster.day > 0 ? `Day ${roster.day} of the war` : 'Mobilization: the war begins at midnight'} · ${(n[0] + n[1]).toLocaleString('en')} soldiers on the line`;
+  $('wr-day').textContent = `${roster.day > 0 ? `Day ${roster.day} of the war` : 'Mobilization'} · ${(n[0] + n[1]).toLocaleString('en')} soldiers on the line`;
   if (roster.vote) {
     $('wr-vote').innerHTML = `<p>${esc(roster.vote.question)}</p>` +
       roster.vote.options.map((o) => `<div class="vote-opt"><span class="kw">${esc(o.kw)}</span><span>${esc(o.label)}</span></div>`).join('') +
@@ -114,13 +114,26 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   const linkify = (html) =>
     html.replace(/@([a-z0-9._]+[a-z0-9_])/gi, (m, h) => (byHandle.has(h.toLowerCase()) ? `<a href="?s=${h}" data-h="${h.toLowerCase()}">@${h}</a>` : m));
   const para = (t) => String(t).split(/\n\n+/).map((p) => `<p>${linkify(esc(p))}</p>`).join('');
+  // příští vydání novin (pevná hodina UTC) v místním čase čtenáře
+  const H = theme.schedule?.editionUtc ?? 0;
+  function nextEdition() {
+    const n = new Date();
+    const t = new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate(), H));
+    if (t <= n) t.setUTCDate(t.getUTCDate() + 1);
+    return t;
+  }
+  function editionTime() {
+    return nextEdition().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  }
   async function openDiary() {
     show('diary');
+    const hrs = Math.max(1, Math.round((nextEdition() - Date.now()) / 3600e3));
+    $('diary-next').textContent = `Next edition in ${hrs} h, at ${editionTime()} your time. Every day at ${H}:00 UTC.`;
     diaryLoaded ??= fetch('/data/diary.json', { cache: 'no-cache' }).then((r) => r.json()).catch(() => null);
     const d = await diaryLoaded;
     const list = $('diary-list');
     if (!d?.entries?.length) {
-      list.innerHTML = '<p class="muted">The diary is still blank. The first entry comes at midnight.</p>';
+      list.innerHTML = `<p class="muted">The diary is still blank. The first edition is printed at ${editionTime()}.</p>`;
       return;
     }
     const WNAME = { rain: 'Rain', fog: 'Fog', frost: 'Frost', clear: 'Clear', storm: 'Storm', wind: 'Wind' };
