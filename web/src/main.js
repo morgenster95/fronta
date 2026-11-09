@@ -323,6 +323,7 @@ async function boot() {
     }
   }
   life.setNests(nests);
+  life.setShooters(placed.filter((s) => !s.vacant)); // vzdálené výstřely jen od skutečných vojáků
   // bombardování: výsledek včerejšího hlasování, nebo náhled přes ?fx=barrage
   const fxParam = new URLSearchParams(location.search).get('fx');
   const disp = roster.dispatch;

@@ -142,7 +142,7 @@
     "concord": "The Concord: a ragged alliance of free provinces in khaki and flat steel helmets. They fight for the right to go home. Together, or not at all.",
     "hegemony": "The Hegemony: an iron empire in field grey that does not know the word retreat. Order, discipline, the long patience of steel. Iron endures."
   },
-  "vacantPosts": 80,
+  "vacantPosts": 0,
   "replies": {
     "hegemony": [
       "Welcome to the front, {rank} @{handle}. Your post: sector {sector}. Iron endures 🩶 Find yourself via the link in bio.",

@@ -132,10 +132,13 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     particles.push({ kind: 'tracer', x, y, vx: vx + rnd(-0.03, 0.03), vy: dir * 0.9, life: 420, max: 420 });
   }
   // vzdálený výstřel z linie (bez postavy, pro pocit živé fronty)
+  let shooters = []; // skuteční vojáci (jen ti smí střílet, i zdálky)
   function distantShot(view) {
-    const f = Math.random() < 0.5 ? 0 : 1;
-    const y = map.front[f] * T + (f === 0 ? 10 : 6);
-    const x = rnd(view.x0, view.x1);
+    const pool = shooters.filter((s) => !s.wounded && s.x > view.x0 && s.x < view.x1 && s.y > view.y0 && s.y < view.y1);
+    if (!pool.length) return;
+    const s = pool[Math.floor(Math.random() * pool.length)];
+    const f = s.faction;
+    const x = s.x, y = s.y - 14;
     flash(x, y);
     sfx?.rifle(x, y, { gain: 0.45 });
     playFx('smoke-small', x, y - 4, 0.6, 0.35);
@@ -358,6 +361,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     setupSprite,
     update,
     setBarrage: (b) => (barrage = b),
+    setShooters: (list) => (shooters = list),
     setNests: (list) => (nests = list),
     shell,
     flareAt: (x, y) => particles.push({ kind: 'flare', x, y, vy: -0.05, life: 7000, max: 7000 }),
