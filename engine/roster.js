@@ -54,6 +54,7 @@ export function applyComment(state, comment, theme, story, map) {
   const raid = raidKeyword(state, theme, comment.text);
   if (!parsed || existing) {
     if (raid && existing) return { type: 'volunteer', handle, soldier: existing, ...volunteer(state, theme, existing, 'comment') };
+    if (raid && !parsed) return { type: 'volunteer', handle, soldier: { handle }, ok: false, reason: 'notEnlisted' }; // nejdřív narukovat
     return null; // každý jen jednou, frakce se nemění
   }
   const f = parsed.faction;
@@ -186,7 +187,8 @@ export function dailyTick(state, theme, story, ctx = {}) {
   const active = new Set(ctx.activeIds || []);
   const chosen = new Set(selectForStory(state.soldiers, day, active).map((s) => s.id));
   // kdo je dnes k dispozici pro společné příhody (stav na začátku dne)
-  const onLine = theme.factions.map((_, f) => state.soldiers.filter((s) => s.faction === f && s.status === 'active'));
+  // účastníci výpravy mají dnes svůj zápis z výpravy, do společných historek je nebrat
+  const onLine = theme.factions.map((_, f) => state.soldiers.filter((s) => s.faction === f && s.status === 'active' && !raid.ids.has(s.id)));
   const comrade = (s, rand) => {
     const mates = onLine[s.faction].filter((o) => o !== s && o.status === 'active');
     if (!mates.length) return null;

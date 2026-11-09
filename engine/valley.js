@@ -63,6 +63,18 @@ export function volunteer(state, theme, s, via = 'comment') {
   return { ok: true, reason: 'ok', loc: locationOf(theme, o.loc) };
 }
 
+// odpověď pod komentář s přihláškou (theme.valley.replies[reason]); null = neodpovídat (např. „already“)
+export function raidReply(state, theme, s, reason, rand = Math.random) {
+  const pool = V(theme)?.replies?.[reason];
+  if (!pool?.length) return null;
+  const o = state.valley?.open;
+  const loc = o ? locationOf(theme, o.loc) : null;
+  const n = o ? o.volunteers.filter((v) => v.f === s.faction).length : 0;
+  return pool[Math.floor(rand() * pool.length)]
+    .replace(/\{handle\}/g, s.handle).replace(/\{loc\}/g, loc?.name ?? 'the raid').replace(/\{slots\}/g, String(V(theme).slots ?? 5))
+    .replace(/\{kw\}/g, loc?.keyword ?? '').replace(/\{n\}/g, String(n)).replace(/\{us\}/g, s.faction != null ? short(theme, s.faction) : '');
+}
+
 // --- vyhlášení ---
 function chooseLocation(state, theme) {
   const last = {};

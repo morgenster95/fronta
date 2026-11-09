@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import { loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
 import { applyComment, requestTransfer, applyTransfers } from '../engine/roster.js';
-import { volunteer } from '../engine/valley.js';
+import { volunteer, raidReply } from '../engine/valley.js';
 
 // Nové aplikace Meta: Unified login + systémový token z firemního portfolia → graph.facebook.com (token nevyprší).
 // Starší token z „Instagram login“ funguje s IG_API_HOST=graph.instagram.com.
@@ -112,14 +112,8 @@ async function main() {
       if (raid) {
         const s = res.soldier;
         console.log(`⚑ výprava @${s.handle}: ${raid.reason}`);
-        const pool = theme.valley?.replies?.[raid.reason];
-        if (pool && process.env.IG_REPLY === '1' && !process.env.DRY_RUN && res.type === 'volunteer') {
-          const o = state.valley.open;
-          const loc = theme.valley.locations.find((l) => l.id === o?.loc);
-          const n = o ? o.volunteers.filter((v) => v.f === s.faction).length : 0;
-          const text = pool[Math.floor(Math.random() * pool.length)]
-            .replace('{handle}', s.handle).replace('{loc}', loc?.name ?? 'the raid').replace(/\{slots\}/g, String(theme.valley.slots ?? 5))
-            .replace('{n}', String(n)).replace(/\{us\}/g, theme.factions[s.faction].name.replace(/^The /, ''));
+        const text = raidReply(state, theme, s, raid.reason);
+        if (text && process.env.IG_REPLY === '1' && !process.env.DRY_RUN && res.type === 'volunteer') {
           await replyOnce(c.id, text).catch((e) => console.warn(e.message));
         }
       }

@@ -284,6 +284,9 @@
       ],
       "notActive": [
         "@{handle} Your soldier is not on the line right now, so the sergeant cannot take you on this raid."
+      ],
+      "notEnlisted": [
+        "@{handle} Only soldiers can volunteer. Comment HEGEMONY or CONCORD first to enlist, then {kw} again to join the raid on {loc}."
       ]
     },
     "locations": [
