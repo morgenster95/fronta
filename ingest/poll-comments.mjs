@@ -137,11 +137,25 @@ async function main() {
             .replace('{url}', `${process.env.SITE_URL || ''}/?s=${encodeURIComponent(s.handle)}`);
           await igPost(`${USER}/messages`, { recipient: { comment_id: c.id }, message: { text } }).catch((e) => console.warn(e.message));
         }
+      } else if (res.type === 'claim' && db && !res.soldier) {
+        // kód od někoho, kdo ještě nenarukoval
+        console.log(`✗ claim @${res.handle}: nenarukovaný`);
+        if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) {
+          await replyOnce(c.id, `@${res.handle}, you need a soldier first. Comment ${theme.factions.map((f) => f.keyword).join(' or ')} to enlist, then send your claim code again.`).catch((e) => console.warn(e.message));
+        }
       } else if (res.type === 'claim' && db && res.soldier) {
         // i už potvrzené (status done): opakované kolo smyčky musí převzetí zapsat znovu
         const q = await db.collection('claims').where('code', '==', res.code).limit(1).get();
         const doc = q.docs[0];
-        if (doc && doc.get('handle') === res.handle && ['pending', 'done'].includes(doc.get('status')) && !res.soldier.claimed) {
+        const valid = doc && doc.get('handle') === res.handle && ['pending', 'done'].includes(doc.get('status'));
+        if (!valid && !res.soldier.claimed) {
+          // starý (přepsaný) kód nebo kód z cizí karty
+          console.log(`✗ claim @${res.handle}: neplatný kód ${res.code}`);
+          if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) {
+            await replyOnce(c.id, `@${res.handle}, that code isn't valid. Open your own soldier's card (link in bio), tap claim and comment the code shown there.`).catch((e) => console.warn(e.message));
+          }
+        }
+        if (valid && !res.soldier.claimed) {
           res.soldier.claimed = true;
           res.soldier.ownerUid = doc.get('uid');
           if (doc.get('status') !== 'done') await doc.ref.update({ status: 'done', verifiedAt: new Date() });

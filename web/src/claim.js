@@ -47,9 +47,20 @@ async function signIn(soldier, toast, param = 'claim') {
 export async function startClaim(soldier, theme, toast) {
   const s = await signIn(soldier, toast, 'claim');
   if (!s) return;
-  const { getFirestore, doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+  const { getFirestore, doc, getDoc, setDoc, serverTimestamp } = await import('firebase/firestore');
+  const ref = doc(getFirestore(s.app), 'claims', s.user.uid);
+  // jeden účet = jeden voják; opakované kliknutí ukáže stejný kód (nový by ten opsaný zneplatnil)
+  const prev = await getDoc(ref).then((d) => (d.exists() ? d.data() : null)).catch(() => null);
+  if (prev?.status === 'done') {
+    toast(prev.handle === soldier.handle ? 'This soldier is already yours.' : `You already own @${prev.handle}. One soldier per account.`);
+    return;
+  }
+  if (prev?.status === 'pending' && prev.handle === soldier.handle && /^ENLIST-[A-Z0-9]{4}$/.test(prev.code || '')) {
+    showCode(prev.code, theme, toast);
+    return;
+  }
   const code = `ENLIST-${randomCode()}`;
-  await setDoc(doc(getFirestore(s.app), 'claims', s.user.uid), {
+  await setDoc(ref, {
     handle: soldier.handle,
     code,
     uid: s.user.uid,
