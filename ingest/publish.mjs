@@ -1,9 +1,11 @@
 // Publikování na Instagram (Content Publishing API, systémový token): fronta příspěvků v marketing/queue.json.
-// Soubory musí být veřejně na webu (web/public/promo → https://mudandiron.web.app/promo/...).
+// Soubory leží v marketing/promo/ a po pushi je workflow media.yml vystaví na GitHub Pages (zdarma, mimo Firebase Hosting):
+// https://morgenster95.github.io/fronta/<soubor>. Odtud si je Instagram stáhne.
 //
-// Použití: node ingest/publish.mjs <id> [<id> …]   zveřejní dané položky hned (v uvedeném pořadí)
-//          node ingest/publish.mjs --due           zveřejní položky, jejichž publishAt už nastal (pro plánovač)
-// Proměnné: IG_ACCESS_TOKEN, IG_USER_ID, SITE_URL (výchozí https://mudandiron.web.app), DRY_RUN=1
+// Použití: node ingest/publish.mjs <id> [<id> …]   zveřejní dané položky hned
+//          node ingest/publish.mjs --due           zveřejní položky, jejichž publishAt už nastal (pro smyčku)
+// Když soubor ještě není na GitHub Pages (workflow media ještě neproběhl), položka počká a zkusí se v dalším kole.
+// Proměnné: IG_ACCESS_TOKEN, IG_USER_ID, MEDIA_URL (výchozí https://morgenster95.github.io/fronta), DRY_RUN=1
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT } from '../tools/lib.mjs';
@@ -11,8 +13,18 @@ import { ROOT } from '../tools/lib.mjs';
 const API = `https://${process.env.IG_API_HOST || 'graph.facebook.com'}/${process.env.IG_API_VERSION || 'v23.0'}`;
 const TOKEN = process.env.IG_ACCESS_TOKEN;
 const USER = process.env.IG_USER_ID;
-const SITE = process.env.SITE_URL || 'https://mudandiron.web.app';
 const QUEUE = path.join(ROOT, 'marketing', 'queue.json');
+// Soubory pro Instagram: marketing/promo/ → GitHub Pages (workflow media.yml), Firebase Hosting je nenosí.
+const MEDIA = process.env.MEDIA_URL || 'https://morgenster95.github.io/fronta';
+
+// je soubor opravdu na webu? (Instagram by jinak zveřejnění odmítl)
+async function live(item) {
+  for (const f of item.files) {
+    const r = await fetch(`${MEDIA}/${f}`, { method: 'HEAD' }).catch(() => null);
+    if (!r || !r.ok) return false;
+  }
+  return true;
+}
 
 async function call(method, p, params = {}) {
   const u = new URL(`${API}/${p}`);
@@ -36,7 +48,7 @@ async function waitReady(id) {
 }
 
 async function publish(item) {
-  const url = (f) => `${SITE}/promo/${f}`;
+  const url = (f) => `${MEDIA}/${f}`;
   let creation;
   if (item.type === 'reel') {
     creation = (await call('POST', `${USER}/media`, { media_type: 'REELS', video_url: url(item.files[0]), caption: item.caption, share_to_feed: 'true' })).id;
@@ -61,42 +73,29 @@ function publishedLog() {
 }
 
 async function main() {
-  if (!TOKEN || !USER) throw new Error('Chybí IG_ACCESS_TOKEN nebo IG_USER_ID');
   const q = JSON.parse(fs.readFileSync(QUEUE, 'utf8'));
   const args = process.argv.slice(2);
+  if (!TOKEN || !USER) throw new Error('Chybí IG_ACCESS_TOKEN nebo IG_USER_ID');
   const now = Date.now();
   const todo = args[0] === '--due'
     ? q.items.filter((i) => !i.published && i.publishAt && Date.parse(i.publishAt) <= now)
     : args.map((id) => q.items.find((i) => i.id === id)).filter(Boolean);
-  if (!todo.length) {
-    cleanup(q);
-    return console.log('nic ke zveřejnění');
-  }
+  if (!todo.length) return console.log('nic ke zveřejnění');
   for (const item of todo) {
     if (item.published) { console.log(`= ${item.id}: už zveřejněno ${item.published.permalink || ''}`); continue; }
     if (process.env.DRY_RUN) { console.log(`(dry) ${item.id}: ${item.type} ${item.files.join(', ')}`); continue; }
     // kolo smyčky se může opakovat: co už jednou vyšlo, nesmí vyjít podruhé
     const done = publishedLog().find((x) => x.id === item.id);
     if (done) { item.published = done.published; console.log(`= ${item.id}: už zveřejněno v tomto běhu`); fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2)); continue; }
+    if (!(await live(item))) {
+      if (args[0] === '--due') { console.log(`… ${item.id}: soubor ještě není na GitHub Pages, zkusí se v dalším kole`); continue; }
+      throw new Error(`${item.id}: soubor není na ${MEDIA} (je v marketing/promo a proběhl workflow media?)`);
+    }
     console.log(`→ ${item.id} (${item.type}) …`);
     item.published = await publish(item);
     if (process.env.PUBLISHED_LOG) fs.appendFileSync(process.env.PUBLISHED_LOG, `${JSON.stringify({ id: item.id, published: item.published })}\n`);
     console.log(`✓ ${item.id}: ${item.published.permalink}`);
     fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
-  }
-  cleanup(q);
-}
-
-// Po zveřejnění už Instagram soubor nepotřebuje: smazat z webu vše, co nečeká žádná nezveřejněná položka
-// (jinak by se velká videa nasazovala pořád dokola a plnila úložiště hostingu).
-function cleanup(q) {
-  const dir = path.join(ROOT, 'web', 'public', 'promo');
-  const needed = new Set(q.items.filter((i) => !i.published).flatMap((i) => i.files));
-  for (const f of fs.existsSync(dir) ? fs.readdirSync(dir) : []) {
-    if (!needed.has(f) && q.items.some((i) => i.files.includes(f))) {
-      fs.unlinkSync(path.join(dir, f));
-      console.log(`🗑 promo/${f} (už zveřejněno)`);
-    }
   }
 }
 

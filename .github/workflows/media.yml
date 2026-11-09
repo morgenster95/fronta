@@ -1,0 +1,21 @@
+# Soubory pro Instagram (marketing/promo/) na GitHub Pages: https://morgenster95.github.io/fronta/<soubor>.
+# Zdarma a mimo Firebase Hosting (ten má malý limit přenosu a úložiště). Spouští se po každé změně v marketing/promo.
+name: media
+on:
+  push:
+    branches: [main]
+    paths: ['marketing/promo/**']
+  workflow_dispatch:
+permissions: { contents: read, pages: write, id-token: write }
+concurrency: { group: pages, cancel-in-progress: true }
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: { name: github-pages, url: '${{ steps.d.outputs.page_url }}' }
+    steps:
+      - uses: actions/checkout@v4
+      - run: touch marketing/promo/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: marketing/promo }
+      - id: d
+        uses: actions/deploy-pages@v4

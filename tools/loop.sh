@@ -25,7 +25,7 @@ resolve() { # štítek, komentář
 }
 
 sync() {
-  git fetch -q origin main && git reset -q --hard origin/main && git clean -fdq -- web/public/promo
+  git fetch -q origin main && git reset -q --hard origin/main
 }
 
 # jedno kolo; návratový kód 0 = hotovo, 2 = kolize při pushi (zopakovat hned)
@@ -36,7 +36,6 @@ round() {
   node ingest/daily-tick.mjs || echo "tick selhal" # sám pozná, jestli už dnes (pražský čas) proběhl
   npm run -s data:build || { echo "data:build selhal"; return 1; }
   git add data/state.json marketing/queue.json
-  git add -A web/public/promo
   if ! git diff --cached --quiet; then
     git commit -qm "loop: $(date -u +%FT%TZ)" || return 1
     git push -q origin HEAD:main || { echo "push kolize, kolo se zopakuje"; return 2; }
