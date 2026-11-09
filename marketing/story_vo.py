@@ -2,7 +2,8 @@
 
 Každá věta má pevný začátek v sekundách (stejné časy používá scénář ve web/src/reel.js → záběry sedí na hlas).
 Skript ověří, že se věta vejde před začátek další, a uloží marketing/reels/story.vo.json (začátek, délka, text).
-Použití: python marketing/story_vo.py [hlas]
+Použití: python marketing/story_vo.py [scénář=story|day1] [hlas]
+Výstup: marketing/reels/_<scénář>_vo.wav a <scénář>.vo.json.
 """
 import asyncio
 import json
@@ -17,7 +18,8 @@ import numpy as np
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REELS = os.path.join(ROOT, "marketing", "reels")
 TMP = os.path.join(REELS, "_vo")
-VOICE = sys.argv[1] if len(sys.argv) > 1 else "en-GB-RyanNeural"
+NAME = sys.argv[1] if len(sys.argv) > 1 else "story"
+VOICE = sys.argv[2] if len(sys.argv) > 2 else "en-GB-RyanNeural"
 SR = 44100
 
 # [začátek s, text]; časy drží krok se scénářem „story“ v reel.js
@@ -41,6 +43,29 @@ LINES = [
 ]
 SECONDS = 97
 
+# Den 1: co se stalo, závod o Verdel Ridge, Trench Gazette (scénář web/src/reel-day1.js)
+SCRIPTS = {
+    "story": (LINES, SECONDS),
+    "day1": ([
+        [1.2, "Day one."],
+        [3.0, "Yesterday they were strangers on Instagram. Tonight, thirty-two of them stand in the mud of Verdel Ridge."],
+        [11.0, "Eighteen for the Hegemony. Fourteen for the Concord."],
+        [15.2, "The only machine gun on the ridge belongs to Masis."],
+        [18.6, "The Concord brought a sapper, and a cook. Never underestimate the cook."],
+        [24.2, "And now, the first real fight. The race for Verdel Ridge."],
+        [29.2, "The first side to bring one hundred soldiers to the front takes the heights."],
+        [33.4, "Three days of artillery on the enemy. A safer week for everyone on the winning side."],
+        [39.0, "And the soldier who tips the balance becomes a hero."],
+        [42.6, "Every morning, the Trench Gazette prints what happened on the line."],
+        [46.4, "The weather. The new arrivals. Who was hurt, and who came home."],
+        [52.8, "If your name is in it, you were there."],
+        [55.6, "Every friend you bring is one more rifle."],
+        [58.2, "Comment Concord... or Hegemony."],
+        [60.6, "Link in bio."],
+    ], 64),
+}
+LINES, SECONDS = SCRIPTS[NAME]
+
 
 async def speak(text, path):
     # pomalejší a hlubší vypravěč
@@ -62,9 +87,9 @@ def main():
     meta = []
     ok = True
     for i, (at, text) in enumerate(LINES):
-        mp3 = os.path.join(TMP, f"{i:02d}.mp3")
+        mp3 = os.path.join(TMP, f"{NAME}{i:02d}.mp3")
         asyncio.run(speak(text, mp3))
-        x = to_wav(mp3, os.path.join(TMP, f"{i:02d}.wav"))
+        x = to_wav(mp3, os.path.join(TMP, f"{NAME}{i:02d}.wav"))
         dur = len(x) / SR
         nxt = LINES[i + 1][0] if i + 1 < len(LINES) else SECONDS - 1
         flag = "" if at + dur + 0.25 <= nxt else f"  !!! přetéká o {at + dur + 0.25 - nxt:.2f} s"
@@ -73,12 +98,12 @@ def main():
         s = int(at * SR)
         track[s:s + len(x)] += x[: len(track) - s]
         meta.append([at, round(dur, 2), text])
-    with wave.open(os.path.join(REELS, "_story_vo.wav"), "wb") as w:
+    with wave.open(os.path.join(REELS, f"_{NAME}_vo.wav"), "wb") as w:
         w.setnchannels(1)
         w.setsampwidth(2)
         w.setframerate(SR)
         w.writeframes((np.clip(track, -1, 1) * 32767).astype(np.int16).tobytes())
-    json.dump({"seconds": SECONDS, "voice": VOICE, "lines": meta}, open(os.path.join(REELS, "story.vo.json"), "w"), indent=1)
+    json.dump({"seconds": SECONDS, "voice": VOICE, "lines": meta}, open(os.path.join(REELS, f"{NAME}.vo.json"), "w"), indent=1)
     print("OK" if ok else "NĚKTERÉ VĚTY PŘETÉKAJÍ")
 
 

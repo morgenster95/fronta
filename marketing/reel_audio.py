@@ -1,7 +1,7 @@
 """Zvuk k promo videím: temný hudební podklad + bubny + déšť + dunění děl a výstřely načasované podle scénáře.
 
 Vše je syntetizované v kódu (žádné cizí nahrávky → žádná autorská práva). Výstup: marketing/reels/<název>_sound.mp4
-Použití: python marketing/reel_audio.py [teaser enlist sides howto story]
+Použití: python marketing/reel_audio.py [teaser enlist sides howto story day1]
 """
 import json
 import os
@@ -235,21 +235,26 @@ def counter(dur):
     return out
 
 
-def build_story():
-    meta = json.load(open(os.path.join(REELS, "story.sfx.json")))
+# bubny podle scénáře: (začátek, tiché úseky, od kdy dvojitý úder)
+DRUMS = {"story": (11.6, [(50.4, 53.5), (59.8, 63.4)], 63.4), "day1": (11.0, [(41.6, 45.0), (52.4, 55.2)], 55.2)}
+
+
+def build_story(name="story"):
+    meta = json.load(open(os.path.join(REELS, f"{name}.sfx.json")))
+    start, quiet_parts, double = DRUMS[name]
     dur = meta["seconds"]
     n = int(dur * SR)
     music = drone(dur) * 1.1 + rain(dur)
     fx = np.zeros(n)
     beat = 60 / 70
     # bubny: od Hegemonie, ztichnou před půlnocí a po dědicovi se rozjedou ke konci
-    t = 11.6
+    t = start
     while t < dur - 3:
-        quiet = 50.4 < t < 53.5 or 59.8 < t < 63.4
+        quiet = any(a < t < b for a, b in quiet_parts)
         if not quiet:
-            strength = 0.3 + 0.7 * min(1, (t - 11.6) / 75)
+            strength = 0.3 + 0.7 * min(1, (t - start) / (dur - start - 10))
             add(music, drum(strength), t)
-            if t > 63.4:
+            if t > double:
                 add(music, drum(strength * 0.5), t + beat / 2)
         t += beat
     for at, kind, arg in meta["sfx"]:
@@ -283,7 +288,7 @@ def build_story():
     for at in rng.uniform(4, dur - 2, int(dur * 0.7)):
         add(fx, rifle(rng.uniform(3, 6)), at)
     # hlas: lehké teplo + krátká ozvěna zákopu
-    with wave.open(os.path.join(REELS, "_story_vo.wav")) as w:
+    with wave.open(os.path.join(REELS, f"_{name}_vo.wav")) as w:
         voice = np.frombuffer(w.readframes(w.getnframes()), np.int16).astype(np.float64) / 32768
     voice = np.pad(voice, (0, max(0, n - len(voice))))[:n]
     wet = np.zeros(n)
@@ -302,18 +307,18 @@ def build_story():
     mix = bed * 0.55 + voice * 0.95
     mix = mix / (np.max(np.abs(mix)) + 1e-9) * 0.89
     stereo = np.stack([mix, np.roll(mix, int(0.008 * SR)) * 0.97], axis=1)
-    wav = os.path.join(REELS, "_story.wav")
+    wav = os.path.join(REELS, f"_{name}.wav")
     with wave.open(wav, "wb") as w:
         w.setnchannels(2)
         w.setsampwidth(2)
         w.setframerate(SR)
         w.writeframes((stereo * 32767).astype(np.int16).tobytes())
-    out = os.path.join(REELS, "story_sound.mp4")
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", os.path.join(REELS, "story.mp4"), "-i", wav,
+    out = os.path.join(REELS, f"{name}_sound.mp4")
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", os.path.join(REELS, f"{name}.mp4"), "-i", wav,
                     "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-shortest", out], check=True)
     print("hotovo:", out)
 
 
 if __name__ == "__main__":
     for nm in sys.argv[1:] or ["teaser", "enlist", "sides", "howto"]:
-        build_story() if nm == "story" else build(nm)
+        build_story(nm) if nm in DRUMS else build(nm)

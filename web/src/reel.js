@@ -89,6 +89,14 @@ const SCRIPTS = {
 const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
 export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick, tex, anims, select }) {
+  if (name === 'day1') {
+    // den 1: filmové záběry, závod o kótu, noviny (reel-day1.js)
+    return import('./reel-day1.js').then(({ startDay1Reel }) => {
+      startDay1Reel({ cam, life, map, theme, soldiers, tex, anims, select });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'story') {
     // příběhové video má vlastní scénář s překryvy (reel-story.js)
     return import('./reel-story.js').then(({ startStoryReel }) => {
