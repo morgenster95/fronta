@@ -1,6 +1,6 @@
 # Návrh: mapa údolí a výpravy (mise)
 
-_Stav: návrh k odsouhlasení (9. 11. 2026). Nic z toho zatím není postavené._
+_Stav: návrh odsouhlasen uživatelem 9. 11. 2026 (staty, 5 na 5, jen občas). Grafika: kostel hotový (`art/pixellab/locations/church.png`), ostatní místa po obnově PixelLabu 13. 11. se stejným stylem (church.png jako style_image, skript v historii: create_object_pro_flash 96×96, ~5 generací/místo)._
 
 ## Inspirace
 
@@ -63,7 +63,40 @@ Každé místo má **stav** (drží Hegemonie / Concord / nikdo / sporné) a **k
 
 Vše běží na stávající bezplatné infrastruktuře (GitHub smyčka, Firestore pro přihlášky, Firebase Hosting).
 
+## 4. Souboj výpravy (rozhodnuto 9. 11.)
+
+**Kdo se hlásí:** jen narukovaní vojáci, kteří jsou na linii (ne zranění, nezvěstní ani padlí).
+- **Komentářem** s heslem místa (např. `CHURCH`) pod příspěvkem, který výpravu vyhlásí. Funguje pro každého narukovaného, Instagram zaručí, kdo píše.
+- **Tlačítkem Volunteer na webu** jen převzatí hráči (nepřevzatého hráče web nepozná; přihlášení Googlem + převzetí = jistota, že je to on).
+- **5 míst na frakci, kdo dřív přijde.** Výprava jen **občas: 1× za 3 dny** (vyhlásí ranní noviny, přihlášky do dalších ranních novin, vyhodnocení v nich).
+
+**Staty rolí** (inspirace: Darkest Dungeon, XCOM, auto-battlery; čísla k doladění simulací):
+
+| Role | Životy | Útok | Obrana | Schopnost |
+|---|---|---|---|---|
+| Rifleman | 10 | 4 | 3 | spolehlivý: žádná slabina |
+| Machine Gunner | 12 | 5 | 2 | **potlačení:** zasáhne 2 cíle; nepřítel má v 1. kole útok −1 |
+| Sapper | 10 | 3 | 4 | **demolice:** +3 útok u kostela, cihelny a lomu (budovy, tunely) |
+| Sniper | 7 | 7 | 1 | **první výstřel** před 1. kolem; v mlze útok poloviční, za jasna +2 |
+| Stretcher Bearer | 8 | 1 | 2 | **ošetří** každé kolo +3 životy nejhůř zraněnému; zachrání jednoho před smrtí |
+| Runner | 7 | 2 | 3 | **iniciativa** + při prohře zajistí ústup (nikdo není zajat) |
+| Signaller | 8 | 2 | 2 | **přivolá dělostřelectvo:** 1× zásah za 5, pokud frakce drží kostel/pozorovatelnu nebo je jasno |
+| Field Cook | 9 | 1 | 2 | **morálka:** všem ostatním v družstvu +1 útok a +1 obrana |
+| Chaplain | 8 | 0 | 3 | **víra:** družstvo se nikdy nedá na útěk; všem +2 životy na začátku |
+| Lieutenant | 10 | 4 | 3 | **velení:** všem +1 útok, útočí na nejslabšího nepřítele |
+
+Sám kuchař je slabší než střelec nebo ostřelovač, ale v družstvu zvedne všechny ostatní. Proto záleží na složení.
+
+**Průběh (deterministický, seed = id výpravy, bez AI):**
+1. Kolo 0: ostřelovači vystřelí, dělostřelectvo spojaře.
+2. Kola 1–5: podle iniciativy útočí každý živý voják na nepřítele; zásah = max(1, útok + k3 − obrana/2). Zdravotník léčí.
+3. **Útěk:** družstvo, které ztratí 70 % celkových životů, ustoupí (kaplan brání útěku).
+4. **Vítěz** = družstvo, které zůstalo na místě (nebo má víc zbylých životů po 5 kolech). Získá místo a jeho výhodu.
+5. **Podmínky:** obránce místa +1 obrana; počasí (mlha nájezdům +1 útok, déšť: kulomet se může zaseknout); výhoda z dobyté kóty.
+6. **Bez nepřítele:** když přijde jen jedna frakce, bojuje s místem samotným (miny, plyn, zřícení) a téměř jistě ho obsadí.
+7. **Následky:** vojáci na 0 životů jsou většinou **zranění**, menšina **nezvěstná** nebo **zajatá** (poražení bez spojky); smrt jen výjimečně, převzatí hráči chránění.
+
+**Příběh výpravy:** z průběhu boje se poskládá článek na titulní stranu novin (kdo vystřelil první, kdo koho vytáhl, kdo ustoupil) se jmény hráčů. Každý účastník dostane zápis do záznamu. Medaile *Raider's Cross* po 3 výpravách.
+
 ## Otevřené otázky
-- Přihlášky jen převzatí hráči (motivace k převzetí), nebo kdokoli komentářem?
-- 1 výprava denně, nebo víc na výběr?
-- Smí se na výpravě umřít (s nástupcem z rodu), nebo jen zranění/zajetí?
+- Smí se na výpravě umřít (s nástupcem z rodu), nebo jen zranění/zajetí? (návrh: výjimečně ano, převzatí chránění)
