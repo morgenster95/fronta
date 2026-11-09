@@ -8,7 +8,7 @@ import { pick } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
 import { orderDanger, orderRecover, issueOrders } from './orders.js';
-import { battleTick, battlePublic, build as buildStructure, ensureBattle } from './battle.js';
+import { battleTick, battlePublic, build as buildStructure, ensureBattle, levelOf } from './battle.js';
 import { awardHouseBadges, noticeDeath } from './house.js';
 import { ensureValley, valleyTick, valleyDanger, valleyRecover, raidKeyword, volunteer, valleyPublic } from './valley.js';
 
@@ -374,6 +374,8 @@ export function leaderboards(state, theme, n = 20) {
     houseHonours: top(state.soldiers, (s) => honours(s) + (s.fallen || []).reduce((a, p) => a + (p.medals || []).length + (p.titles || []).length, 0)),
     survivors: top(live, (s) => s.scars || 0),
     medics: top(live.filter((s) => s.archetype === 'medic'), (s) => s.treated || 0),
+    marksmen: top(live, (s) => s.hits || 0), // zásahy nepřítele palbou (docs/COMBAT_ROLES.md)
+    experienced: top(live, (s) => Math.round(s.xp || 0)),
   };
 }
 
@@ -495,6 +497,10 @@ export function buildPublic(state, theme) {
       treated: s.treated || 0,
       medals: s.medals || [],
       houseBadges: s.houseBadges || [],
+      xp: Math.round(s.xp || 0),
+      level: theme.battle ? levelOf(theme, s).name : null,
+      hits: s.hits || 0,
+      hitsBy: s.hitsBy || {},
     };
   }
   // žebříčky a pamětní listina: samostatné soubory, web je načte až po otevření záložky (hlavní data nerostou)

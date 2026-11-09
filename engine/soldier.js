@@ -24,7 +24,7 @@ export function lifeRecord(s) {
     enlisted: s.enlisted, days: Math.max(0, (s.fallenDay ?? s.enlisted) - s.enlisted),
     cause: s.cause || { kind: 'line' }, relation: s.relation || null,
     medals: s.medals || [], titles: s.titles || [], scars: s.scars || 0, wounds: s.woundsTaken || 0,
-    treated: s.treated || 0, raids: s.raids || 0, sector: s.sector || null,
+    treated: s.treated || 0, raids: s.raids || 0, sector: s.sector || null, xp: Math.round(s.xp || 0), hits: s.hits || 0,
     rec: [s.recFrom || 0, s.record.length], // rozsah zápisů této generace v deníku rodu
     last: s.record.at(-1)?.[1] || null,
   };
