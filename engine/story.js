@@ -59,7 +59,7 @@ export function backgroundLine(soldier) {
   if (!b) return null;
   const v = { pronoun: soldier.pronoun || 'he' };
   const cap = (x) => x[0].toUpperCase() + x.slice(1);
-  return fill(`Before the war: ${b.trade} from ${b.home}. ${cap(b.quirk)}. Waiting at home: ${b.waiting}.`, v, () => 0);
+  return fill(`Before the war: a ${b.trade} from ${b.home}. ${cap(b.quirk)}. Waiting at home: ${b.waiting}.`, v, () => 0);
 }
 
 export function soldierVars(soldier, theme, story, extra = {}) {
