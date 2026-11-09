@@ -1,6 +1,6 @@
 # Návrh: mapa údolí a výpravy (mise)
 
-_Stav: **postaveno 9. 11. 2026** (fáze 2 + 3 a výhody z území, viz „Jak je to postavené“ na konci). Grafika: kostel hotový (`art/pixellab/locations/church.png`), ostatní místa mají zatím náhradní pixelové ikony kreslené kódem; po obnově PixelLabu 13. 11. se dogenerují se stejným stylem (church.png jako style_image, create_object_pro_flash 96×96, ~5 generací/místo) a jen se doplní `img` v `theme.valley.locations`._
+_Stav: **postaveno 9. 11. 2026** (fáze 2 + 3 a výhody z území, viz „Jak je to postavené“ na konci). Grafika všech 8 míst hotová (originály `art/pixellab/locations/`, zmenšené na 256 px ve `web/public/assets/locations/`)._
 
 ## Inspirace
 
@@ -123,5 +123,5 @@ Zajatí se vrátí výměnou za 3–6 dní (`story.exchanged`), společná udál
 **Výhody z území:** kostel = dělostřelectvo spojařů; pozorovatelna = iniciativa + dělostřelectvo (zpravodajství o přihláškách nepřítele by na veřejných datech nešlo utajit);
 mlýn = +2 životy na výpravách; lom = ženisté +2 útok; ruiny = nebezpečí ×0,9; cihelna = přední linie ×0,85; hřbitov = ×0,8 při bombardování; nemocnice = uzdravení 55 % místo 35 %.
 
-**Zbývá:** grafika 7 míst (po 13. 11.), výměna zajatců jako společná událost, víc šablon článků, případně 2 výpravy denně.
-⚠️ Tlačítko Volunteer na webu potřebuje nasadit `firestore.rules` (nové pole `volunteer`): `firebase deploy --only firestore:rules --project fronta-ig`. Do té doby web poradí přihlásit se komentářem.
+**Zbývá:** výměna zajatců jako společná událost, víc šablon článků, případně 2 výpravy denně.
+Pravidla Firestore s polem `volunteer` nasazena 9. 11. 2026.
