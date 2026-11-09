@@ -186,3 +186,4 @@ body.reel #card { bottom: 18%; width: 86%; }
   #search-input { padding: 6px 6px; }
 }
 @media (max-width: 420px) { #dispatch { top: calc(env(safe-area-inset-top) + 86px); } }
+#card-family .bg { color: var(--ink); display: block; margin-bottom: 4px; }

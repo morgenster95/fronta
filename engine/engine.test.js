@@ -121,3 +121,18 @@ test('rozmanitost: nováčci ani vojáci v jednom dni nemají stejné zápisy, v
     assert.ok(new Set(own).size >= own.length - 2, own.join('\n'));
   }
 });
+
+test('pozdní nováček dostane úvod náhradníka a každý má vlastní minulost', () => {
+  const s = emptyState(theme);
+  s.day = 7;
+  const intros = [];
+  for (let i = 0; i < 30; i++) {
+    const r = applyComment(s, { id: `l${i}`, userId: `lu${i}`, username: `late${i}`, text: 'CONCORD' }, theme, story, map);
+    intros.push(r.soldier.record[0][1]);
+    assert.ok(r.soldier.bg?.trade && r.soldier.bg?.home);
+  }
+  assert.ok(intros.filter((t) => /Day 7|6 days/.test(t)).length >= 10, intros.join('\n'));
+  assert.ok(!intros.some((t) => /\{\w+\}/.test(t)));
+  const bgs = new Set(s.soldiers.map((x) => JSON.stringify(x.bg)));
+  assert.equal(bgs.size, 30);
+});

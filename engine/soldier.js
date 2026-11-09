@@ -1,7 +1,7 @@
 // Voják: vznik z komentáře, vzhled z hashe IG ID, denní tah (zápisy, povýšení, zranění, smrt a nástupce z rodu).
 
 import { rngFor, pick, weighted } from './rng.js';
-import { dailyEntry, eventEntry, soldierVars, fill, pickVaried, tplKey } from './story.js';
+import { dailyEntry, eventEntry, soldierVars, fill, pickVaried, tplKey, makeBackground } from './story.js';
 
 export const STATUS = ['active', 'wounded', 'missing', 'captured', 'fallen'];
 
@@ -39,6 +39,7 @@ export function createSoldier({ id, handle, faction, day, order }, theme, story)
     fallen: [], // padlí předci: [{name, day, place}]
   };
   s.name = displayName(s);
+  s.bg = makeBackground(s, story);
   return s;
 }
 
@@ -194,6 +195,7 @@ export function heir(s, day, theme, story, today = null) {
     fallen: [...s.fallen, prev],
     arc: null,
     arcsDone: [],
+    bg: s.bg ? { ...makeBackground({ id: `${s.id}#${s.generation + 1}` }, story), home: s.bg.home } : undefined,
     record: [],
   };
   n.name = displayName(n);

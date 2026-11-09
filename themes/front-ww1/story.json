@@ -122,7 +122,13 @@
     "{name} stepped off the supply cart at {sector} and stood very still, listening to the guns as if they were saying {his} name.",
     "Nobody asked {name} why {he} came. Nobody in {sector} asks that. {He} was handed a spade before {he} was handed a rifle.",
     "{name} took the place of a man nobody would talk about. The dugout still had his blanket. {He} kept it folded.",
-    "{name} reported to {sector} with {item} sewn into {his} tunic lining. The sergeant pretended not to notice."
+    "{name} reported to {sector} with {item} sewn into {his} tunic lining. The sergeant pretended not to notice.",
+    "{name} was a {trade} in {home} until the posters went up. {He} came to {sector} with {item}, and within a day the whole bay knew that {he} {quirk}.",
+    "In {home}, {name} was a {trade}. In {sector}, {he} is a number and a rifle. {He} has told everyone {he} intends to be a {trade} again.",
+    "{name} left {waiting} behind in {home} and came up the line with {item}. The men noticed at once that {he} {quirk}.",
+    "The new {archetype} is {name}, once a {trade} from {home}. The corporal asked if a {trade} was any use in a trench. {name} said {he} would find out.",
+    "{name} told the sergeant {he} was a {trade}. The sergeant said the war needed one of those like it needed more rain, and put {him} on sentry.",
+    "{name} came from {home}, where there is a river, a church and no mud at all. {He} talks about all three as if they were people."
   ],
   "daily": [
     {
@@ -479,6 +485,50 @@
       "w": 2,
       "archetype": "officer",
       "text": "{name} censored the men's letters tonight. {He} crossed out the place names and left in all the love."
+    },
+    {
+      "w": 3,
+      "text": "{name} wrote to {waiting}. {He} did not mention the shelling. {He} mentioned the stars."
+    },
+    {
+      "w": 3,
+      "text": "Someone in {sector} asked {name} about {home}. {He} talked for an hour. Nobody interrupted."
+    },
+    {
+      "w": 3,
+      "text": "{name}'s hands still remember being a {trade}'s hands. Today they mended a broken duckboard as if it were the most important job in the world."
+    },
+    {
+      "w": 3,
+      "text": "The men have learned that {name} {quirk}. Tonight it made them laugh, which was worth a great deal."
+    },
+    {
+      "w": 2,
+      "text": "A letter reached {name} from {home}. The streets there still have names. {He} read them out loud, one by one."
+    },
+    {
+      "w": 3,
+      "text": "{name} dreamt {he} was back in {home}, working as a {trade}. {He} woke to rain and said nothing all morning."
+    },
+    {
+      "w": 2,
+      "text": "{name} {quirk}. Today, under fire at {place}, that habit was the only steady thing in {sector}."
+    },
+    {
+      "w": 2,
+      "text": "Asked what {he} will do after the war, {name} said: 'Be a {trade} in {home}. And never complain about anything, ever again.'"
+    },
+    {
+      "w": 2,
+      "text": "A replacement turned out to be from {home} too. {name} and the newcomer argued about the same bakery for half the night."
+    },
+    {
+      "w": 2,
+      "text": "{name} thought about {waiting} on sentry tonight, and the cold felt a little further away."
+    },
+    {
+      "w": 2,
+      "text": "The corporal found out {name} used to be a {trade}. {name} has been doing two jobs ever since."
     }
   ],
   "promotion": [
@@ -852,5 +902,109 @@
     "First Wave. {name} signed when the posters were still wet. {He} keeps the ribbon wrapped in oilcloth with {item}.",
     "{name} answered the first call, number {n} on the rolls. Somebody chalked the number on {his} helmet. It has not washed off yet.",
     "{name} was in the first hundred. The old hands in {sector} call them 'the early birds', and not always kindly."
+  ],
+  "background": {
+    "homes": [
+      "Coldwater",
+      "Ashford Vale",
+      "Lindenbruck",
+      "Marrow Fen",
+      "Port Abel",
+      "Greyhallow",
+      "Oakmere",
+      "Tannenfeld",
+      "Brennmoor",
+      "Saint-Lune",
+      "Old Harrow",
+      "Kesselby",
+      "Wyvern Cross",
+      "Halden",
+      "Rosenau",
+      "Millbank",
+      "Varenne",
+      "Stoneyford",
+      "Dunmarrow",
+      "Esterhaus",
+      "Belmonte",
+      "Northwick"
+    ],
+    "trades": [
+      "baker",
+      "schoolteacher",
+      "coal miner",
+      "ferryman",
+      "clockmaker",
+      "printer's apprentice",
+      "shepherd",
+      "tram conductor",
+      "butcher's boy",
+      "bookbinder",
+      "fisherman",
+      "choir singer",
+      "carpenter",
+      "postman",
+      "medical student",
+      "blacksmith",
+      "farmhand",
+      "dance-hall violinist",
+      "railway porter",
+      "glassblower",
+      "brewer",
+      "stonemason",
+      "lamplighter",
+      "tailor"
+    ],
+    "quirks": [
+      "hums hymns when frightened",
+      "counts everything: steps, shells, stars",
+      "never sits with {his} back to the parapet",
+      "talks to {his} rifle",
+      "shares cigarettes but never smokes",
+      "sleeps with {his} boots on",
+      "writes everything down in a tiny notebook",
+      "whistles the same four notes over and over",
+      "can fall asleep anywhere, instantly",
+      "laughs at exactly the wrong moments",
+      "is superstitious about the number three",
+      "polishes {his} buttons every evening",
+      "keeps feeding the rats",
+      "knows every star by name",
+      "never takes off {his} scarf",
+      "draws portraits of the men in the margins of letters",
+      "will not eat before a raid",
+      "tells terrible jokes",
+      "is always the first one awake",
+      "hates silence more than shelling",
+      "collects shell fuses",
+      "reads the same book over and over"
+    ],
+    "waiting": [
+      "{his} mother, who writes every Sunday",
+      "a younger sister who sends drawings",
+      "a sweetheart who has stopped writing",
+      "nobody, which {he} says is easier",
+      "a wife and a daughter {he} has never met",
+      "an old father who runs the family shop alone",
+      "a dog called Bastion on the farm",
+      "a girl from the dance hall, maybe",
+      "five brothers, all on other fronts",
+      "a grandmother who prays for both armies",
+      "a fiancée who wears {his} ring on a chain",
+      "a teacher who said {he} would amount to nothing",
+      "twin brothers too young to enlist",
+      "a landlady who kept {his} room exactly as it was"
+    ]
+  },
+  "enlistLate": [
+    "{name} arrived on Day {day} as a replacement. The men in {sector} had been fighting for {daysIn} days already and looked at {his} clean boots like a rumour from another world.",
+    "By the time {name} reached {sector}, the war was {daysIn} days old and had its own habits. {He} learned the first one within the hour: keep your head down.",
+    "{name} came up with a draft of replacements on Day {day}. Nobody asked {his} name until the third night. After that, everyone knew it.",
+    "The sergeant gave {name} a dead man's blanket and a living man's job. That is how replacements start, on Day {day} or any other.",
+    "{name}, a {trade} from {home}, was sent forward on Day {day} to fill a gap in {sector}. The gap had a name once. Nobody says it.",
+    "\"You're late,\" said the corporal when {name} arrived on Day {day}. \"Everyone's late. Get a spade.\"",
+    "{name} arrived with the Day {day} draft, carrying {item} and the news from home, which was old by the time {he} told it.",
+    "The old hands of {sector} have been here since Day 1. {name} has been here since Day {day}. In a trench, that difference already feels like years.",
+    "{name} walked into {sector} on Day {day} and asked where the war was. A shell answered before anyone else could.",
+    "On Day {day} {name} took a post at {sector} that had been empty for two nights. {He} did not ask why. {He} {quirk}, and the men liked {him} for it."
   ]
 }

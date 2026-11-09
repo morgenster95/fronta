@@ -45,9 +45,31 @@ function fillOnce(template, vars, rand) {
     });
 }
 
+// Minulost vojáka (odkud je, čím byl, zvyk, kdo na něj čeká): deterministická z ID, uloží se při narukování.
+export function makeBackground(soldier, story) {
+  const b = story.background;
+  if (!b) return null;
+  const rand = rngFor(soldier.id, 'background');
+  return { home: pick(rand, b.homes), trade: pick(rand, b.trades), quirk: pick(rand, b.quirks), waiting: pick(rand, b.waiting) };
+}
+
+// Jedna věta na kartu vojáka: „Before the war: a baker from Coldwater. Hums hymns when frightened. Waiting at home: …“
+export function backgroundLine(soldier) {
+  const b = soldier.bg;
+  if (!b) return null;
+  const v = { pronoun: soldier.pronoun || 'he' };
+  const cap = (x) => x[0].toUpperCase() + x.slice(1);
+  return fill(`Before the war: ${b.trade} from ${b.home}. ${cap(b.quirk)}. Waiting at home: ${b.waiting}.`, v, () => 0);
+}
+
 export function soldierVars(soldier, theme, story, extra = {}) {
   const rand = rngFor(soldier.id, 'vars');
+  const bg = soldier.bg || makeBackground(soldier, story) || {};
   return {
+    home: bg.home ?? 'home',
+    trade: bg.trade ?? 'soldier',
+    quirk: bg.quirk ?? 'keeps {his} head down',
+    waiting: bg.waiting ?? 'nobody',
     name: soldier.name,
     family: soldier.family ?? '',
     rank: theme.ranks[soldier.rank],
@@ -61,9 +83,12 @@ export function soldierVars(soldier, theme, story, extra = {}) {
   };
 }
 
-export function enlistEntry(soldier, theme, story, today = null) {
+export function enlistEntry(soldier, theme, story, today = null, day = soldier.enlisted ?? 0) {
   const rand = rngFor(soldier.id, 'enlist');
-  return fill(pickVaried(rand, even(story.enlist), soldier, today), soldierVars(soldier, theme, story), rand);
+  // od 3. dne války přicházejí „náhradníci“: úvody, které vědí, že válka už běží
+  const late = day >= 3 && story.enlistLate ? story.enlistLate.map((x) => [x, 3]) : [];
+  const tpl = pickVaried(rand, [...even(story.enlist), ...late], soldier, today);
+  return fill(tpl, soldierVars(soldier, theme, story, { day: String(day), daysIn: String(Math.max(1, day - 1)) }), rand);
 }
 
 // Počasí dne: stejné pro celou frontu, deterministické podle tématu a dne.

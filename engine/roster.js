@@ -1,7 +1,7 @@
 // Stav světa (soupiska) a jeho změny: komentář → narukování, kód → převzetí, denní tah, export statických dat pro web.
 
 import { createSoldier, tickSoldier, heir, selectForStory } from './soldier.js';
-import { enlistEntry, weatherFor, eventEntry, tplKey } from './story.js';
+import { enlistEntry, weatherFor, eventEntry, tplKey, makeBackground, backgroundLine } from './story.js';
 import { writeChronicle } from './chronicle.js';
 import { pick } from './rng.js';
 import { hashString } from './rng.js';
@@ -170,6 +170,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
   state.weather = weather?.id ?? null;
   const events = [];
   const today = new Set(); // šablony použité dnes (rozmanitost mezi vojáky)
+  for (const s of state.soldiers) s.bg ??= makeBackground(s, story);
   const active = new Set(ctx.activeIds || []);
   const chosen = new Set(selectForStory(state.soldiers, day, active).map((s) => s.id));
   // kdo je dnes k dispozici pro společné příhody (stav na začátku dne)
@@ -247,6 +248,7 @@ export function buildPublic(state, theme) {
       fallen: s.fallen,
       family: s.family,
       bio: s.bio || null,
+      background: backgroundLine(s),
     };
   }
   return { roster, shards };
