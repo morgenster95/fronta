@@ -2,6 +2,7 @@
 import { shardOf } from '../../engine/roster.js';
 import { startClaim, sendTransfer, signInAsOwner } from './claim.js';
 import { shareCard } from './share.js';
+import { paperTexture, tornClip } from './paper.js';
 
 const $ = (id) => document.getElementById(id);
 const STATUS = ['On the line', 'Wounded', 'Missing in action', 'Prisoner of war', 'Fallen'];
@@ -122,14 +123,24 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       list.innerHTML = '<p class="muted">The diary is still blank. The first entry comes at midnight.</p>';
       return;
     }
-    list.innerHTML = d.entries.map((e) => {
-      const head = `<div class="d">${dayLabel(e.day)}${e.weather ? ` · ${WEATHER[e.weather] || ''} ${esc(e.weather)}` : ''} · ${esc(e.by || '')}</div><h4>${esc(e.title || '')}</h4>`;
+    const WNAME = { rain: 'Rain', fog: 'Fog', frost: 'Frost', clear: 'Clear', storm: 'Storm', wind: 'Wind' };
+    list.innerHTML = d.entries.map((e, i) => {
+      const seed = e.day * 2 + (e.kind === 'note' ? 1 : 0);
+      const mast = `<header class="mast">
+          <div class="mast-top"><span>${dayLabel(e.day)}</span><span>${e.weather ? `${WEATHER[e.weather] || ''} ${WNAME[e.weather] || esc(e.weather)}` : 'Special edition'}</span><span>Price: one cigarette</span></div>
+          <div class="mast-name">The Trench Gazette</div>
+          <div class="mast-sub">${e.kind === 'note' ? `Dispatch from ${esc(e.by || 'Field HQ')}` : 'Printed in a dugout behind Verdel Ridge · by field telegraph'}</div>
+        </header>`;
+      const headline = `<h4 class="headline">${esc(e.title || '')}</h4>`;
       const body = e.kind === 'note'
-        ? para(e.text)
-        : (e.blocks || []).map((b) =>
+        ? `<div class="cols">${para(e.text)}</div>`
+        : `<div class="cols">${(e.blocks || []).map((b) =>
+            `<section class="art${b.h === 'Roll call' ? ' notice' : ''}">` +
             (b.h ? `<h5>${esc(b.h)}</h5>` : '') +
-            (b.items ? `<ul>${b.items.map((i) => `<li>${linkify(esc(i))}</li>`).join('')}</ul>` : `<p>${linkify(esc(b.text))}</p>`)).join('');
-      return `<article class="entry ${e.kind}">${head}${body}</article>`;
+            (b.items ? `<ul>${b.items.map((x) => `<li>${linkify(esc(x))}</li>`).join('')}</ul>` : `<p>${linkify(esc(b.text))}</p>`) +
+            '</section>').join('')}</div>`;
+      const style = `background-image:url(${paperTexture(seed)});clip-path:${tornClip(seed)};--tilt:${i % 2 ? 0.5 : -0.4}deg`;
+      return `<div class="paper-wrap"><article class="paper ${e.kind}" style="${style}">${mast}${headline}${body}</article></div>`;
     }).join('');
     list.onclick = (ev) => {
       const a = ev.target.closest('a[data-h]');
