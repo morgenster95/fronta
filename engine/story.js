@@ -11,7 +11,7 @@ export function pickVaried(rand, entries, soldier, today) {
   const seen = new Set(soldier.seen || []);
   const t = weighted(rand, entries.map(([text, w]) => {
     const k = tplKey(text);
-    return [text, w * (seen.has(k) ? 0.02 : 1) * (today?.has(k) ? 0.08 : 1)];
+    return [text, w * (seen.has(k) ? 0.02 : 1) * (today?.has(k) ? 0.01 : 1)];
   }));
   const k = tplKey(t);
   soldier.seen = [...(soldier.seen || []).filter((x) => x !== k), k].slice(-200);

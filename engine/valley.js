@@ -402,7 +402,7 @@ function gazette(r, loc, theme, story, rand) {
   // ztráty
   const by = (k) => Object.entries(r.fates).filter(([, f]) => f === k).map(([h]) => at(h));
   const losses = [['Wounded', by('wounded')], ['Missing', by('missing')], ['Taken prisoner', by('captured')], ['Fallen', by('fallen')]].filter(([, l]) => l.length);
-  parts.push(losses.length ? losses.map(([k, l]) => `${k}: ${listNames(l)}.`).join(' ') : E.lines.noLoss);
+  parts.push(losses.length ? losses.map(([k, l]) => `${k}: ${listNames(l)}.`).join(' ') : fill(pick(rand, [].concat(E.lines.noLoss)), vars, rand));
   parts.push(fill(pick(rand, E.lines[r.outcome]), vars, rand));
   return { day: r.day, kind: 'expedition', h: cap(fill(pick(rand, E.headlines[r.outcome]), vars, rand)), text: parts.filter(Boolean).join(' ') };
 }

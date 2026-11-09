@@ -187,6 +187,26 @@ test('převelení: jen převzatý voják, jednou za 7 dní, ne na důstojníka',
   assert.equal(x.archetype, 'sniper');
 });
 
+test('90 dní války s výpravami: žádný text nemá nedoplněnou proměnnou ani [volbu]', () => {
+  const s = emptyState(theme);
+  const bad = /\{\w+\}|undefined|NaN|\[|\]|\|/;
+  let n = 0;
+  for (let i = 0; i < 400; i++) applyComment(s, { id: `c${i}`, userId: `u${i}`, username: `user${i}`, text: i % 3 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
+  s.soldiers.slice(0, 40).forEach((x) => (x.claimed = true));
+  for (let d = 0; d < 90; d++) {
+    if (s.valley?.open) {
+      const kw = theme.valley.locations.find((l) => l.id === s.valley.open.loc).keyword;
+      for (let i = 0; i < 30; i++) applyComment(s, { id: `r${d}-${i}`, userId: `u${(d * 7 + i * 13) % 400}`, username: `user${(d * 7 + i * 13) % 400}`, text: kw }, theme, story, map);
+    }
+    dailyTick(s, theme, story);
+  }
+  for (const x of s.soldiers) for (const [, t] of x.record) { n++; assert.ok(!bad.test(t), `@${x.handle}: ${t}`); }
+  for (const c of s.chronicle) for (const b of c.blocks) for (const t of [b.h, b.text, ...(b.items || [])]) if (t) assert.ok(!bad.test(t), `den ${c.day}: ${t}`);
+  assert.ok(s.valley.history.length >= 20, 'výpravy proběhly');
+  assert.ok(n > 3000, `zápisů ${n}`);
+  console.log(`simulace: ${n} zápisů, ${s.valley.history.length} výprav`);
+});
+
 test('výpravy: vyhlášení, přihlášky komentářem, vyhodnocení, převzatí nepadnou', async () => {
   const { resolveExpedition } = await import('./valley.js');
   const s = emptyState(theme);
