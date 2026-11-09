@@ -491,5 +491,85 @@
         "size": 32
       }
     ]
+  },
+  "battle": {
+    "_note": "Denní boj, medici, nemocnice a drát (engine/battle.js, docs/BATTLE.md). Stavby jen hlasováním frakce (možnost hlasování s build: id). Nemocnice = jediný dugout se 4 lůžky. Bombardování (shell) dopadá na 2 sektory poraženého denně.",
+    "hit": 0.025,
+    "line": {
+      "front": 1,
+      "reserve": 0.35,
+      "rear": 0
+    },
+    "barrage": 1.3,
+    "experience": 0.4,
+    "experienceDays": 60,
+    "toughShift": 0.04,
+    "severity": {
+      "light": 0.4,
+      "heavy": 0.15
+    },
+    "newbieDays": 5,
+    "critCooldown": 7,
+    "medicWork": 2,
+    "veteranMedic": {
+      "treated": 10,
+      "work": 1.5
+    },
+    "lightWorsen": 0.15,
+    "lightHeal": {
+      "base": 0.3,
+      "cover": 0.5
+    },
+    "stretcher": {
+      "heavyWorsen": 0.25,
+      "critSurvive": 0.3,
+      "critCover": 0.5
+    },
+    "critDays": 3,
+    "heavyMinDays": 2,
+    "heal": 0.4,
+    "wire": {
+      "start": 0.6,
+      "cover": 0.15,
+      "decay": 0.005,
+      "barrage": 0.12,
+      "repair": 0.08
+    },
+    "aidPost": {
+      "name": "Aid post",
+      "beds": 2,
+      "care": 0.6,
+      "critDie": 0.35
+    },
+    "buildings": {
+      "dugout": {
+        "name": "Hospital dugout",
+        "done": "dug a hospital dugout behind the line: 4 beds",
+        "beds": 4,
+        "care": 1,
+        "critDie": 0.25,
+        "max": 1
+      },
+      "sandbags": {
+        "name": "Sandbag parapets",
+        "done": "raised the parapets with fresh sandbags: fewer men hit",
+        "cover": 0.12,
+        "max": 2
+      },
+      "wire": {
+        "name": "New wire belts",
+        "done": "ran new belts of wire across no-man's land",
+        "wire": 0.5
+      }
+    },
+    "shell": {
+      "sectors": 2,
+      "hit": 0.35,
+      "severity": {
+        "light": 0.55,
+        "heavy": 0.2
+      },
+      "wire": 0.4
+    }
   }
 }

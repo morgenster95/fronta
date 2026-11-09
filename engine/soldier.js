@@ -68,6 +68,7 @@ export function tickSoldier(s, day, theme, story, ctx = {}) {
     return text;
   };
   if (s.status === 'wounded') {
+    if (ctx.battle) return out; // zranění vede engine/battle.js (lůžka, medici)
     if (rand() < (ctx.recover ?? 0.35)) {
       s.status = 'active';
       out.push(ev('recovered', eventEntry('recovered', s, day, theme, story, {}, ctx.today)));
@@ -99,6 +100,19 @@ export function tickSoldier(s, day, theme, story, ctx = {}) {
   const wound = 0.03 * danger;
   const lost = wound + (story.missing ? 0.006 * danger : 0);
   const r = rand();
+  if (ctx.battle) {
+    // zásahy a smrt řeší denní boj (engine/battle.js); tady jen nezvěstní, povýšení a příběh
+    if (story.missing && r < 0.006 * danger && day - s.enlisted >= 2) {
+      s.status = 'missing';
+      s.missingDay = day;
+      out.push(ev('missing', eventEntry('missing', s, day, theme, story, {}, ctx.today)));
+    } else if (r > 0.985 && s.rank < 4) {
+      const oldRank = theme.ranks[s.rank];
+      s.rank++;
+      out.push(ev('promotion', eventEntry('promotion', s, day, theme, story, { oldRank }, ctx.today)));
+    } else out.push(storyDay(s, day, theme, story, ctx, ev));
+    return out;
+  }
   if (r < 0.004 * danger * protect && day - s.enlisted >= 5) {
     // padl: smrt nikdy z ničeho nic, jen po aspoň 5 dnech služby
     s.status = 'fallen';

@@ -2382,5 +2382,91 @@
       "A third raid behind {him}: {name} has earned the Raider's Cross.",
       "After the third raid, {name} pinned on the Raider's Cross with muddy fingers."
     ]
-  }
+  },
+  "hitLight": [
+    "A splinter opened {name}'s cheek at {sector}. A medic stitched it in the bay and {he} was back on the fire step before the tea went cold.",
+    "A bullet clipped {name}'s helmet and took a strip of scalp with it. {He} bled into {his} collar, swore, and kept {his} post.",
+    "{name} caught a ricochet in the forearm at {place}. Bandaged, sore, and still on the line.",
+    "Shrapnel at {place}. {name} walked to the medics on {his} own feet and asked for a cigarette before the stitches.",
+    "A grenade fragment found {name}'s shoulder. {He} calls it a souvenir and refuses to be sent back.",
+    "A sniper's round grazed {name} at {sector}. Two inches, the sergeant said. {He} has not stopped thinking about the two inches.",
+    "A spent bullet knocked {name} flat at {sector}. The bruise is the size of a saucer. {He} was back at {his} post within the hour.",
+    "{name} cut {his} hand to the bone on the wire at {place}. Iodine, a bandage, and a lecture from the medic.",
+    "Shell splinters peppered {sector}. {name} picked three out of {his} sleeve and a fourth out of {his} arm.",
+    "A bullet went through {name}'s sleeve and took some skin with it. {He} kept the sleeve. {He} says the skin will grow back.",
+    "Blast from a trench mortar threw {name} against the revetment at {sector}. Ringing ears, a split lip, and no intention of leaving.",
+    "A splinter of duckboard, kicked up by a shell, went into {name}'s calf. The medic pulled it out with pliers. {name} did not make a sound.",
+    "{name} was grazed across the knuckles by a ricochet at {place}. {He} writes {his} letters with the other hand now."
+  ],
+  "hitHeavy": [
+    "{name} was hit hard at {place}. Two men carried {him} down the communication trench on a door torn from a ruin.",
+    "A shell burst over {sector} and {name} went down with a leg that would not hold {him}. The stretcher bearers came at a run.",
+    "Machine-gun fire swept {sector}. {name} took a round through the side and was carried back, grey in the face and very quiet.",
+    "{name} was buried by a near miss at {place} and dug out with a broken arm and a chest full of earth.",
+    "A rifle grenade caught {name} at {sector}. {He} will need a bed and a surgeon, and {he} knows it.",
+    "{name} was hit in the thigh crossing {place}. {He} crawled the last yards back to the trench on {his} elbows."
+  ],
+  "hitCrit": [
+    "{name} was hit badly at {place}. The medics worked on {him} in the bottom of the trench and shouted for a bed.",
+    "{name} took a burst of machine-gun fire at {place}. The bearers ran with {him}, and nobody said what everyone was thinking.",
+    "Shrapnel tore through {name} at {sector}. The tourniquet held. Whether {he} holds is another matter.",
+    "{name} went down at {place} and did not get up. {He} is breathing. That is all the medic would say."
+  ],
+  "worsened": [
+    "{name}'s wound turned bad. The bandage was not enough and {he} was carried back to wait for a bed.",
+    "Fever took hold of {name} overnight. The medics changed the dressing twice and then called for the bearers.",
+    "The wound {name} shrugged off has gone the wrong colour. {He} is not shrugging any more.",
+    "There were too few medics and too many wounded. {name} waited too long, and the wound grew worse for it."
+  ],
+  "patched": [
+    "The medics cleaned {name}'s wound one last time and pronounced {him} fit. {He} is back to full duty at {sector}.",
+    "{name}'s bandage came off today. The scar is ugly. {He} is rather proud of it.",
+    "Stitches out, sleeve rolled down. {name} is whole again, or near enough for the line.",
+    "{name} no longer winces when {he} lifts {his} rifle. The medic signed {him} off with a grunt."
+  ],
+  "stretcher": [
+    "There was no bed for {name}. {He} lay on a stretcher outside, wrapped in a greatcoat, listening to the guns.",
+    "{name} spent the night on a stretcher in the trench behind the aid post. Every bed was taken.",
+    "The beds were full. {name} waits on a stretcher in the dark with a medic's promise and a dry mouth.",
+    "Outside the aid post, {name} lies on a stretcher among the others. The orderlies step over {him} and say soon."
+  ],
+  "admitted": [
+    "A bed came free in the {hospital}, and {name} was carried in at last.",
+    "{name} finally has a bed in the {hospital}. A real blanket, a lamp, and a surgeon who has not slept.",
+    "An orderly waved the bearers in: one bed, cleared and scrubbed. {name} was lifted onto it in the {hospital}."
+  ],
+  "stabilized": [
+    "The worst has passed for {name}. The surgeon says {he} will live, though not quickly.",
+    "{name} opened {his} eyes today and asked for water. In the {sector} bay they cheered when the news came up the line.",
+    "{name} is out of danger. Still bedridden, still bandaged, but out of danger."
+  ],
+  "diedNoBed": [
+    "{name} died on a stretcher outside the aid post, still waiting for a bed. The medics had nothing left to give {him}.",
+    "There was no room for {name}. {He} died in the night under a borrowed greatcoat, a few yards from a bed that never came free.",
+    "{name} did not last the night outside the full aid post. The bearers who carried {him} in carried {him} out again at dawn.",
+    "Every bed was taken and every medic was busy. {name} died waiting. The men at {sector} have not stopped talking about it."
+  ],
+  "diedInBed": [
+    "{name} died in the hospital bed despite everything the surgeon tried. {item} was in {his} hand at the end.",
+    "The surgeon worked on {name} until the lamp ran dry. It was not enough.",
+    "{name} slipped away in the night. The orderly who sat with {him} says {he} was not afraid."
+  ],
+  "shellLight": [
+    "A shell burst over {sector} and threw {name} into the side of the trench. Cuts, bruises, ringing ears. {He} stayed at {his} post.",
+    "Splinters from a shell rained down on {sector}. {name} took one in the shoulder and had it dug out right there on the fire step.",
+    "The blast lifted {name} off {his} feet at {sector}. {He} came round with a bloody nose and an empty rifle and went back to work.",
+    "A shell knocked in the parapet at {sector}. {name} was dug out of the sandbags bruised, coughing, and furious.",
+    "{name} was peppered by shell splinters at {sector}. A medic picked them out one by one while the next salvo came in."
+  ],
+  "shellHeavy": [
+    "A shell burst in the bay at {sector}. {name} was thrown against the revetment and did not get up. The bearers came at a run.",
+    "The guns found {sector}. {name} was dug out of a collapsed dugout with both legs pinned and carried back on a groundsheet.",
+    "A shell splinter the size of a fist hit {name} at {sector}. {He} is alive and {he} is in pain, and {he} needs a bed.",
+    "The salvo walked along {sector} and caught {name} in the open. Two men carried {him} back between salvos."
+  ],
+  "shellCrit": [
+    "A shell landed square in {sector}. They found {name} alive under the sandbags, barely. Every minute counts now.",
+    "A direct hit on the bay at {sector}. {name} was the only one they could still help, and only just.",
+    "The barrage caught {name} in the open at {sector}. The medic tied two tourniquets and shouted for a bed."
+  ]
 }
