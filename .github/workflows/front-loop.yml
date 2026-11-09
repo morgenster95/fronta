@@ -48,7 +48,12 @@ jobs:
             fi
             # nasadit, kdykoli se změnil obsah (i ruční zápis do deníku data/diary.json nebo nový kód)
             if [ "$(git rev-parse HEAD)" != "${DEPLOYED:-}" ]; then
-              npm run -s build && firebase deploy --only hosting --non-interactive --project fronta-ig > /dev/null && echo "nasazeno" && DEPLOYED=$(git rev-parse HEAD)
+              npm run -s build > /dev/null
+              if firebase deploy --only hosting --non-interactive --project fronta-ig > "$RUNNER_TEMP/deploy.log" 2>&1; then
+                echo "nasazeno"; DEPLOYED=$(git rev-parse HEAD)
+              else
+                echo "NASAZENÍ SELHALO:"; grep -iE "error|quota|denied|permission|exceed" "$RUNNER_TEMP/deploy.log" | head -10 || tail -15 "$RUNNER_TEMP/deploy.log"
+              fi
             fi
             sleep 300
           done

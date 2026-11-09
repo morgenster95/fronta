@@ -1,0 +1,21 @@
+# Ruční nasazení webu s plným výpisem (diagnostika, když smyčka nenasazuje).
+name: deploy
+on: workflow_dispatch
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm i -g firebase-tools@14
+      - run: npm run -s data:build && npm run -s build && du -sh dist
+      - name: Deploy
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
+          firebase deploy --only hosting --non-interactive --project fronta-ig --debug 2>&1 | grep -vE "^\[debug\].*(Authorization|access_token)" | tail -60
+          exit ${PIPESTATUS[0]}
