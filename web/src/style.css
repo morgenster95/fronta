@@ -93,6 +93,8 @@ button.primary { background: var(--blood); border-color: #a85a36; }
 #card-record { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
 #card-record li { border-left: 2px solid var(--line); padding-left: 10px; }
 #card-record .d { color: var(--accent); font-family: 'Silkscreen', monospace; font-size: 12px; display: block; }
+#card-record li.older { border-left: 0; padding-left: 0; }
+#card-record li.older button { font: inherit; font-size: 13px; background: none; color: var(--accent); border: 1px solid var(--line); padding: 6px 10px; cursor: pointer; }
 .actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
 .actions button { flex: 1; }
 .steps { padding-left: 22px; display: grid; gap: 10px; }

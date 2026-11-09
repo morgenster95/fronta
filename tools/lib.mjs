@@ -40,11 +40,11 @@ export function buildDiary(state) {
   } catch {}
   notes = notes.filter((n) => !n.draft && n.day <= state.day).map((n) => ({ kind: 'note', by: 'Field HQ', ...n }));
   const all = [...notes, ...(state.chronicle || [])];
-  return all.sort((a, b) => b.day - a.day || (a.kind === 'note' ? -1 : 1) - (b.kind === 'note' ? -1 : 1)).slice(0, 90);
+  return all.sort((a, b) => b.day - a.day || (a.kind === 'note' ? -1 : 1) - (b.kind === 'note' ? -1 : 1)); // celý deník fronty
 }
 
 export function writePublic(state, theme, outDir = path.join(ROOT, 'web', 'public', 'data')) {
-  const { roster, shards, valley } = buildPublic(state, theme);
+  const { roster, shards, older, valley } = buildPublic(state, theme);
   const diary = buildDiary(state);
   const latest = diary[0];
   roster.diary = latest ? { day: latest.day, title: latest.title, count: diary.length } : null;
@@ -54,6 +54,8 @@ export function writePublic(state, theme, outDir = path.join(ROOT, 'web', 'publi
   fs.writeFileSync(path.join(outDir, 'roster.json'), JSON.stringify(roster));
   if (valley) fs.writeFileSync(path.join(outDir, 'valley.json'), JSON.stringify(valley));
   shards.forEach((s, i) => fs.writeFileSync(path.join(outDir, 'records', `${i}.json`), JSON.stringify(s)));
+  fs.mkdirSync(path.join(outDir, 'records-old'), { recursive: true });
+  older.forEach((s, i) => fs.writeFileSync(path.join(outDir, 'records-old', `${i}.json`), JSON.stringify(s)));
   fs.copyFileSync(path.join(ROOT, 'themes', theme.id, 'theme.json'), path.join(outDir, 'theme.json'));
   return roster;
 }

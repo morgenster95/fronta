@@ -206,7 +206,7 @@ export function heir(s, day, theme, story, today = null) {
     arc: null,
     arcsDone: [],
     bg: s.bg ? { ...makeBackground({ id: `${s.id}#${s.generation + 1}` }, story), home: s.bg.home } : undefined,
-    record: [],
+    record: [...s.record], // deník rodu pokračuje: zápisy padlého se nikdy nemažou
   };
   n.name = displayName(n);
   const relation = pick(rand, story.relations);

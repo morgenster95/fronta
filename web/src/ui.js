@@ -9,6 +9,7 @@ const $ = (id) => document.getElementById(id);
 const STATUS = ['On the line', 'Wounded', 'Missing in action', 'Prisoner of war', 'Fallen'];
 const ORD = ['', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'];
 const shardCache = new Map();
+const oldCache = new Map(); // starší zápisy (records-old), načtou se až na kliknutí
 
 // Den 0 = mobilizace (nábor před začátkem války)
 const dayLabel = (d) => (d > 0 ? `Day ${d}` : 'Mobilization');
@@ -314,11 +315,16 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     }
     for (const title of rec.titles || []) fam.unshift(`<span class="title">★ ${esc(title)}</span>`);
     $('card-family').innerHTML = fam.join('<br>');
-    $('card-record').innerHTML = rec.record
-      .slice()
-      .reverse()
-      .map(([d, t]) => `<li><span class="d">${dayLabel(d)}</span>${esc(t)}</li>`)
-      .join('');
+    const li = (list) => list.slice().reverse().map(([d, t]) => `<li><span class="d">${dayLabel(d)}</span>${esc(t)}</li>`).join('');
+    $('card-record').innerHTML = li(rec.record) + (rec.older ? `<li class="older"><button type="button" id="card-older">Show ${rec.older} older entries</button></li>` : '');
+    if (rec.older) $('card-older').onclick = async (e) => {
+      e.target.disabled = true;
+      const k = shardOf(s.handle);
+      if (!oldCache.has(k)) oldCache.set(k, fetch(`/data/records-old/${k}.json`).then((r) => r.json()).catch(() => ({})));
+      const old = (await oldCache.get(k))[s.handle] || [];
+      if ($('card-name').dataset.handle !== s.handle) return; // mezitím jiná karta
+      e.target.closest('li').outerHTML = li(old);
+    };
   }
 
   // Řádek účtu pod kartou + co smí přihlášený dělat. Převelení jen když s jistotou víme, že voják je můj.

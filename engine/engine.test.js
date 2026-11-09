@@ -276,3 +276,22 @@ test('přání role v komentáři: rozpoznání, první volba zdarma, důstojní
     if (t) assert.doesNotMatch(t, /undefined|\{/);
   }
 });
+
+test('deník se nemaže: nástupce pokračuje v zápisech rodu, web má starší zápisy v archivu', async () => {
+  const { heir } = await import('./soldier.js');
+  const { buildPublic, shardOf } = await import('./roster.js');
+  const s = emptyState(theme);
+  const x = applyComment(s, { id: 'c1', userId: 'u1', username: 'jan', text: 'CONCORD' }, theme, story, map).soldier;
+  for (let d = 1; d <= 60; d++) x.record.push([d, `entry ${d}`]);
+  const before = x.record.map((r) => r[1]);
+  x.status = 'fallen'; x.fallenDay = 60;
+  const n = heir(x, 61, theme, story);
+  assert.deepEqual(n.record.slice(0, before.length).map((r) => r[1]), before, 'zápisy padlého zůstanou');
+  assert.equal(n.record.length, before.length + 1);
+  s.soldiers[0] = n;
+  const pub = buildPublic(s, theme);
+  const k = shardOf('jan');
+  const card = pub.shards[k].jan;
+  assert.equal(card.record.length + card.older, n.record.length);
+  assert.deepEqual([...pub.older[k].jan, ...card.record], n.record, 'archiv + karta = celý deník');
+});

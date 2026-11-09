@@ -302,7 +302,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
   }
   const news = [...raid.news, ...(state.news || []).filter((n) => n.day >= day - 1)];
   state.news = [];
-  state.chronicle = [...(state.chronicle || []), writeChronicle(state, day, { theme, story, weather, events, decided, news })].slice(-60);
+  state.chronicle = [...(state.chronicle || []), writeChronicle(state, day, { theme, story, weather, events, decided, news })]; // celá historie, nic se nemaže
   return state;
 }
 
@@ -333,6 +333,7 @@ export function applyTransfers(state, theme, story) {
   return done;
 }
 
+const RECENT = 40;
 export function buildPublic(state, theme) {
   awardHonors(state, theme);
   ensureValley(state, theme);
@@ -372,14 +373,18 @@ export function buildPublic(state, theme) {
     ]),
   };
   const shards = Array.from({ length: SHARDS }, () => ({}));
+  // starší zápisy (nad RECENT) jdou do archivních shardů, web je načte až na „Show older entries“
+  const older = Array.from({ length: SHARDS }, () => ({}));
   for (const s of state.soldiers) {
+    if (s.record.length > RECENT) older[shardOf(s.handle)][s.handle] = s.record.slice(0, -RECENT);
     shards[shardOf(s.handle)][s.handle] = {
       name: s.name,
       unit: s.unit,
       sector: s.sector,
       line: s.line,
       enlisted: s.enlisted,
-      record: s.record.slice(-40),
+      record: s.record.slice(-RECENT),
+      older: Math.max(0, s.record.length - RECENT),
       fallen: s.fallen,
       family: s.family,
       bio: s.bio || null,
@@ -389,7 +394,7 @@ export function buildPublic(state, theme) {
       raids: s.raids || 0,
     };
   }
-  return { roster, shards, valley: valley.file };
+  return { roster, shards, older, valley: valley.file };
 }
 
 // Čas příštího vydání novin (denního tahu): den po posledním vydání v theme.schedule.editionUtc.
