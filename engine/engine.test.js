@@ -361,7 +361,7 @@ test('příspěvek s triggerem vyjde při dobytí kóty ve variantě vítěze a 
   assert.equal(fireTriggers(q, s, theme).length, 0);
 });
 
-import { battleTick, build, hospital, medicCover, battlePublic } from './battle.js';
+import { battleTick, build, hospital, medicCover, battlePublic, levelOf } from './battle.js';
 const enlist = (s, n, tag = 'b') => {
   for (let i = 0; i < n; i++) applyComment(s, { id: `${tag}${i}`, userId: `${tag}${i}`, username: `${tag}${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
 };
@@ -409,44 +409,6 @@ test('boj: bombardování po výhře udělá paseku ve 2 sektorech poražené st
   assert.ok(crit > 0 && dead > 0, `kritických ${crit}, padlých ${dead} v 10 bězích`);
 });
 
-test('boj: medici – každý raněný potřebuje práci 2 mediků', () => {
-  const s = emptyState(theme);
-  enlist(s, 40);
-  const side = s.soldiers.filter((x) => x.faction === 0);
-  side.forEach((x, i) => { x.archetype = i < 4 ? 'medic' : 'rifleman'; });
-  side.slice(4, 6).forEach((x) => { x.wound = { sev: 'light', day: 1, wait: 0 }; });
-  assert.equal(medicCover(s, theme, 0).cover, 1, '4 medici na 2 raněné');
-  side.slice(6, 10).forEach((x) => { x.wound = { sev: 'light', day: 1, wait: 0 }; });
-  const m = medicCover(s, theme, 0);
-  assert.equal(m.demand, 12);
-  assert.ok(Math.abs(m.cover - 4 / 12) < 1e-9, 'na 6 raněných 4 medici = třetina');
-});
-
-test('boj: kritičtí mají přednost na lůžka, kdo se nevejde, čeká a nejpozději druhou noc umírá', () => {
-  const s = emptyState(theme);
-  enlist(s, 40);
-  s.day = 20;
-  const side = s.soldiers.filter((x) => x.faction === 0);
-  side.forEach((x) => { x.archetype = 'rifleman'; });
-  const hurt = side.slice(0, 4);
-  hurt.forEach((x, i) => { x.status = 'wounded'; x.wound = { sev: i < 1 ? 'heavy' : 'crit', day: 20, wait: 0 }; });
-  // bez nových zásahů a bez náhody v úmrtí: na lůžku se neumírá, první noc na nosítkách se přežije
-  const B = theme.battle;
-  const cfg = { ...theme, battle: { ...B, hit: 0, aidPost: { ...B.aidPost, critDie: 0 }, stretcher: { ...B.stretcher, critSurvive: 1, heavyWorsen: 0 } } };
-  battleTick(s, cfg, story, 21);
-  const beds = s.battle.sides[0].beds;
-  assert.equal(beds.length, 2, 'obvaziště má 2 lůžka');
-  assert.ok(beds.every((id) => s.soldiers.find((x) => x.id === id).wound.sev === 'crit'), 'na lůžkách jsou kritičtí');
-  assert.ok(!hurt[0].wound.bed, 'těžce raněný ustoupil kritickým');
-  const left = hurt.slice(1).find((x) => !beds.includes(x.id));
-  assert.equal(left.status, 'wounded', 'první noc na nosítkách přežil');
-  assert.match(left.record.at(-1)[1], /stretcher/);
-  battleTick(s, cfg, story, 22);
-  assert.equal(left.status, 'fallen', 'druhou noc bez lůžka nepřežil');
-  assert.match(left.record.at(-1)[1], /stretcher|bed|aid post|room|waiting/);
-  assert.match(JSON.stringify(s.battle), /beds/);
-});
-
 test('boj: převzatí hráči nejsou chránění, nováčci prvních 5 dní nedostanou kritický zásah', () => {
   const s = emptyState(theme);
   enlist(s, 200);
@@ -458,7 +420,7 @@ test('boj: převzatí hráči nejsou chránění, nováčci prvních 5 dní nedo
   assert.ok(!hit.some((x) => x.wound.sev === 'crit'), 'nováček nemá kritický zásah');
 });
 
-test('boj: hlídací simulace – 100 vojáků, 9 týdnů: s dugoutem smrt výjimečná, bez stavby víc, texty doplněné', () => {
+test('boj: hlídací simulace – 100 vojáků, 9 týdnů: horní mez úmrtí (obvaziště < 3, nemocnice < 2 na stranu týdně), nemocnice pomáhá, texty doplněné', () => {
   const run = (builds, seed) => {
     const s = emptyState(theme);
     enlist(s, 100, `g${seed}_`);
@@ -474,8 +436,8 @@ test('boj: hlídací simulace – 100 vojáků, 9 týdnů: s dugoutem smrt výji
   };
   const dug = [0, 1, 2].map((i) => run(['dugout'], i)).reduce((a, b) => a + b) / 3;
   const aid = [0, 1, 2].map((i) => run([], i)).reduce((a, b) => a + b) / 3;
-  assert.ok(dug < 0.5, `s dugoutem ${dug.toFixed(2)} mrtvých na stranu týdně`);
-  assert.ok(aid < 2, `jen obvaziště ${aid.toFixed(2)} mrtvých na stranu týdně`);
+  assert.ok(dug < 2, `s dugoutem ${dug.toFixed(2)} mrtvých na stranu týdně`);
+  assert.ok(aid < 3, `jen obvaziště ${aid.toFixed(2)} mrtvých na stranu týdně`);
   assert.ok(aid > dug, 'nemocnice zachraňuje životy');
 });
 
@@ -579,24 +541,113 @@ test('rod: odznaky rodu zůstávají napříč generacemi, bot dostane oznámen�
   assert.match(msg, /has taken up the rifle\. Your house: https:\/\/mudandiron\.web\.app\/\?s=.+&fell=1$/);
 });
 
-test('boj: na lůžku medik není potřeba, medici léčí nosítka a lehce raněné; těžký se na nosítkách může s mediky zahojit', () => {
+// --- péče, střelba, role (docs/COMBAT_ROLES.md) ---
+const quiet = (over = {}) => ({ ...theme, battle: { ...theme.battle, hit: 0, roles: { ...theme.battle.roles, default: { fire: 0 }, rifleman: { ...theme.battle.roles.rifleman, fire: 0 }, machinegunner: { ...theme.battle.roles.machinegunner, fire: 0 }, sniper: { ...theme.battle.roles.sniper, fire: 0 }, officer: { ...theme.battle.roles.officer, fire: 0 } }, ...over } });
+const setup = (n = 40, tag = 'pc') => {
   const s = emptyState(theme);
-  enlist(s, 40, 'md');
+  enlist(s, n, tag);
   s.day = 20;
+  s.soldiers.forEach((x) => { x.enlisted = 0; x.archetype = 'rifleman'; });
+  return s;
+};
+const hurt = (x, sev, day = 20) => { x.status = 'wounded'; x.wound = { sev, day }; };
+
+test('péče: lehce raněný leží v zákopu, s 1 medikem je druhý den v pořádku; potřeba mediků lehký 1, těžký 2, na lůžku 0', () => {
+  const s = setup();
   const side = s.soldiers.filter((x) => x.faction === 0);
-  side.forEach((x, i) => { x.archetype = i < 2 ? 'medic' : 'rifleman'; x.enlisted = 0; });
-  const bed = side[2], str = side[3];
-  bed.status = 'wounded'; bed.wound = { sev: 'heavy', day: 18, wait: 0, bed: true, bedDay: 18 };
-  s.battle = { sides: [{ built: {}, beds: [bed.id], wire: {} }, { built: {}, beds: [], wire: {} }] };
-  str.status = 'wounded'; str.wound = { sev: 'heavy', day: 18, wait: 2 };
+  side[0].archetype = 'medic';
+  hurt(side[1], 'light', 20);
+  battleTick(s, quiet(), story, 20); // den zásahu: zůstává ležet
+  assert.equal(side[1].wound.place, 'trench');
+  battleTick(s, quiet(), story, 21);
+  assert.equal(side[1].status, 'active', 'druhý den v pořádku');
+  hurt(side[2], 'heavy', 21);
+  hurt(side[3], 'light', 21);
+  battleTick(s, quiet(), story, 21);
   const m = medicCover(s, theme, 0);
-  assert.equal(m.demand, 2, 'počítá se jen raněný na nosítkách');
-  assert.equal(m.cover, 1, '2 medici na 1 raněného mimo lůžko');
-  // s plnými lůžky a medici: těžký na nosítkách se dřív nebo později zahojí přímo na nosítkách
-  const B = theme.battle;
-  const cfg = { ...theme, battle: { ...B, hit: 0, aidPost: { ...B.aidPost, beds: 1 }, stretcher: { ...B.stretcher, heavyWorsen: 0 } } };
-  let healed = false;
-  for (let d = 21; d < 40 && !healed; d++) { battleTick(s, cfg, story, d); healed = str.status === 'active'; }
-  assert.ok(healed, 'medici ho dali dohromady na nosítkách');
-  assert.match(str.record.at(-1)[1], /stretcher|medics/);
+  assert.equal(side[2].wound.place, 'bed', 'těžce raněný dostal lůžko');
+  assert.equal(m.demand, theme.battle.care.light.need, 'na lůžku medik není potřeba, lehký potřebuje 1');
+});
+
+test('péče: kritičtí první na lůžka, pak nosítka; kritický bez nosítek nepřežije; na nosítkách s 2 mediky přežije, bez nich většinou ne', () => {
+  const s = setup(60);
+  const side = s.soldiers.filter((x) => x.faction === 0);
+  side.slice(0, 2).forEach((x) => { x.archetype = 'medic'; });
+  hurt(side[2], 'heavy', 19); hurt(side[3], 'crit', 20); hurt(side[4], 'crit', 20); hurt(side[5], 'crit', 20);
+  const cfg = quiet({ aidPost: { ...theme.battle.aidPost, beds: 2, stretchers: 1, critDie: 0 }, care: { ...theme.battle.care, crit: { ...theme.battle.care.crit, dieBase: 0 } } });
+  battleTick(s, cfg, story, 20);
+  const bedded = [side[3], side[4], side[5]].filter((x) => x.wound?.place === 'bed');
+  assert.equal(bedded.length, 2, 'dva kritičtí na lůžkách');
+  const third = [side[3], side[4], side[5]].find((x) => !bedded.includes(x));
+  assert.equal(third.wound.place, 'stretcher', 'třetí kritický na posledních nosítkách');
+  assert.equal(side[2].wound.place, 'trench', 'těžký už se nevešel ani na nosítka');
+  assert.equal(third.status, 'wounded', 's 2 mediky přežil noc');
+  // bez mediků a bez nosítek: kritický v zákopu umírá
+  const t = setup(20, 'pd');
+  const v = t.soldiers.find((x) => x.faction === 0);
+  hurt(v, 'crit', 20);
+  battleTick(t, quiet({ aidPost: { ...theme.battle.aidPost, beds: 0, stretchers: 0 } }), story, 20);
+  assert.equal(t.soldiers.find((x) => x.handle === v.handle).generation, 1);
+  assert.equal(v.status, 'fallen', 'kritický bez nosítek noc nepřežil');
+  // na nosítkách bez mediků: většinou zemře
+  let dead = 0;
+  for (let i = 0; i < 30; i++) {
+    const u = setup(10, `pn${i}_`);
+    const x = u.soldiers.find((y) => y.faction === 0);
+    hurt(x, 'crit', 20);
+    battleTick(u, quiet({ aidPost: { ...theme.battle.aidPost, beds: 0 } }), story, 20);
+    if (x.status === 'fallen') dead++;
+  }
+  assert.ok(dead >= 15, `bez mediků zemřelo ${dead}/30`);
+});
+
+test('střelba: všichni občas vystřelí (podpůrné role méně), zapíše se kdo koho trefil, střelec dostane zásah a XP', () => {
+  const s = emptyState(theme);
+  enlist(s, 200, 'sh2_');
+  s.day = 30;
+  s.soldiers.forEach((x) => { x.enlisted = 0; });
+  const hot = { ...theme, battle: { ...theme.battle, hit: 0, roles: { ...theme.battle.roles, rifleman: { ...theme.battle.roles.rifleman, fire: 0.6 } } } };
+  battleTick(s, hot, story, 30);
+  const shot = s.soldiers.filter((x) => x.wound?.by);
+  assert.ok(shot.length > 10, `zasaženo ${shot.length}`);
+  const v = shot[0];
+  const shooter = s.soldiers.find((x) => x.handle === v.wound.by.handle);
+  assert.notEqual(shooter.faction, v.faction, 'střílí se na nepřítele');
+  assert.ok(shooter.hits >= 1 && shooter.xp > 0);
+  assert.match(v.record.at(-1)[1], new RegExp(`Shot by .+ \\(@${shooter.handle}\\)`));
+  assert.ok(shooter.record.some(([d, t]) => d === 30 && t.includes(v.name)), 'střelec má zásah v deníku');
+  const stats = s.battle.stats.at(-1);
+  assert.ok(stats.sides[0].shots > 0 && stats.sides[1].shots > 0);
+  // podpůrná role střílí méně než střelec
+  assert.ok(theme.battle.roles.default.fire < theme.battle.roles.rifleman.fire);
+});
+
+test('zkušenosti: úroveň zvyšuje hlavní schopnost (palba, práce medika)', () => {
+  const s = setup(4, 'xp');
+  const m = s.soldiers.find((x) => x.faction === 0);
+  m.archetype = 'medic';
+  assert.equal(levelOf(theme, m).name, 'Recruit');
+  const w0 = medicCover(s, theme, 0).supply;
+  m.xp = 200;
+  assert.equal(levelOf(theme, m).name, 'Veteran');
+  assert.ok(medicCover(s, theme, 0).supply > w0 * 1.4);
+});
+
+test('pojistka: nejvýš maxDeaths padlých za den na stranu, ostatní přežijí do zítřka', () => {
+  const s = setup(200, 'cap');
+  const side = s.soldiers.filter((x) => x.faction === 0);
+  side.slice(0, 30).forEach((x) => hurt(x, 'crit', 20));
+  battleTick(s, quiet({ aidPost: { ...theme.battle.aidPost, beds: 0, stretchers: 0 } }), story, 20);
+  const dead = side.filter((x) => x.status === 'fallen').length;
+  const cap = Math.max(theme.battle.maxDeaths.min, Math.floor(100 * theme.battle.maxDeaths.share));
+  assert.equal(dead, cap);
+  assert.ok(s.battle.stats.at(-1).sides[0].capped > 0);
+});
+
+test('vypínač: battle.enabled = false nic nedělá', () => {
+  const s = setup(10, 'off');
+  const x = s.soldiers[0];
+  hurt(x, 'crit', 20);
+  battleTick(s, { ...theme, battle: { ...theme.battle, enabled: false } }, story, 20);
+  assert.equal(x.status, 'wounded');
 });

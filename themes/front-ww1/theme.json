@@ -493,8 +493,12 @@
     ]
   },
   "battle": {
-    "_note": "Denní boj, medici, nemocnice a drát (engine/battle.js, docs/BATTLE.md). Stavby jen hlasováním frakce (možnost hlasování s build: id). Každá nemocnice (dugout) má 4 lůžka, další se staví jen hlasováním. Bombardování (shell) dopadá na 2 sektory poraženého denně.",
-    "hit": 0.025,
+    "_note": "Denní boj (engine/battle.js, docs/COMBAT_ROLES.md). Všechna čísla se dají ladit; dopad ukáže node tools/sim-battle.mjs --kpi (a --set klíč=hodnota). Pravděpodobnosti jsou na vojáka a den.",
+    "enabled": true,
+    "balance": 4,
+    "_balance": "verze vyvážení: zvyš při každé změně čísel, zapisuje se do denních metrik (state.battle.stats)",
+    "hit": 0.03,
+    "_hit": "pozadí: dělostřelectvo, granáty, miny (~60 % zásahů). Pásmo 0.008–0.03",
     "line": {
       "front": 1,
       "reserve": 0.35,
@@ -503,32 +507,147 @@
     "barrage": 1.3,
     "experience": 0.4,
     "experienceDays": 60,
-    "toughShift": 0.04,
+    "toughShift": 0.05,
     "severity": {
       "light": 0.4,
       "heavy": 0.15
     },
+    "_severity": "závažnost u pozadí: náhoda > light = lehce (60 %), > heavy = těžce (25 %), jinak kriticky (15 %)",
     "newbieDays": 5,
     "critCooldown": 7,
-    "medicWork": 2,
-    "veteranMedic": {
-      "treated": 10,
-      "work": 1.5
+    "care": {
+      "_note": "need = práce mediků na raněného za den (medik má 1). Na lůžku need 0 (léčí nemocnice).",
+      "light": {
+        "need": 1,
+        "heal": 1,
+        "baseHeal": 0.15,
+        "worsen": 0.25,
+        "_": "lehce: leží v zákopu; s plnou péčí (1 medik) je druhý den v pořádku; bez péče se zahojí jen s baseHeal a hrozí zhoršení na těžce"
+      },
+      "heavy": {
+        "need": 2,
+        "worsen": 0.3,
+        "trench": 1.5,
+        "heal": 0.35,
+        "minDays": 2,
+        "bedHeal": 0.45,
+        "_": "těžce: nosítka/lůžko; bez péče riziko zhoršení na kriticky (v zákopu ×trench); s péčí se hojí od minDays"
+      },
+      "crit": {
+        "need": 2,
+        "dieBase": 0.08,
+        "dieNoCare": 0.7,
+        "stabilize": 3,
+        "_": "kriticky: musí mít nosítka nebo lůžko, jinak noc nepřežije; na nosítkách smrt = dieBase + dieNoCare × chybějící péče; po stabilize dnech s plnou péčí se zlepší na těžce"
+      }
     },
-    "lightWorsen": 0.15,
-    "lightHeal": {
-      "base": 0.3,
-      "cover": 0.5
+    "roles": {
+      "_note": "fire = šance za den, že voják v přední linii trefí nepřítele naproti (do roles.range px). severity = závažnost zásahu (jako u pozadí).",
+      "range": 160,
+      "default": {
+        "fire": 0.004,
+        "_": "podpůrné role (nosič, kuchař, kaplan, spojař, runner, ženista): občas vystřelí"
+      },
+      "rifleman": {
+        "fire": 0.017,
+        "severity": {
+          "light": 0.4,
+          "heavy": 0.12
+        }
+      },
+      "machinegunner": {
+        "fire": 0.03,
+        "severity": {
+          "light": 0.3,
+          "heavy": 0.05
+        },
+        "suppress": 0.15,
+        "suppressMax": 0.45,
+        "_": "potlačení: každý kulomet naproti sníží palbu nepřítele o suppress (nejvýš suppressMax)"
+      },
+      "sniper": {
+        "fire": 0.045,
+        "severity": {
+          "light": 0.65,
+          "heavy": 0.25
+        },
+        "pick": 0.5,
+        "_": "pick = šance, že si vybere kulometčíka nebo důstojníka"
+      },
+      "officer": {
+        "fire": 0.008,
+        "lead": 0.2,
+        "xp": 0.25,
+        "_": "velení: +lead palby a +xp zkušeností vojákům poblíž"
+      },
+      "runner": {
+        "relay": 0.25,
+        "_": "spojka: rozkazy dojdou; bez důstojníka poblíž +relay palby vojákům poblíž"
+      },
+      "signaller": {
+        "counter": 0.2,
+        "_": "telefon k dělostřelectvu: vojáci poblíž −counter zásahů z pozadí"
+      },
+      "sapper": {
+        "repair": 0.08,
+        "_": "oprava drátu v jeho úseku za den"
+      },
+      "cook": {
+        "heal": 0.3,
+        "worsen": 0.5,
+        "_": "lehce ranění poblíž: +heal šance zahojit se i bez mediků, zhoršení ×(1 − worsen)"
+      },
+      "chaplain": {
+        "faith": 0.2,
+        "_": "má-li strana kaplana: smrt kritických na nosítkách ×(1 − faith)"
+      },
+      "medic": {
+        "work": 1,
+        "_": "práce za den (× úroveň)"
+      }
     },
-    "stretcher": {
-      "heavyWorsen": 0.25,
-      "critSurvive": 0.3,
-      "critCover": 0.5,
-      "heavyHeal": 0.3
+    "xp": {
+      "gain": {
+        "dayFront": 2,
+        "dayReserve": 1,
+        "hit": {
+          "light": 8,
+          "heavy": 12,
+          "crit": 16
+        },
+        "treat": 3,
+        "repair": 3,
+        "scar": 10
+      },
+      "levels": [
+        {
+          "name": "Recruit",
+          "xp": 0,
+          "mult": 1
+        },
+        {
+          "name": "Seasoned",
+          "xp": 60,
+          "mult": 1.25
+        },
+        {
+          "name": "Veteran",
+          "xp": 180,
+          "mult": 1.5
+        },
+        {
+          "name": "Elite",
+          "xp": 400,
+          "mult": 1.8
+        }
+      ],
+      "_": "mult násobí hlavní schopnost role: palbu, práci medika, opravy ženisty"
     },
-    "critDays": 3,
-    "heavyMinDays": 2,
-    "heal": 0.4,
+    "maxDeaths": {
+      "share": 0.05,
+      "min": 2,
+      "_": "pojistka: nejvýš tolik padlých za den na stranu (podíl strany, nejméně min); kdo by padl navíc, přežije do zítřka"
+    },
     "wire": {
       "start": 0.6,
       "cover": 0.15,
@@ -536,11 +655,22 @@
       "barrage": 0.12,
       "repair": 0.08
     },
+    "shell": {
+      "sectors": 2,
+      "hit": 0.35,
+      "severity": {
+        "light": 0.55,
+        "heavy": 0.2
+      },
+      "wire": 0.4
+    },
     "aidPost": {
       "name": "Aid post",
       "beds": 2,
+      "stretchers": 6,
       "care": 0.6,
-      "critDie": 0.35
+      "critDie": 0.35,
+      "_": "obvaziště: každá strana ho má vždy"
     },
     "buildings": {
       "dugout": {
@@ -549,7 +679,8 @@
         "beds": 4,
         "care": 1,
         "critDie": 0.25,
-        "max": 6
+        "max": 6,
+        "stretchers": 4
       },
       "sandbags": {
         "name": "Sandbag parapets",
@@ -562,15 +693,6 @@
         "done": "ran new belts of wire across no-man's land",
         "wire": 0.5
       }
-    },
-    "shell": {
-      "sectors": 2,
-      "hit": 0.35,
-      "severity": {
-        "light": 0.55,
-        "heavy": 0.2
-      },
-      "wire": 0.4
     }
   },
   "house": {

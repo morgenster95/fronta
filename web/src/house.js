@@ -262,6 +262,8 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
     ['houseHonours', 'HOUSE HONOURS', 'Every medal and title the house has ever won.', (v) => `${v} honours`],
     ['survivors', 'SURVIVORS', 'Came back from the most bad wounds.', (v) => `${v} scars`],
     ['medics', 'MEDICS', 'Wounded men treated in the field.', (v) => `${v} patients`],
+    ['marksmen', 'MARKSMEN', 'Enemy soldiers hit across the wire.', (v) => `${v} hits`],
+    ['experienced', 'EXPERIENCE', 'Experience earned at the front: days survived, hits, wounded treated, wire repaired.', (v) => `${v} XP`],
   ];
   let boardsData = null;
   async function openBoards(tab = 'longest', side = 'all') {
