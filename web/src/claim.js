@@ -73,11 +73,17 @@ export async function myAccount() {
     const account = { email: user.email || 'Google account', handle: d?.status === 'done' ? d.handle : null, pending: d?.status === 'pending' ? d.handle : null };
     mine = { known: true, account };
     return account;
-  } catch {
+  } catch (e) {
+    console.warn('account check failed', e);
     return undefined;
   }
 }
 export const myHandle = async () => (await myAccount())?.handle;
+
+// Jen přihlášení (bez převzetí): true = přihlášen; v PWA na iPhonu odejde na redirect a vrátí se na kartu
+export async function signInHere(soldier, toast) {
+  return !!(await signIn(soldier, toast, 'account'));
+}
 
 export async function signOutHere() {
   const { getApps } = await import('firebase/app');

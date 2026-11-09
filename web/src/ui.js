@@ -1,6 +1,6 @@
 // DOM vrstva: počty, hledání @handle, karta vojáka se služebním záznamem, panel „Enlist“, sdílení.
 import { shardOf } from '../../engine/roster.js';
-import { startClaim, sendTransfer, signInAsOwner, myAccount, signOutHere } from './claim.js';
+import { startClaim, sendTransfer, signInAsOwner, myAccount, signOutHere, signInHere } from './claim.js';
 import { shareCard } from './share.js';
 import { paperTexture, tornClip } from './paper.js';
 import { initValley } from './valley.js';
@@ -288,29 +288,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     $('card-transfer-box').hidden = true;
     $('card-account').hidden = true;
     $('card-name').dataset.handle = s.handle;
-    myAccount().then((a) => {
-      if ($('card-name').dataset.handle !== s.handle) return; // mezitím otevřená jiná karta
-      const h = a?.handle;
-      // převelení: jen převzatý voják, ne důstojník; přihlášený hráč ho vidí jen u svého vojáka
-      $('card-transfer').hidden = !s.claimed || s.archetype?.id === 'officer' || (a !== undefined && h !== s.handle);
-      // kdo už vojáka má (nebo na něj čeká), nemá u cizích karet nabízené převzetí
-      if (h || (a?.pending && a.pending !== s.handle)) $('card-claim').hidden = true;
-      const box = $('card-account');
-      if (!a) return;
-      const who = h ? `your soldier: <a href="?s=${encodeURIComponent(h)}">@${esc(h)}</a>`
-        : a.pending ? `claim of <a href="?s=${encodeURIComponent(a.pending)}">@${esc(a.pending)}</a> waiting for your Instagram comment`
-        : 'no soldier claimed yet';
-      box.innerHTML = `Signed in as ${esc(a.email)} · ${who} · <a href="#" id="card-signout">Sign out</a>`;
-      box.hidden = false;
-      $('card-signout').onclick = async (e) => {
-        e.preventDefault();
-        await signOutHere().catch(() => {});
-        box.hidden = true;
-        $('card-transfer').hidden = !s.claimed || s.archetype?.id === 'officer';
-        $('card-claim').hidden = s.claimed;
-        toast('Signed out');
-      };
-    });
+    renderAccount(s);
     show('card');
     const rec = await loadRecord(s.handle);
     if (!rec) return;
@@ -337,6 +315,39 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       .reverse()
       .map(([d, t]) => `<li><span class="d">${dayLabel(d)}</span>${esc(t)}</li>`)
       .join('');
+  }
+
+  // Řádek účtu pod kartou + co smí přihlášený dělat. Převelení jen když s jistotou víme, že voják je můj.
+  async function renderAccount(s) {
+    const a = await myAccount();
+    if ($('card-name').dataset.handle !== s.handle) return; // mezitím otevřená jiná karta
+    const h = a?.handle;
+    $('card-transfer').hidden = !(s.claimed && s.archetype?.id !== 'officer' && h && h === s.handle);
+    // kdo už vojáka má (nebo na něj čeká), nemá u cizích karet nabízené převzetí
+    $('card-claim').hidden = s.claimed || !!h || !!(a?.pending && a.pending !== s.handle);
+    const box = $('card-account');
+    if (!a) {
+      // nepřihlášen: u převzatého vojáka nabídnout přihlášení majiteli
+      box.hidden = !s.claimed;
+      if (!s.claimed) return;
+      box.innerHTML = 'Your soldier? <a href="#" id="card-signin">Sign in</a> to manage it.';
+      $('card-signin').onclick = async (e) => {
+        e.preventDefault();
+        if (await signInHere(s, toast).catch(() => false)) renderAccount(s);
+      };
+      return;
+    }
+    const who = h ? `your soldier: <a href="?s=${encodeURIComponent(h)}">@${esc(h)}</a>`
+      : a.pending ? `claim of <a href="?s=${encodeURIComponent(a.pending)}">@${esc(a.pending)}</a> waiting for your Instagram comment`
+      : 'no soldier claimed yet';
+    box.innerHTML = `Signed in as ${esc(a.email)} · ${who} · <a href="#" id="card-signout">Sign out</a>`;
+    box.hidden = false;
+    $('card-signout').onclick = async (e) => {
+      e.preventDefault();
+      await signOutHere().catch(() => {});
+      toast('Signed out');
+      renderAccount(s);
+    };
   }
 
   // výběr nového povolání (zápis do Firestore, smyčka ho provede do pár minut)
