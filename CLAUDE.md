@@ -45,5 +45,7 @@ Postup pro nový reel `<name>`:
   - Uživatel ověří kartu přihlášeného hráče (tlačítko „Request a transfer“ jen u vlastního vojáka).
 - **Přání rolí z komentářů** (od 2026-11-09): komentář, který zmíní právě jednu roli („CONCORD medic“, „MG“), dá roli hned. Zdarma je jen první volba,
   další změny přes převelení na kartě. Lieutenant jen povýšením. Aliasy rolí: `theme.archetypes[].aliases`.
+- **Odpovědi pod komentáři** (od 2026-11-09): ingest čte i odpovědi (HEGEMONY v odpovědi pod cizím komentářem narukuje). Komentáře našeho účtu
+  se přeskakují, jinak by bot narukoval sám sebe. Bot odpovídá do vlákna nadřazeného komentáře. Podrobnosti: `docs/STATUS.md`, „Doplněno večer 9. 11.“.
 - **Další na řadě (domluvený návrh, zatím nepostavený):** hlasování frakcí (každá frakce volí vlastní rozkaz, výsledek = matice 2×2), změny terénu,
   hlášení se jmény skutečných hráčů. Výměna zajatců jako společná událost.

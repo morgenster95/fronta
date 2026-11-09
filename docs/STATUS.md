@@ -40,6 +40,27 @@ _Aktualizováno 9. 11. 2026._
   vyhlásí noční výpravu, hráči se hlásí heslem místa v komentáři (CHURCH…) nebo převzatí tlačítkem Volunteer, 5 na frakci; další vydání otiskne
   souboj 5 na 5 podle rolí a počasí, zápisy účastníkům, zranění/nezvěstní/zajatí, Raider's Cross po 3 výpravách. První výprava: Day 2.
 
+### Doplněno večer 9. 11. 2026
+- **Přání rolí z komentářů:** hráči si v komentářích píšou, čím chtějí být. Komentář, který zmíní **právě jednu roli**, ji dá hned,
+  ať jde o přihlášku („CONCORD machine gunner“) nebo o komentář už narukovaného („I want to be a doctor“, „MG“).
+  Rozpozná názvy rolí i běžná slova (MG, gunner, doctor, doc, nurse, radio, engineer, chef, priest… = `theme.archetypes[].aliases`).
+  Delší výraz má přednost („sniper rifle“ = ostřelovač). Dvě různé role v jednom komentáři = nic. „let him cook“ se nepočítá.
+  - Zdarma a hned je jen **první volba**. Další změny jdou přes převelení na kartě (převzatý voják, 1× za 7 dní).
+  - **Lieutenant** se přes komentář dát nedá, je jen za povýšení. Bot to vysvětlí.
+  - Kdo ještě nenarukoval a napíše jen roli, dostane odpověď, ať přidá CONCORD nebo HEGEMONY.
+  - Bot odpovídá veřejně („Granted. … now serves as …“). Staré komentáře se jednou prošly zpětně (`state.roleBackfillV`, 6 hráčů dostalo roli).
+  - Kód: `parseRole`, `wishRole`, `roleReply` v `engine/roster.js`.
+- **Odpovědi pod komentáři:** ingest čte i odpovědi (dřív jen komentáře na první úrovni → kdo napsal HEGEMONY jako odpověď pod cizí komentář,
+  nenarukoval). Narukování, role, kódy i hesla výprav fungují i v odpovědi. Bot odpovídá do vlákna nadřazeného komentáře.
+  Komentáře našeho účtu se přeskakují (odpovědi bota obsahují hesla frakcí). Při změně počtu komentářů u postu se projdou všechny stránky.
+- **Deníky se nikdy nemažou:** nástupce z rodu pokračuje v deníku rodu (dřív začínal prázdný → zápisy padlého by zmizely),
+  kronika a deník fronty drží celou historii (dřív 60/90 dní), karta ukazuje posledních 40 zápisů a starší pod tlačítkem
+  „Show N older entries“ (`web/public/data/records-old/`).
+- **Reely z cloudu:** workflow `reel` (`tools/make-reel.sh`) vyrobí celý reel na GitHub Actions (voiceover, natočení, zvuk, zmenšení pro IG)
+  → `marketing/promo/reel_<name>.mp4` → `https://morgenster95.github.io/fronta/reel_<name>.mp4`. Spuštění: commit `marketing/reels/render.json`
+  `{"name": "<name>"}` nebo Actions → reel → Run workflow. Ověřeno na day1 (64 s, ~14 min). Postup je v `CLAUDE.md`.
+- **`CLAUDE.md` v repu:** pravidla projektu, postup pro reely a aktuální TODO pro Claude v cloudu (aplikace v mobilu), kde není paměť z PC.
+
 ## Potřebuju od tebe (až se vrátíš)
 1. ~~Název hry + IG účet~~ → **Mud & Iron, @mudandiron** (hotovo). Promo balíček: `marketing/` (texty v `marketing/CAPTIONS.md`), odbavení: `docs/ONBOARDING.md`.
 2. **Instagram:** profesionální (Creator/Business) účet → developers.facebook.com → aplikace typu *Business* → produkt
