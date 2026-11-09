@@ -12,8 +12,9 @@
 //   DRY_RUN=1         nic neukládat
 import fs from 'node:fs';
 import { loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
-import { applyComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
+import { applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
+import { deathReply } from '../engine/house.js';
 
 // Nové aplikace Meta: Unified login + systémový token z firemního portfolia → graph.facebook.com (token nevyprší).
 // Starší token z „Instagram login“ funguje s IG_API_HOST=graph.instagram.com.
@@ -141,6 +142,11 @@ async function main() {
   for (const { id: mid, count } of posts) {
     const changed = count === undefined || state.mediaCounts?.[mid] !== count;
     for await (const c of comments(mid, seen, changed)) {
+      // náborový komentář starších vojáků (před uložením s.reply): pod něj bot odpoví při smrti
+      if (seen.has(c.id) && c.userId) {
+        const own = state.soldiers.find((s) => s.id === c.userId);
+        if (own && !own.reply && parseComment(c.text, theme)?.type === 'enlist') own.reply = c.replyTo || c.id;
+      }
       const res = applyComment(state, c, theme, story, map);
       if (!res) continue;
       // přihláška na výpravu (heslo místa v komentáři), i u nováčka, který tím zároveň narukoval
@@ -227,6 +233,23 @@ async function main() {
     // post zpracován: zapamatovat počet komentářů (příště se stáhne jen při změně)
     if (count !== undefined) state.mediaCounts[mid] = count;
   }
+
+  // oznámení o smrti: odpověď pod náborový komentář hráče („tvůj voják padl, nastoupil …“). Jen s IG_DEATH_NOTICE=1.
+  if (state.notices?.length && process.env.IG_REPLY === '1' && process.env.IG_DEATH_NOTICE === '1' && !process.env.DRY_RUN) {
+    const left = [];
+    for (const n of state.notices) {
+      const s = state.soldiers.find((x) => x.handle === n.handle);
+      if (n.kind !== 'death' || !s?.reply || state.day - n.day > 2) continue; // bez náborového komentáře není kam odpovědět; stará oznámení se neposílají
+      try {
+        await replyOnce({ id: s.reply, replyTo: s.reply }, deathReply(n, theme, process.env.SITE_URL), `death:${n.handle}:${n.gen}`);
+        console.log(`✝ oznámení @${n.handle}: ${n.prev} → ${n.heir}`);
+      } catch (e) {
+        console.warn(e.message);
+        if ((n.tries = (n.tries || 0) + 1) < 3) left.push(n);
+      }
+    }
+    state.notices = left;
+  } else if (state.notices?.length > 200) state.notices = state.notices.slice(-200);
 
   // jednorázově: přání rolí ze starších (už zpracovaných) komentářů, od nejstarších; první přání platí
   // verze 2 = znovu s volnějším pravidlem (bez slov „want/be“); už přidělené role se nemění, odpovědi se neopakují

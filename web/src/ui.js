@@ -4,6 +4,7 @@ import { startClaim, sendTransfer, signInAsOwner, myAccount, signOutHere, signIn
 import { shareCard } from './share.js';
 import { paperTexture, tornClip } from './paper.js';
 import { initValley } from './valley.js';
+import { initHouse } from './house.js';
 
 const $ = (id) => document.getElementById(id);
 const STATUS = ['On the line', 'Wounded', 'Missing in action', 'Prisoner of war', 'Fallen'];
@@ -260,6 +261,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       $('card-record').innerHTML = `<li>This rifle has no name yet. Comment <b>${esc(f.keyword)}</b> under our pinned reel on ${esc(theme.instagram)} and the next free post on the ${esc(f.name.replace('The ', ''))} line is yours.</li>`;
       drawPortrait(s);
       $('card-share').onclick = () => show('enlist');
+      $('card-house').hidden = true;
       $('card-share').textContent = 'How to enlist';
       $('card-claim').hidden = true;
       $('card-transfer').hidden = true;
@@ -285,6 +287,8 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     $('card-record').innerHTML = '<li class="muted">Fetching papers…</li>';
     drawPortrait(s);
     $('card-share').onclick = () => share(s);
+    $('card-house').hidden = false;
+    $('card-house').onclick = () => house.openHouse(s.handle);
     $('card-claim').hidden = s.claimed;
     $('card-claim').onclick = () => startClaim(s, theme, toast);
     // převelení: jen převzatý voják, ne důstojník
@@ -332,6 +336,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     const a = await myAccount();
     if ($('card-name').dataset.handle !== s.handle) return; // mezitím otevřená jiná karta
     const h = a?.handle;
+    if (h) house.setMe(h); // přihlášený hráč: jeho rod (pamětní listina „My house“, žebříčky „You“)
     $('card-transfer').hidden = !(s.claimed && s.archetype?.id !== 'officer' && h && h === s.handle);
     // kdo už vojáka má (nebo na něj čeká), nemá u cizích karet nabízené převzetí
     $('card-claim').hidden = s.claimed || !!h || !!(a?.pending && a.pending !== s.handle);
@@ -401,6 +406,12 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     if (src) c.drawImage(src, 0, 0);
   }
 
+  async function loadOlder(handle) {
+    const k = shardOf(handle);
+    if (!oldCache.has(k)) oldCache.set(k, fetch(`/data/records-old/${k}.json`).then((r) => r.json()).catch(() => ({})));
+    return (await oldCache.get(k))[handle] || [];
+  }
+
   async function loadRecord(handle) {
     const k = shardOf(handle);
     if (!shardCache.has(k)) shardCache.set(k, fetch(`/data/records/${k}.json`).then((r) => r.json()));
@@ -461,7 +472,20 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     tt = setTimeout(() => (el.hidden = true), 2600);
   }
 
-  return { openSoldier, closeAll, toast };
+  // rod, oznámení o smrti, pamětní listina, žebříčky (web/src/house.js)
+  const house = initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder, toast, openSoldier, esc });
+  $('boards-btn').onclick = () => house.openBoards();
+  {
+    const q = new URLSearchParams(location.search);
+    const h = q.get('s')?.toLowerCase().replace(/^@/, '');
+    if (h && (q.has('fell') || q.has('house'))) house.setMe(h); // odkaz od bota / sdílený rod: tohle je „můj“ rod
+    // až po načtení mapy (jinak by je překryl nápis „Digging trenches…“)
+    const ready = (fn, t = 0) => (!$('loading')?.classList.contains('done') && t < 120 ? setTimeout(() => ready(fn, t + 1), 250) : setTimeout(fn, 400));
+    if (h && q.has('house')) ready(() => house.openHouse(h));
+    else if (h) ready(() => house.checkDeath(h, q.has('fell')));
+  }
+
+  return { openSoldier, closeAll, toast, house };
 }
 
 function showShareOverlay(src, url) {

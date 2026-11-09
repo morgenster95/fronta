@@ -48,6 +48,7 @@
       <button id="diary-btn">Diary</button>
       <button id="valley-btn">Valley</button>
       <button id="warroom-btn">War Room</button>
+      <button id="boards-btn">Ranks</button>
       <button id="enlist-btn" class="primary">Enlist</button>
     </footer>
 
@@ -73,12 +74,31 @@
       <h3>Service record</h3>
       <ol id="card-record"></ol>
       <div class="actions">
+        <button id="card-house">House</button>
         <button id="card-share">Share</button>
         <button id="card-claim" class="primary">This is me: claim</button>
         <button id="card-transfer" hidden>Request a transfer</button>
       </div>
       <div id="card-transfer-box" hidden></div>
       <p id="card-account" class="muted" hidden></p>
+    </section>
+
+    <section id="house" class="sheet" hidden>
+      <button class="close" data-close aria-label="Close">×</button>
+      <div id="house-body"></div>
+    </section>
+
+    <section id="honour" class="sheet" hidden>
+      <button class="close" data-close aria-label="Close">×</button>
+      <div class="honour-top"><div class="wreath">✝</div><h2>Roll of Honour</h2>
+        <p class="muted">Every soldier who fell on the front. Their houses fight on.</p></div>
+      <div id="honour-body"></div>
+    </section>
+
+    <section id="boards" class="sheet" hidden>
+      <button class="close" data-close aria-label="Close">×</button>
+      <h2>Leaderboards</h2>
+      <div id="boards-body"></div>
     </section>
 
     <section id="warroom" class="sheet" hidden>

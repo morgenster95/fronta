@@ -130,3 +130,93 @@ export async function shareCard({ s, rec, theme, tex }) {
 
   return new Promise((ok) => c.toBlob(ok, 'image/png'));
 }
+
+// Pamětní karta padlého do Instagram story (1080×1920): šedý portrét, dny na frontě, příčina smrti, kdo z rodu bojuje dál.
+// life = záznam generace (engine/soldier.js lifeRecord), heir = { name, kin } nebo null, spriteUrl = PNG spritu (south)
+export async function shareMemorial({ life, family, faction, heir, theme, spriteUrl, cause }) {
+  await document.fonts.load("40px 'Silkscreen'");
+  await document.fonts.load("40px 'VT323'");
+  const fcol = faction === 0 ? PAL.grey : PAL.khaki;
+  const px = document.createElement('canvas');
+  px.width = W / K;
+  px.height = H / K;
+  const p = px.getContext('2d');
+  p.imageSmoothingEnabled = false;
+  p.fillStyle = PAL.ink;
+  p.fillRect(0, 0, px.width, px.height);
+  try {
+    const mood = await loadImg('/assets/props/mood.png');
+    p.globalAlpha = 0.35;
+    p.drawImage(mood, 20, 0, 216, 144, 0, 30, 216, 144);
+    p.globalAlpha = 1;
+  } catch {}
+  const g = p.createLinearGradient(0, 90, 0, 190);
+  g.addColorStop(0, 'rgba(14,13,12,0)');
+  g.addColorStop(1, 'rgba(14,13,12,1)');
+  p.fillStyle = g;
+  p.fillRect(0, 80, 216, 120);
+  p.fillStyle = fcol;
+  p.fillRect(0, 0, 216, 3);
+  p.fillRect(0, 381, 216, 3);
+  // portrét v šedi (ruční odbarvení: ctx.filter neumí všechny prohlížeče)
+  try {
+    const img = await loadImg(spriteUrl);
+    const t = document.createElement('canvas');
+    t.width = 32;
+    t.height = 32;
+    const tc = t.getContext('2d');
+    tc.drawImage(img, 0, 0);
+    const d = tc.getImageData(0, 0, 32, 32);
+    for (let i = 0; i < d.data.length; i += 4) {
+      const v = (d.data[i] * 0.3 + d.data[i + 1] * 0.59 + d.data[i + 2] * 0.11) * 0.62;
+      d.data[i] = v + 8; d.data[i + 1] = v + 4; d.data[i + 2] = v;
+    }
+    tc.putImageData(d, 0, 0);
+    p.fillStyle = PAL.mud;
+    p.fillRect(48, 214, 120, 5);
+    p.drawImage(t, 0, 0, 32, 32, 52, 98, 112, 112);
+    // kříž nad hlavou
+    p.fillStyle = PAL.bone;
+    p.fillRect(106, 70, 4, 22);
+    p.fillRect(99, 76, 18, 4);
+  } catch {}
+
+  const c = document.createElement('canvas');
+  c.width = W;
+  c.height = H;
+  const ctx = c.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(px, 0, 0, W, H);
+
+  text(ctx, 'IN MEMORY', W / 2, 60, 52, PAL.bone);
+  text(ctx, `HOUSE OF ${family.toUpperCase()}`, W / 2, 130, 34, fcol);
+
+  const rank = theme.ranks[life.rank]?.toUpperCase() ?? '';
+  text(ctx, rank, W / 2, 1150, 36, PAL.bone);
+  ctx.font = "62px 'Silkscreen', monospace";
+  const nameLines = wrap(ctx, life.name.toUpperCase(), W - 120);
+  nameLines.forEach((l, i) => text(ctx, l, W / 2, 1198 + i * 74, 62, PAL.white));
+  let y = 1198 + nameLines.length * 74 + 14;
+  text(ctx, `DAY ${life.enlisted} – DAY ${life.day}`, W / 2, y, 34, PAL.bone, { shadow: false });
+  y += 60;
+  text(ctx, `${life.days} ${life.days === 1 ? 'DAY' : 'DAYS'} AT THE FRONT`, W / 2, y, 50, PAL.gold);
+  y += 90;
+  ctx.font = "48px 'VT323', monospace";
+  for (const l of wrap(ctx, cause, W - 160)) {
+    text(ctx, l, W / 2, y, 48, PAL.white, { font: 'VT323', shadow: false });
+    y += 50;
+  }
+  if (heir) {
+    y += 26;
+    ctx.font = "46px 'VT323', monospace";
+    for (const l of wrap(ctx, `His ${heir.kin} ${heir.name} fights on.`, W - 160)) {
+      text(ctx, l, W / 2, y, 46, PAL.gold, { font: 'VT323', shadow: false });
+      y += 48;
+    }
+  }
+  ctx.fillStyle = PAL.ink;
+  ctx.fillRect(0, H - 220, W, 170);
+  text(ctx, 'THE WAR GOES ON', W / 2, H - 200, 34, PAL.white);
+  text(ctx, theme.instagram.toUpperCase(), W / 2, H - 140, 40, PAL.gold);
+  return new Promise((ok) => c.toBlob(ok, 'image/png'));
+}
