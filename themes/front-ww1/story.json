@@ -2468,5 +2468,10 @@
     "A shell landed square in {sector}. They found {name} alive under the sandbags, barely. Every minute counts now.",
     "A direct hit on the bay at {sector}. {name} was the only one they could still help, and only just.",
     "The barrage caught {name} in the open at {sector}. The medic tied two tourniquets and shouted for a bed."
+  ],
+  "patchedStretcher": [
+    "There was never a bed for {name}, so the medics brought the hospital to {him}. Three days on a stretcher, and {he} walked back to {sector} on {his} own feet.",
+    "{name} never saw the inside of the aid post. The medics changed {his} dressings on the stretcher until the wound closed. {He} is back on the line.",
+    "The medics would not give up on {name}. On a stretcher in the open, between salvos, they kept {him} alive and then kept {him} whole. {He} returned to {sector} today."
   ]
 }

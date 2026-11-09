@@ -3,8 +3,9 @@
 // Každý den před zápisy do deníků:
 //  1) zásahy: voják v linii dostane zásah s pravděpodobností hit × linie × nebezpečí × krytí × zkušenost;
 //     závažnost lehké / těžké / kritické, výdrž posouvá k lehčímu. Zásah sám nikdy nezabíjí.
-//  2) medici: každý raněný spotřebuje práci 2 mediků (theme.battle.medicWork). Pokrytí c = práce mediků / potřeba.
-//     Nedostatek zvyšuje riziko zhoršení, zpomaluje léčení a snižuje šanci přežít.
+//  2) medici: každý raněný MIMO lůžko (lehce ranění v poli a ti na nosítkách) spotřebuje práci 2 mediků (theme.battle.medicWork).
+//     Pokrytí c = práce mediků / potřeba. Nedostatek zvyšuje riziko zhoršení, zpomaluje léčení a kritičtí na nosítkách umírají.
+//     Na lůžku se raněný léčí sám (péče nemocnice), medika nepotřebuje.
 //  3) lůžka: těžce a kriticky ranění potřebují lůžko (kritičtí mají přednost). Bez stavby je jen obvaziště.
 //     Kdo se nevejde, čeká na nosítkách: těžký se může zhoršit, kritický přečká nejvýš jednu noc.
 //  4) drát: výdrž po sektorech, trhá ho boj a dělostřelectvo, ženisté ho opravují.
@@ -76,7 +77,7 @@ export function medicCover(state, theme, f, busy = new Set()) {
     const vet = (s.treated || 0) >= cfg.veteranMedic.treated ? cfg.veteranMedic.work : 1;
     supply += vet * (s.wound?.sev === 'light' ? 0.5 : 1);
   }
-  const wounded = state.soldiers.filter((s) => s.faction === f && isWounded(s)).length;
+  const wounded = state.soldiers.filter((s) => s.faction === f && isWounded(s) && !s.wound.bed).length; // na lůžku medika nepotřebuje
   const demand = cfg.medicWork * wounded;
   return { supply, demand, wounded, cover: demand ? Math.min(1, supply / demand) : 1 };
 }
@@ -152,7 +153,6 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   theme.factions.forEach((_, f) => {
     const side = state.battle.sides[f];
     const H = hospital(state, theme, f);
-    const { cover: c } = medicCover(state, theme, f, busy);
     const care = (s) => H.care * (ctx.careOf?.(s) ?? 1);
     const mine = state.soldiers.filter((s) => s.faction === f && isWounded(s));
 
@@ -170,6 +170,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       }
     };
     admit(false);
+    const { cover: c } = medicCover(state, theme, f, busy); // až po přidělení lůžek: medici se starají jen o ty mimo lůžko
 
     // 3) průběh zranění
     for (const s of mine) {
@@ -196,6 +197,12 @@ export function battleTick(state, theme, story, day, ctx = {}) {
             w.wait = 0;
             s.lastCrit = day;
             ev(s, 'wounded', eventEntry('worsened', s, day, theme, story, {}, today));
+          } else if (w.wait >= 2 && rand() < cfg.stretcher.heavyHeal * c) {
+            // medici ho dali dohromady přímo na nosítkách (bez lůžka)
+            s.wound = null;
+            s.status = 'active';
+            s.scars = (s.scars || 0) + 1;
+            ev(s, 'recovered', eventEntry('patchedStretcher', s, day, theme, story, {}, today));
           } else if (w.wait === 1) ev(s, 'stretcher', eventEntry('stretcher', s, day, theme, story, {}, today));
         } else if (w.wait >= 2 || rand() > cfg.stretcher.critSurvive + cfg.stretcher.critCover * c) {
           die(s, day, 'diedNoBed', theme, story, (t, x) => ev(s, t, x), today);
@@ -205,13 +212,13 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         // na lůžku
         const days = day - w.bedDay + 1;
         if (w.sev === 'crit') {
-          if (days === 1 && rand() < H.critDie * (1.5 - 0.5 * c)) {
+          if (days === 1 && rand() < H.critDie) {
             die(s, day, 'diedInBed', theme, story, (t, x) => ev(s, t, x), today);
           } else if (days >= cfg.critDays) {
             w.sev = 'heavy';
             ev(s, 'stabilized', eventEntry('stabilized', s, day, theme, story, {}, today));
           }
-        } else if (days >= cfg.heavyMinDays && rand() < cfg.heal * care(s) * (0.5 + 0.5 * c)) {
+        } else if (days >= cfg.heavyMinDays && rand() < cfg.heal * care(s)) {
           s.wound = null;
           s.status = 'active';
           s.scars = (s.scars || 0) + 1;
@@ -225,7 +232,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     // práce mediků: každý ošetřený raněný připíše zkušenost jednomu z mediků
     const medics = state.soldiers.filter((s) => s.faction === f && s.archetype === 'medic' && s.status === 'active' && !busy.has(s.id));
     if (medics.length) {
-      for (const s of state.soldiers.filter((x) => x.faction === f && isWounded(x))) {
+      for (const s of state.soldiers.filter((x) => x.faction === f && isWounded(x) && !x.wound.bed)) {
         const m = medics[Math.floor(rngFor(s.id, 'medic', day)() * medics.length)];
         m.treated = (m.treated || 0) + 1;
       }

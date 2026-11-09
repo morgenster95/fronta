@@ -578,3 +578,25 @@ test('rod: odznaky rodu zůstávají napříč generacemi, bot dostane oznámen�
   assert.match(msg, new RegExp(`^@${n.handle} .+ fell on Day 21 on a stretcher, waiting for a bed`));
   assert.match(msg, /has taken up the rifle\. Your house: https:\/\/mudandiron\.web\.app\/\?s=.+&fell=1$/);
 });
+
+test('boj: na lůžku medik není potřeba, medici léčí nosítka a lehce raněné; těžký se na nosítkách může s mediky zahojit', () => {
+  const s = emptyState(theme);
+  enlist(s, 40, 'md');
+  s.day = 20;
+  const side = s.soldiers.filter((x) => x.faction === 0);
+  side.forEach((x, i) => { x.archetype = i < 2 ? 'medic' : 'rifleman'; x.enlisted = 0; });
+  const bed = side[2], str = side[3];
+  bed.status = 'wounded'; bed.wound = { sev: 'heavy', day: 18, wait: 0, bed: true, bedDay: 18 };
+  s.battle = { sides: [{ built: {}, beds: [bed.id], wire: {} }, { built: {}, beds: [], wire: {} }] };
+  str.status = 'wounded'; str.wound = { sev: 'heavy', day: 18, wait: 2 };
+  const m = medicCover(s, theme, 0);
+  assert.equal(m.demand, 2, 'počítá se jen raněný na nosítkách');
+  assert.equal(m.cover, 1, '2 medici na 1 raněného mimo lůžko');
+  // s plnými lůžky a medici: těžký na nosítkách se dřív nebo později zahojí přímo na nosítkách
+  const B = theme.battle;
+  const cfg = { ...theme, battle: { ...B, hit: 0, aidPost: { ...B.aidPost, beds: 1 }, stretcher: { ...B.stretcher, heavyWorsen: 0 } } };
+  let healed = false;
+  for (let d = 21; d < 40 && !healed; d++) { battleTick(s, cfg, story, d); healed = str.status === 'active'; }
+  assert.ok(healed, 'medici ho dali dohromady na nosítkách');
+  assert.match(str.record.at(-1)[1], /stretcher|medics/);
+});

@@ -1,6 +1,6 @@
 # Denní boj, medici, nemocnice a ostnatý drát
 
-_Stav: **1. fáze (engine) postavena 9. 11. 2026, ladí se, NENASAZENO (necommitovat do main bez souhlasu).** Kód: `engine/battle.js`, nastavení `themes/front-ww1/theme.json` → `battle`,
+_Stav: **ladí se ve větvi `battle`, NENASAZENO (nemergovat do main bez souhlasu).** Čísla v tabulce níže jsou z doby před úpravou mediků (10. 11.): úmrtnost je teď asi o 40–50 % nižší, aktuální čísla dá `node tools/sim-battle.mjs`. Kód: `engine/battle.js`, nastavení `themes/front-ww1/theme.json` → `battle`,
 texty `themes/front-ww1/story.json` (`hitLight`, `hitHeavy`, `hitCrit`, `shellLight`, `shellHeavy`, `shellCrit`, `worsened`, `patched`, `stretcher`, `admitted`, `stabilized`, `diedNoBed`, `diedInBed`)._
 
 ## Inspirace
@@ -19,12 +19,13 @@ může ovlivnit hlasováním (stavby) a volbou role (medici).
    **Převzatí hráči nemají žádnou ochranu.**
 2. **Závažnost:** lehké ~60 %, těžké ~25 %, kritické ~15 %, posunuté **výdrží** (1–5; +1 za každé přežité těžké zranění = jizva).
    Kritický zásah ne v prvních 5 dnech služby a ne dvakrát za 7 dní; nováček se na nosítkách na kritický stav nezhorší.
-3. **Medici:** každý raněný (lehký i těžký) spotřebuje práci **2 mediků**. Pokrytí = práce mediků ÷ (2 × raněných).
+3. **Medici:** každý raněný **mimo lůžko** (lehce ranění v poli a ti na nosítkách) spotřebuje práci **2 mediků**. Kdo leží v nemocnici, léčí se sám a medika nepotřebuje. Pokrytí = práce mediků ÷ (2 × raněných).
    Medik s 10+ ošetřenými odvede 1,5 práce, lehce raněný medik polovinu, těžce raněný nic.
 4. **Lehce raněný** zůstává v linii, ošetřují ho medici: při nedostatku mediků se může zhoršit na těžké (až 15 %/den), jinak se zahojí (30–80 %/den).
 5. **Lůžka:** těžce a kriticky ranění potřebují lůžko, kritičtí mají přednost. Kdo se nevejde, čeká **na nosítkách**:
-   těžký se může zhoršit na kritický, kritický přečká nejvýš jednu noc (šance roste s mediky), druhou noc bez lůžka umírá.
-6. **Na lůžku:** kritický první den umírá s pravděpodobností úmrtnosti nemocnice (vyšší bez mediků), po 3 dnech je stabilizovaný;
+   těžký se může zhoršit na kritický, nebo ho medici zahojí přímo na nosítkách (od 2. dne, až 30 %/den podle mediků);
+   kritický přečká nejvýš jednu noc (bez medika jen 30 %, s mediky až 80 %), druhou noc bez lůžka umírá.
+6. **Na lůžku:** kritický první den umírá s pravděpodobností úmrtnosti nemocnice (medici na to nemají vliv), po 3 dnech je stabilizovaný;
    těžký se uzdraví nejdřív za 2 dny (rychleji s mediky, Calvary Farm a rozkazy). Uzdravený má jizvu a +1 výdrž.
 7. **Drát** v každém sektoru: výdrž 0–100 % (start 60 %), opotřebení −0,5 %/den, dělostřelectvo −12 %/den, každý ženista v sektoru +8 %/den.
 
