@@ -36,6 +36,10 @@ _Aktualizováno 9. 11. 2026._
   píseň přes dráty, fotka z území nikoho, karty; podle povolání tunel, souboj ostřelovačů, chlapec, ukradená šunka, odposlech, deník),
   společné příhody dvou skutečných hráčů (spolubojovník / nepřítel přes dráty, zápis dostanou oba), nový stav **nezvěstný** (vrátí se do 4 dnů).
 
+- **Údolí a výpravy** (`docs/MAP_MISSIONS.md`): tlačítko *Valley* / `/?valley` = mapa 8 míst, kdo je drží, kronika míst se jmény. Každé 3 dny ranní noviny
+  vyhlásí noční výpravu, hráči se hlásí heslem místa v komentáři (CHURCH…) nebo převzatí tlačítkem Volunteer, 5 na frakci; další vydání otiskne
+  souboj 5 na 5 podle rolí a počasí, zápisy účastníkům, zranění/nezvěstní/zajatí, Raider's Cross po 3 výpravách. První výprava: Day 2.
+
 ## Potřebuju od tebe (až se vrátíš)
 1. ~~Název hry + IG účet~~ → **Mud & Iron, @mudandiron** (hotovo). Promo balíček: `marketing/` (texty v `marketing/CAPTIONS.md`), odbavení: `docs/ONBOARDING.md`.
 2. **Instagram:** profesionální (Creator/Business) účet → developers.facebook.com → aplikace typu *Business* → produkt

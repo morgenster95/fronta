@@ -172,3 +172,31 @@ test('převelení: jen převzatý voják, jednou za 7 dní, ne na důstojníka',
   assert.equal(applyTransfers(s, theme, story).length, 1);
   assert.equal(x.archetype, 'sniper');
 });
+
+test('výpravy: vyhlášení, přihlášky komentářem, vyhodnocení, převzatí nepadnou', async () => {
+  const { resolveExpedition } = await import('./valley.js');
+  const s = emptyState(theme);
+  for (let i = 0; i < 40; i++) applyComment(s, { id: `c${i}`, userId: `u${i}`, username: `user${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
+  s.soldiers.forEach((x) => (x.claimed = true));
+  s.day = 1;
+  dailyTick(s, theme, story); // den 2: vyhlášení (theme.valley.firstDay)
+  assert.ok(s.valley.open, 'výprava vyhlášena');
+  const kw = theme.valley.locations.find((l) => l.id === s.valley.open.loc).keyword;
+  const r = applyComment(s, { id: 'v1', userId: 'u3', username: 'user3', text: `${kw.toLowerCase()}!` }, theme, story, map);
+  assert.equal(r.type, 'volunteer');
+  assert.equal(r.ok, true);
+  assert.equal(applyComment(s, { id: 'v2', userId: 'u3', username: 'user3', text: kw }, theme, story, map).reason, 'already');
+  for (let i = 0; i < 20; i++) applyComment(s, { id: `w${i}`, userId: `u${i}`, username: `user${i}`, text: kw }, theme, story, map);
+  assert.equal(s.valley.open.volunteers.filter((v) => v.f === 1).length, theme.valley.slots);
+  const copy = JSON.parse(JSON.stringify(s));
+  dailyTick(s, theme, story); // den 3: vyhodnocení
+  dailyTick(copy, theme, story);
+  assert.deepEqual(s.valley.history, copy.valley.history, 'deterministické');
+  const h = s.valley.history[0];
+  assert.ok(['take', 'hold', 'stalemate'].includes(h.outcome));
+  assert.ok(!s.soldiers.some((x) => x.status === 'fallen'), 'převzatí hráči na výpravě nepadnou');
+  const ch = s.chronicle.at(-1);
+  assert.equal(ch.blocks[0].kind, 'expedition');
+  assert.ok(!JSON.stringify(ch).match(/\{\w+\}|undefined/));
+  assert.ok(resolveExpedition);
+});

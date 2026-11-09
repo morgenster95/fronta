@@ -13,6 +13,7 @@
 import fs from 'node:fs';
 import { loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
 import { applyComment, requestTransfer, applyTransfers } from '../engine/roster.js';
+import { volunteer } from '../engine/valley.js';
 
 // Nové aplikace Meta: Unified login + systémový token z firemního portfolia → graph.facebook.com (token nevyprší).
 // Starší token z „Instagram login“ funguje s IG_API_HOST=graph.instagram.com.
@@ -106,6 +107,22 @@ async function main() {
     for await (const c of comments(mid, seen)) {
       const res = applyComment(state, c, theme, story, map);
       if (!res) continue;
+      // přihláška na výpravu (heslo místa v komentáři), i u nováčka, který tím zároveň narukoval
+      const raid = res.type === 'volunteer' ? res : res.raid;
+      if (raid) {
+        const s = res.soldier;
+        console.log(`⚑ výprava @${s.handle}: ${raid.reason}`);
+        const pool = theme.valley?.replies?.[raid.reason];
+        if (pool && process.env.IG_REPLY === '1' && !process.env.DRY_RUN && res.type === 'volunteer') {
+          const o = state.valley.open;
+          const loc = theme.valley.locations.find((l) => l.id === o?.loc);
+          const n = o ? o.volunteers.filter((v) => v.f === s.faction).length : 0;
+          const text = pool[Math.floor(Math.random() * pool.length)]
+            .replace('{handle}', s.handle).replace('{loc}', loc?.name ?? 'the raid').replace(/\{slots\}/g, String(theme.valley.slots ?? 5))
+            .replace('{n}', String(n)).replace(/\{us\}/g, theme.factions[s.faction].name.replace(/^The /, ''));
+          await replyOnce(c.id, text).catch((e) => console.warn(e.message));
+        }
+      }
       if (res.type === 'enlist') {
         enlisted++;
         console.log(`+ @${res.soldier.handle} → ${theme.factions[res.soldier.faction].name}, ${res.soldier.sector}`);
@@ -156,6 +173,8 @@ async function main() {
       if (typeof p.bio === 'string') s.bio = p.bio.slice(0, 280);
       if (['he', 'she', 'they'].includes(p.pronoun)) s.pronoun = p.pronoun;
       if (typeof p.role === 'string' && requestTransfer(state, s, p.role, theme)) console.log(`žádost o převelení @${s.handle} → ${p.role}`);
+      // dobrovolník na výpravu z webu (tlačítko Volunteer), platí jen pro právě otevřenou výpravu
+      if (typeof p.volunteer === 'string' && p.volunteer === state.valley?.open?.id) console.log(`⚑ výprava (web) @${s.handle}: ${volunteer(state, theme, s, 'web').reason}`);
     }
     state.profilesSyncedAt = new Date().toISOString();
   } catch (e) {

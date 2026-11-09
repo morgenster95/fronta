@@ -1031,5 +1031,186 @@
     "{name} transferred to the {role}s. The men in {sector} said they would miss {him}. {He} is only three dugouts away.",
     "After what happened at {place}, {name} asked to serve as a {role}. Nobody argued.",
     "The {role}s took {name} in on a wet morning in {sector}. By noon {he} had learned the first rule of the job, and by evening the second."
-  ]
+  ],
+  "exchanged": [
+    "{name} came back in a prisoner exchange at dawn, thinner, with a borrowed coat and {item}. {He} will not talk about the cage.",
+    "A white flag, a handshake in the mud, and {name} walked back across no man's land in an exchange of prisoners. The bay cheered {him} in.",
+    "{name} was traded back for an enemy officer. {He} says the other side's coffee is worse than ours, and that is the only thing {he} says."
+  ],
+  "expedition": {
+    "_note": "Výpravy: call = vyhlášení v novinách, headlines/lines = článek o výsledku ({a},{t} = @handle, {W} vítěz, {L} poražený, {A}/{B} frakce), record = zápis účastníka podle výsledku, fate = osud.",
+    "nobody": "Nobody holds it yet.",
+    "contested": "It is contested: the last fight there ended in a draw.",
+    "heldBy": "The {us} hold it now.",
+    "alone": "nobody else",
+    "withMates": "with {mates}",
+    "callTitles": [
+      "Volunteers wanted: {short}",
+      "Night raid on {short}",
+      "Orders: {short} by dawn"
+    ],
+    "call": "Field HQ asks for volunteers for a night raid on {loc}. {held} Whoever holds it: {perk} {slots} places on each side, first come, first served. Comment {kw} under any {ig} post, or claim your soldier and press Volunteer on the Valley map. Only soldiers on the line can go. The raid goes out tonight; results in the next edition.",
+    "weather": {
+      "fog": "a blanket of fog",
+      "rain": "cold rain",
+      "storm": "a storm",
+      "frost": "hard frost",
+      "clear": "a clear, dangerous moon",
+      "wind": "a howling wind",
+      "default": "a moonless sky"
+    },
+    "headlines": {
+      "take": [
+        "{W} take {short}",
+        "{short} falls to the {W}",
+        "{W} storm {short}"
+      ],
+      "hold": [
+        "{W} hold {short}",
+        "{short} stands firm for the {W}",
+        "Raid on {short} repulsed"
+      ],
+      "stalemate": [
+        "Stalemate at {short}",
+        "Nobody holds {short}",
+        "Blood and nothing at {short}"
+      ],
+      "solo": [
+        "{W} occupy {short} unopposed",
+        "{short} taken without a shot",
+        "{W} walk into {short}"
+      ],
+      "soloFail": [
+        "{S} driven back from {short}",
+        "{short} beats the {S}"
+      ],
+      "empty": [
+        "No volunteers for {short}",
+        "Silence at {short}"
+      ]
+    },
+    "lines": {
+      "open": [
+        "Under {weather}, {nA} {A} and {nB} {B} crawled out toward {loc}.",
+        "At two in the morning, under {weather}, two raiding parties met at {loc}: {nA} {A} against {nB} {B}."
+      ],
+      "openSolo": [
+        "Under {weather}, the {S} sent a raiding party to {loc}. The other side sent nobody.",
+        "The {S} went out to {loc} under {weather} and found no enemy waiting. Only the place itself."
+      ],
+      "snipe": [
+        "The first shot came from {a} before anyone saw a thing; {t} was hit.",
+        "{a} fired first, from somewhere nobody could see. {t} was the target."
+      ],
+      "shell": [
+        "{a} cranked the field telephone and a shell landed square on {t}.",
+        "The first blow came from the sky: {a} called the guns, and {t} was right under them."
+      ],
+      "jam": [
+        "In the wet, the gun of {a} jammed at the worst moment.",
+        "{a} swore at a jammed gun while the rain hissed on the barrel."
+      ],
+      "mvp": [
+        "{a} fought like three men and put {n} of the enemy out of the fight.",
+        "The name on every lip afterwards: {a}, with {n} enemies down."
+      ],
+      "heal": [
+        "{a} kept crawling between the craters and dragged {t} back into cover.",
+        "Through all of it, {a} worked on the wounded, {t} first."
+      ],
+      "rout": [
+        "In exchange {round} the {X} broke and fell back.",
+        "The {X} could take no more and ran for their own wire."
+      ],
+      "hazard": [
+        "The ground fought back: mines, gas pockets and falling walls. {t} paid for it.",
+        "Old mines and a collapsing wall caught {t}."
+      ],
+      "noLoss": [
+        "Everyone came back on their own feet."
+      ],
+      "take": [
+        "By dawn the {W} flag flew over {loc}. {perk}",
+        "The {W} hold {loc} now. {perk}"
+      ],
+      "hold": [
+        "The {W} kept {loc}. {perk}",
+        "{loc} stays with the {W}. {perk}"
+      ],
+      "stalemate": [
+        "Neither side could hold the ground. {loc} is contested.",
+        "By morning both parties had pulled back. {loc} belongs to nobody."
+      ],
+      "solo": [
+        "The {W} hold {loc} now. {perk}",
+        "{loc} is in {W} hands. {perk}"
+      ],
+      "soloFail": [
+        "The {S} pulled back before dawn. {loc} stays empty."
+      ],
+      "empty": [
+        "Field HQ asked for volunteers for {loc}. Nobody stepped forward. The rats keep it for now."
+      ],
+      "mvpOne": [
+        "{a} fought like a demon and put an enemy out of the fight.",
+        "{a} was in the thick of it and dropped one of them."
+      ],
+      "mvpNone": [
+        "{a} did the most damage of anyone that night.",
+        "Nobody fired more, or better, than {a}."
+      ]
+    },
+    "record": {
+      "won": [
+        "Night raid on {loc}, {withMates}. The {us} came out on top.",
+        "{name} went out to {loc} {withMates}. The {them} broke first."
+      ],
+      "lost": [
+        "Night raid on {loc}, {withMates}. The {them} were waiting.",
+        "{name} crawled toward {loc} {withMates}. It went wrong fast."
+      ],
+      "stalemate": [
+        "Night raid on {loc}, {withMates}. Nobody won the night.",
+        "{name} fought at {loc} {withMates} until both sides pulled back."
+      ],
+      "solo": [
+        "{name} went out to {loc} {withMates}. No enemy came. The {us} hold it now.",
+        "Night raid on {loc}, {withMates}. The place was empty except for the dead."
+      ],
+      "soloFail": [
+        "{name} went out to {loc} {withMates}. The place itself drove them back."
+      ]
+    },
+    "fate": {
+      "ok": [
+        "{He} came back without a scratch, mud to the eyebrows.",
+        "{He} was back in the bay before sunrise.",
+        "Not a scratch on {him}."
+      ],
+      "wounded": [
+        "{He} was carried back on a stretcher and sent to the aid post.",
+        "A splinter found {him}. {He} is in the field hospital."
+      ],
+      "missing": [
+        "{He} did not make it back by roll call. Listed missing.",
+        "Nobody saw where {he} went. Missing."
+      ],
+      "captured": [
+        "{He} was taken prisoner by the {them}.",
+        "The {them} dragged {him} back to their lines. Prisoner of war."
+      ],
+      "fallen": [
+        "{He} did not come back. {His} comrades brought {his} helmet home.",
+        "{name} fell at {loc}."
+      ]
+    },
+    "mvp": [
+      "The squad says it was {his} night.",
+      "They call {him} the Raider of {short} now."
+    ],
+    "cross": [
+      "Third raid: {name} wears the Raider's Cross.",
+      "Three raids behind {him}: the Raider's Cross."
+    ]
+  }
 }

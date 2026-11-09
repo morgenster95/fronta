@@ -1,6 +1,7 @@
 // Voják: vznik z komentáře, vzhled z hashe IG ID, denní tah (zápisy, povýšení, zranění, smrt a nástupce z rodu).
 
 import { rngFor, pick, weighted } from './rng.js';
+import { exchangeDue } from './valley.js';
 import { dailyEntry, eventEntry, soldierVars, fill, pickVaried, tplKey, makeBackground } from './story.js';
 
 export const STATUS = ['active', 'wounded', 'missing', 'captured', 'fallen'];
@@ -67,7 +68,7 @@ export function tickSoldier(s, day, theme, story, ctx = {}) {
     return text;
   };
   if (s.status === 'wounded') {
-    if (rand() < 0.35) {
+    if (rand() < (ctx.recover ?? 0.35)) {
       s.status = 'active';
       out.push(ev('recovered', eventEntry('recovered', s, day, theme, story, {}, ctx.today)));
     }
@@ -79,6 +80,15 @@ export function tickSoldier(s, day, theme, story, ctx = {}) {
       s.status = 'active';
       delete s.missingDay;
       out.push(ev('returned', eventEntry('returned', s, day, theme, story, {}, ctx.today)));
+    }
+    return out;
+  }
+  if (s.status === 'captured') {
+    // zajatý z výpravy: vrátí se výměnou zajatců za 3–6 dní
+    if (exchangeDue(s, day, rand)) {
+      s.status = 'active';
+      delete s.capturedDay;
+      out.push(ev('returned', eventEntry(story.exchanged ? 'exchanged' : 'returned', s, day, theme, story, {}, ctx.today)));
     }
     return out;
   }

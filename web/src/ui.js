@@ -3,6 +3,7 @@ import { shardOf } from '../../engine/roster.js';
 import { startClaim, sendTransfer, signInAsOwner } from './claim.js';
 import { shareCard } from './share.js';
 import { paperTexture, tornClip } from './paper.js';
+import { initValley } from './valley.js';
 
 const $ = (id) => document.getElementById(id);
 const STATUS = ['On the line', 'Wounded', 'Missing in action', 'Prisoner of war', 'Fallen'];
@@ -148,7 +149,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       const body = e.kind === 'note'
         ? `<div class="cols">${para(e.text)}</div>`
         : `<div class="cols">${(e.blocks || []).map((b) =>
-            `<section class="art${b.h === 'Roll call' ? ' notice' : ''}">` +
+            `<section class="art${b.h === 'Roll call' || b.kind === 'expedition-call' ? ' notice' : ''}">` +
             (b.h ? `<h5>${esc(b.h)}</h5>` : '') +
             (b.items ? `<ul>${b.items.map((x) => `<li>${linkify(esc(x))}</li>`).join('')}</ul>` : `<p>${linkify(esc(b.text))}</p>`) +
             '</section>').join('')}</div>`;
@@ -173,6 +174,17 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     el.onclick = (ev) => { ev.stopPropagation(); openDiary(); };
     $('dispatch').prepend(el);
     if (!roster.dispatch && !roster.vote) $('dispatch-more').textContent = `▸ Front Diary · ${dayLabel(roster.diary.day)}`;
+  }
+  // Údolí a výpravy; upoutávka na otevřenou výpravu v horním panelu
+  const valley = initValley({ theme, roster, soldiers, openSoldier: (s) => openSoldier(s), toast: (m) => toast(m), show: (id) => show(id) });
+  if (roster.valley?.open) {
+    $('dispatch').hidden = false;
+    const el = document.createElement('div');
+    el.className = 'diary-teaser';
+    el.innerHTML = `<span class="d">Volunteers wanted</span>Night raid on ${esc(roster.valley.open.name)} · comment ${esc(roster.valley.open.keyword)} <span class="muted">· map</span>`;
+    el.onclick = (ev) => { ev.stopPropagation(); valley.open(); };
+    $('dispatch').prepend(el);
+    if (!roster.vote) $('dispatch-more').textContent = `▸ Volunteers wanted · ${roster.valley.open.keyword}`;
   }
   // na telefonu je horní panel vždy sbalený do jednoho řádku, klepnutím se rozbalí
   if (!$('dispatch').hidden && !$('dispatch').onclick) {
@@ -283,6 +295,8 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     for (const p of rec.fallen || []) fam.push(`✝ ${esc(p.name)}, fell on Day ${p.day}`);
     if (rec.background) fam.unshift(`<span class="bg">${esc(rec.background)}</span>`);
     if (s.medals?.includes('first-wave')) fam.unshift('<span class="medal">🎖 First Wave</span> one of the first 100 to enlist');
+    if (s.medals?.includes('raiders-cross')) fam.unshift(`<span class="medal">✠ Raider's Cross</span> ${rec.raids || 3} night raids`);
+    else if (rec.raids) fam.push(`Night raids: ${rec.raids}`);
     for (const m of s.medals || []) {
       if (!m.startsWith('obj:')) continue;
       const v = (roster.victories || []).find((x) => x.id === m.slice(4));

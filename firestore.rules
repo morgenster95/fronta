@@ -13,7 +13,8 @@ service cloud.firestore {
     match /profiles/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow write: if request.auth != null && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(['bio', 'pronoun', 'role', 'updatedAt'])
+        && request.resource.data.keys().hasOnly(['bio', 'pronoun', 'role', 'volunteer', 'updatedAt'])
+        && (!('volunteer' in request.resource.data) || (request.resource.data.volunteer is string && request.resource.data.volunteer.size() <= 40))
         && (!('bio' in request.resource.data) || request.resource.data.bio.size() <= 280)
         && (!('role' in request.resource.data) || (request.resource.data.role is string && request.resource.data.role.size() <= 20));
     }

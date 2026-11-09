@@ -5,7 +5,7 @@ import { rngFor, pick } from './rng.js';
 import { fill } from './story.js';
 
 // Pořadí důležitosti událostí do kroniky (nejvýš = nejdřív)
-const PRIORITY = { fallen: 9, heir: 8, 'arc-end': 7, missing: 6, enemy: 6, returned: 5, promotion: 5, wounded: 4, comrade: 4, 'arc-start': 3, recovered: 2, arc: 1 };
+const PRIORITY = { raid: -1, captured: 6, fallen: 9, heir: 8, 'arc-end': 7, missing: 6, enemy: 6, returned: 5, promotion: 5, wounded: 4, comrade: 4, 'arc-start': 3, recovered: 2, arc: 1 };
 const MAX_HIGHLIGHTS = 5;
 
 const list = (handles, max = 8) => {
@@ -24,7 +24,7 @@ export function writeChronicle(state, day, { theme, story, weather, events = [],
   if (weather) blocks.push({ text: pick(rand, weather.diary) });
 
   // velké zprávy (dobytí kóty) jdou na začátek
-  for (const n of news) blocks.unshift({ h: n.h, text: n.text });
+  blocks.unshift(...news.map((n) => ({ h: n.h, text: n.text, kind: n.kind })));
 
   // noví vojáci: narukovali během včerejška (state.day byl day-1)
   const fresh = state.soldiers.filter((s) => s.enlisted === day - 1 && s.generation === 1);
@@ -44,6 +44,7 @@ export function writeChronicle(state, day, { theme, story, weather, events = [],
   // nejzajímavější zápisy dne, každý hráč nejvýš jednou
   const seen = new Set();
   const top = events
+    .filter((e) => !e.raid) // výprava má vlastní článek
     .map((e, i) => ({ ...e, i, p: (PRIORITY[e.type] ?? 0) + (state.soldiers.find((s) => s.handle === e.handle)?.claimed ? 0.5 : 0) + rngFor(e.handle, day)() * 0.4 }))
     .sort((a, b) => b.p - a.p || a.i - b.i)
     .filter((e) => {
@@ -67,6 +68,7 @@ export function writeChronicle(state, day, { theme, story, weather, events = [],
   const losses = [
     ['Wounded', count('wounded')],
     ['Missing', count('missing')],
+    ['Taken prisoner', count('captured')],
     ['Fallen', count('fallen')],
   ].filter(([, h]) => h.length);
   const alive = theme.factions.map((_, f) => state.soldiers.filter((s) => s.faction === f && s.status !== 'fallen').length);

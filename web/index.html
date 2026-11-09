@@ -46,6 +46,7 @@
         <ul id="suggest" hidden></ul>
       </form>
       <button id="diary-btn">Diary</button>
+      <button id="valley-btn">Valley</button>
       <button id="warroom-btn">War Room</button>
       <button id="enlist-btn" class="primary">Enlist</button>
     </footer>
@@ -97,6 +98,19 @@
       <p class="muted">What happened on the line, day by day. If your name is in it, you were there.</p>
       <p class="muted" id="diary-next"></p>
       <div id="diary-list"><p class="muted">Fetching the diary…</p></div>
+    </section>
+
+    <section id="valley" class="sheet" hidden>
+      <button class="close" data-close aria-label="Close">×</button>
+      <h2>The Valley</h2>
+      <p class="muted">Behind Verdel Ridge lie the places both sides want. Volunteers raid them at night. Here you can see who holds what, and who went where.</p>
+      <div id="valley-call" class="valley-call"></div>
+      <div class="valley-wrap">
+        <canvas id="valley-map" aria-label="Map of the valley"></canvas>
+        <div id="valley-pins"></div>
+      </div>
+      <div id="valley-detail"></div>
+      <details id="valley-rules"></details>
     </section>
 
     <section id="enlist" class="sheet" hidden>

@@ -230,3 +230,39 @@ body.reel #card { bottom: 18%; width: 86%; }
 #diary-list .paper .notice { border: 2px solid var(--ink); padding: 6px 8px; font-size: 15px; }
 #diary-list .paper a { color: var(--red); text-decoration: underline; text-decoration-color: var(--red); }
 #diary.sheet { width: min(780px, 100%); }
+
+/* Údolí a výpravy */
+#valley.sheet { width: min(780px, 100%); }
+#valley > p { margin: 4px 30px 10px 0; }
+.valley-call { border: 2px solid var(--accent); padding: 8px 10px; margin-bottom: 10px; }
+.valley-call .d, #valley-detail .d { color: var(--accent); font-family: 'Silkscreen', monospace; font-size: 12px; display: block; }
+.valley-call .kw, #valley-detail .kw { font-size: 13px; padding: 1px 6px; border-color: var(--accent); }
+.valley-wrap { position: relative; border: 2px solid var(--line); line-height: 0; }
+#valley-map { width: 100%; height: auto; image-rendering: pixelated; display: block; }
+#valley-pins .pin {
+  position: absolute; transform: translate(-50%, 0); font-size: 15px; line-height: 1; padding: 2px 5px;
+  background: rgba(28, 26, 23, 0.86); border-width: 2px; white-space: nowrap;
+}
+#valley-pins .pin.on { background: #3d3730; color: #fff; z-index: 2; }
+#valley-pins .pin.raid { box-shadow: 0 0 0 2px var(--accent); }
+#valley-detail h3 { color: var(--ink); font-size: 15px; margin-top: 14px; }
+#valley-detail p { margin: 4px 0; }
+#valley-detail .facts { margin-top: 6px; }
+#valley-detail .history { padding-left: 0; list-style: none; display: grid; gap: 10px; }
+#valley-detail .history li { border-left: 2px solid var(--line); padding-left: 10px; }
+#valley-detail a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); }
+#valley-detail .fate { color: var(--accent); }
+.valley-raid { border: 2px dashed var(--accent); padding: 8px 10px; margin-top: 10px; }
+#valley-rules { margin-top: 14px; color: var(--muted); }
+#valley-rules summary { cursor: pointer; color: var(--ink); font-family: 'Silkscreen', monospace; font-size: 13px; }
+#valley-rules .roles { padding-left: 16px; display: grid; gap: 6px; }
+#valley-rules b { color: var(--ink); font-weight: 400; }
+@media (max-width: 600px) {
+  #valley-pins .pin { font-size: 12px; padding: 1px 3px; }
+}
+/* úzký telefon: hledání na vlastním řádku, tlačítka pod ním */
+@media (max-width: 420px) {
+  #bar { flex-wrap: wrap; }
+  #search { flex: 1 0 100%; }
+  #bar button { flex: 1; }
+}

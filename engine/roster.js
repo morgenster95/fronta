@@ -7,6 +7,7 @@ import { checkRace, raceStatus, raceDanger, activeBarrage, awardHonors } from '.
 import { pick } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
+import { ensureValley, valleyTick, valleyDanger, valleyRecover, raidKeyword, volunteer, valleyPublic } from './valley.js';
 
 export const SHARDS = 64;
 
@@ -45,12 +46,16 @@ export function applyComment(state, comment, theme, story, map) {
   const vote = castVote(state, comment);
   if (vote) return vote;
   const parsed = parseComment(comment.text, theme);
-  if (!parsed) return null;
   const handle = (comment.username || '').toLowerCase();
   if (!handle) return null;
   const existing = state.soldiers.find((s) => s.handle === handle);
-  if (parsed.type === 'claim') return { type: 'claim', handle, code: parsed.code, soldier: existing };
-  if (existing) return null; // každý jen jednou, frakce se nemění
+  if (parsed?.type === 'claim') return { type: 'claim', handle, code: parsed.code, soldier: existing };
+  // heslo otevřené výpravy (např. CHURCH): přihláška dobrovolníka
+  const raid = raidKeyword(state, theme, comment.text);
+  if (!parsed || existing) {
+    if (raid && existing) return { type: 'volunteer', handle, soldier: existing, ...volunteer(state, theme, existing, 'comment') };
+    return null; // každý jen jednou, frakce se nemění
+  }
   const f = parsed.faction;
   const order = state.soldiers.filter((s) => s.faction === f).length;
   const s = createSoldier({ id: comment.userId || handle, handle, faction: f, day: state.day, order }, theme, story);
@@ -61,7 +66,8 @@ export function applyComment(state, comment, theme, story, map) {
   awardFirstWave(state, theme, story);
   awardHonors(state, theme);
   const victory = checkRace(state, theme, story, s);
-  return { type: 'enlist', soldier: s, victory };
+  const raidRes = raid ? volunteer(state, theme, s, 'comment') : null;
+  return { type: 'enlist', soldier: s, victory, raid: raidRes };
 }
 
 // Přidělí první volné místo podle priority (střed → ven, přední linie první) v otevřených sektorech.
@@ -167,11 +173,14 @@ export function dailyTick(state, theme, story, ctx = {}) {
   if (decided) {
     ctx = { ...ctx, danger: ctx.danger ?? decided.danger };
   }
+  const nightWeather = state.weather ?? weatherFor(theme, story, state.day)?.id ?? null; // počasí noci, kdy výprava vyrazila
   state.day++;
   const day = state.day;
   const weather = weatherFor(theme, story, day);
   state.weather = weather?.id ?? null;
-  const events = [];
+  // výpravy: vyhodnocení té z minulého vydání, vyhlášení nové (účastníci dnes nemají běžný zápis)
+  const raid = valleyTick(state, theme, story, day, nightWeather);
+  const events = [...raid.events];
   const today = new Set(); // šablony použité dnes (rozmanitost mezi vojáky)
   for (const s of state.soldiers) s.bg ??= makeBackground(s, story);
   const active = new Set(ctx.activeIds || []);
@@ -198,14 +207,15 @@ export function dailyTick(state, theme, story, ctx = {}) {
       }
       continue;
     }
+    if (raid.ids.has(s.id)) continue;
     if (!chosen.has(s.id) && s.status === 'active') continue;
-    const danger = (ctx.danger ?? 1) * (theme.race ? raceDanger(state, theme, s.faction, day) : 1);
-    const sctx = { active: active.has(s.id), danger, weather, events, comrade, foe, today };
+    const danger = (ctx.danger ?? 1) * (theme.race ? raceDanger(state, theme, s.faction, day) : 1) * valleyDanger(state, theme, s, day);
+    const sctx = { active: active.has(s.id), danger, weather, events, comrade, foe, today, recover: valleyRecover(state, theme, s) };
     for (const text of tickSoldier(s, day, theme, story, sctx)) {
       s.record.push([day, text]);
     }
   }
-  const news = (state.news || []).filter((n) => n.day >= day - 1);
+  const news = [...raid.news, ...(state.news || []).filter((n) => n.day >= day - 1)];
   state.news = [];
   state.chronicle = [...(state.chronicle || []), writeChronicle(state, day, { theme, story, weather, events, decided, news })].slice(-60);
   return state;
@@ -240,6 +250,8 @@ export function applyTransfers(state, theme, story) {
 
 export function buildPublic(state, theme) {
   awardHonors(state, theme);
+  ensureValley(state, theme);
+  const valley = valleyPublic(state, theme);
   const arch = theme.archetypes.map((a) => a.id);
   const roster = {
     unlocks: unlocks(state, theme),
@@ -252,6 +264,7 @@ export function buildPublic(state, theme) {
     victories: (state.victories || []).slice(-10).reverse(),
     barrage: activeBarrage(state, state.day),
     history: (state.events || []).slice(-30).reverse(),
+    valley: valley.roster,
     vote: state.vote ? { question: state.vote.question, options: state.vote.options.map((o) => ({ kw: o.kw, label: o.label })), votes: Object.keys(state.vote.tallies).length } : null,
     updated: new Date().toISOString(),
     fields: ['handle', 'faction', 'x', 'y', 'dir', 'line', 'medals', 'archetype', 'rank', 'status', 'variant', 'claimed', 'generation', 'name'],
@@ -287,9 +300,10 @@ export function buildPublic(state, theme) {
       background: backgroundLine(s),
       titles: s.titles || [],
       nextTransfer: s.transferDay != null ? s.transferDay + TRANSFER_COOLDOWN : null,
+      raids: s.raids || 0,
     };
   }
-  return { roster, shards };
+  return { roster, shards, valley: valley.file };
 }
 
 export function shardOf(handle) {

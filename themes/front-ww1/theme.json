@@ -192,5 +192,193 @@
     "editionUtc": 13,
     "reelUtc": 23,
     "_note": "Denní rytmus v UTC (pevně, bez letního času). editionUtc = nový den války: denní tah, nové číslo novin, vyhodnocení hlasování. reelUtc = večerní reel/příspěvek (fronta marketing/queue.json)."
+  },
+  "valley": {
+    "_note": "Výpravy (docs/MAP_MISSIONS.md). Každé `every` dny ranní noviny vyhlásí výpravu, přihlášky do dalšího vydání, `slots` míst na frakci. Místo: x,y v mřížce mapy 192×120, img v web/public/assets/locations (bez obrázku se nakreslí náhradní ikona). perk: observe|morale|supplies|intel|crossing|cover|hospital|tunnels; demolition = ženista +3 útok.",
+    "every": 3,
+    "firstDay": 2,
+    "slots": 5,
+    "first": "church",
+    "mvpTitle": "Raider of",
+    "hpScale": 3,
+    "burstMalus": 4,
+    "roles": {
+      "rifleman": {
+        "hp": 10,
+        "atk": 4,
+        "def": 3
+      },
+      "machinegunner": {
+        "hp": 12,
+        "atk": 5,
+        "def": 2,
+        "ability": "suppress"
+      },
+      "sapper": {
+        "hp": 10,
+        "atk": 3,
+        "def": 4,
+        "ability": "demolition"
+      },
+      "sniper": {
+        "hp": 7,
+        "atk": 7,
+        "def": 1,
+        "ability": "firstshot"
+      },
+      "medic": {
+        "hp": 8,
+        "atk": 1,
+        "def": 2,
+        "ability": "heal"
+      },
+      "runner": {
+        "hp": 7,
+        "atk": 2,
+        "def": 3,
+        "ability": "initiative"
+      },
+      "signaller": {
+        "hp": 8,
+        "atk": 2,
+        "def": 2,
+        "ability": "artillery"
+      },
+      "cook": {
+        "hp": 9,
+        "atk": 1,
+        "def": 2,
+        "ability": "morale"
+      },
+      "chaplain": {
+        "hp": 8,
+        "atk": 0,
+        "def": 3,
+        "ability": "faith"
+      },
+      "officer": {
+        "hp": 10,
+        "atk": 4,
+        "def": 3,
+        "ability": "command"
+      }
+    },
+    "abilities": {
+      "suppress": "Suppression: hits two targets; the enemy loses 1 attack in the first round. May jam in the rain.",
+      "demolition": "Demolition: +3 attack at the church, the brickworks and the quarry.",
+      "firstshot": "First shot before the fight begins. Half attack in fog, +2 in clear weather.",
+      "heal": "Patches up the worst wounded every round (+3) and saves one comrade from death.",
+      "initiative": "Moves first. If the raid fails, gets everyone out: nobody is taken prisoner.",
+      "artillery": "Calls one shell (5 damage) if the side holds the church or the outpost, or the sky is clear.",
+      "morale": "Hot food: everyone else in the squad gets +1 attack and +1 defence.",
+      "faith": "The squad never breaks and runs. Everyone starts with +2 health.",
+      "command": "Orders: +1 attack for the whole squad in the first exchange. Goes for the weakest enemy."
+    },
+    "replies": {
+      "ok": [
+        "@{handle} You are on the list for {loc}. {n}/{slots} {us} volunteers so far. Results in the morning Gazette.",
+        "@{handle} Noted, soldier. {loc}, tonight. Blacken your face. ({n}/{slots} {us})"
+      ],
+      "full": [
+        "@{handle} The {us} squad for {loc} is full ({slots}/{slots}). Next raid in a few days."
+      ],
+      "notActive": [
+        "@{handle} Your soldier is not on the line right now, so the sergeant cannot take you on this raid."
+      ]
+    },
+    "locations": [
+      {
+        "id": "church",
+        "name": "Ruined Church of Saint-Ash",
+        "short": "Saint-Ash",
+        "keyword": "CHURCH",
+        "x": 92,
+        "y": 50,
+        "img": "church.png",
+        "demolition": true,
+        "perk": "observe",
+        "desc": "A shelled church with half a bell tower. The only high point in the valley.",
+        "perkText": "The tower sees for miles: signallers of the side that holds it can call down artillery on every raid."
+      },
+      {
+        "id": "cemetery",
+        "name": "The Cemetery",
+        "short": "the Cemetery",
+        "keyword": "CEMETERY",
+        "x": 122,
+        "y": 44,
+        "perk": "morale",
+        "desc": "Graves torn open by shells behind the church. Both sides bury their dead here at night.",
+        "perkText": "Morale: fewer losses on the line while under bombardment."
+      },
+      {
+        "id": "town",
+        "name": "Ruins of Verdel",
+        "short": "Verdel",
+        "keyword": "RUINS",
+        "x": 44,
+        "y": 34,
+        "perk": "supplies",
+        "desc": "What is left of the town of Verdel: cellars, chimneys and one stubborn bakery oven.",
+        "perkText": "Supplies from the cellars: fewer wounded on the line every day."
+      },
+      {
+        "id": "outpost",
+        "name": "Lonely Observation Post",
+        "short": "the Lonely Post",
+        "keyword": "OUTPOST",
+        "x": 150,
+        "y": 62,
+        "perk": "intel",
+        "desc": "A sandbagged hole far out in no man's land with a periscope and a field telephone.",
+        "perkText": "Intelligence: the side that holds it moves first on every raid, and its signallers can call artillery."
+      },
+      {
+        "id": "mill",
+        "name": "Grey Mill",
+        "short": "Grey Mill",
+        "keyword": "MILL",
+        "x": 70,
+        "y": 78,
+        "perk": "crossing",
+        "desc": "A stone mill by the canal. The only bridge left standing.",
+        "perkText": "The canal road: raiders arrive rested, +2 health for everyone on every raid."
+      },
+      {
+        "id": "brickworks",
+        "name": "The Brickworks",
+        "short": "the Brickworks",
+        "keyword": "BRICKWORKS",
+        "x": 24,
+        "y": 70,
+        "demolition": true,
+        "perk": "cover",
+        "desc": "Kilns and a tall chimney. Walls thick enough to stop a shell.",
+        "perkText": "Cover: the front line of the side that holds it is safer."
+      },
+      {
+        "id": "hospital",
+        "name": "Field Hospital at Calvary Farm",
+        "short": "Calvary Farm",
+        "keyword": "FARM",
+        "x": 164,
+        "y": 28,
+        "perk": "hospital",
+        "desc": "A farmhouse with red crosses painted on the roof. Not everyone respects them.",
+        "perkText": "The wounded of the side that holds it recover faster."
+      },
+      {
+        "id": "quarry",
+        "name": "The Bone Quarry",
+        "short": "the Bone Quarry",
+        "keyword": "QUARRY",
+        "x": 134,
+        "y": 96,
+        "demolition": true,
+        "perk": "tunnels",
+        "desc": "A chalk quarry full of old tunnels. Some say they run under both lines.",
+        "perkText": "Tunnels: sappers of the side that holds it get +2 attack on every raid."
+      }
+    ]
   }
 }

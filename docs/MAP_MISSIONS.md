@@ -1,6 +1,6 @@
 # Návrh: mapa údolí a výpravy (mise)
 
-_Stav: návrh odsouhlasen uživatelem 9. 11. 2026 (staty, 5 na 5, jen občas). Grafika: kostel hotový (`art/pixellab/locations/church.png`), ostatní místa po obnově PixelLabu 13. 11. se stejným stylem (church.png jako style_image, skript v historii: create_object_pro_flash 96×96, ~5 generací/místo)._
+_Stav: **postaveno 9. 11. 2026** (fáze 2 + 3 a výhody z území, viz „Jak je to postavené“ na konci). Grafika: kostel hotový (`art/pixellab/locations/church.png`), ostatní místa mají zatím náhradní pixelové ikony kreslené kódem; po obnově PixelLabu 13. 11. se dogenerují se stejným stylem (church.png jako style_image, create_object_pro_flash 96×96, ~5 generací/místo) a jen se doplní `img` v `theme.valley.locations`._
 
 ## Inspirace
 
@@ -100,3 +100,28 @@ Sám kuchař je slabší než střelec nebo ostřelovač, ale v družstvu zvedne
 
 ## Otevřené otázky
 - Smí se na výpravě umřít (s nástupcem z rodu), nebo jen zranění/zajetí? (návrh: výjimečně ano, převzatí chránění)
+
+## Jak je to postavené (9. 11. 2026)
+
+**Kód:** `engine/valley.js` (místa, přihlášky, souboj, následky, články), nastavení `theme.valley` (místa, staty rolí, čísla), texty `story.expedition` + `story.exchanged`.
+Napojení: `dailyTick` (vyhodnocení a vyhlášení, účastníci ten den nemají běžný zápis), `applyComment` (heslo místa = přihláška, i pro nováčka v jednom komentáři),
+`ingest/poll-comments.mjs` (odpověď pod komentář, přihlášky z webu přes `profiles.volunteer`), web `web/src/valley.js` (tlačítko **Valley**, odkaz `/?valley`).
+
+**Rytmus:** první výprava se vyhlásí v ranním vydání **Day 2 (10. 11. 13:00 UTC)**, kostel; vyhodnocení v dalším vydání; další výprava za 3 dny
+(nejdéle nenavštívené místo). Heslo platí pod kterýmkoli sledovaným příspěvkem (připnutý + posledních 5). Seznam dobrovolníků web neukazuje, jen počet.
+
+**Vyladěno simulací** (4 střelci + role X proti 5 střelcům, výhra X): střelec 47 %, ženista 48 %, kaplan 49 %, ostřelovač 69 %, zdravotník 69 %,
+kuchař 78 %, poručík 77 %, kulomet 80 %, spojař 32 % (bez dělostřelectva), spojka 23 % (zato zachrání před zajetím). Úpravy oproti tabulce:
+- životy ×3 (`hpScale`), zásah = max(1, útok + k9 − obrana/2), léčení a granát spojaře taky ×3 → souboj trvá 2–3 kola;
+- kulomet: dva cíle, každý zásah s útokem −4 (`burstMalus`); poručík: +1 útok všem jen v 1. kole (jinak vyhrával 90 %);
+- útěk: utíká jen strana, která je na tom hůř; po 5 kolech rozdíl < 10 % = remíza (místo „sporné“, obránce ho udrží);
+- výhoda kóty (+1 útok) je silná, proto platí jen během týdne po dobytí.
+
+**Osudy na 0 životech:** padlý 4 % (jen nepřevzatí, ne zachránění zdravotníkem, aspoň 5 dní služby), poražení bez spojky: 35 % zajatí, 20 % nezvěstní, jinak zranění.
+Zajatí se vrátí výměnou za 3–6 dní (`story.exchanged`), společná událost výměny zajatců přijde později.
+
+**Výhody z území:** kostel = dělostřelectvo spojařů; pozorovatelna = iniciativa + dělostřelectvo (zpravodajství o přihláškách nepřítele by na veřejných datech nešlo utajit);
+mlýn = +2 životy na výpravách; lom = ženisté +2 útok; ruiny = nebezpečí ×0,9; cihelna = přední linie ×0,85; hřbitov = ×0,8 při bombardování; nemocnice = uzdravení 55 % místo 35 %.
+
+**Zbývá:** grafika 7 míst (po 13. 11.), výměna zajatců jako společná událost, víc šablon článků, případně 2 výpravy denně.
+⚠️ Tlačítko Volunteer na webu potřebuje nasadit `firestore.rules` (nové pole `volunteer`): `firebase deploy --only firestore:rules --project fronta-ig`. Do té doby web poradí přihlásit se komentářem.
