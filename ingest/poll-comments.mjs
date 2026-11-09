@@ -53,10 +53,26 @@ async function igPost(path, body) {
 }
 
 // připnuté posty (IG_MEDIA_IDS) + nejnovější posty; připnutý Reel by jinak časem vypadl z „posledních 5“
-async function mediaIds() {
+// Sledujeme VŠECHNY posty (až IG_SCAN, výchozí 100 nejnovějších), ale komentáře stahujeme jen tam, kde se od minula
+// změnil počet komentářů (comments_count přijde se seznamem postů zadarmo) → pár dotazů na kolo i se stovkou postů.
+// Připnuté (IG_MEDIA_IDS) a IG_RECENT nejnovějších se stahují vždy (pojistka: smazaný + nový komentář = stejný počet).
+// Vrací [{ id, count }]; počet se uloží do state.mediaCounts až po zpracování postu (chyba = zkusí se znovu).
+async function mediaToPoll(state) {
   const pinned = (process.env.IG_MEDIA_IDS || '').split(',').map((s) => s.trim()).filter(Boolean);
-  const j = await ig(`${USER}/media`, { fields: 'id,timestamp', limit: process.env.IG_RECENT || 5 });
-  return [...new Set([...pinned, ...j.data.map((m) => m.id)])];
+  const scan = Number(process.env.IG_SCAN || 100), recent = Number(process.env.IG_RECENT || 5);
+  const known = (state.mediaCounts ||= {});
+  const out = new Map(pinned.map((id) => [id, undefined]));
+  let page = await ig(`${USER}/media`, { fields: 'id,comments_count', limit: Math.min(scan, 100) });
+  let n = 0;
+  for (;;) {
+    for (const m of page.data || []) {
+      if (n < recent || known[m.id] !== m.comments_count || out.has(m.id)) out.set(m.id, m.comments_count);
+      n++;
+    }
+    if (n >= scan || !page.paging?.next) break;
+    page = await ig(page.paging.next);
+  }
+  return [...out].map(([id, count]) => ({ id, count }));
 }
 
 async function* comments(mediaId, seen) {
@@ -103,7 +119,9 @@ async function main() {
     console.warn(e.message);
   }
 
-  for (const mid of await mediaIds()) {
+  const posts = await mediaToPoll(state);
+  console.log(`posty ke kontrole: ${posts.length}`);
+  for (const { id: mid, count } of posts) {
     for await (const c of comments(mid, seen)) {
       const res = applyComment(state, c, theme, story, map);
       if (!res) continue;
@@ -167,6 +185,8 @@ async function main() {
         }
       }
     }
+    // post zpracován: zapamatovat počet komentářů (příště se stáhne jen při změně)
+    if (count !== undefined) state.mediaCounts[mid] = count;
   }
 
   // úpravy karet od převzatých hráčů (bio, zájmena, převelení) z Firestore
