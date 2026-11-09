@@ -57,7 +57,7 @@
     },
     {
       "site": "fronta-ig",
-      "public": "dist",
+      "public": "tools/redirect-site",
       "redirects": [
         {
           "source": "**",
