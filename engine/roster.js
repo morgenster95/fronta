@@ -29,12 +29,10 @@ const CLAIM_RE = /\bENLIST-([A-Z0-9]{4})\b/i;
 // --- přání role v komentáři („CONCORD, I want to be a medic“, „MG please“) ---
 // Role se pozná podle id, jména nebo aliasu (theme.archetypes[].aliases). Delší výrazy mají přednost a „spotřebují“ text
 // („sniper rifle“ → sniper, ne rifleman). Víc různých rolí v jednom komentáři = nejasné → nic.
-// Proti náhodným shodám („let him cook“) platí jen u krátkého komentáře (≤ 6 slov) nebo s výrazem přání (want, be, make me…).
-const WISH_RE = /\b(want|wanna|would like|i'?d like|make me|let me be|can i|could i|may i|i'?ll be|i will be|be an?|as an?|join as|sign me|put me|assign|role|please|pls|plz|choose|pick)\b/;
+// Bez podmínky na „want/be…“: hráči píšou prostě „CONCORD medic“ i v delších větách. Výjimka: „let him cook“.
 const NOT_A_WISH = /\blet (him|her|them|me|us) cook\b/g;
 export function parseRole(text, theme) {
   let t = ` ${(text || '').toLowerCase().replace(NOT_A_WISH, ' ').replace(/[^a-z0-9' -]+/g, ' ')} `;
-  const words = t.trim().split(/\s+/).filter(Boolean).length;
   const terms = theme.archetypes
     .flatMap((a) => [a.id, a.name, ...(a.aliases || [])].map((w) => [w.toLowerCase().replace(/[^a-z0-9' -]+/g, ' ').trim(), a.id]))
     .filter(([w]) => w)
@@ -48,7 +46,6 @@ export function parseRole(text, theme) {
     }
   }
   if (found.size !== 1) return null;
-  if (words > 6 && !WISH_RE.test(` ${(text || '').toLowerCase()} `)) return null;
   return [...found][0];
 }
 

@@ -244,7 +244,7 @@ test('přání role v komentáři: rozpoznání, první volba zdarma, důstojní
   assert.equal(r('HEGEMONY sniper rifle'), 'sniper');
   assert.equal(r('let him cook 🔥'), null);
   assert.equal(r('medic or sniper?'), null);
-  assert.equal(r('the medic in yesterday’s story was so brave and funny lol'), null);
+  assert.equal(r('HEGEMONY I am a nurse irl so medic for me'), 'medic');
   assert.equal(r('CONCORD'), null);
   assert.equal(r('make me a lieutenant'), 'officer');
 
