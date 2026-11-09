@@ -118,6 +118,8 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   // příští vydání novin (pevná hodina UTC) v místním čase čtenáře
   const H = theme.schedule?.editionUtc ?? 0;
   function nextEdition() {
+    // přesný čas ze stavu hry (dnešní vydání už mohlo vyjít); jinak nejbližší H:00 UTC
+    if (roster.nextEdition && Date.parse(roster.nextEdition) > Date.now()) return new Date(roster.nextEdition);
     const n = new Date();
     const t = new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth(), n.getUTCDate(), H));
     if (t <= n) t.setUTCDate(t.getUTCDate() + 1);
@@ -129,7 +131,8 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   async function openDiary() {
     show('diary');
     const hrs = Math.max(1, Math.round((nextEdition() - Date.now()) / 3600e3));
-    $('diary-next').textContent = `Next edition in ${hrs} h, at ${editionTime()} your time. Every day at ${H}:00 UTC.`;
+    const when = nextEdition().toDateString() === new Date().toDateString() ? 'today' : 'tomorrow';
+    $('diary-next').textContent = `Next edition ${when} at ${editionTime()} your time (in ${hrs} h). Every day at ${H}:00 UTC.`;
     diaryLoaded ??= fetch('/data/diary.json', { cache: 'no-cache' }).then((r) => r.json()).catch(() => null);
     const d = await diaryLoaded;
     const list = $('diary-list');

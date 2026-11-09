@@ -267,6 +267,7 @@ export function buildPublic(state, theme) {
     valley: valley.roster,
     vote: state.vote ? { question: state.vote.question, options: state.vote.options.map((o) => ({ kw: o.kw, label: o.label })), votes: Object.keys(state.vote.tallies).length } : null,
     updated: new Date().toISOString(),
+    nextEdition: nextEdition(state, theme),
     fields: ['handle', 'faction', 'x', 'y', 'dir', 'line', 'medals', 'archetype', 'rank', 'status', 'variant', 'claimed', 'generation', 'name'],
     soldiers: state.soldiers.map((s) => [
       s.handle,
@@ -304,6 +305,13 @@ export function buildPublic(state, theme) {
     };
   }
   return { roster, shards, valley: valley.file };
+}
+
+// Čas příštího vydání novin (denního tahu): den po posledním vydání v theme.schedule.editionUtc.
+export function nextEdition(state, theme) {
+  if (!state.lastTickKey || !/^\d{4}-\d{2}-\d{2}$/.test(state.lastTickKey)) return null;
+  const H = theme.schedule?.editionUtc ?? 0;
+  return new Date(Date.parse(`${state.lastTickKey}T00:00:00Z`) + 86400e3 + H * 3600e3).toISOString();
 }
 
 export function shardOf(handle) {
