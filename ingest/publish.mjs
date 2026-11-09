@@ -62,7 +62,10 @@ async function main() {
   const todo = args[0] === '--due'
     ? q.items.filter((i) => !i.published && i.publishAt && Date.parse(i.publishAt) <= now)
     : args.map((id) => q.items.find((i) => i.id === id)).filter(Boolean);
-  if (!todo.length) return console.log('nic ke zveřejnění');
+  if (!todo.length) {
+    cleanup(q);
+    return console.log('nic ke zveřejnění');
+  }
   for (const item of todo) {
     if (item.published) { console.log(`= ${item.id}: už zveřejněno ${item.published.permalink || ''}`); continue; }
     if (process.env.DRY_RUN) { console.log(`(dry) ${item.id}: ${item.type} ${item.files.join(', ')}`); continue; }
@@ -70,6 +73,20 @@ async function main() {
     item.published = await publish(item);
     console.log(`✓ ${item.id}: ${item.published.permalink}`);
     fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
+  }
+  cleanup(q);
+}
+
+// Po zveřejnění už Instagram soubor nepotřebuje: smazat z webu vše, co nečeká žádná nezveřejněná položka
+// (jinak by se velká videa nasazovala pořád dokola a plnila úložiště hostingu).
+function cleanup(q) {
+  const dir = path.join(ROOT, 'web', 'public', 'promo');
+  const needed = new Set(q.items.filter((i) => !i.published).flatMap((i) => i.files));
+  for (const f of fs.existsSync(dir) ? fs.readdirSync(dir) : []) {
+    if (!needed.has(f) && q.items.some((i) => i.files.includes(f))) {
+      fs.unlinkSync(path.join(dir, f));
+      console.log(`🗑 promo/${f} (už zveřejněno)`);
+    }
   }
 }
 

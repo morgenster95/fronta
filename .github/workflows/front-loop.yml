@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   schedule: [{ cron: '17 */3 * * *' }]
 concurrency: { group: front-loop, cancel-in-progress: false }
-permissions: { contents: write, actions: write }
+permissions: { contents: write, actions: write, issues: write }
 jobs:
   loop:
     if: ${{ vars.IG_ENABLED == 'true' }}
@@ -42,7 +42,7 @@ jobs:
             node ingest/publish.mjs --due || echo "publish selhal"
             node ingest/daily-tick.mjs || echo "tick selhal"   # sám pozná, jestli už dnes (pražský čas) proběhl
             npm run -s data:build
-            git add data/state.json marketing/queue.json
+            git add data/state.json marketing/queue.json; git add -A web/public/promo
             if ! git diff --cached --quiet; then
               git commit -qm "loop: $(date -u +%FT%TZ)" && git push -q || (git pull -q --rebase && git push -q)
             fi
@@ -51,8 +51,15 @@ jobs:
               npm run -s build > /dev/null
               if firebase deploy --only hosting --non-interactive --project fronta-ig > "$RUNNER_TEMP/deploy.log" 2>&1; then
                 echo "nasazeno"; DEPLOYED=$(git rev-parse HEAD)
+                for n in $(gh issue list --label deploy-failed --state open --json number -q '.[].number' 2>/dev/null); do gh issue close "$n" -c "Nasazeno, web je zase aktuální." || true; done
               else
                 echo "NASAZENÍ SELHALO:"; grep -iE "error|quota|denied|permission|exceed" "$RUNNER_TEMP/deploy.log" | head -10 || tail -15 "$RUNNER_TEMP/deploy.log"
+                # upozornění: GitHub pošle e-mail o novém issue (jen jedno otevřené naráz)
+                if [ -z "$(gh issue list --label deploy-failed --state open --json number -q '.[0].number' 2>/dev/null)" ]; then
+                  gh label create deploy-failed --color B60205 2>/dev/null || true
+                  { echo "Smyčka nemůže nasadit web mudandiron.web.app (hráči vidí stará data)."; echo; echo '```'; grep -iE "error|quota|denied|exceed" "$RUNNER_TEMP/deploy.log" | head -5; echo '```'; echo; echo "Issue se zavře samo po prvním úspěšném nasazení."; } > "$RUNNER_TEMP/issue.md"
+                  gh issue create --title "Web se nenasazuje" --label deploy-failed --body-file "$RUNNER_TEMP/issue.md" || true
+                fi
               fi
             fi
             sleep 300
