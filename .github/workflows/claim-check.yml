@@ -1,0 +1,18 @@
+# Diagnostika převzetí vojáka (jen čte Firestore). Spustit ručně s kódem a/nebo handle.
+name: claim-check
+on:
+  workflow_dispatch:
+    inputs:
+      keys: { description: 'ENLIST-XXXX a/nebo handle, oddělené mezerou', required: true }
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: node tools/claim-check.mjs ${{ inputs.keys }}
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
