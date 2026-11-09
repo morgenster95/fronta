@@ -10,6 +10,7 @@
 //   SITE_URL          adresa webu pro odkaz v DM
 //   FIREBASE_SERVICE_ACCOUNT  JSON service accountu (pro párování převzetí přes Firestore), volitelné
 //   DRY_RUN=1         nic neukládat
+import fs from 'node:fs';
 import { loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
 import { applyComment, requestTransfer, applyTransfers } from '../engine/roster.js';
 
@@ -27,6 +28,16 @@ async function ig(path, params = {}) {
   const j = await r.json();
   if (j.error) throw new Error(`IG ${path}: ${j.error.message}`);
   return j;
+}
+
+// Odpovědi, které už odešly (kolo smyčky se může opakovat; nesmí odpovědět dvakrát)
+const REPLIED = process.env.REPLIED_LOG;
+const replied = new Set(REPLIED && fs.existsSync(REPLIED) ? fs.readFileSync(REPLIED, 'utf8').split(/\r?\n/).filter(Boolean) : []);
+async function replyOnce(commentId, message) {
+  if (replied.has(commentId)) return;
+  await igPost(`${commentId}/replies`, { message });
+  replied.add(commentId);
+  if (REPLIED) fs.appendFileSync(REPLIED, `${commentId}\n`);
 }
 
 async function igPost(path, body) {
@@ -103,7 +114,7 @@ async function main() {
           const s = res.soldier;
           const pool = theme.replies[theme.factions[s.faction].id] || theme.replies.any;
           const text = pool[Math.floor(Math.random() * pool.length)].replace('{handle}', s.handle).replace('{sector}', s.sector).replace('{rank}', theme.ranks[s.rank]);
-          await igPost(`${c.id}/replies`, { message: text }).catch((e) => console.warn(e.message));
+          await replyOnce(c.id, text).catch((e) => console.warn(e.message));
         }
         if (process.env.IG_SEND_DM === '1' && !process.env.DRY_RUN) {
           const s = res.soldier;
@@ -116,16 +127,17 @@ async function main() {
           await igPost(`${USER}/messages`, { recipient: { comment_id: c.id }, message: { text } }).catch((e) => console.warn(e.message));
         }
       } else if (res.type === 'claim' && db && res.soldier) {
-        const q = await db.collection('claims').where('code', '==', res.code).where('status', '==', 'pending').limit(1).get();
+        // i už potvrzené (status done): opakované kolo smyčky musí převzetí zapsat znovu
+        const q = await db.collection('claims').where('code', '==', res.code).limit(1).get();
         const doc = q.docs[0];
-        if (doc && doc.get('handle') === res.handle) {
+        if (doc && doc.get('handle') === res.handle && ['pending', 'done'].includes(doc.get('status')) && !res.soldier.claimed) {
           res.soldier.claimed = true;
           res.soldier.ownerUid = doc.get('uid');
-          await doc.ref.update({ status: 'done', verifiedAt: new Date() });
+          if (doc.get('status') !== 'done') await doc.ref.update({ status: 'done', verifiedAt: new Date() });
           claimed++;
           console.log(`✓ claim @${res.handle}`);
           if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) {
-            await igPost(`${c.id}/replies`, { message: `✓ @${res.handle}, ${res.soldier.name} is now yours. Your claim is confirmed, soldier. Edit your card on the front (link in bio).` }).catch((e) => console.warn(e.message));
+            await replyOnce(c.id, `✓ @${res.handle}, ${res.soldier.name} is now yours. Your claim is confirmed, soldier. Open your card on the front (link in bio) to request a transfer to another role.`).catch((e) => console.warn(e.message));
           }
         }
       }

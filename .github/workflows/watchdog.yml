@@ -1,0 +1,49 @@
+# Hlídač (každých 20 min, nezávislý na smyčce): běží smyčka? Ukazuje web stejné vojáky jako data?
+# Když ne, smyčku / nasazení sám spustí a založí issue (přijde e-mail). Plánovač GitHubu umí zpozdit, je to záloha.
+name: watchdog
+on:
+  schedule: [{ cron: '*/20 * * * *' }]
+  workflow_dispatch:
+permissions: { contents: read, actions: write, issues: write }
+concurrency: { group: watchdog, cancel-in-progress: true }
+jobs:
+  watch:
+    if: ${{ vars.IG_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SITE: ${{ vars.SITE_URL || 'https://mudandiron.web.app' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check
+        run: |
+          alert() {
+            [ -n "$(gh issue list --label "$1" --state open --json number -q '.[0].number')" ] && return
+            gh label create "$1" --color B60205 2>/dev/null || true
+            printf '%s\n\nIssue se zavře samo, až bude vše v pořádku.\n' "$3" | gh issue create --title "$2" --label "$1" --body-file - || true
+          }
+          resolve() { for n in $(gh issue list --label "$1" --state open --json number -q '.[].number'); do gh issue close "$n" -c "$2"; done; }
+
+          # 1) běží smyčka?
+          running=$(gh run list --workflow front-loop --json status -q '[.[] | select(.status=="in_progress" or .status=="queued")] | length')
+          if [ "$running" = "0" ]; then
+            echo "smyčka neběží → spouštím"
+            gh workflow run front-loop
+            alert loop-down "Smyčka neběžela" "Hlídač našel smyčku front-loop zastavenou a spustil ji znovu. Pokud se to opakuje, podívej se do logu posledního běhu."
+          else
+            resolve loop-down "Smyčka běží."
+          fi
+
+          # 2) ukazuje web aktuální data? (počet vojáků a den války z repa vs. živý web)
+          want=$(node -e "const s=require('./data/state.json');console.log(s.soldiers.length+'/'+s.day)")
+          live=$(curl -sf "$SITE/data/roster.json?w=$(date +%s)" | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{try{const r=JSON.parse(d);console.log(r.soldiers.length+'/'+r.day)}catch{console.log('chyba')}})")
+          age=$(( $(date +%s) - $(git log -1 --format=%ct -- data/state.json) ))
+          echo "data $want, web $live, poslední změna dat před ${age}s"
+          if [ "$want" != "$live" ] && [ "$age" -gt 900 ]; then
+            echo "web je pozadu → nasazuji"
+            gh workflow run deploy
+            alert web-stale "Web ukazuje stará data" "Data mají $want (vojáci/den), web ukazuje $live už přes 15 minut. Hlídač spustil nasazení (workflow deploy)."
+          elif [ "$want" = "$live" ]; then
+            resolve web-stale "Web je zase aktuální."
+          fi

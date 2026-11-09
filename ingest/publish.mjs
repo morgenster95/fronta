@@ -54,6 +54,12 @@ async function publish(item) {
   return { id: media.id, permalink: info.permalink, at: new Date().toISOString() };
 }
 
+function publishedLog() {
+  const f = process.env.PUBLISHED_LOG;
+  if (!f || !fs.existsSync(f)) return [];
+  return fs.readFileSync(f, 'utf8').split(/\r?\n/).filter(Boolean).map((l) => JSON.parse(l));
+}
+
 async function main() {
   if (!TOKEN || !USER) throw new Error('Chybí IG_ACCESS_TOKEN nebo IG_USER_ID');
   const q = JSON.parse(fs.readFileSync(QUEUE, 'utf8'));
@@ -69,8 +75,12 @@ async function main() {
   for (const item of todo) {
     if (item.published) { console.log(`= ${item.id}: už zveřejněno ${item.published.permalink || ''}`); continue; }
     if (process.env.DRY_RUN) { console.log(`(dry) ${item.id}: ${item.type} ${item.files.join(', ')}`); continue; }
+    // kolo smyčky se může opakovat: co už jednou vyšlo, nesmí vyjít podruhé
+    const done = publishedLog().find((x) => x.id === item.id);
+    if (done) { item.published = done.published; console.log(`= ${item.id}: už zveřejněno v tomto běhu`); fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2)); continue; }
     console.log(`→ ${item.id} (${item.type}) …`);
     item.published = await publish(item);
+    if (process.env.PUBLISHED_LOG) fs.appendFileSync(process.env.PUBLISHED_LOG, `${JSON.stringify({ id: item.id, published: item.published })}\n`);
     console.log(`✓ ${item.id}: ${item.published.permalink}`);
     fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
   }
