@@ -1,12 +1,13 @@
 // Prohlížeč fronty: terén po blocích, tisíce vojáků, úrovně detailu, kamera a UI.
 import { Application, Assets, Container, Graphics, Rectangle, Sprite, Texture, TextureSource, Ticker, TilingSprite } from 'pixi.js';
-import { generateFront, openRange, DIRS } from '../../engine/mapgen.js';
+import { generateFront, openRange, DIRS, T } from '../../engine/mapgen.js';
 import { Camera } from './camera.js';
 import { paintChunk, paintOverview, CHUNK } from './terrain.js';
 import { initUI } from './ui.js';
 import { createLife } from './life.js';
 import { createSound } from './sound.js';
 import { startReel } from './reel.js';
+import { buildHospitals, roofAlpha } from './hospital.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
 
@@ -191,6 +192,72 @@ async function boot() {
       });
     }
   }
+  // --- nemocnice za podpůrnou linií každé strany; těžce ranění v nich leží na lůžkách (jejich místo v zákopu je prázdné) ---
+  const hospitals = (() => {
+    const pub = roster.battle;
+    if (!pub) return null;
+    const ext = (f, line) => {
+      const ys = map.slots[f].filter((sl) => sl.line === line).map((sl) => sl.y);
+      return ys.length ? [Math.min(...ys), Math.max(...ys)] : null;
+    };
+    const sites = [];
+    theme.factions.forEach((_, f) => {
+      const real = soldiers.filter((s) => s.faction === f && s.slot && !s.vacant).map((s) => s.x).sort((a, b) => a - b);
+      const cx = real.length ? real[Math.floor(real.length / 2)] : (openX0 + openX1) / 2;
+      const sup = ext(f, 'support'), res = ext(f, 'reserve');
+      const y = sup && res ? (f === 0 ? (res[1] + sup[0]) / 2 : (sup[1] + res[0]) / 2) : map.front[f] * map.tile + (f === 0 ? -200 : 200);
+      const n = Math.max(1, pub[f]?.hospital?.dugouts || 0);
+      // volné místo bez zákopů (nemocnice nesmí stát na spojovacím zákopu), co nejblíž středu vojáků
+      const T2 = map.tile, taken = [];
+      const free = (x, y0) => {
+        for (const t of taken) if (Math.abs(t - x) < 140) return false;
+        for (let ty = Math.floor((y0 - 56) / T2); ty <= Math.floor((y0 + 56) / T2); ty++)
+          for (let tx = Math.floor((x - 70) / T2); tx <= Math.floor((x + 70) / T2); tx++) {
+            const g = map.grid[ty * map.W + tx];
+            if (g === T.TRENCH || g === T.PARAPET || g === T.DUGOUT || g === T.WATER) return false;
+          }
+        return true;
+      };
+      for (let i = 0; i < n; i++) {
+        let x = cx;
+        for (let k = 0; k < 120; k++) {
+          const cand = cx + (k % 2 ? 1 : -1) * Math.ceil(k / 2) * 16;
+          if (free(cand, y)) { x = cand; break; }
+        }
+        taken.push(x);
+        sites.push({ faction: f, x, y, beds: pub[f]?.hospital?.dugout ? 4 : 2, entrance: f === 0 ? 1 : -1 });
+      }
+    });
+    const H = buildHospitals(sites);
+    world.addChildAt(H.base, world.getChildIndex(terrainLayer) + 1);
+    world.addChildAt(H.roofs, world.getChildIndex(overLayer) + 1);
+    // lůžka a nosítka podle dat z denního tahu (battlePublic)
+    const byHandle = new Map(soldiers.map((s) => [s.handle, s]));
+    theme.factions.forEach((_, f) => {
+      const mine = H.sites.filter((x) => x.faction === f);
+      const beds = mine.flatMap((x) => x.beds);
+      (pub[f]?.beds || []).forEach((b, i) => {
+        const s = byHandle.get(b.handle);
+        if (s && beds[i]) Object.assign(s, { x: beds[i].x, y: beds[i].y, hosp: 'bed', sev: b.sev });
+      });
+      const st = mine[0]?.stretchers || [];
+      (pub[f]?.stretchers || []).forEach((b, i) => {
+        const s = byHandle.get(b.handle);
+        const p = st[i % st.length];
+        if (!s || !p) return;
+        Object.assign(s, { x: p.x, y: p.y + Math.floor(i / st.length) * 14 * (f === 0 ? 1 : -1), hosp: 'stretcher', sev: b.sev });
+        // nosítka pod raněným: dvě tyče a plachtovina
+        const g = new Graphics();
+        g.rect(Math.round(s.x - 16), Math.round(s.y - 4), 32, 1).fill(0x3d3730);
+        g.rect(Math.round(s.x - 16), Math.round(s.y + 4), 32, 1).fill(0x3d3730);
+        g.rect(Math.round(s.x - 13), Math.round(s.y - 3), 26, 7).fill(0xa39782);
+        g.rect(Math.round(s.x - 13), Math.round(s.y + 3), 26, 1).fill(0x857a68);
+        H.base.addChild(g);
+      });
+    });
+    return H;
+  })();
+
   const placed = soldiers.filter((s) => s.slot && s.status !== 4 && s.status !== 2 && s.status !== 3);
   const TINT = [0xffffff, 0xf0ece4, 0xe6e2da, 0xfff4e8];
   const chunkSoldiers = new Map(); // chunk key → Container
@@ -217,6 +284,7 @@ async function boot() {
         s.wounded = true;
         sp.texture = fall[fall.length - 1];
         sp.scale.x = 1;
+        if (s.hosp) sp.anchor.set(0.55, 0.6); // leží na lůžku / nosítkách v nemocnici
       } else sp.tint = 0xd8b8a8;
     }
     sp.soldier = s;
@@ -523,6 +591,10 @@ async function boot() {
       pump(queue.length > 4 ? 24 : 12);
     }
     overLayer.visible = detail;
+    if (hospitals) {
+      const a = roofAlpha(z);
+      for (const r of hospitals.roofs.children) r.alpha = a;
+    }
     for (const [k, e] of chunks) if (e.sprite) e.sprite.visible = e.over.visible = visible.has(k);
 
     const showSprites = z >= SPRITE_ZOOM;

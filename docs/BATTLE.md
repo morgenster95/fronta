@@ -40,7 +40,7 @@ Možnost hlasování s `build: "<id>"`. Bez staveb má strana jen **obvaziště*
 
 | Stavba | id | Co dá |
 |---|---|---|
-| **Nemocnice (nemocniční dugout)** | `dugout` | jediná stavba se 4 lůžky místo obvaziště, normální péče, úmrtnost kritických na lůžku 25 %. Další nemocnice zatím nebude. |
+| **Nemocnice (nemocniční dugout)** | `dugout` | 4 lůžka místo obvaziště, normální péče, úmrtnost kritických na lůžku 25 %. Další nemocnici (dalších 4 lůžek) si strana může odhlasovat (max 6). |
 | Pytle s pískem | `sandbags` | −12 % zásahů za stupeň (max 2) |
 | Nový drát | `wire` | +50 % výdrže drátu ve všech sektorech |
 
@@ -68,6 +68,15 @@ node tools/sim-battle.mjs                  # všech 6 scénářů, každý 40× 
 node tools/sim-battle.mjs 4 --story        # scénář 4 jednou, den po dni: lůžka, nosítka, medici, drát, zápisy z deníků
 node tools/sim-battle.mjs --days 21 --runs 100
 ```
+
+## Na mapě (web/src/hospital.js)
+Každá strana má za podpůrnou linií nemocnici (bez stavby menší obvaziště), na volném místě mimo zákopy blízko svých vojáků.
+Zdálky je zakrytá plachtou s červeným křížem (Hegemony šedá, Concord olivová), při přiblížení (zoom 2,4 → 3,2) se plachta odkryje
+a uvnitř leží na lůžkách skuteční těžce ranění hráči (ležící sprite). Jejich místo v zákopu je prázdné, dokud se nevrátí.
+Kdo se nevešel, leží na nosítkách před vchodem. Každá další odhlasovaná nemocnice stojí vedle. Snímek: `docs/mockups/family/5_nemocnice_na_mape.png`.
+
+Úmrtnost s pevnými 4 lůžky roste s velikostí strany (klidná fronta, 4 týdny): 100 vojáků ~4 %, 250 vojáků ~10 % strany.
+Na hráčích je, jestli si odhlasují další nemocnici.
 
 ## Další fáze
 2. **Web a mapa:** nemocniční dugout(y) za zákopem každé strany, na lůžkách ležící sprite raněných hráčů (poslední snímek `@fall_south`),
