@@ -47,7 +47,7 @@ function setTex(sp, t) {
   sp.anchor.set(0.5, (30 + off) / t.height);
 }
 
-export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx = {}, aims = {}, breath = {} }) {
+export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx = {}, aims = {}, breath = {}, sfx = null }) {
   const layer = new Container(); // efekty nad terénem i vojáky
   world.addChild(layer);
   const particles = [];
@@ -120,6 +120,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     // ústí hlavně je změřené ze snímku zamíření (aims[key][dir].mx/my, vůči patě)
     const x = s.x + s.aim.mx, y = s.y + s.aim.my;
     particles.push({ kind: 'flash', x, y, life: 70, max: 70, back: s.slot.d === 4 });
+    sfx?.rifle(x, y);
     // jen pár drobných obláčků, které rychle zmizí
     for (let i = 0; i < 3; i++) particles.push({ kind: 'puff', x: x + rnd(-1, 1), y: y + rnd(-1, 1), vx: rnd(-0.003, 0.003), vy: -rnd(0.004, 0.008), life: rnd(450, 750), max: 750 });
   }
@@ -136,6 +137,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     const y = map.front[f] * T + (f === 0 ? 10 : 6);
     const x = rnd(view.x0, view.x1);
     flash(x, y);
+    sfx?.rifle(x, y, { gain: 0.45 });
     playFx('smoke-small', x, y - 4, 0.6, 0.35);
     if (Math.random() < 0.5) tracer(x, y, f === 0 ? 1 : -1);
   }
@@ -150,6 +152,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
       events.push({ at: now + i * 80, run: () => {
         n.gun.x = n.gx + (i % 2 ? 1 : 0); // zpětný ráz
         flash(n.mx + (i % 2), n.my, true);
+        sfx?.rifle(n.mx, n.my, { mg: true });
         tracer(n.mx, n.my, n.dy, n.dx * 0.6);
       } });
     }
@@ -177,12 +180,15 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
   function shell(x, y, big = false) {
     if (!playFx(big ? 'shell-blast' : 'shell-small', x, y)) particles.push({ kind: 'boom', x, y, life: 220, max: 220, r: big ? 22 : 14 });
     shake = Math.max(shake, big ? 3 : 1.5);
+    sfx?.boom(x, y, big);
   }
 
   // --- světlice: stoupá, visí, osvětluje okolí, pomalu klesá ---
   function flare(view) {
     const mid = ((map.front[0] + map.front[1]) / 2) * T + 16;
-    particles.push({ kind: 'flare', x: rnd(view.x0, view.x1), y: mid + rnd(-60, 60), vy: -0.05, life: 7000, max: 7000 });
+    const p = { kind: 'flare', x: rnd(view.x0, view.x1), y: mid + rnd(-60, 60), vy: -0.05, life: 7000, max: 7000 };
+    particles.push(p);
+    sfx?.flare(p.x, p.y);
   }
 
   // --- zdravotník: přijde po zákopu (po buňkách trasy, i cikcak), ošetří raněného, odejde zpět ---
@@ -254,6 +260,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
   function update(now, dt, view, chunkSoldiers, showSprites) {
     lastNow = now;
     lastView = view;
+    sfx?.setView(view);
     // jen vojáci opravdu na obrazovce (bloky mapy jsou širší než záběr)
     const visibleSoldiers = chunkSoldiers.filter((s) => s.x > view.x0 + 8 && s.x < view.x1 - 8 && s.y > view.y0 + 30 && s.y < view.y1);
     const heat = standTo() ? 3 : 1; // morning hate

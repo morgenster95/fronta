@@ -199,3 +199,8 @@ body.reel #card { bottom: 18%; width: 86%; }
 #card-transfer-box .role { display: grid; text-align: left; gap: 2px; padding: 8px 10px; }
 #card-transfer-box .role span { color: var(--muted); font-size: 0.85em; }
 #card-transfer-box .role.on { border-color: var(--accent); cursor: default; }
+
+/* zvuk */
+#zoom #sound { font-size: 18px; }
+#zoom #sound.hint { border-color: var(--accent); animation: soundhint 1s ease-in-out 3; }
+@keyframes soundhint { 50% { transform: scale(1.12); } }

@@ -5,6 +5,7 @@ import { Camera } from './camera.js';
 import { paintChunk, paintOverview, CHUNK } from './terrain.js';
 import { initUI } from './ui.js';
 import { createLife } from './life.js';
+import { createSound } from './sound.js';
 import { startReel } from './reel.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
@@ -261,7 +262,31 @@ async function boot() {
     breath[key] = {};
     for (const [d, t] of Object.entries(byDir)) breath[key][d] = breathFrame(t);
   }
-  const life = createLife({ world, actorLayer, theme, anims, tex, map, dirs: DIRS, fx: fxSheets, aims, breath });
+  // zvuky (ne při nahrávání reelů – ty mají vlastní zvukovou stopu)
+  const recording = import.meta.env.DEV && new URLSearchParams(location.search).has('reel');
+  const sfx = recording ? null : createSound();
+  if (sfx) {
+    sfx.setWeather(new URLSearchParams(location.search).get('wx') || roster.weather);
+    const btn = document.getElementById('sound');
+    const paint = () => {
+      btn.textContent = sfx.on ? '🔊' : '🔇';
+      btn.setAttribute('aria-label', sfx.on ? 'Sound off' : 'Sound on');
+      btn.classList.toggle('on', sfx.on);
+    };
+    btn.hidden = false;
+    btn.onclick = () => { sfx.toggle(); paint(); };
+    // zapamatované „zapnuto“: prohlížeč pustí zvuk až po prvním dotyku stránky
+    if (sfx.wanted) {
+      const resume = () => { if (!sfx.on) { sfx.setOn(true); paint(); } };
+      addEventListener('pointerdown', resume, { once: true, capture: true });
+    } else {
+      // jemné upozornění, že web má zvuk
+      setTimeout(() => btn.classList.add('hint'), 4000);
+      setTimeout(() => btn.classList.remove('hint'), 9000);
+    }
+    paint();
+  }
+  const life = createLife({ world, actorLayer, theme, anims, tex, map, dirs: DIRS, fx: fxSheets, aims, breath, sfx });
   for (const s of placed) life.setupSprite(s, s.sprite);
 
   // kulometná hnízda: kulometčík v přední linii se přikrčí za kulomet na trojnožce (objekt z PixelLabu, šikmo k nepříteli)
