@@ -366,15 +366,18 @@ const enlist = (s, n, tag = 'b') => {
   for (let i = 0; i < n; i++) applyComment(s, { id: `${tag}${i}`, userId: `${tag}${i}`, username: `${tag}${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
 };
 
-test('boj: stavby jen hlasováním, obvaziště 2 lůžka, nemocnice je jediný dugout se 4 lůžky', () => {
+test('boj: stavby jen hlasováním, obvaziště 2 lůžka, každá nemocnice má 4 lůžka, další se dá odhlasovat', () => {
   const s = emptyState(theme);
   assert.equal(hospital(s, theme, 0).beds, 2);
   assert.equal(hospital(s, theme, 0).dugout, false);
   assert.ok(build(s, theme, 0, 'dugout'));
   assert.equal(hospital(s, theme, 0).beds, 4);
-  assert.equal(build(s, theme, 0, 'dugout'), null, 'druhá nemocnice nejde');
-  assert.equal(hospital(s, theme, 0).beds, 4);
+  assert.ok(build(s, theme, 0, 'dugout'), 'druhá nemocnice (další hlasování)');
+  assert.equal(hospital(s, theme, 0).beds, 8);
+  assert.equal(hospital(s, theme, 0).dugouts, 2);
   assert.equal(hospital(s, theme, 1).beds, 2, 'druhá strana má pořád obvaziště');
+  for (let i = 0; i < 20; i++) build(s, theme, 0, 'dugout');
+  assert.equal(hospital(s, theme, 0).dugouts, theme.battle.buildings.dugout.max, 'nejvýš max nemocnic');
 });
 
 test('boj: bombardování po výhře udělá paseku ve 2 sektorech poražené strany, nováčky nešetří, roztrhá drát', () => {
