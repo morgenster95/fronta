@@ -551,3 +551,27 @@ test('žebříčky: nejdéle na frontě, nejstarší rody, vyznamenaní, přeži
   assert.equal(b.survivors[0].handle, s.soldiers[3].handle);
   assert.equal(b.medics[0].value, 9);
 });
+
+import { awardHouseBadges, deathReply } from './house.js';
+test('rod: odznaky rodu zůstávají napříč generacemi, bot dostane oznámení o smrti s odkazem', () => {
+  const s = emptyState(theme);
+  enlist(s, 2, 'hb');
+  const x = s.soldiers[0];
+  x.reply = 'c-enlist-1';
+  s.day = 20;
+  awardHouseBadges(s, theme);
+  assert.ok(x.houseBadges.some((b) => b.id === 'days14'), 'přežil 14 dní');
+  x.record.push([21, 'Every bed was taken. He died waiting on a stretcher.']);
+  fallSoldier(x, 21, 'nobed');
+  dailyTick(s, theme, story);
+  const n = s.soldiers[0];
+  assert.equal(n.generation, 2);
+  assert.ok(n.houseBadges.some((b) => b.id === 'days14'), 'odznak rodu zůstal');
+  assert.ok(n.houseBadges.some((b) => b.id === 'gen2'), 'nový odznak: druhá generace');
+  assert.equal(n.reply, 'c-enlist-1', 'bot ví, kam odpovědět');
+  const note = s.notices.at(-1);
+  assert.equal(note.handle, n.handle);
+  const msg = deathReply(note, theme, 'https://mudandiron.web.app');
+  assert.match(msg, new RegExp(`^@${n.handle} .+ fell on Day 21 on a stretcher, waiting for a bed`));
+  assert.match(msg, /has taken up the rifle\. Your house: https:\/\/mudandiron\.web\.app\/\?s=.+&fell=1$/);
+});

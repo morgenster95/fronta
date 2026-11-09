@@ -571,5 +571,80 @@
       },
       "wire": 0.4
     }
+  },
+  "house": {
+    "_note": "Odznaky rodu (engine/house.js): udělí se jednou a zůstávají v rodu napříč generacemi. Rodinné album na webu ukazuje i medaile a tituly všech generací.",
+    "badges": [
+      {
+        "id": "gen2",
+        "icon": "⚜",
+        "name": "The Line Holds",
+        "desc": "A second generation took up the rifle.",
+        "gens": 2
+      },
+      {
+        "id": "gen3",
+        "icon": "⚜",
+        "name": "Three Generations",
+        "desc": "Three generations of the house at the front.",
+        "gens": 3
+      },
+      {
+        "id": "gen5",
+        "icon": "⚜",
+        "name": "House of Iron",
+        "desc": "Five generations at the front.",
+        "gens": 5
+      },
+      {
+        "id": "days14",
+        "icon": "⏳",
+        "name": "Two Weeks in the Mud",
+        "desc": "A soldier of the house survived 14 days in a row.",
+        "days": 14
+      },
+      {
+        "id": "days30",
+        "icon": "⏳",
+        "name": "A Month at the Front",
+        "desc": "A soldier of the house survived 30 days in a row.",
+        "days": 30
+      },
+      {
+        "id": "days60",
+        "icon": "⏳",
+        "name": "Unbroken",
+        "desc": "A soldier of the house survived 60 days in a row.",
+        "days": 60
+      },
+      {
+        "id": "scars2",
+        "icon": "✚",
+        "name": "Hard to Kill",
+        "desc": "A soldier of the house came back from two bad wounds.",
+        "scars": 2
+      },
+      {
+        "id": "healer",
+        "icon": "✚",
+        "name": "Healers",
+        "desc": "A medic of the house treated 25 wounded.",
+        "treated": 25
+      },
+      {
+        "id": "hero",
+        "icon": "★",
+        "name": "House of Heroes",
+        "desc": "A soldier of the house earned a title.",
+        "title": true
+      },
+      {
+        "id": "sacrifice3",
+        "icon": "✝",
+        "name": "Three Sons Given",
+        "desc": "The house has lost three men to the war.",
+        "fallen": 3
+      }
+    ]
   }
 }

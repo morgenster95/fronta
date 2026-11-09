@@ -44,7 +44,7 @@ export function buildDiary(state) {
 }
 
 export function writePublic(state, theme, outDir = path.join(ROOT, 'web', 'public', 'data')) {
-  const { roster, shards, older, valley } = buildPublic(state, theme);
+  const { roster, shards, older, valley, boards, honour } = buildPublic(state, theme);
   const diary = buildDiary(state);
   const latest = diary[0];
   roster.diary = latest ? { day: latest.day, title: latest.title, count: diary.length } : null;
@@ -53,6 +53,8 @@ export function writePublic(state, theme, outDir = path.join(ROOT, 'web', 'publi
   fs.mkdirSync(path.join(outDir, 'records'), { recursive: true });
   fs.writeFileSync(path.join(outDir, 'roster.json'), JSON.stringify(roster));
   if (valley) fs.writeFileSync(path.join(outDir, 'valley.json'), JSON.stringify(valley));
+  fs.writeFileSync(path.join(outDir, 'boards.json'), JSON.stringify({ day: state.day, ...boards }));
+  fs.writeFileSync(path.join(outDir, 'honour.json'), JSON.stringify({ day: state.day, fallen: honour }));
   shards.forEach((s, i) => fs.writeFileSync(path.join(outDir, 'records', `${i}.json`), JSON.stringify(s)));
   fs.mkdirSync(path.join(outDir, 'records-old'), { recursive: true });
   older.forEach((s, i) => fs.writeFileSync(path.join(outDir, 'records-old', `${i}.json`), JSON.stringify(s)));

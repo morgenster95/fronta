@@ -9,6 +9,7 @@ import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
 import { orderDanger, orderRecover, issueOrders } from './orders.js';
 import { battleTick, battlePublic, build as buildStructure, ensureBattle } from './battle.js';
+import { awardHouseBadges, noticeDeath } from './house.js';
 import { ensureValley, valleyTick, valleyDanger, valleyRecover, raidKeyword, volunteer, valleyPublic } from './valley.js';
 
 export const SHARDS = 64;
@@ -132,6 +133,7 @@ export function applyComment(state, comment, theme, story, map) {
   const f = parsed.faction;
   const order = state.soldiers.filter((s) => s.faction === f).length;
   const s = createSoldier({ id: comment.userId || handle, handle, faction: f, day: state.day, order }, theme, story);
+  s.reply = comment.replyTo || comment.id; // náborový komentář: sem bot odpoví při smrti vojáka
   // „CONCORD medic“: rovnou v té roli (důstojník jen povýšením)
   const roleWish = wish ? { role: wish, reason: wishRole(state, s, wish, theme, story) } : null;
   placeSoldier(s, map, state);
@@ -338,6 +340,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
       // nástupce z rodu: hned ve stejném vydání, kdy se hráč o smrti dozví (theme.heirDelay dní, výchozí 0)
       if (day - s.fallenDay >= (theme.heirDelay ?? 0)) {
         state.soldiers[i] = s = heir(s, day, theme, story, today);
+        noticeDeath(state, s);
         events.push({ type: 'heir', handle: s.handle, faction: s.faction, text: s.record.at(-1)[1] });
       }
       continue;
@@ -351,6 +354,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
       s.record.push([day, text]);
     }
   }
+  awardHouseBadges(state, theme); // odznaky rodu (zůstávají v rodu)
   const news = [...raid.news, ...fight.news, ...(state.news || []).filter((n) => n.day >= day - 1)];
   state.news = [];
   state.chronicle = [...(state.chronicle || []), writeChronicle(state, day, { theme, story, weather, events, decided, news })]; // celá historie, nic se nemaže
@@ -439,8 +443,6 @@ export function buildPublic(state, theme) {
       ...(state.vote.perFaction ? { perFaction: true } : {}), ...(state.vote.note ? { note: state.vote.note } : {}),
     } : null,
     battle: battlePublic(state, theme),
-    boards: leaderboards(state, theme),
-    honour: rollOfHonour(state, 300),
     orders: (state.orders || []).filter((o) => state.day + 1 <= o.to).map(({ faction, kw, label, from, to }) => ({ faction, kw, label, from, to })),
     updated: new Date().toISOString(),
     nextEdition: nextEdition(state, theme),
@@ -491,9 +493,12 @@ export function buildPublic(state, theme) {
       scars: s.scars || 0,
       wounds: s.woundsTaken || 0,
       treated: s.treated || 0,
+      medals: s.medals || [],
+      houseBadges: s.houseBadges || [],
     };
   }
-  return { roster, shards, older, valley: valley.file };
+  // žebříčky a pamětní listina: samostatné soubory, web je načte až po otevření záložky (hlavní data nerostou)
+  return { roster, shards, older, valley: valley.file, boards: leaderboards(state, theme), honour: rollOfHonour(state, 1000) };
 }
 
 // Čas příštího vydání novin (denního tahu): den po posledním vydání v theme.schedule.editionUtc.

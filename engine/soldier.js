@@ -227,7 +227,7 @@ function pairEntry(kind, s, o, day, theme, story, rand, ev, today = null) {
 
 // Nástupce z rodu: stejné IG jméno i místo, nové křestní jméno, odkaz na padlého.
 // Nástupce z rodu: NOVÝ voják. Nic nedědí (medaile, tituly, jizvy, výdrž, zkušenosti, role, hodnost), dny se mu počítají od nuly.
-// Zůstává jen rod: hráč (IG účet, převzetí), příjmení, stanoviště na frontě, domov a deník rodu (zápisy padlých se nemažou).
+// Zůstává jen rod: hráč (IG účet, převzetí), příjmení, stanoviště na frontě, domov, odznaky rodu a deník rodu (zápisy padlých se nemažou).
 export function heir(s, day, theme, story, today = null) {
   const rand = rngFor(s.id, 'heir', s.generation);
   const prev = lifeRecord(s);
@@ -235,7 +235,7 @@ export function heir(s, day, theme, story, today = null) {
   const roles = theme.archetypes.filter((a) => a.id !== 'officer').map((a) => [a.id, a.weight]);
   const n = {
     id: s.id, handle: s.handle, faction: s.faction, order: s.order, family: s.family, pronoun: s.pronoun,
-    claimed: s.claimed, ownerUid: s.ownerUid, bio: s.bio, slot: s.slot, pos: s.pos, sector: s.sector, line: s.line, unit: s.unit, seen: s.seen,
+    claimed: s.claimed, ownerUid: s.ownerUid, bio: s.bio, reply: s.reply, houseBadges: s.houseBadges, slot: s.slot, pos: s.pos, sector: s.sector, line: s.line, unit: s.unit, seen: s.seen,
     generation: gen,
     first: pick(rand, story.firstNames.filter((f) => f !== s.first)),
     nick: rand() < 0.35 ? pick(rand, story.nicknames) : null,
