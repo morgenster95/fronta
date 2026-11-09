@@ -15,7 +15,7 @@ if (!state.lastTickKey) {
   console.log(`denní tah: přechod na ${H}:00 UTC, další vydání po ${H}:00 UTC`);
   process.exit(0);
 }
-if (state.lastTickKey === key && !process.env.FORCE) {
+if (key <= state.lastTickKey && !process.env.FORCE) {
   console.log(`denní tah pro ${key} už proběhl (další v ${H}:00 UTC)`);
   process.exit(0);
 }
