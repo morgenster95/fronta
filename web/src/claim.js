@@ -41,7 +41,51 @@ async function signIn(soldier, toast, param = 'claim') {
       }
     }
   }
+  try { localStorage.setItem('mi.auth', '1'); } catch {} // příště se při otevření karty zjistí, čí voják je můj
+  mine = { known: false };
   return { app, user };
+}
+
+// Přihlášený účet na tomhle zařízení: { email, handle, pending } nebo undefined (nepřihlášen / nevíme).
+// handle = převzatý voják (null = žádný), pending = voják čekající na kód z Instagramu.
+// Firebase se načte jen tomu, kdo se na tomhle zařízení někdy přihlásil.
+let mine = { known: false };
+export async function myAccount() {
+  if (mine.known) return mine.account;
+  let flag = null;
+  try { flag = localStorage.getItem('mi.auth'); } catch {}
+  if (!flag || !claimEnabled || !firebaseConfig.apiKey) return undefined;
+  try {
+    const { initializeApp, getApps } = await import('firebase/app');
+    const { getAuth } = await import('firebase/auth');
+    const app = getApps()[0] || initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    await auth.authStateReady();
+    const user = auth.currentUser;
+    if (!user) {
+      try { localStorage.removeItem('mi.auth'); } catch {}
+      mine = { known: true, account: undefined };
+      return undefined;
+    }
+    const { getFirestore, doc, getDoc } = await import('firebase/firestore');
+    const c = await getDoc(doc(getFirestore(app), 'claims', user.uid));
+    const d = c.exists() ? c.data() : null;
+    const account = { email: user.email || 'Google account', handle: d?.status === 'done' ? d.handle : null, pending: d?.status === 'pending' ? d.handle : null };
+    mine = { known: true, account };
+    return account;
+  } catch {
+    return undefined;
+  }
+}
+export const myHandle = async () => (await myAccount())?.handle;
+
+export async function signOutHere() {
+  const { getApps } = await import('firebase/app');
+  const { getAuth, signOut } = await import('firebase/auth');
+  const app = getApps()[0];
+  if (app) await signOut(getAuth(app));
+  try { localStorage.removeItem('mi.auth'); } catch {}
+  mine = { known: true, account: undefined };
 }
 
 export async function startClaim(soldier, theme, toast) {
