@@ -133,7 +133,12 @@
       "files": [
         "story_day1_1.mp4"
       ],
-      "caption": ""
+      "caption": "",
+      "published": {
+        "id": "18123178898321198",
+        "permalink": "https://www.instagram.com/stories/mudandiron/4026626701375125159",
+        "at": "2026-11-09T13:36:09.203Z"
+      }
     },
     {
       "id": "story-day1-2",
@@ -141,7 +146,12 @@
       "files": [
         "story_day1_2.mp4"
       ],
-      "caption": ""
+      "caption": "",
+      "published": {
+        "id": "18156940855516722",
+        "permalink": "https://www.instagram.com/stories/mudandiron/4026627117113561390",
+        "at": "2026-11-09T13:36:58.353Z"
+      }
     }
   ]
 }
