@@ -200,7 +200,8 @@ async function main() {
   }
 
   // jednorázově: přání rolí ze starších (už zpracovaných) komentářů, od nejstarších; první přání platí
-  if (!state.roleBackfill) try {
+  // verze 2 = znovu s volnějším pravidlem (bez slov „want/be“); už přidělené role se nemění, odpovědi se neopakují
+  if ((state.roleBackfillV || 0) < 2) try {
     const all = [];
     let page = await ig(`${USER}/media`, { fields: 'id', limit: 100 });
     for (;;) {
@@ -222,6 +223,7 @@ async function main() {
     }
     console.log(`přání rolí zpětně: ${all.length} komentářů, splněno ${granted}`);
     state.roleBackfill = new Date().toISOString();
+    state.roleBackfillV = 2;
   } catch (e) {
     console.warn('role backfill:', e.message);
   }
