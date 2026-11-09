@@ -301,7 +301,8 @@ async function boot() {
   // bombardování: výsledek včerejšího hlasování, nebo náhled přes ?fx=barrage
   const fxParam = new URLSearchParams(location.search).get('fx');
   const disp = roster.dispatch;
-  if (fxParam === 'barrage' || (disp?.effect === 'barrage' && disp.day >= roster.day - 1)) {
+  if (roster.barrage) life.setBarrage({ faction: roster.barrage.target }); // dělostřelectvo z dobyté kóty
+  else if (fxParam === 'barrage' || (disp?.effect === 'barrage' && disp.day >= roster.day - 1)) {
     life.setBarrage({ faction: disp?.target ?? 0 });
   }
 

@@ -1,6 +1,6 @@
 // DOM vrstva: počty, hledání @handle, karta vojáka se služebním záznamem, panel „Enlist“, sdílení.
 import { shardOf } from '../../engine/roster.js';
-import { startClaim } from './claim.js';
+import { startClaim, sendTransfer } from './claim.js';
 import { shareCard } from './share.js';
 
 const $ = (id) => document.getElementById(id);
@@ -46,13 +46,18 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     }
   }
 
-  // postup k odemčení (motivace převzít vojáka)
-  const next = (roster.unlocks || []).find((u) => !u.open);
-  if (next) {
+  // závod frakcí o kótu (motivace pozvat další)
+  const race = roster.race;
+  const raceBars = (r) => [0, 1].map((f) => {
+    const fac = theme.factions[f];
+    return `<div class="race-row"><span>${esc(fac.name.replace('The ', ''))}</span><span class="bar"><i style="width:${Math.min(100, (r.counts[f] / r.need) * 100)}%;background:${fac.color}"></i></span><span class="muted">${r.counts[f]}/${r.need}</span></div>`;
+  }).join('');
+  if (race) {
     $('dispatch').hidden = false;
     const el = document.createElement('div');
     el.className = 'unlock';
-    el.innerHTML = `<span class="d">${esc(next.label)} unlocks at ${next.need} claimed soldiers</span><span class="bar"><i style="width:${Math.min(100, (next.have / next.need) * 100)}%"></i></span><span class="muted">${next.have} / ${next.need}</span>`;
+    el.innerHTML = `<span class="d">The race for ${esc(race.name)}</span>${raceBars(race)}`;
+    el.onclick = (ev) => { ev.stopPropagation(); show('warroom'); };
     $('dispatch').appendChild(el);
   }
 
@@ -89,8 +94,11 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   } else {
     $('wr-vote').innerHTML = `<p class="muted">No open decision right now. The next one comes with the next reel on ${esc(theme.instagram)}.</p>`;
   }
-  $('wr-unlocks').innerHTML = (roster.unlocks || []).map((u) =>
-    `<div class="vote-opt"><span>${esc(u.label)}</span><span class="bar"><i style="width:${Math.min(100, (u.have / u.need) * 100)}%"></i></span><span class="muted">${u.open ? 'unlocked' : `${u.have}/${u.need} claimed`}</span></div>`).join('') || '<p class="muted">—</p>';
+  $('wr-unlocks').innerHTML = race
+    ? `<p>The first side to bring <b>${race.need}</b> new soldiers to the front takes <b>${esc(race.name)}</b>. ${esc(race.reward || '')}</p>${raceBars(race)}` +
+      `<p class="muted">Every friend who comments ${theme.factions.map((x) => `<b>${esc(x.keyword)}</b>`).join(' or ')} on ${esc(theme.instagram)} counts. After the battle, a new race begins.</p>` +
+      ((roster.victories || []).length ? `<ol class="history">${roster.victories.map((v) => `<li><span class="d">Day ${v.day} · ${esc(theme.factions[v.faction].name.replace('The ', ''))}</span>took ${esc(v.name)} · deciding rifle: @${esc(v.hero)}</li>`).join('')}</ol>` : '')
+    : '<p class="muted">—</p>';
   $('wr-history').innerHTML = (roster.history || []).map((e) => {
     const tot = Object.values(e.counts || {}).reduce((a, b) => a + b, 0) || 1;
     const res = Object.entries(e.counts || {}).map(([k, v]) => `${esc(k)} ${Math.round((v / tot) * 100)}%`).join(' · ');
@@ -214,6 +222,8 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       $('card-share').onclick = () => show('enlist');
       $('card-share').textContent = 'How to enlist';
       $('card-claim').hidden = true;
+      $('card-transfer').hidden = true;
+      $('card-transfer-box').hidden = true;
       show('card');
       return;
     }
@@ -234,9 +244,13 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     $('card-share').onclick = () => share(s);
     $('card-claim').hidden = s.claimed;
     $('card-claim').onclick = () => startClaim(s, theme, toast);
+    // převelení: jen převzatý voják, ne důstojník
+    $('card-transfer').hidden = !s.claimed || s.archetype?.id === 'officer';
+    $('card-transfer-box').hidden = true;
     show('card');
     const rec = await loadRecord(s.handle);
     if (!rec) return;
+    $('card-transfer').onclick = () => openTransfer(s, rec);
     $('card-unit').textContent = rec.unit;
     $('card-sector').textContent = `${rec.sector} · ${theme.lines[rec.line] ?? rec.line}`;
     $('card-enlisted').textContent = dayLabel(rec.enlisted);
@@ -245,12 +259,45 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     for (const p of rec.fallen || []) fam.push(`✝ ${esc(p.name)}, fell on Day ${p.day}`);
     if (rec.background) fam.unshift(`<span class="bg">${esc(rec.background)}</span>`);
     if (s.medals?.includes('first-wave')) fam.unshift('<span class="medal">🎖 First Wave</span> one of the first 100 to enlist');
+    for (const m of s.medals || []) {
+      if (!m.startsWith('obj:')) continue;
+      const v = (roster.victories || []).find((x) => x.id === m.slice(4));
+      fam.unshift(`<span class="medal">🎖 ${esc(v?.name ?? 'Battle')}</span> fought on the winning side${v ? `, Day ${v.day}` : ''}`);
+    }
+    for (const title of rec.titles || []) fam.unshift(`<span class="title">★ ${esc(title)}</span>`);
     $('card-family').innerHTML = fam.join('<br>');
     $('card-record').innerHTML = rec.record
       .slice()
       .reverse()
       .map(([d, t]) => `<li><span class="d">${dayLabel(d)}</span>${esc(t)}</li>`)
       .join('');
+  }
+
+  // výběr nového povolání (zápis do Firestore, smyčka ho provede do pár minut)
+  function openTransfer(s, rec) {
+    const box = $('card-transfer-box');
+    if (!box.hidden) { box.hidden = true; return; }
+    const wait = rec.nextTransfer != null && rec.nextTransfer > roster.day ? rec.nextTransfer - roster.day : 0;
+    const days = (n) => `${n} day${n > 1 ? 's' : ''}`;
+    box.innerHTML = '<h3>Request a transfer</h3>' +
+      (wait ? `<p class="muted">Your last transfer was recent. You can ask now; it goes through in ${days(wait)}.</p>`
+            : `<p class="muted">Choose where ${esc(s.name)} serves. One transfer per 7 days. The new role changes your soldier on the map and the stories you get.</p>`) +
+      theme.archetypes.filter((a) => a.id !== 'officer').map((a) =>
+        `<button class="role${a.id === s.archetype?.id ? ' on' : ''}" data-role="${a.id}"><b>${esc(a.name)}</b><span>${esc(a.desc || '')}</span></button>`).join('');
+    box.hidden = false;
+    box.onclick = async (ev) => {
+      const b = ev.target.closest('button[data-role]');
+      if (!b || b.classList.contains('on')) return;
+      box.querySelectorAll('button').forEach((x) => (x.disabled = true));
+      const ok = await sendTransfer(s, b.dataset.role, toast).catch(() => false);
+      box.querySelectorAll('button').forEach((x) => (x.disabled = false));
+      if (ok) {
+        const role = esc(b.querySelector('b').textContent);
+        box.innerHTML = `<p><b>Orders sent.</b> If this is your soldier, the transfer to ${role} comes through ${wait ? `in ${days(wait)}` : 'within minutes'}.</p>`;
+        toast('Transfer requested');
+      }
+    };
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   function drawPortrait(s) {

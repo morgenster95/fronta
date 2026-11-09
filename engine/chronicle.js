@@ -15,13 +15,16 @@ const list = (handles, max = 8) => {
   return shown.length > 1 ? `${shown.slice(0, -1).join(', ')} and ${shown.at(-1)}` : shown[0] || '';
 };
 
-export function writeChronicle(state, day, { theme, story, weather, events = [], decided = null }) {
+export function writeChronicle(state, day, { theme, story, weather, events = [], decided = null, news = [] }) {
   const rand = rngFor(theme.id, 'chronicle', day);
   const short = (f) => theme.factions[f].name.replace(/^The /, '');
   const place = pick(rand, story.places);
   const blocks = [];
 
   if (weather) blocks.push({ text: pick(rand, weather.diary) });
+
+  // velké zprávy (dobytí kóty) jdou na začátek
+  for (const n of news) blocks.unshift({ h: n.h, text: n.text });
 
   // noví vojáci: narukovali během včerejška (state.day byl day-1)
   const fresh = state.soldiers.filter((s) => s.enlisted === day - 1 && s.generation === 1);
@@ -74,6 +77,17 @@ export function writeChronicle(state, day, { theme, story, weather, events = [],
       `Strength on the line: ${theme.factions.map((_, f) => `${short(f)} ${alive[f]}`).join(' · ')}.`,
   });
 
-  const title = weather ? fill(pick(rand, weather.titles), { place }, rand) : `Day ${day}`;
+  // stav závodu o kótu
+  const race = theme.race && state.race ? (() => {
+    const need = theme.race.need;
+    const c = theme.factions.map((_, f) => state.soldiers.filter((s) => s.faction === f).length - state.race.base[f]);
+    const lead = c[0] === c[1] ? null : c[0] > c[1] ? 0 : 1;
+    const name = (theme.race.objectives[state.race.idx % theme.race.objectives.length] || {}).name;
+    return { h: `The race for ${name}`, text: `${theme.factions.map((_, f) => `${short(f)} ${c[f]}/${need}`).join(' · ')}. ` +
+      (lead == null ? 'Dead level. One recruit could change everything.' : `The ${short(lead)} lead by ${Math.abs(c[0] - c[1])}. ${need - c[lead]} more and the heights are theirs.`) };
+  })() : null;
+  if (race) blocks.splice(blocks.length - 1, 0, race);
+
+  const title = news.length ? news[0].h : weather ? fill(pick(rand, weather.titles), { place }, rand) : `Day ${day}`;
   return { day, kind: 'chronicle', by: 'Field Telegraph', title, weather: weather?.id ?? null, blocks };
 }

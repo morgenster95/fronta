@@ -1006,5 +1006,30 @@
     "The old hands of {sector} have been here since Day 1. {name} has been here since Day {day}. In a trench, that difference already feels like years.",
     "{name} walked into {sector} on Day {day} and asked where the war was. A shell answered before anyone else could.",
     "On Day {day} {name} took a post at {sector} that had been empty for two nights. {He} did not ask why. {He} {quirk}, and the men liked {him} for it."
+  ],
+  "raceWin": [
+    "Day {day}. The {us} took {objective}. From the heights {name} could see the whole {them} line, and for the first time the war looked winnable.",
+    "{objective} fell to the {us} at dusk. {name} helped drag the guns up the slope and slept that night on ground nobody else had held for years.",
+    "The {us} flag went up over {objective}. {name} did not cheer. {He} sat down on a sandbag and ate {his} ration slowly, like a man with time again.",
+    "Word came down the line: {objective} is ours. {name} shook hands with a corporal {he} had never spoken to. Today, everyone was a friend.",
+    "{name} walked the captured trenches of {objective} and found the enemy's cooking pots still warm. {He} took a spoon as a souvenir."
+  ],
+  "raceLose": [
+    "Day {day}. {objective} fell to the {them}. {name} watched their flag go up on the heights and dug {his} trench a little deeper.",
+    "The {them} hold {objective} now, and they can see straight into {sector}. {name} has learned to walk bent double.",
+    "{objective} is lost. {name} heard the news from a runner, said nothing, and checked {his} rifle twice. There will be another race.",
+    "From {objective} the {them} guns have a clear view. {name} wrote to {waiting} that night and said only: 'We will take it back.'",
+    "The sergeant read out the order: {objective} has fallen, hold the line. {name} looked at the new recruits coming up the road and counted them."
+  ],
+  "raceHero": [
+    "The {us} needed one more rifle to take {objective}. {name} was that rifle. From today, they call {him} the Hero of {objective}.",
+    "{name} arrived on the very day the {us} reached the heights of {objective}. The men swear {he} tipped the balance. The colonel agreed and wrote it down."
+  ],
+  "transfer": [
+    "{name} asked to leave the {oldRole}s and serve as a {role}. The sergeant looked at {him} for a long time, then signed the paper without a word.",
+    "Orders came through: {name} is a {role} now. {He} handed in {his} old kit and kept only {item}.",
+    "{name} transferred to the {role}s. The men in {sector} said they would miss {him}. {He} is only three dugouts away.",
+    "After what happened at {place}, {name} asked to serve as a {role}. Nobody argued.",
+    "The {role}s took {name} in on a wet morning in {sector}. By noon {he} had learned the first rule of the job, and by evening the second."
   ]
 }

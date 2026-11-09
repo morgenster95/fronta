@@ -3,6 +3,7 @@
 import { createSoldier, tickSoldier, heir, selectForStory } from './soldier.js';
 import { enlistEntry, weatherFor, eventEntry, tplKey, makeBackground, backgroundLine } from './story.js';
 import { writeChronicle } from './chronicle.js';
+import { checkRace, raceStatus, raceDanger, activeBarrage, awardHonors } from './race.js';
 import { pick } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
@@ -58,7 +59,9 @@ export function applyComment(state, comment, theme, story, map) {
   s.record.push([state.day, enlistEntry(s, theme, story, recentKeys(state, story.enlist.length - 1))]);
   state.soldiers.push(s);
   awardFirstWave(state, theme, story);
-  return { type: 'enlist', soldier: s };
+  awardHonors(state, theme);
+  const victory = checkRace(state, theme, story, s);
+  return { type: 'enlist', soldier: s, victory };
 }
 
 // Přidělí první volné místo podle priority (střed → ven, přední linie první) v otevřených sektorech.
@@ -196,17 +199,47 @@ export function dailyTick(state, theme, story, ctx = {}) {
       continue;
     }
     if (!chosen.has(s.id) && s.status === 'active') continue;
-    const sctx = { active: active.has(s.id), danger: ctx.danger, weather, events, comrade, foe, today };
+    const danger = (ctx.danger ?? 1) * (theme.race ? raceDanger(state, theme, s.faction, day) : 1);
+    const sctx = { active: active.has(s.id), danger, weather, events, comrade, foe, today };
     for (const text of tickSoldier(s, day, theme, story, sctx)) {
       s.record.push([day, text]);
     }
   }
-  state.chronicle = [...(state.chronicle || []), writeChronicle(state, day, { theme, story, weather, events, decided })].slice(-60);
+  const news = (state.news || []).filter((n) => n.day >= day - 1);
+  state.news = [];
+  state.chronicle = [...(state.chronicle || []), writeChronicle(state, day, { theme, story, weather, events, decided, news })].slice(-60);
   return state;
 }
 
 // Statická data pro web: kompaktní soupiska + záznamy rozdělené do shardů (načítají se až po kliknutí).
+// --- převelení (výběr povolání převzatým hráčem) ---
+export const TRANSFER_COOLDOWN = 7;
+export function requestTransfer(state, s, role, theme) {
+  const ok = theme.archetypes.some((a) => a.id === role && a.id !== 'officer');
+  if (!ok || !s || !s.claimed || s.archetype === 'officer') return false;
+  s.pendingRole = role === s.archetype ? null : role;
+  return true;
+}
+// provede čekající převelení, pokud uplynula lhůta (voják musí být na linii)
+export function applyTransfers(state, theme, story) {
+  const done = [];
+  const nameOf = (id) => theme.archetypes.find((a) => a.id === id)?.name.toLowerCase();
+  for (const s of state.soldiers) {
+    if (!s.pendingRole || s.status !== 'active') continue;
+    if (s.transferDay != null && state.day - s.transferDay < TRANSFER_COOLDOWN) continue;
+    const oldRole = nameOf(s.archetype);
+    s.archetype = s.pendingRole;
+    s.pendingRole = null;
+    s.transferDay = state.day;
+    s.arc = null; // nová práce, nový příběh
+    s.record.push([state.day, eventEntry('transfer', s, state.day, theme, story, { role: nameOf(s.archetype), oldRole })]);
+    done.push(s);
+  }
+  return done;
+}
+
 export function buildPublic(state, theme) {
+  awardHonors(state, theme);
   const arch = theme.archetypes.map((a) => a.id);
   const roster = {
     unlocks: unlocks(state, theme),
@@ -215,6 +248,9 @@ export function buildPublic(state, theme) {
     openSectors: state.openSectors ?? 8,
     dispatch: (state.events || []).slice(-1)[0] || null,
     weather: state.weather ?? null,
+    race: raceStatus(state, theme),
+    victories: (state.victories || []).slice(-10).reverse(),
+    barrage: activeBarrage(state, state.day),
     history: (state.events || []).slice(-30).reverse(),
     vote: state.vote ? { question: state.vote.question, options: state.vote.options.map((o) => ({ kw: o.kw, label: o.label })), votes: Object.keys(state.vote.tallies).length } : null,
     updated: new Date().toISOString(),
@@ -249,6 +285,8 @@ export function buildPublic(state, theme) {
       family: s.family,
       bio: s.bio || null,
       background: backgroundLine(s),
+      titles: s.titles || [],
+      nextTransfer: s.transferDay != null ? s.transferDay + TRANSFER_COOLDOWN : null,
     };
   }
   return { roster, shards };

@@ -4,22 +4,22 @@ import { firebaseConfig, claimEnabled } from './firebase-config.js';
 
 const IN_APP = /Instagram|FBAN|FBAV|FB_IAB|Line\/|Twitter/i;
 
-export async function startClaim(soldier, theme, toast) {
+// Přihlášení Googlem (sdílené pro převzetí i převelení). Vrací { app, user } nebo null.
+async function signIn(soldier, toast, param = 'claim') {
   if (!claimEnabled || !firebaseConfig.apiKey) {
     toast('Claiming opens soon. Your soldier is safe in the trench.');
-    return;
+    return null;
   }
   // Google přihlášení v prohlížeči uvnitř Instagramu nefunguje (disallowed_useragent)
   if (IN_APP.test(navigator.userAgent)) {
-    const url = `${location.origin}/?s=${encodeURIComponent(soldier.handle)}&claim=1`;
+    const url = `${location.origin}/?s=${encodeURIComponent(soldier.handle)}&${param}=1`;
     navigator.clipboard?.writeText(url).catch(() => {});
     toast('Open this page in Safari or Chrome to sign in (tap ••• → Open in browser). Link copied.');
-    return;
+    return null;
   }
-  const { initializeApp } = await import('firebase/app');
+  const { initializeApp, getApps } = await import('firebase/app');
   const { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult } = await import('firebase/auth');
-  const { getFirestore, doc, setDoc, serverTimestamp } = await import('firebase/firestore');
-  const app = initializeApp(firebaseConfig);
+  const app = getApps()[0] || initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
   let user = auth.currentUser;
@@ -29,7 +29,7 @@ export async function startClaim(soldier, theme, toast) {
       // v PWA na ploše iPhonu popup nejde → redirect (authDomain musí být doména, na které web běží!)
       if (standalone) {
         await signInWithRedirect(auth, provider);
-        return;
+        return null;
       }
       user = (await signInWithPopup(auth, provider)).user;
     } catch (e) {
@@ -37,19 +37,35 @@ export async function startClaim(soldier, theme, toast) {
       user = r?.user;
       if (!user) {
         toast('Sign-in failed. Try again.');
-        return;
+        return null;
       }
     }
   }
+  return { app, user };
+}
+
+export async function startClaim(soldier, theme, toast) {
+  const s = await signIn(soldier, toast, 'claim');
+  if (!s) return;
+  const { getFirestore, doc, setDoc, serverTimestamp } = await import('firebase/firestore');
   const code = `ENLIST-${randomCode()}`;
-  await setDoc(doc(getFirestore(app), 'claims', user.uid), {
+  await setDoc(doc(getFirestore(s.app), 'claims', s.user.uid), {
     handle: soldier.handle,
     code,
-    uid: user.uid,
+    uid: s.user.uid,
     status: 'pending',
     createdAt: serverTimestamp(),
   });
   showCode(code, theme, toast);
+}
+
+// Převelení: zapíše přání do profilu přihlášeného hráče; smyčka ho provede, jen pokud voják patří jemu.
+export async function sendTransfer(soldier, role, toast) {
+  const s = await signIn(soldier, toast, 'transfer');
+  if (!s) return false;
+  const { getFirestore, doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+  await setDoc(doc(getFirestore(s.app), 'profiles', s.user.uid), { role, updatedAt: serverTimestamp() }, { merge: true });
+  return true;
 }
 
 function randomCode() {

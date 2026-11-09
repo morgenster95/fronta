@@ -187,3 +187,15 @@ body.reel #card { bottom: 18%; width: 86%; }
 }
 @media (max-width: 420px) { #dispatch { top: calc(env(safe-area-inset-top) + 86px); } }
 #card-family .bg { color: var(--ink); display: block; margin-bottom: 4px; }
+
+/* závod o kótu, tituly, převelení */
+.race-row { display: grid; grid-template-columns: 6.5em 1fr auto; gap: 8px; align-items: center; margin: 3px 0; }
+.race-row .bar { display: block; height: 6px; background: #2b2722; }
+.race-row .bar i { display: block; height: 100%; }
+.title { color: var(--accent); font-family: 'Silkscreen', monospace; font-size: 12px; }
+#card-transfer-box { margin-top: 12px; display: grid; gap: 6px; }
+#card-transfer-box h3 { margin: 0; }
+#card-transfer-box p { margin: 0 0 4px; }
+#card-transfer-box .role { display: grid; text-align: left; gap: 2px; padding: 8px 10px; }
+#card-transfer-box .role span { color: var(--muted); font-size: 0.85em; }
+#card-transfer-box .role.on { border-color: var(--accent); cursor: default; }

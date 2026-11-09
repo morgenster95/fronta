@@ -11,7 +11,7 @@
 //   FIREBASE_SERVICE_ACCOUNT  JSON service accountu (pro párování převzetí přes Firestore), volitelné
 //   DRY_RUN=1         nic neukládat
 import { loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
-import { applyComment } from '../engine/roster.js';
+import { applyComment, requestTransfer, applyTransfers } from '../engine/roster.js';
 
 // Nové aplikace Meta: Unified login + systémový token z firemního portfolia → graph.facebook.com (token nevyprší).
 // Starší token z „Instagram login“ funguje s IG_API_HOST=graph.instagram.com.
@@ -98,6 +98,7 @@ async function main() {
       if (res.type === 'enlist') {
         enlisted++;
         console.log(`+ @${res.soldier.handle} → ${theme.factions[res.soldier.faction].name}, ${res.soldier.sector}`);
+        if (res.victory) console.log(`★ ${theme.factions[res.victory.faction].name} dobyli ${res.victory.name} (rozhodl @${res.victory.hero})`);
         if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN && theme.replies) {
           const s = res.soldier;
           const pool = theme.replies[theme.factions[s.faction].id] || theme.replies.any;
@@ -131,7 +132,7 @@ async function main() {
     }
   }
 
-  // úpravy karet od převzatých hráčů (bio, zájmena) z Firestore
+  // úpravy karet od převzatých hráčů (bio, zájmena, převelení) z Firestore
   if (db) try {
     const owners = new Map(state.soldiers.filter((s) => s.ownerUid).map((s) => [s.ownerUid, s]));
     const since = new Date(state.profilesSyncedAt || 0);
@@ -142,11 +143,13 @@ async function main() {
       const p = d.data();
       if (typeof p.bio === 'string') s.bio = p.bio.slice(0, 280);
       if (['he', 'she', 'they'].includes(p.pronoun)) s.pronoun = p.pronoun;
+      if (typeof p.role === 'string' && requestTransfer(state, s, p.role, theme)) console.log(`žádost o převelení @${s.handle} → ${p.role}`);
     }
     state.profilesSyncedAt = new Date().toISOString();
   } catch (e) {
     console.warn('Firestore:', e.message);
   }
+  for (const s of applyTransfers(state, theme, story)) console.log(`⇄ @${s.handle} převelen: ${s.archetype}`);
 
   console.log(`hotovo: +${enlisted} rekrutů, ${claimed} převzetí, celkem ${state.soldiers.length}, followers ${state.followers}`);
   if (process.env.DRY_RUN) return;

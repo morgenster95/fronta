@@ -68,16 +68,8 @@ test('hlasování: jeden hlas na účet, platí poslední, vyhodnotí denní tah
   assert.equal(s.vote, null);
 });
 
-import { unlocks } from './roster.js';
-test('bombardování se odemkne až při dosažení počtu převzatých vojáků', () => {
-  const s = emptyState(theme);
-  for (let i = 0; i < 10; i++) applyComment(s, { id: `c${i}`, userId: `u${i}`, username: `p${i}`, text: 'CONCORD' }, theme, story, map);
-  assert.equal(unlocks(s, theme)[0].open, false);
-  const t = { ...theme, unlocks: [{ id: 'barrage', claimed: 3, label: 'B' }] };
-  s.soldiers.slice(0, 3).forEach((x) => (x.claimed = true));
-  assert.equal(unlocks(s, t)[0].open, true);
-});
-
+import { requestTransfer, applyTransfers, buildPublic } from './roster.js';
+import { raceDanger } from './race.js';
 test('First Wave: medaili má prvních 100 rekrutů, 101. už ne', () => {
   const s = emptyState(theme);
   for (let i = 0; i < 101; i++) applyComment(s, { id: `c${i}`, userId: `u${i}`, username: `fw${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
@@ -135,4 +127,48 @@ test('pozdní nováček dostane úvod náhradníka a každý má vlastní minulo
   assert.ok(!intros.some((t) => /\{\w+\}/.test(t)));
   const bgs = new Set(s.soldiers.map((x) => JSON.stringify(x.bg)));
   assert.equal(bgs.size, 30);
+});
+
+test('závod o kótu: první na 100 vyhraje, dostane výhodu, začne nový závod', () => {
+  const s = emptyState(theme);
+  let v = null;
+  for (let i = 0; i < 260 && !v; i++) {
+    // Hegemonie naverbuje 2 na každého z Concordu
+    const r = applyComment(s, { id: `c${i}`, userId: `u${i}`, username: `user${i}`, text: i % 3 === 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
+    v = r.victory;
+  }
+  assert.ok(v, 'někdo vyhrál');
+  assert.equal(v.faction, 0);
+  assert.equal(s.soldiers.filter((x) => x.faction === 0).length, 100);
+  const hero = s.soldiers.find((x) => x.handle === v.hero);
+  assert.ok(hero.titles.some((t) => t.startsWith('Hero of')));
+  assert.ok(s.soldiers.filter((x) => x.faction === 0).every((x) => x.medals.includes(`obj:${v.id}`)));
+  assert.ok(s.soldiers.every((x) => x.record.some((r) => /Verdel Ridge/.test(r[1]))));
+  assert.ok(s.soldiers.find((x) => x.faction === 0).titles.includes('First of the Hegemony'));
+  assert.ok(raceDanger(s, theme, 0, s.day + 1) < 1 && raceDanger(s, theme, 1, s.day + 1) > 1);
+  assert.equal(raceDanger(s, theme, 0, s.day), 1, 'výhoda platí až od dalšího dne');
+  const pub = buildPublic(s, theme).roster;
+  assert.deepEqual(pub.race.counts, [0, 0]);
+  assert.equal(pub.race.name, 'Hill 304');
+  dailyTick(s, theme, story);
+  assert.match(JSON.stringify(s.chronicle.at(-1)), /took Verdel Ridge/);
+  assert.ok(buildPublic(s, theme).roster.barrage?.target === 1);
+});
+
+test('převelení: jen převzatý voják, jednou za 7 dní, ne na důstojníka', () => {
+  const s = emptyState(theme);
+  const x = applyComment(s, { id: 'c1', userId: 'u1', username: 'jan', text: 'CONCORD' }, theme, story, map).soldier;
+  assert.equal(requestTransfer(s, x, 'medic', theme), false, 'nepřevzatý');
+  x.claimed = true;
+  x.archetype = 'rifleman';
+  assert.equal(requestTransfer(s, x, 'officer', theme), false);
+  assert.ok(requestTransfer(s, x, 'medic', theme));
+  assert.equal(applyTransfers(s, theme, story).length, 1);
+  assert.equal(x.archetype, 'medic');
+  assert.match(x.record.at(-1)[1], /stretcher bearer/);
+  requestTransfer(s, x, 'sniper', theme);
+  assert.equal(applyTransfers(s, theme, story).length, 0, 'lhůta 7 dní');
+  s.day += 7;
+  assert.equal(applyTransfers(s, theme, story).length, 1);
+  assert.equal(x.archetype, 'sniper');
 });

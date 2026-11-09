@@ -36,52 +36,62 @@
     {
       "id": "rifleman",
       "name": "Rifleman",
-      "weight": 50
+      "weight": 50,
+      "desc": "The backbone of the line. Sentry, raids, mud."
     },
     {
       "id": "machinegunner",
       "name": "Machine Gunner",
-      "weight": 8
+      "weight": 8,
+      "desc": "Holds the line with the gun. Feared by both sides."
     },
     {
       "id": "sapper",
       "name": "Sapper",
-      "weight": 8
+      "weight": 8,
+      "desc": "Digs tunnels under no man's land. Listens to the earth."
     },
     {
       "id": "medic",
       "name": "Stretcher Bearer",
-      "weight": 7
+      "weight": 7,
+      "desc": "Carries the wounded out. Saves other players' soldiers."
     },
     {
       "id": "runner",
       "name": "Runner",
-      "weight": 7
+      "weight": 7,
+      "desc": "Carries orders under fire. Knows every trench."
     },
     {
       "id": "sniper",
       "name": "Sniper",
-      "weight": 5
+      "weight": 5,
+      "desc": "Patient, alone, deadly. Duels across the wire."
     },
     {
       "id": "signaller",
       "name": "Signaller",
-      "weight": 5
+      "weight": 5,
+      "desc": "Keeps the wires alive. Hears what others don't."
     },
     {
       "id": "cook",
       "name": "Field Cook",
-      "weight": 4
+      "weight": 4,
+      "desc": "Feeds the line. Everyone's friend, nobody's target."
     },
     {
       "id": "chaplain",
       "name": "Chaplain",
-      "weight": 2
+      "weight": 2,
+      "desc": "Buries the dead, writes the letters, keeps faith."
     },
     {
       "id": "officer",
       "name": "Lieutenant",
-      "weight": 4
+      "weight": 4,
+      "desc": "Earned by promotion only."
     }
   ],
   "ranks": [
@@ -125,14 +135,7 @@
     "enlisted": "{rank} @{handle}, you have been assigned to {unit}, sector {sector}. Find yourself on the front: {url}",
     "claim": "Your claim code: {code}. Comment it under our latest post to take command of your soldier."
   },
-  "unlocks": [
-    {
-      "id": "barrage",
-      "claimed": 500,
-      "label": "Artillery barrage",
-      "text": "The guns are ready. The front can vote for a barrage on the enemy lines."
-    }
-  ],
+  "unlocks": [],
   "lore": {
     "tagline": "The Great War ended. Here, it never did.",
     "short": "For six winters the Concord and the Hegemony have bled into the same valley of mud. Neither will yield. Both need men. They need you.",
@@ -149,5 +152,40 @@
       "Welcome to the front, {rank} @{handle}. Your post: sector {sector}. Together, or not at all 🫒 Find yourself via the link in bio.",
       "@{handle} Another hand for the Concord. Report to sector {sector} 🫒"
     ]
-  }
+  },
+  "race": {
+    "need": 100,
+    "days": 7,
+    "barrageDays": 3,
+    "winDanger": 0.6,
+    "loseDanger": 1.25,
+    "reward": "Holds the high ground: 3 days of artillery on the enemy, a safer week for its soldiers, a ribbon for everyone on the winning side, and the title of hero for the soldier who tips the balance.",
+    "objectives": [
+      {
+        "id": "ridge",
+        "name": "Verdel Ridge"
+      },
+      {
+        "id": "hill304",
+        "name": "Hill 304"
+      },
+      {
+        "id": "canal",
+        "name": "Blackwater Canal"
+      },
+      {
+        "id": "mill",
+        "name": "Grey Mill"
+      },
+      {
+        "id": "quarry",
+        "name": "the Bone Quarry"
+      },
+      {
+        "id": "orchard",
+        "name": "the Weeping Orchard"
+      }
+    ]
+  },
+  "honors": {}
 }
