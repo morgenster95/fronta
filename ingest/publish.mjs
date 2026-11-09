@@ -3,12 +3,14 @@
 // https://morgenster95.github.io/fronta/<soubor>. Odtud si je Instagram stáhne.
 //
 // Použití: node ingest/publish.mjs <id> [<id> …]   zveřejní dané položky hned
-//          node ingest/publish.mjs --due           zveřejní položky, jejichž publishAt už nastal (pro smyčku)
+//          node ingest/publish.mjs --due           zveřejní položky, jejichž publishAt už nastal (pro smyčku),
+//                                                  a položky s `trigger`, jejichž událost ve hře nastala (ingest/triggers.mjs)
 // Když soubor ještě není na GitHub Pages (workflow media ještě neproběhl), položka počká a zkusí se v dalším kole.
 // Proměnné: IG_ACCESS_TOKEN, IG_USER_ID, MEDIA_URL (výchozí https://morgenster95.github.io/fronta), DRY_RUN=1
 import fs from 'node:fs';
 import path from 'node:path';
-import { ROOT } from '../tools/lib.mjs';
+import { ROOT, loadTheme, loadState, saveState } from '../tools/lib.mjs';
+import { fireTriggers, openItemVote } from './triggers.mjs';
 
 const API = `https://${process.env.IG_API_HOST || 'graph.facebook.com'}/${process.env.IG_API_VERSION || 'v23.0'}`;
 const TOKEN = process.env.IG_ACCESS_TOKEN;
@@ -82,16 +84,33 @@ async function main() {
   const args = process.argv.slice(2);
   if (!TOKEN || !USER) throw new Error('Chybí IG_ACCESS_TOKEN nebo IG_USER_ID');
   const now = Date.now();
+  const { theme } = loadTheme();
+  const state = loadState(theme);
+  const fired = args[0] === '--due' ? fireTriggers(q, state, theme) : [];
+  for (const i of fired) console.log(`★ ${i.id}: událost nastala (${theme.factions[i.fired.faction].name}, @${i.fired.hero})`);
+  if (fired.length && !process.env.DRY_RUN) fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
   const todo = args[0] === '--due'
-    ? q.items.filter((i) => !i.published && i.publishAt && Date.parse(i.publishAt) <= now)
+    ? [...q.items.filter((i) => !i.published && !i.trigger && i.publishAt && Date.parse(i.publishAt) <= now), ...fired]
     : args.map((id) => q.items.find((i) => i.id === id)).filter(Boolean);
   if (!todo.length) return console.log('nic ke zveřejnění');
   for (const item of todo) {
     if (item.published) { console.log(`= ${item.id}: už zveřejněno ${item.published.permalink || ''}`); continue; }
-    if (process.env.DRY_RUN) { console.log(`(dry) ${item.id}: ${item.type} ${item.files.join(', ')}`); continue; }
+    if (item.trigger && !item.fired) { console.log(`… ${item.id}: čeká na událost ve hře`); continue; }
+    if (process.env.DRY_RUN) { console.log(`(dry) ${item.id}: ${item.type} ${item.files.join(', ')}\n${item.caption}`); continue; }
     // kolo smyčky se může opakovat: co už jednou vyšlo, nesmí vyjít podruhé
     const done = publishedLog().find((x) => x.id === item.id);
-    if (done) { item.published = done.published; console.log(`= ${item.id}: už zveřejněno v tomto běhu`); fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2)); continue; }
+    if (done) {
+      item.published = done.published;
+      console.log(`= ${item.id}: už zveřejněno v tomto běhu`);
+      fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
+      // kolo se opakovalo (stav z origin/main): hlasování otevřít znovu, jen pokud ještě neběží
+      const st = loadState(theme);
+      if (item.vote && st.vote?.mediaId !== item.published.id && !(st.events || []).some((e) => e.mediaId === item.published.id)) {
+        openItemVote(st, item);
+        saveState(st);
+      }
+      continue;
+    }
     if (!(await live(item))) {
       if (args[0] === '--due') { console.log(`… ${item.id}: soubor ještě není na GitHub Pages, zkusí se v dalším kole`); continue; }
       throw new Error(`${item.id}: soubor není na ${MEDIA} (je v marketing/promo a proběhl workflow media?)`);
@@ -101,6 +120,14 @@ async function main() {
     if (process.env.PUBLISHED_LOG) fs.appendFileSync(process.env.PUBLISHED_LOG, `${JSON.stringify({ id: item.id, published: item.published })}\n`);
     console.log(`✓ ${item.id}: ${item.published.permalink}`);
     fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
+    // hlasování pod tímto postem (stav se načte znovu: mezitím ho nic jiného neměnilo, ale ať se nepřepíše starší kopií)
+    if (item.vote) {
+      const st = loadState(theme);
+      if (st.vote) console.warn(`! ${item.id}: přepisuje otevřené hlasování „${st.vote.question}“`);
+      openItemVote(st, item);
+      saveState(st);
+      console.log(`☑ ${item.id}: hlasování otevřeno (${item.vote.options.map((o) => o.kw).join(' / ')}${item.vote.perFaction ? ', po frakcích' : ''})`);
+    }
   }
 }
 

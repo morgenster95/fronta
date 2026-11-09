@@ -295,3 +295,68 @@ test('deník se nemaže: nástupce pokračuje v zápisech rodu, web má starší
   assert.equal(card.record.length + card.older, n.record.length);
   assert.deepEqual([...pub.older[k].jan, ...card.record], n.record, 'archiv + karta = celý deník');
 });
+
+import { orderDanger, orderRecover } from './orders.js';
+import { fireTriggers, openItemVote } from '../ingest/triggers.mjs';
+test('hlasování po frakcích: hlas se páruje s vojákem, každá strana má vlastní výsledek a rozkaz', () => {
+  const s = emptyState(theme);
+  const c = (id, u, text, mediaId) => applyComment(s, { id, userId: u, username: u, text, mediaId }, theme, story, map);
+  c('e1', 'h1', 'HEGEMONY'); c('e2', 'h2', 'HEGEMONY'); c('e3', 'k1', 'CONCORD'); c('e4', 'k2', 'CONCORD'); c('e5', 'k3', 'CONCORD');
+  openVote(s, { mediaId: 'v1', perFaction: true, question: 'Orders?', options: [
+    { kw: 'FORTIFY', label: 'f', danger: 0.7, days: 3, outcome: 'The {side} dug in.' },
+    { kw: 'HOSPITAL', label: 'h', recover: 0.6, days: 3, outcome: 'The {side} built a hospital.' },
+  ] });
+  assert.equal(c('v1', 'h1', 'fortify', 'v1').faction, 0);
+  c('v2', 'h2', 'FORTIFY!', 'v1');
+  c('v3', 'k1', 'hospital', 'v1'); c('v4', 'k2', 'HOSPITAL', 'v1'); c('v5', 'k3', 'fortify', 'v1');
+  c('v6', 'k3', 'hospital pls', 'v1'); // platí poslední
+  assert.equal(c('v7', 'nobody', 'FORTIFY', 'v1').reason, 'notEnlisted'); // bez vojáka se nepočítá
+  const r = c('v8', 'newbie', 'HEGEMONY hospital', 'v1'); // narukuje a rovnou hlasuje
+  assert.equal(r.type, 'enlist');
+  assert.equal(r.vote.kw, 'HOSPITAL');
+  assert.equal(c('v9', 'h1', 'HOSPITAL', 'other'), null); // pod jiným postem se nehlasuje (už narukovaný)
+  dailyTick(s, theme, story);
+  const ev = s.events.at(-1);
+  assert.equal(ev.perFaction, true);
+  assert.deepEqual(ev.winners, ['FORTIFY', 'HOSPITAL']);
+  assert.deepEqual(ev.counts, [{ FORTIFY: 2, HOSPITAL: 1 }, { FORTIFY: 0, HOSPITAL: 3 }]);
+  assert.match(ev.text, /The Hegemony dug in\. The Concord built a hospital\./);
+  assert.equal(s.vote, null);
+  // rozkazy platí od dnešního dne (tah už proběhl) 3 dny
+  assert.equal(orderDanger(s, 0, s.day), 0.7);
+  assert.equal(orderDanger(s, 1, s.day), 1);
+  assert.equal(orderDanger(s, 0, s.day + 3), 1);
+  assert.equal(orderRecover(s, 1, s.day + 2, 0.35), 0.6);
+  assert.equal(orderRecover(s, 0, s.day, 0.35), 0.35);
+  assert.match(s.chronicle.at(-1).blocks?.map((b) => b.text).join(' ') ?? JSON.stringify(s.chronicle.at(-1)), /Hegemony: FORTIFY/);
+});
+
+test('hlasování s minHours počká na další vydání', () => {
+  const s = emptyState(theme);
+  openVote(s, { mediaId: 'm', perFaction: true, minHours: 8, openedAt: '2026-11-09T10:00:00Z', question: 'q', options: [{ kw: 'A', label: 'a' }, { kw: 'B', label: 'b' }] });
+  dailyTick(s, theme, story, { now: Date.parse('2026-11-09T13:00:00Z') });
+  assert.ok(s.vote);
+  dailyTick(s, theme, story, { now: Date.parse('2026-11-10T13:00:00Z') });
+  assert.equal(s.vote, null);
+});
+
+test('příspěvek s triggerem vyjde při dobytí kóty ve variantě vítěze a otevře hlasování', () => {
+  const s = emptyState(theme);
+  const q = { items: [{ id: 'win', type: 'carousel', trigger: { race: 'ridge' }, files: [], caption: '',
+    variants: [{ files: ['h.jpg'], caption: 'H @{hero} {win}-{lose} next {next}' }, { files: ['c.jpg'], caption: 'C @{hero} {win}-{lose} next {next}' }],
+    vote: { question: 'q', perFaction: true, options: [{ kw: 'FORTIFY', label: 'f' }, { kw: 'HOSPITAL', label: 'h' }] } }] };
+  assert.equal(fireTriggers(q, s, theme).length, 0);
+  const need = theme.race.need;
+  for (let i = 0; i < need; i++) applyComment(s, { id: `k${i}`, userId: `k${i}`, username: `k${i}`, text: 'CONCORD' }, theme, story, map);
+  for (let i = 0; i < 3; i++) applyComment(s, { id: `h${i}`, userId: `h${i}`, username: `h${i}`, text: 'HEGEMONY' }, theme, story, map);
+  assert.equal(s.victories.length, 1);
+  const [item] = fireTriggers(q, s, theme);
+  assert.deepEqual(item.files, ['c.jpg']);
+  assert.equal(item.caption, `C @k${need - 1} ${need}-0 next Hill 304`);
+  assert.equal(fireTriggers(q, s, theme).length, 1); // čeká na zveřejnění, nepřepočítává se
+  item.published = { id: 'm42', at: new Date().toISOString() };
+  assert.ok(openItemVote(s, item));
+  assert.equal(s.vote.mediaId, 'm42');
+  assert.equal(s.vote.perFaction, true);
+  assert.equal(fireTriggers(q, s, theme).length, 0);
+});

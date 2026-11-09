@@ -47,5 +47,12 @@ Postup pro nový reel `<name>`:
   další změny přes převelení na kartě. Lieutenant jen povýšením. Aliasy rolí: `theme.archetypes[].aliases`.
 - **Odpovědi pod komentáři** (od 2026-11-09): ingest čte i odpovědi (HEGEMONY v odpovědi pod cizím komentářem narukuje). Komentáře našeho účtu
   se přeskakují, jinak by bot narukoval sám sebe. Bot odpovídá do vlákna nadřazeného komentáře. Podrobnosti: `docs/STATUS.md`, „Doplněno večer 9. 11.“.
-- **Další na řadě (domluvený návrh, zatím nepostavený):** hlasování frakcí (každá frakce volí vlastní rozkaz, výsledek = matice 2×2), změny terénu,
+- **Post při výhře závodu + hlasování frakcí** (od 2026-11-09): položka `victory-ridge` ve frontě má `trigger: {race: "ridge"}` a dvě varianty
+  (karusel `marketing/promo/victory_ridge_<frakce>_1/2.jpg`, kreslí `marketing/make_victory.py`). Smyčka ji zveřejní do ~5 min od dobytí kóty
+  (`ingest/triggers.mjs`, doplní @hrdinu, počty, další kótu) a pod postem otevře hlasování `perFaction`: každá strana volí vlastní rozkaz
+  FORTIFY (nebezpečí ×0,7 na 3 dny) / HOSPITAL (uzdravení 0,6 na 3 dny), hlas se páruje s vojákem podle IG ID (frakci psát netřeba),
+  bez vojáka se nepočítá (bot poradí narukovat). Vyhodnotí ranní vydání, nejdřív 8 h po otevření (`minHours`). Rozkazy: `engine/orders.js`, `state.orders`.
+  Pro další kóty: nová položka s `trigger.race` = id kóty (`theme.race.objectives`) a grafika `python marketing/make_victory.py <id> "<Název>" "<Další>"`.
+  1. snímek kreslí `marketing/victory_scene.py` (kopec s praporem, v popředí sprity ze zákopů ve hře, pytle stejného vzoru jako ve hře).
+- **Další na řadě (domluvený návrh, zatím nepostavený):** změny terénu,
   hlášení se jmény skutečných hráčů. Výměna zajatců jako společná událost.

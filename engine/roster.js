@@ -7,6 +7,7 @@ import { checkRace, raceStatus, raceDanger, activeBarrage, awardHonors } from '.
 import { pick } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
+import { orderDanger, orderRecover, issueOrders } from './orders.js';
 import { ensureValley, valleyTick, valleyDanger, valleyRecover, raidKeyword, volunteer, valleyPublic } from './valley.js';
 
 export const SHARDS = 64;
@@ -122,6 +123,9 @@ export function applyComment(state, comment, theme, story, map) {
     if (raid && !parsed) return { type: 'volunteer', handle, soldier: { handle }, ok: false, reason: 'notEnlisted' }; // nejdřív narukovat
     if (role) return { type: 'role', handle, soldier: existing, ...role };
     if (wish && !existing) return { type: 'role', handle, soldier: { handle }, role: wish, reason: 'notEnlisted' };
+    // hlas frakce bez vojáka: nejdřív narukovat (odpověď poradí, jak)
+    const vo = !existing && state.vote?.perFaction && voteOption(state, comment);
+    if (vo) return { type: 'vote', handle, kw: vo.kw, reason: 'notEnlisted' };
     return null; // každý jen jednou, frakce se nemění
   }
   const f = parsed.faction;
@@ -137,7 +141,8 @@ export function applyComment(state, comment, theme, story, map) {
   awardHonors(state, theme);
   const victory = checkRace(state, theme, story, s);
   const raidRes = raid ? volunteer(state, theme, s, 'comment') : null;
-  return { type: 'enlist', soldier: s, victory, raid: raidRes, roleWish };
+  const voted = state.vote?.perFaction ? castVote(state, comment) : null;
+  return { type: 'enlist', soldier: s, victory, raid: raidRes, roleWish, ...(voted ? { vote: voted } : {}) };
 }
 
 // Přidělí první volné místo podle priority (střed → ven, přední linie první) v otevřených sektorech.
@@ -201,8 +206,12 @@ export function unitName(order) {
 
 // --- hlasování v komentářích pod Reelem ---
 // state.vote = { mediaId, question, options: [{ kw, label, danger, outcome }], tallies: { handle: kw } }
-export function openVote(state, { mediaId, question, options }) {
-  state.vote = { mediaId, question, options, tallies: {}, openedDay: state.day };
+// perFaction: každá frakce volí vlastní rozkaz; hlas se páruje s vojákem podle IG účtu (frakci do komentáře psát netřeba),
+// komentáře lidí bez vojáka se nepočítají. Možnosti pak nesou danger/recover/days (rozkaz, engine/orders.js), outcome smí mít {side}.
+// minHours: denní tah hlasování nevyhodnotí dřív, než je otevřené aspoň tolik hodin (jinak počká na další vydání).
+export function openVote(state, { mediaId, question, options, perFaction = false, minHours = 0, note = null, openedAt = null }) {
+  state.vote = { mediaId, question, options, tallies: {}, openedDay: state.day, ...(perFaction ? { perFaction: true } : {}),
+    ...(minHours ? { minHours } : {}), ...(note ? { note } : {}), ...(openedAt ? { openedAt } : {}) };
 }
 
 // Voják autora komentáře: podle IG ID; podle jména jen u starých vojáků bez ID (id === handle).
@@ -219,20 +228,54 @@ export function findOwnSoldier(state, userId, handle) {
   return TAKEN;
 }
 
-function castVote(state, comment) {
+function voteOption(state, comment) {
   const v = state.vote;
   if (!v || !comment.mediaId || comment.mediaId !== v.mediaId) return null;
   const t = (comment.text || '').toUpperCase();
-  const opt = v.options.find((o) => new RegExp(`\\b${o.kw}\\b`).test(t));
+  return v.options.find((o) => new RegExp(`\\b${o.kw}\\b`).test(t)) || null;
+}
+
+function castVote(state, comment) {
+  const v = state.vote;
+  const opt = voteOption(state, comment);
   const handle = (comment.username || '').toLowerCase();
   if (!opt || !handle) return null;
+  if (v.perFaction) {
+    const s = findOwnSoldier(state, comment.userId, handle);
+    if (!s || s === TAKEN) return null; // bez vojáka nehlasuje (komentář může dál narukovat, viz applyComment)
+    v.tallies[s.id] = { kw: opt.kw, f: s.faction };
+    return { type: 'vote', handle, kw: opt.kw, faction: s.faction };
+  }
   v.tallies[comment.userId || handle] = opt.kw; // 1 hlas na IG účet (ne na jméno), platí poslední
   return { type: 'vote', handle, kw: opt.kw };
 }
 
-export function resolveVote(state) {
+const sideName = (theme, f) => theme?.factions?.[f]?.name.replace(/^The /, '') ?? `Side ${f + 1}`;
+
+function resolveFactionVote(state, v, theme) {
+  const nf = theme?.factions?.length || 2;
+  const per = Array.from({ length: nf }, (_, f) => {
+    const counts = Object.fromEntries(v.options.map((o) => [o.kw, 0]));
+    for (const t of Object.values(v.tallies)) if (t.f === f) counts[t.kw] = (counts[t.kw] || 0) + 1;
+    const winner = v.options.reduce((best, o) => (counts[o.kw] > counts[best.kw] ? o : best), v.options[0]);
+    return { faction: f, counts, winner };
+  });
+  const total = Object.keys(v.tallies).length;
+  const text = per.map((p) => (p.winner.outcome || '').replaceAll('{side}', sideName(theme, p.faction))).join(' ');
+  const winner = per.map((p) => `${sideName(theme, p.faction)}: ${p.winner.kw}`).join(' · ');
+  const orders = issueOrders(state, per.map((p) => ({ ...p.winner, faction: p.faction })), state.day + 1);
+  const result = { day: state.day, mediaId: v.mediaId, question: v.question, perFaction: true, winner, winners: per.map((p) => p.winner.kw),
+    counts: per.map((p) => p.counts), total, text, danger: 1, orders };
+  state.events = [...(state.events || []), result].slice(-60);
+  state.vote = null;
+  return result;
+}
+
+export function resolveVote(state, theme, now = null) {
   const v = state.vote;
   if (!v) return null;
+  if (now && v.minHours && v.openedAt && now - Date.parse(v.openedAt) < v.minHours * 3600e3) return null; // ještě počká
+  if (v.perFaction) return resolveFactionVote(state, v, theme);
   const counts = Object.fromEntries(v.options.map((o) => [o.kw, 0]));
   for (const kw of Object.values(v.tallies)) counts[kw] = (counts[kw] || 0) + 1;
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
@@ -253,8 +296,8 @@ export function unlocks(state, theme) {
 
 // Denní tah: nový den, zápisy, osudy, nástupci padlých, kronika dne do Deníku fronty.
 export function dailyTick(state, theme, story, ctx = {}) {
-  const decided = resolveVote(state);
-  if (decided) {
+  const decided = resolveVote(state, theme, ctx.now);
+  if (decided && !decided.perFaction) {
     ctx = { ...ctx, danger: ctx.danger ?? decided.danger };
   }
   const nightWeather = state.weather ?? weatherFor(theme, story, state.day)?.id ?? null; // počasí noci, kdy výprava vyrazila
@@ -294,8 +337,9 @@ export function dailyTick(state, theme, story, ctx = {}) {
     }
     if (raid.ids.has(s.id)) continue;
     if (!chosen.has(s.id) && s.status === 'active') continue;
-    const danger = (ctx.danger ?? 1) * (theme.race ? raceDanger(state, theme, s.faction, day) : 1) * valleyDanger(state, theme, s, day);
-    const sctx = { active: active.has(s.id), danger, weather, events, comrade, foe, today, recover: valleyRecover(state, theme, s) };
+    const danger = (ctx.danger ?? 1) * (theme.race ? raceDanger(state, theme, s.faction, day) : 1) * valleyDanger(state, theme, s, day) * orderDanger(state, s.faction, day);
+    const recover = orderRecover(state, s.faction, day, valleyRecover(state, theme, s));
+    const sctx = { active: active.has(s.id), danger, weather, events, comrade, foe, today, recover };
     for (const text of tickSoldier(s, day, theme, story, sctx)) {
       s.record.push([day, text]);
     }
@@ -351,7 +395,11 @@ export function buildPublic(state, theme) {
     barrage: activeBarrage(state, state.day),
     history: (state.events || []).slice(-30).reverse(),
     valley: valley.roster,
-    vote: state.vote ? { question: state.vote.question, options: state.vote.options.map((o) => ({ kw: o.kw, label: o.label })), votes: Object.keys(state.vote.tallies).length } : null,
+    vote: state.vote ? {
+      question: state.vote.question, options: state.vote.options.map((o) => ({ kw: o.kw, label: o.label })), votes: Object.keys(state.vote.tallies).length,
+      ...(state.vote.perFaction ? { perFaction: true } : {}), ...(state.vote.note ? { note: state.vote.note } : {}),
+    } : null,
+    orders: (state.orders || []).filter((o) => state.day + 1 <= o.to).map(({ faction, kw, label, from, to }) => ({ faction, kw, label, from, to })),
     updated: new Date().toISOString(),
     nextEdition: nextEdition(state, theme),
     fields: ['handle', 'faction', 'x', 'y', 'dir', 'line', 'medals', 'archetype', 'rank', 'status', 'variant', 'claimed', 'generation', 'name'],

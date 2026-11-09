@@ -45,7 +45,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       $('vote').hidden = false;
       $('vote').innerHTML = `<span class="d">The front decides</span>${esc(v.question)}<br>` +
         v.options.map((o) => `<span class="kw" title="${esc(o.label)}">${esc(o.kw)}</span>`).join('') +
-        `<span class="muted"> comment under today's reel · ${v.votes} votes</span>`;
+        `<span class="muted"> ${v.perFaction ? 'comment under our latest post · each side votes for itself' : "comment under today's reel"} · ${v.votes} votes</span>`;
     }
   }
 
@@ -93,7 +93,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   if (roster.vote) {
     $('wr-vote').innerHTML = `<p>${esc(roster.vote.question)}</p>` +
       roster.vote.options.map((o) => `<div class="vote-opt"><span class="kw">${esc(o.kw)}</span><span>${esc(o.label)}</span></div>`).join('') +
-      `<p class="muted">Comment one word under today's reel on ${esc(theme.instagram)}. One vote per account, your last comment counts. ${roster.vote.votes} votes so far.</p>`;
+      `<p class="muted">${roster.vote.note ? esc(roster.vote.note) : `Comment one word under today's reel on ${esc(theme.instagram)}.`} One vote per account, your last comment counts. ${roster.vote.votes} votes so far.</p>`;
   } else {
     $('wr-vote').innerHTML = `<p class="muted">No open decision right now. The next one comes with the next reel on ${esc(theme.instagram)}.</p>`;
   }

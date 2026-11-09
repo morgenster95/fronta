@@ -159,8 +159,18 @@ async function main() {
         const text = res.type === 'role' && roleReply(theme, res.soldier, w.role, w.reason);
         if (text && process.env.IG_REPLY === '1' && !process.env.DRY_RUN) await replyOnce(c, text).catch((e) => console.warn(e.message));
       }
+      // hlas frakce (hlasování po vítězství v závodě): potvrzení pod komentář
+      if (res.type === 'vote' && (res.faction != null || res.reason === 'notEnlisted')) {
+        console.log(`☑ hlas @${res.handle}: ${res.kw}${res.reason ? ` (${res.reason})` : ` za ${theme.factions[res.faction].name}`}`);
+        const side = res.faction != null && theme.factions[res.faction].name;
+        const text = res.reason === 'notEnlisted'
+          ? `@${res.handle} Only soldiers vote on orders. Comment ${theme.factions.map((f) => f.keyword).join(' or ')} together with ${res.kw} and you'll enlist and vote at once.`
+          : `@${res.handle} Vote counted: ${res.kw} for ${side}. Orders are read out in the next Trench Gazette (13:00 UTC). Your last comment counts.`;
+        if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) await replyOnce(c, text).catch((e) => console.warn(e.message));
+      }
       if (res.type === 'enlist') {
         enlisted++;
+        if (res.vote) console.log(`☑ hlas @${res.soldier.handle}: ${res.vote.kw} (při narukování)`);
         console.log(`+ @${res.soldier.handle} → ${theme.factions[res.soldier.faction].name}, ${res.soldier.sector}`);
         if (res.victory) console.log(`★ ${theme.factions[res.victory.faction].name} dobyli ${res.victory.name} (rozhodl @${res.victory.hero})`);
         if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN && theme.replies) {
@@ -171,6 +181,7 @@ async function main() {
           const role = theme.archetypes.find((a) => a.id === s.archetype).name;
           const extra = rw?.reason === 'granted' || rw?.reason === 'same' ? ` Role: ${role}, as you asked.` : rw?.reason === 'officer' ? ` Lieutenants are made by promotion only, so you start as ${role}.` : '';
           text += extra;
+          if (res.vote) text += ` Your vote for ${res.vote.kw} is counted.`;
           await replyOnce(c, text).catch((e) => console.warn(e.message));
         }
         if (process.env.IG_SEND_DM === '1' && !process.env.DRY_RUN) {

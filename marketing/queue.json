@@ -152,6 +152,54 @@
         "permalink": "https://www.instagram.com/stories/mudandiron/4026627117113561390",
         "at": "2026-11-09T13:36:58.353Z"
       }
+    },
+    {
+      "id": "victory-ridge",
+      "type": "carousel",
+      "trigger": {
+        "race": "ridge"
+      },
+      "_note": "Vyjde sám, jakmile některá strana dobude Verdel Ridge (ingest/triggers.mjs). Pak se pod ním otevře hlasování po frakcích.",
+      "files": [],
+      "variants": [
+        {
+          "files": [
+            "victory_ridge_hegemony_1.jpg",
+            "victory_ridge_hegemony_2.jpg"
+          ],
+          "caption": "🩶 VERDEL RIDGE HAS FALLEN. Now your side votes: comment FORTIFY or HOSPITAL below 👇\n\nThe Hegemony reached 100 soldiers first ({win} against {lose}) and took the heights. The deciding rifle belonged to @{hero}, now Hero of Verdel Ridge. 🎖️\n\nFor 3 days the guns on the ridge pound the Concord lines. For a week the high ground keeps the Hegemony safer. Every Hegemony soldier wears the ribbon.\n\n🗳️ NOW EACH SIDE PICKS ITS OWN ORDER\nComment one word below. Your soldier is your ballot: we know which side you serve, so no need to write it.\n\n🧱 FORTIFY: dig in deeper, fewer wounds for 3 days\n🏥 HOSPITAL: a dugout hospital, the wounded heal faster for 3 days\n\nThe Hegemony vote for the Hegemony. The Concord vote for the Concord. Orders are read out in the Trench Gazette at 13:00 UTC.\nNot enlisted yet? Comment HEGEMONY or CONCORD together with your order.\n\n⚔️ The race for {next} starts now. First side to 100 new recruits takes it.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron"
+        },
+        {
+          "files": [
+            "victory_ridge_concord_1.jpg",
+            "victory_ridge_concord_2.jpg"
+          ],
+          "caption": "🫒 VERDEL RIDGE HAS FALLEN. Now your side votes: comment FORTIFY or HOSPITAL below 👇\n\nThe Concord reached 100 soldiers first ({win} against {lose}) and took the heights. The deciding rifle belonged to @{hero}, now Hero of Verdel Ridge. 🎖️\n\nFor 3 days the guns on the ridge pound the Hegemony lines. For a week the high ground keeps the Concord safer. Every Concord soldier wears the ribbon.\n\n🗳️ NOW EACH SIDE PICKS ITS OWN ORDER\nComment one word below. Your soldier is your ballot: we know which side you serve, so no need to write it.\n\n🧱 FORTIFY: dig in deeper, fewer wounds for 3 days\n🏥 HOSPITAL: a dugout hospital, the wounded heal faster for 3 days\n\nThe Concord vote for the Concord. The Hegemony vote for the Hegemony. Orders are read out in the Trench Gazette at 13:00 UTC.\nNot enlisted yet? Comment CONCORD or HEGEMONY together with your order.\n\n⚔️ The race for {next} starts now. First side to 100 new recruits takes it.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron"
+        }
+      ],
+      "caption": "",
+      "vote": {
+        "question": "Verdel Ridge has fallen. What order does your side need?",
+        "perFaction": true,
+        "minHours": 8,
+        "note": "Each side picks its own order: comment FORTIFY or HOSPITAL under the Verdel Ridge post on @mudandiron. Your soldier is your ballot.",
+        "options": [
+          {
+            "kw": "FORTIFY",
+            "label": "Dig in deeper: fewer wounds for 3 days",
+            "danger": 0.7,
+            "days": 3,
+            "outcome": "The {side} dug in deeper: sandbags, fresh wire and deeper dugouts for three days."
+          },
+          {
+            "kw": "HOSPITAL",
+            "label": "A dugout hospital: the wounded heal faster for 3 days",
+            "recover": 0.6,
+            "days": 3,
+            "outcome": "The {side} carved a hospital out of the earth: for three days the wounded heal faster."
+          }
+        ]
+      }
     }
   ]
 }
