@@ -54,14 +54,14 @@ def slide_vote(side, nxt, ext):
     im = canvas()
     sky(im, 50, glow=False)
     d = frame(im)
-    text_c(d, W // 2, 10, "YOUR SIDE,", font(16, True), P["white"])
-    text_c(d, W // 2, 28, "YOUR ORDER", font(16, True), P["gold"])
+    text_c(d, W // 2, 10, "YOUR SIDE", font(16, True), P["white"])
+    text_c(d, W // 2, 28, "BUILDS ONE", font(16, True), P["gold"])
     text_c(d, W // 2, 48, "EACH SIDE VOTES FOR ITSELF", font(8), P["pale"])
     hosp = Image.open(os.path.join(LOC, "hospital.png")).convert("RGBA")
     hosp = hosp.resize((hosp.width // 4, hosp.height // 4), Image.NEAREST)
     opts = [
-        ("FORTIFY", "DIG IN DEEPER", "FEWER WOUNDS", None),
-        ("HOSPITAL", "DUGOUT HOSPITAL", "WOUNDED HEAL FASTER", hosp),
+        ("FORTIFY", "SANDBAG PARAPETS", "FEWER MEN HIT", None),
+        ("HOSPITAL", "HOSPITAL DUGOUT", "4 BEDS FOR WOUNDED", hosp),
     ]
     for i, (kw, a, b, pic) in enumerate(opts):
         y = 66 + i * 70

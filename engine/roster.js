@@ -8,6 +8,7 @@ import { pick } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
 import { orderDanger, orderRecover, issueOrders } from './orders.js';
+import { battleTick, battlePublic, build as buildStructure, ensureBattle } from './battle.js';
 import { ensureValley, valleyTick, valleyDanger, valleyRecover, raidKeyword, volunteer, valleyPublic } from './valley.js';
 
 export const SHARDS = 64;
@@ -264,8 +265,10 @@ function resolveFactionVote(state, v, theme) {
   const text = per.map((p) => (p.winner.outcome || '').replaceAll('{side}', sideName(theme, p.faction))).join(' ');
   const winner = per.map((p) => `${sideName(theme, p.faction)}: ${p.winner.kw}`).join(' · ');
   const orders = issueOrders(state, per.map((p) => ({ ...p.winner, faction: p.faction })), state.day + 1);
+  // stavby (dugout, pytle, drát…): trvalé, staví se jen hlasováním
+  const built = per.filter((p) => p.winner.build).map((p) => buildStructure(state, theme, p.faction, p.winner.build)).filter(Boolean);
   const result = { day: state.day, mediaId: v.mediaId, question: v.question, perFaction: true, winner, winners: per.map((p) => p.winner.kw),
-    counts: per.map((p) => p.counts), total, text, danger: 1, orders };
+    counts: per.map((p) => p.counts), total, text: [text, ...built.map((b) => `${b}.`)].join(' ').trim(), danger: 1, orders, built };
   state.events = [...(state.events || []), result].slice(-60);
   state.vote = null;
   return result;
@@ -307,7 +310,11 @@ export function dailyTick(state, theme, story, ctx = {}) {
   state.weather = weather?.id ?? null;
   // výpravy: vyhodnocení té z minulého vydání, vyhlášení nové (účastníci dnes nemají běžný zápis)
   const raid = valleyTick(state, theme, story, day, nightWeather);
-  const events = [...raid.events];
+  // denní boj: zásahy, medici, lůžka, drát (engine/battle.js); účastníci výpravy dnes v linii nejsou
+  const dangerOf = (s) => (ctx.danger ?? 1) * (theme.race ? raceDanger(state, theme, s.faction, day) : 1) * valleyDanger(state, theme, s, day) * orderDanger(state, s.faction, day);
+  const careOf = (s) => orderRecover(state, s.faction, day, valleyRecover(state, theme, s)) / 0.35;
+  const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf }) : { events: [], news: [], ids: new Set() };
+  const events = [...raid.events, ...fight.events];
   const today = new Set(); // šablony použité dnes (rozmanitost mezi vojáky)
   for (const s of state.soldiers) s.bg ??= makeBackground(s, story);
   const active = new Set(ctx.activeIds || []);
@@ -335,16 +342,16 @@ export function dailyTick(state, theme, story, ctx = {}) {
       }
       continue;
     }
-    if (raid.ids.has(s.id)) continue;
+    if (raid.ids.has(s.id) || fight.ids.has(s.id)) continue; // dnes už má zápis z výpravy nebo z boje
     if (!chosen.has(s.id) && s.status === 'active') continue;
-    const danger = (ctx.danger ?? 1) * (theme.race ? raceDanger(state, theme, s.faction, day) : 1) * valleyDanger(state, theme, s, day) * orderDanger(state, s.faction, day);
+    const danger = dangerOf(s);
     const recover = orderRecover(state, s.faction, day, valleyRecover(state, theme, s));
-    const sctx = { active: active.has(s.id), danger, weather, events, comrade, foe, today, recover };
+    const sctx = { active: active.has(s.id), danger, weather, events, comrade, foe, today, recover, battle: !!theme.battle };
     for (const text of tickSoldier(s, day, theme, story, sctx)) {
       s.record.push([day, text]);
     }
   }
-  const news = [...raid.news, ...(state.news || []).filter((n) => n.day >= day - 1)];
+  const news = [...raid.news, ...fight.news, ...(state.news || []).filter((n) => n.day >= day - 1)];
   state.news = [];
   state.chronicle = [...(state.chronicle || []), writeChronicle(state, day, { theme, story, weather, events, decided, news })]; // celá historie, nic se nemaže
   return state;
@@ -399,6 +406,7 @@ export function buildPublic(state, theme) {
       question: state.vote.question, options: state.vote.options.map((o) => ({ kw: o.kw, label: o.label })), votes: Object.keys(state.vote.tallies).length,
       ...(state.vote.perFaction ? { perFaction: true } : {}), ...(state.vote.note ? { note: state.vote.note } : {}),
     } : null,
+    battle: battlePublic(state, theme),
     orders: (state.orders || []).filter((o) => state.day + 1 <= o.to).map(({ faction, kw, label, from, to }) => ({ faction, kw, label, from, to })),
     updated: new Date().toISOString(),
     nextEdition: nextEdition(state, theme),
