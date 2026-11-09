@@ -253,3 +253,26 @@ export function openRange(map, n) {
   const from = Math.max(0, c - Math.ceil(n / 2));
   return [from, Math.min(map.sectors, from + n)];
 }
+
+// Spojovací zákop od vchodu stavby (nemocnice) k nejbližšímu zákopu směrem k frontě. Skutečné dlaždice zákopu v mřížce mapy
+// (ne jen kresba), zapíše se i do map.paths (line 'comm', site) – po něm půjde později chodit.
+// x, y = vchod v pixelech světa; dir = +1 dolů (k frontě Hegemonie), -1 nahoru (Concord)
+export function connectSite(map, faction, x, y, dir, site = 'hospital') {
+  const S = map.tile, W = map.W, H = map.H;
+  const at = (tx, ty) => (tx < 0 || ty < 0 || tx >= W || ty >= H ? T.MUD : map.grid[ty * W + tx]);
+  const set = (tx, ty) => { if (tx >= 0 && ty >= 0 && tx < W && ty < H) map.grid[ty * W + tx] = T.TRENCH; };
+  const tx0 = Math.floor(x / S) - 1;
+  let ty = Math.floor(y / S) + (dir > 0 ? 0 : -1);
+  const cells = [], pts = [[tx0, ty]];
+  for (let k = 0; k < 60; k++) {
+    const tx = tx0 + (Math.floor(k / 4) % 2 ? 2 : 0); // mírný cikcak jako u spojovacích zákopů
+    if (k > 1 && [0, 1].some((d) => at(tx + d, ty) === T.TRENCH || at(tx + d, ty) === T.DUGOUT)) break; // napojeno
+    set(tx, ty); set(tx + 1, ty);
+    if (k && Math.floor(k / 4) !== Math.floor((k - 1) / 4)) { set(tx0, ty); set(tx0 + 1, ty); set(tx0 + 2, ty); set(tx0 + 3, ty); pts.push([tx, ty]); }
+    cells.push([tx, ty]);
+    ty += dir;
+  }
+  pts.push(cells.at(-1));
+  map.paths = [...(map.paths || []), { line: 'comm', faction, site, pts, cells }];
+  return cells;
+}

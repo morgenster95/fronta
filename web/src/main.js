@@ -1,6 +1,6 @@
 // Prohlížeč fronty: terén po blocích, tisíce vojáků, úrovně detailu, kamera a UI.
 import { Application, Assets, Container, Graphics, Rectangle, Sprite, Texture, TextureSource, Ticker, TilingSprite } from 'pixi.js';
-import { generateFront, openRange, DIRS, T } from '../../engine/mapgen.js';
+import { generateFront, openRange, DIRS, T, connectSite } from '../../engine/mapgen.js';
 import { Camera } from './camera.js';
 import { paintChunk, paintOverview, CHUNK } from './terrain.js';
 import { initUI } from './ui.js';
@@ -202,8 +202,7 @@ async function boot() {
     };
     const sites = [];
     theme.factions.forEach((_, f) => {
-      const real = soldiers.filter((s) => s.faction === f && s.slot && !s.vacant).map((s) => s.x).sort((a, b) => a - b);
-      const cx = real.length ? real[Math.floor(real.length / 2)] : (openX0 + openX1) / 2;
+      const cx = (openX0 + openX1) / 2; // střed otevřené fronty: stálé místo (nemění se s vojáky), jen když se otevřou nové sektory
       const sup = ext(f, 'support'), res = ext(f, 'reserve');
       const y = sup && res ? (f === 0 ? (res[1] + sup[0]) / 2 : (sup[1] + res[0]) / 2) : map.front[f] * map.tile + (f === 0 ? -200 : 200);
       const n = Math.max(1, pub[f]?.hospital?.dugouts || 0);
@@ -229,6 +228,9 @@ async function boot() {
       }
     });
     const H = buildHospitals(sites);
+    // ke každé nemocnici vede spojovací zákop od vchodu k nejbližšímu zákopu (skutečné dlaždice: později se po něm bude chodit)
+    for (const site of H.sites) connectSite(map, site.faction, site.x, site.y + site.entrance * (site.beds >= 4 ? 40 : 27), site.entrance);
+    overview.texture = Texture.from(paintOverview(map));
     world.addChildAt(H.base, world.getChildIndex(terrainLayer) + 1);
     world.addChildAt(H.roofs, world.getChildIndex(overLayer) + 1);
     // lůžka a nosítka podle dat z denního tahu (battlePublic)
