@@ -30,6 +30,20 @@ test('kód pro převzetí se rozpozná', () => {
   assert.equal(parseComment('nice reel', theme), null);
 });
 
+test('převzetí patří IG účtu, ne jménu (uvolněné @jméno nic nepřebírá)', () => {
+  const s = emptyState(theme);
+  applyComment(s, { id: 'c1', userId: 'u1', username: 'bob', text: 'CONCORD' }, theme, story, map);
+  // Bob se přejmenoval na bob2, jméno „bob“ si vzal jiný účet u2
+  assert.equal(applyComment(s, { id: 'c2', userId: 'u2', username: 'bob', text: 'ENLIST-AB12' }, theme, story, map), null);
+  assert.equal(applyComment(s, { id: 'c3', userId: 'u2', username: 'bob', text: 'HEGEMONY' }, theme, story, map), null);
+  assert.equal(s.soldiers.length, 1);
+  // Bob pod novým jménem převzetí dokončí (kód na webu je vystavený na původní jméno vojáka)
+  const r = applyComment(s, { id: 'c4', userId: 'u1', username: 'bob2', text: 'ENLIST-AB12' }, theme, story, map);
+  assert.equal(r.type, 'claim');
+  assert.equal(r.handle, 'bob');
+  assert.equal(r.soldier.id, 'u1');
+});
+
 test('denní tah přidá zápisy a v textech nezůstanou zástupné znaky', () => {
   const s = emptyState(theme);
   for (let i = 0; i < 300; i++) applyComment(s, { id: `c${i}`, userId: `u${i}`, username: `user${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);

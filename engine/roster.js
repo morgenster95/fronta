@@ -48,8 +48,10 @@ export function applyComment(state, comment, theme, story, map) {
   const parsed = parseComment(comment.text, theme);
   const handle = (comment.username || '').toLowerCase();
   if (!handle) return null;
-  const existing = state.soldiers.find((s) => s.handle === handle);
-  if (parsed?.type === 'claim') return { type: 'claim', handle, code: parsed.code, soldier: existing };
+  // voják patří IG účtu (trvalé ID), ne jménu: @jméno jde změnit a uvolněné jméno si může vzít někdo jiný
+  const existing = findOwnSoldier(state, comment.userId, handle);
+  if (existing === TAKEN) return null; // jméno patří vojákovi jiného účtu: nic nepřebírá, nenarukuje pod cizím jménem
+  if (parsed?.type === 'claim') return { type: 'claim', handle: existing?.handle ?? handle, code: parsed.code, soldier: existing };
   // heslo otevřené výpravy (např. CHURCH): přihláška dobrovolníka
   const raid = raidKeyword(state, theme, comment.text);
   if (!parsed || existing) {
@@ -136,6 +138,20 @@ export function openVote(state, { mediaId, question, options }) {
   state.vote = { mediaId, question, options, tallies: {}, openedDay: state.day };
 }
 
+// Voják autora komentáře: podle IG ID; podle jména jen u starých vojáků bez ID (id === handle).
+// TAKEN = jméno má voják jiného IG účtu.
+export const TAKEN = Symbol('taken');
+export function findOwnSoldier(state, userId, handle) {
+  if (userId) {
+    const byId = state.soldiers.find((s) => s.id === userId);
+    if (byId) return byId;
+  }
+  const byName = state.soldiers.find((s) => s.handle === handle);
+  if (!byName) return undefined;
+  if (!userId || byName.id === byName.handle) return byName;
+  return TAKEN;
+}
+
 function castVote(state, comment) {
   const v = state.vote;
   if (!v || !comment.mediaId || comment.mediaId !== v.mediaId) return null;
@@ -143,7 +159,7 @@ function castVote(state, comment) {
   const opt = v.options.find((o) => new RegExp(`\\b${o.kw}\\b`).test(t));
   const handle = (comment.username || '').toLowerCase();
   if (!opt || !handle) return null;
-  v.tallies[handle] = opt.kw; // platí poslední hlas
+  v.tallies[comment.userId || handle] = opt.kw; // 1 hlas na IG účet (ne na jméno), platí poslední
   return { type: 'vote', handle, kw: opt.kw };
 }
 
