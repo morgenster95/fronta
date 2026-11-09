@@ -59,6 +59,11 @@ async function publish(item) {
     for (const f of item.files) children.push((await call('POST', `${USER}/media`, { image_url: url(f), is_carousel_item: 'true' })).id);
     for (const c of children) await waitReady(c);
     creation = (await call('POST', `${USER}/media`, { media_type: 'CAROUSEL', children: children.join(','), caption: item.caption })).id;
+  } else if (item.type === 'story') {
+    // příběh (24 h): video max 60 s, bez popisku; .mp4 = video, jinak obrázek
+    const f = item.files[0];
+    const media = /\.mp4$/i.test(f) ? { video_url: url(f) } : { image_url: url(f) };
+    creation = (await call('POST', `${USER}/media`, { media_type: 'STORIES', ...media })).id;
   } else throw new Error(`neznámý typ ${item.type}`);
   await waitReady(creation);
   const media = await call('POST', `${USER}/media_publish`, { creation_id: creation });

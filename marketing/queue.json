@@ -126,6 +126,22 @@
         "permalink": "https://www.instagram.com/reel/Dfha2PzFxro/",
         "at": "2026-11-09T13:18:23.920Z"
       }
+    },
+    {
+      "id": "story-day1-1",
+      "type": "story",
+      "files": [
+        "story_day1_1.mp4"
+      ],
+      "caption": ""
+    },
+    {
+      "id": "story-day1-2",
+      "type": "story",
+      "files": [
+        "story_day1_2.mp4"
+      ],
+      "caption": ""
     }
   ]
 }
