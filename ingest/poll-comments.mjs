@@ -34,11 +34,13 @@ async function ig(path, params = {}) {
 // Odpovědi, které už odešly (kolo smyčky se může opakovat; nesmí odpovědět dvakrát)
 const REPLIED = process.env.REPLIED_LOG;
 const replied = new Set(REPLIED && fs.existsSync(REPLIED) ? fs.readFileSync(REPLIED, 'utf8').split(/\r?\n/).filter(Boolean) : []);
-async function replyOnce(commentId, message) {
-  if (replied.has(commentId)) return;
-  await igPost(`${commentId}/replies`, { message });
-  replied.add(commentId);
-  if (REPLIED) fs.appendFileSync(REPLIED, `${commentId}\n`);
+// c = komentář z comments(); odpověď na odpověď jde do vlákna nadřazeného komentáře (IG má jen jednu úroveň).
+// key: jiný klíč než ID komentáře, když pod jeden komentář smí přijít druhá odpověď (dodatečně splněná role)
+async function replyOnce(c, message, key = c.id) {
+  if (replied.has(key)) return;
+  await igPost(`${c.replyTo || c.id}/replies`, { message });
+  replied.add(key);
+  if (REPLIED) fs.appendFileSync(REPLIED, `${key}\n`);
 }
 
 async function igPost(path, body) {
@@ -75,19 +77,33 @@ async function mediaToPoll(state) {
   return [...out].map(([id, count]) => ({ id, count }));
 }
 
-async function* comments(mediaId, seen) {
-  let next = null;
-  let page = await ig(`${mediaId}/comments`, { fields: 'id,text,username,timestamp,from', limit: 50 });
+// Komentáře i ODPOVĚDI pod nimi (hráči často píšou HEGEMONY jako odpověď pod cizí komentář).
+// Komentáře našeho účtu se přeskakují: odpovědi bota obsahují hesla frakcí a bot by narukoval sám sebe.
+// full = projít všechny stránky (změnil se počet komentářů: nová odpověď může být i pod starým komentářem).
+let OWN = { id: USER, username: null };
+const C_FIELDS = 'id,text,username,timestamp,from';
+async function* comments(mediaId, seen, full = true) {
+  const name = (c) => (c.username || c.from?.username || '').toLowerCase();
+  const own = (c) => (c.from?.id && c.from.id === OWN.id) || (OWN.username && name(c) === OWN.username);
+  const item = (c, parent = null) => ({ id: c.id, text: c.text, username: c.username || c.from?.username, userId: c.from?.id, timestamp: c.timestamp, mediaId, parentId: parent, replyTo: parent || c.id });
+  let page = await ig(`${mediaId}/comments`, { fields: `${C_FIELDS},replies.limit(50){${C_FIELDS}}`, limit: 50 });
   for (;;) {
     let allSeen = true;
     for (const c of page.data || []) {
       if (!seen.has(c.id)) allSeen = false;
-      yield { id: c.id, text: c.text, username: c.username || c.from?.username, userId: c.from?.id, timestamp: c.timestamp, mediaId };
+      if (!own(c)) yield item(c);
+      let rp = c.replies;
+      while (rp) {
+        for (const x of rp.data || []) {
+          if (!seen.has(x.id)) allSeen = false;
+          if (!own(x)) yield item(x, c.id);
+        }
+        rp = rp.paging?.next ? await ig(rp.paging.next) : null;
+      }
     }
-    next = page.paging?.next;
-    // komentáře chodí od nejnovějších: když je celá stránka známá, dál nemá smysl
-    if (!next || allSeen) break;
-    page = await ig(next);
+    // komentáře chodí od nejnovějších: když je celá stránka známá a počet se nezměnil, dál nemá smysl
+    if (!page.paging?.next || (allSeen && !full)) break;
+    page = await ig(page.paging.next);
   }
 }
 
@@ -114,6 +130,7 @@ async function main() {
 
   try {
     const prof = await ig(USER, { fields: 'followers_count,username' });
+    OWN = { id: USER, username: prof.username?.toLowerCase() || null };
     state.followers = prof.followers_count ?? state.followers;
   } catch (e) {
     console.warn(e.message);
@@ -122,7 +139,8 @@ async function main() {
   const posts = await mediaToPoll(state);
   console.log(`posty ke kontrole: ${posts.length}`);
   for (const { id: mid, count } of posts) {
-    for await (const c of comments(mid, seen)) {
+    const changed = count === undefined || state.mediaCounts?.[mid] !== count;
+    for await (const c of comments(mid, seen, changed)) {
       const res = applyComment(state, c, theme, story, map);
       if (!res) continue;
       // přihláška na výpravu (heslo místa v komentáři), i u nováčka, který tím zároveň narukoval
@@ -132,14 +150,14 @@ async function main() {
         console.log(`⚑ výprava @${s.handle}: ${raid.reason}`);
         const text = raidReply(state, theme, s, raid.reason);
         if (text && process.env.IG_REPLY === '1' && !process.env.DRY_RUN && res.type === 'volunteer') {
-          await replyOnce(c.id, text).catch((e) => console.warn(e.message));
+          await replyOnce(c, text).catch((e) => console.warn(e.message));
         }
       }
       if (res.type === 'role' || res.roleWish) {
         const w = res.type === 'role' ? res : res.roleWish;
         console.log(`⚒ role @${res.soldier.handle} → ${w.role}: ${w.reason}`);
         const text = res.type === 'role' && roleReply(theme, res.soldier, w.role, w.reason);
-        if (text && process.env.IG_REPLY === '1' && !process.env.DRY_RUN) await replyOnce(c.id, text).catch((e) => console.warn(e.message));
+        if (text && process.env.IG_REPLY === '1' && !process.env.DRY_RUN) await replyOnce(c, text).catch((e) => console.warn(e.message));
       }
       if (res.type === 'enlist') {
         enlisted++;
@@ -153,7 +171,7 @@ async function main() {
           const role = theme.archetypes.find((a) => a.id === s.archetype).name;
           const extra = rw?.reason === 'granted' || rw?.reason === 'same' ? ` Role: ${role}, as you asked.` : rw?.reason === 'officer' ? ` Lieutenants are made by promotion only, so you start as ${role}.` : '';
           text += extra;
-          await replyOnce(c.id, text).catch((e) => console.warn(e.message));
+          await replyOnce(c, text).catch((e) => console.warn(e.message));
         }
         if (process.env.IG_SEND_DM === '1' && !process.env.DRY_RUN) {
           const s = res.soldier;
@@ -169,7 +187,7 @@ async function main() {
         // kód od někoho, kdo ještě nenarukoval
         console.log(`✗ claim @${res.handle}: nenarukovaný`);
         if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) {
-          await replyOnce(c.id, `@${res.handle}, you need a soldier first. Comment ${theme.factions.map((f) => f.keyword).join(' or ')} to enlist, then send your claim code again.`).catch((e) => console.warn(e.message));
+          await replyOnce(c, `@${res.handle}, you need a soldier first. Comment ${theme.factions.map((f) => f.keyword).join(' or ')} to enlist, then send your claim code again.`).catch((e) => console.warn(e.message));
         }
       } else if (res.type === 'claim' && db && res.soldier) {
         // i už potvrzené (status done): opakované kolo smyčky musí převzetí zapsat znovu
@@ -180,7 +198,7 @@ async function main() {
           // starý (přepsaný) kód nebo kód z cizí karty
           console.log(`✗ claim @${res.handle}: neplatný kód ${res.code}`);
           if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) {
-            await replyOnce(c.id, `@${res.handle}, that code isn't valid. Open your own soldier's card (link in bio), tap claim and comment the code shown there.`).catch((e) => console.warn(e.message));
+            await replyOnce(c, `@${res.handle}, that code isn't valid. Open your own soldier's card (link in bio), tap claim and comment the code shown there.`).catch((e) => console.warn(e.message));
           }
         }
         if (valid && !res.soldier.claimed) {
@@ -190,7 +208,7 @@ async function main() {
           claimed++;
           console.log(`✓ claim @${res.handle}`);
           if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) {
-            await replyOnce(c.id, `✓ @${res.handle}, ${res.soldier.name} is now yours. Your claim is confirmed, soldier. Open your card on the front (link in bio) to request a transfer to another role.`).catch((e) => console.warn(e.message));
+            await replyOnce(c, `✓ @${res.handle}, ${res.soldier.name} is now yours. Your claim is confirmed, soldier. Open your card on the front (link in bio) to request a transfer to another role.`).catch((e) => console.warn(e.message));
           }
         }
       }
@@ -201,7 +219,7 @@ async function main() {
 
   // jednorázově: přání rolí ze starších (už zpracovaných) komentářů, od nejstarších; první přání platí
   // verze 2 = znovu s volnějším pravidlem (bez slov „want/be“); už přidělené role se nemění, odpovědi se neopakují
-  if ((state.roleBackfillV || 0) < 2) try {
+  if ((state.roleBackfillV || 0) < 3) try {
     const all = [];
     let page = await ig(`${USER}/media`, { fields: 'id', limit: 100 });
     for (;;) {
@@ -216,14 +234,15 @@ async function main() {
       const s = role && findOwnSoldier(state, c.userId, (c.username || '').toLowerCase());
       if (!s || s === TAKEN) continue;
       const reason = wishRole(state, s, role, theme, story);
-      if (reason !== 'granted') continue;
+      // v3: i těm, kterým role padla v minulém průchodu a odpověď se kvůli chybě klíče neposlala
+      if (reason !== 'granted' && !(reason === 'same' && s.roleWish === role)) continue;
       granted++;
       console.log(`⚒ role (zpětně) @${s.handle} → ${role}`);
-      if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) await replyOnce(c.id, roleReply(theme, s, role, reason), `${c.id}:role`).catch((e) => console.warn(e.message));
+      if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) await replyOnce(c, roleReply(theme, s, role, 'granted'), `${c.id}:role`).catch((e) => console.warn(e.message));
     }
     console.log(`přání rolí zpětně: ${all.length} komentářů, splněno ${granted}`);
     state.roleBackfill = new Date().toISOString();
-    state.roleBackfillV = 2;
+    state.roleBackfillV = 3;
   } catch (e) {
     console.warn('role backfill:', e.message);
   }
