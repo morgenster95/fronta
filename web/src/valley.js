@@ -141,8 +141,9 @@ function drawIcon(g, loc) {
 
 export function initValley({ theme, roster, soldiers, openSoldier, toast, show }) {
   const conf = theme.valley;
-  if (!conf) { $('valley-btn').hidden = true; return { open() {} }; }
   const rv = roster.valley || { holders: {}, open: null };
+  // údolí se na webu ukáže až v den, kdy noviny vyhlásí první výpravu (do té doby o něm hráči nevědí)
+  if (!conf || (!rv.open && !rv.last)) { $('valley-btn').hidden = true; return { open() {} }; }
   const byHandle = new Map(soldiers.filter((s) => s.handle).map((s) => [s.handle, s]));
   const F = (f) => theme.factions[f].name.replace(/^The /, '');
   const roleName = Object.fromEntries(theme.archetypes.map((a) => [a.id, a.name]));
@@ -202,7 +203,7 @@ export function initValley({ theme, roster, soldiers, openSoldier, toast, show }
         `Comment <span class="kw">${esc(o.keyword)}</span> under any ${esc(theme.instagram)} post, or press Volunteer if you have claimed your soldier. ` +
         `${o.slots} places per side, first come, first served. Results in the next edition. <span class="muted">${o.count} volunteer${o.count === 1 ? '' : 's'} so far; who they are stays secret until then.</span>`;
     } else {
-      el.innerHTML = `<span class="d">No raid tonight</span>The next call for volunteers comes with the ${dayLabel(rv.next ?? roster.day + 1)} edition of the Gazette.`;
+      el.innerHTML = `<span class="d">No raid tonight</span>When Field HQ needs volunteers again, the morning Gazette will say so.`;
     }
   }
 
