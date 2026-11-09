@@ -335,7 +335,7 @@ function applyFates(state, theme, story, r, loc, day) {
       });
       let text = fill(pick(rand, E.record[kind]), vars, rand) + ' ' + fill(pick(rand, E.fate[fate]), vars, rand);
       if (r.mvp === h && won) text += ' ' + fill(pick(rand, E.mvp), vars, rand);
-      text = text.replace(/\s+/g, ' ').trim();
+      text = text.replace(/\s+/g, ' ').replace(/ ([.,;:])/g, '$1').trim(); // prázdné {withMates} nesmí nechat „ .“
       s.raids = (s.raids || 0) + 1;
       s.medals ??= [];
       if (s.raids >= 3 && !s.medals.includes('raiders-cross')) {

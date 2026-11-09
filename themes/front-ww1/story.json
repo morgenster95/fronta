@@ -2124,10 +2124,10 @@
       "Volunteers wanted: {short}",
       "Night raid on {short}",
       "Orders: {short} by dawn",
-      "Raid roster open: {short}",
-      "Tonight's objective: {short}",
-      "Field HQ calls for {short}",
-      "A place in the party for {short}"
+      "A night's work at {short}",
+      "Wanted after dark: {short}",
+      "Blackened faces for {short}",
+      "Who goes to {short}?"
     ],
     "call": "Field HQ asks for volunteers for a night raid on {loc}. {held} Whoever holds it: {perk} {slots} places on each side, first come, first served. Comment {kw} under any {ig} post, or claim your soldier and press Volunteer on the Valley map. Only soldiers on the line can go. The raid goes out tonight; results in the next edition.",
     "weather": {
@@ -2144,190 +2144,190 @@
         "{W} take {short}",
         "{short} falls to the {W}",
         "{W} storm {short}",
-        "{short} changes hands: {W} advance",
-        "{W} secure the ground at {short}",
-        "New occupants at {short}: {W}"
+        "{W} tear {short} from the enemy",
+        "{short} falls to the {W}",
+        "{W} plant a flag on {short}"
       ],
       "hold": [
         "{W} hold {short}",
         "{short} stands firm for the {W}",
         "Raid on {short} repulsed",
-        "{W} refuse to yield {short}",
-        "The line at {short} holds for {W}",
-        "{short} remains under {W} control"
+        "{W} keep their grip on {short}",
+        "{W} throw the raiders back from {short}",
+        "{short} stays in {W} hands"
       ],
       "stalemate": [
         "Stalemate at {short}",
         "Nobody holds {short}",
         "Blood and nothing at {short}",
-        "Both sides withdraw from {short}",
-        "{short} remains in dispute",
-        "No decision at {short}"
+        "Blood and nothing else at {short}",
+        "{short}: nobody's ground",
+        "Both sides crawl home from {short}"
       ],
       "solo": [
         "{W} occupy {short} unopposed",
         "{short} taken without a shot",
         "{W} walk into {short}",
-        "No opposition as {W} secure {short}",
-        "Empty ground at {short} occupied by {W}",
-        "{W} establish control at {short}"
+        "{W} walk into an empty {short}",
+        "Not a shot fired: {W} move into {short}",
+        "{short} taken without a fight"
       ],
       "soloFail": [
         "{S} driven back from {short}",
         "{short} beats the {S}",
-        "Ground hazards stop {S} at {short}",
-        "{S} abandon the attempt on {short}",
-        "No occupation after {S} raid on {short}"
+        "{short} turns the {S} back on its own",
+        "The ground at {short} beats the {S}",
+        "{S} raiders limp home from an empty {short}"
       ],
       "empty": [
         "No volunteers for {short}",
         "Silence at {short}",
-        "The roster for {short} stays blank",
-        "Nobody answers the call for {short}",
-        "No raid departs for {short}"
+        "Not one volunteer for {short}",
+        "{short} left to the rats",
+        "Silence answers the call for {short}"
       ]
     },
     "lines": {
       "open": [
         "Under {weather}, {nA} {A} and {nB} {B} crawled out toward {loc}.",
         "At two in the morning, under {weather}, two raiding parties met at {loc}: {nA} {A} against {nB} {B}.",
-        "The approach to {loc} lay under {weather}. The parties numbered {nA} for the {A} and {nB} for the {B}.",
-        "At {loc}, under {weather}, {nA} from the {A} met {nB} from the {B}. The quiet ended there."
+        "{nA} {A} and {nB} {B} went over the parapet under {weather}. All of them were heading for {loc}.",
+        "Under {weather}, {loc} drew them in from both sides: {nA} {A}, {nB} {B}, faces blackened with burnt cork."
       ],
       "openSolo": [
         "Under {weather}, the {S} sent a raiding party to {loc}. The other side sent nobody.",
         "The {S} went out to {loc} under {weather} and found no enemy waiting. Only the place itself.",
-        "The {S} approached {loc} under {weather}. No opposing party had been sent.",
-        "Under {weather}, a party from the {S} reached the approaches to {loc}. There was no enemy party to contest them."
+        "Under {weather}, the {S} slipped through the wire toward {loc}. On the other side, nobody had volunteered.",
+        "The {S} went out to {loc} under {weather} and found the enemy had stayed in bed."
       ],
       "snipe": [
         "The first shot came from {a} before anyone saw a thing; {t} was hit.",
         "{a} fired first, from somewhere nobody could see. {t} was the target.",
-        "A concealed shot from {a} found {t} before the main exchange began.",
-        "{t} was caught by {a}'s opening shot. The rest of the party sought cover."
+        "{a} fired once from the dark before anyone knew where the dark was. {t} went down.",
+        "One shot, from a spot {a} had picked hours earlier. {t} was out of it before the fight began."
       ],
       "shell": [
         "{a} cranked the field telephone and a shell landed square on {t}.",
         "The first blow came from the sky: {a} called the guns, and {t} was right under them.",
-        "{a} brought artillery onto the position occupied by {t}. The impact hid everything for a moment.",
-        "A call from {a} brought a shell down near {t}; the blast found its target."
+        "{a} whispered map numbers into the field telephone. A minute later the ground under {t} stood up.",
+        "{a} called down the guns, and for once they listened. {t} was in the wrong crater."
       ],
       "jam": [
         "In the wet, the gun of {a} jammed at the worst moment.",
         "{a} swore at a jammed gun while the rain hissed on the barrel.",
-        "{a}'s gun stopped cycling. Clearing the fault cost precious seconds.",
-        "A jam silenced the gun of {a} just as it was needed."
+        "The gun of {a} coughed once and stopped. Mud in the breech, at the worst possible moment.",
+        "{a} hammered at a jammed bolt with the heel of a hand while the fight went on without it."
       ],
       "mvp": [
         "{a} fought like three men and put {n} of the enemy out of the fight.",
         "The name on every lip afterwards: {a}, with {n} enemies down.",
-        "{a} accounted for {n} opponents put out of action during the fighting.",
-        "The report credits {a} with putting {n} enemies out of the fight."
+        "{a} was everywhere at once and put {n} of the enemy out of the fight.",
+        "When it was counted afterwards, {a} alone had stopped {n} of them."
       ],
       "heal": [
         "{a} kept crawling between the craters and dragged {t} back into cover.",
         "Through all of it, {a} worked on the wounded, {t} first.",
-        "{a} reached {t} under fire and began treatment behind the nearest cover.",
-        "{t} received help from {a} while the fighting continued around the position."
+        "{a} crawled out under fire, found {t} by the groaning and dragged {t} into the nearest hole.",
+        "{a} dressed the wounds of {t} in a shell hole by touch alone. A light would have killed them both."
       ],
       "rout": [
         "In exchange {round} the {X} broke and fell back.",
         "The {X} could take no more and ran for their own wire.",
-        "The {X} lost cohesion in exchange {round} and withdrew from the fight.",
-        "In exchange {round}, the {X} broke off and fell back toward their own lines."
+        "In exchange {round} the {X} ran out of nerve before they ran out of ammunition, and fell back.",
+        "Exchange {round} broke the {X}. They went back the way they had come, only faster."
       ],
       "hazard": [
         "The ground fought back: mines, gas pockets and falling walls. {t} paid for it.",
         "Old mines and a collapsing wall caught {t}.",
-        "A hazard in the ground caught {t} before the party could clear the danger.",
-        "The approach itself took a toll: {t} was caught in one of the site's hazards."
+        "The ground had its own traps, older than the raid: a buried mine, a pocket of gas, a wall that chose that moment. {t} found them.",
+        "Not every wound came from the enemy. The place itself bit {t}."
       ],
       "noLoss": [
         "Everyone came back on their own feet.",
-        "The party's final check found everyone present and unhurt.",
-        "For once, the casualty column stayed blank."
+        "Roll call afterwards was short and complete.",
+        "For once, everyone who went out came back on their own legs."
       ],
       "take": [
         "By dawn the {W} flag flew over {loc}. {perk}",
         "The {W} hold {loc} now. {perk}",
-        "Control of {loc} passed to the {W}. {perk}",
-        "The {W} secured {loc} and established their hold. {perk}"
+        "By first light the {W} were digging in at {loc}. {perk}",
+        "The {W} took {loc} wall by wall and held the last one at dawn. {perk}"
       ],
       "hold": [
         "The {W} kept {loc}. {perk}",
         "{loc} stays with the {W}. {perk}",
-        "The attempt to dislodge the {W} from {loc} failed. {perk}",
-        "At the end of the fighting, {loc} remained in {W} hands. {perk}"
+        "The {W} were still in {loc} when the sun came up. {perk}",
+        "The raiders broke against {loc} and the {W} stayed put. {perk}"
       ],
       "stalemate": [
         "Neither side could hold the ground. {loc} is contested.",
         "By morning both parties had pulled back. {loc} belongs to nobody.",
-        "Both sides withdrew without securing {loc}. The ground remains contested.",
-        "No party established control of {loc}; the result settled nothing."
+        "Both sides left {loc} before dawn, and both claimed it in their reports.",
+        "At sunrise {loc} belonged to the crows."
       ],
       "solo": [
         "The {W} hold {loc} now. {perk}",
         "{loc} is in {W} hands. {perk}",
-        "Without an opposing party present, the {W} secured {loc}. {perk}",
-        "The unopposed expedition placed {loc} under {W} control. {perk}"
+        "Nobody came to stop them. The {W} walked into {loc} and stayed. {perk}",
+        "The {W} took {loc} without firing a shot and still cannot quite believe it. {perk}"
       ],
       "soloFail": [
         "The {S} pulled back before dawn. {loc} stays empty.",
-        "The hazards forced the {S} to abandon the attempt. {loc} remains unoccupied.",
-        "The {S} could not secure {loc}, despite the absence of an opposing party."
+        "Nobody fought the {S} at {loc}. The place did it for them, and they came home empty-handed.",
+        "The {S} reached {loc} and found it did not want them. They were back before dawn."
       ],
       "empty": [
         "Field HQ asked for volunteers for {loc}. Nobody stepped forward. The rats keep it for now.",
-        "The call for {loc} produced no volunteers. No expedition went out.",
-        "There were no names on either roster for {loc}. The operation did not begin."
+        "Field HQ waited all day for names for {loc}. None came. The crows have it for now.",
+        "Nobody went to {loc}. The mud there stays undisturbed a while longer."
       ],
       "mvpOne": [
         "{a} fought like a demon and put an enemy out of the fight.",
         "{a} was in the thick of it and dropped one of them.",
-        "{a} put one opponent out of action during the fight.",
-        "One enemy was taken out of the fighting by {a}."
+        "{a} got close enough to put one of them out of the fight with a rifle butt.",
+        "{a} stopped one of the enemy cold and kept the rest of the party alive doing it."
       ],
       "mvpNone": [
         "{a} did the most damage of anyone that night.",
         "Nobody fired more, or better, than {a}.",
-        "{a} inflicted the most damage, though no opponent was put out of action by that effort.",
-        "The strongest contribution to the fighting came from {a}, without a confirmed enemy taken out of action."
+        "{a} gave them more trouble than anyone, even if nobody stayed down for it.",
+        "{a} fired, crawled and fired again. Nobody fought harder that night."
       ]
     },
     "record": {
       "won": [
-        "Night raid on {loc}, {withMates}. The {us} came out on top.",
+        "Night raid on {loc} {withMates}. The {us} came out on top.",
         "{name} went out to {loc} {withMates}. The {them} broke first.",
-        "{name}'s raid account, {loc} ({withMates}): the {us} won the fight for the position.",
-        "Expedition to {loc} ({withMates}). The result went to the {us}; the report lists {name} among the participants.",
-        "{name} took part in the fighting at {loc} ({withMates}). The {us} secured the victory."
+        "{name} crawled out to {loc} {withMates} with a blackened face and a sharpened spade. The {us} came back winners.",
+        "Night raid on {loc} {withMates}. {name} remembers the noise, the dark, and the moment the {them} gave way.",
+        "{name} went through the wire toward {loc} {withMates}. By dawn the {us} had it."
       ],
       "lost": [
-        "Night raid on {loc}, {withMates}. The {them} were waiting.",
+        "Night raid on {loc} {withMates}. The {them} were waiting.",
         "{name} crawled toward {loc} {withMates}. It went wrong fast.",
-        "{name}'s raid account, {loc} ({withMates}): the fight ended in a {them} victory.",
-        "Expedition to {loc} ({withMates}). The {them} won the fight; {name} was among the participants.",
-        "{name} took part in the raid on {loc} ({withMates}). The result went to the {them}."
+        "{name} went out to {loc} {withMates}. The {them} had been waiting, and the {us} came back with fewer than they took.",
+        "Night raid on {loc} {withMates}. It went wrong at the wire, and {name} will not say more than that.",
+        "{name} reached {loc} {withMates} just in time to see that the {them} were ready."
       ],
       "stalemate": [
-        "Night raid on {loc}, {withMates}. Nobody won the night.",
+        "Night raid on {loc} {withMates}. Nobody won the night.",
         "{name} fought at {loc} {withMates} until both sides pulled back.",
-        "{name}'s raid account, {loc} ({withMates}): neither side established control.",
-        "Expedition to {loc} ({withMates}). {name}'s party fought, but the position remained contested.",
-        "{name} took part at {loc} ({withMates}). The fighting ended without a winner."
+        "{name} fought at {loc} {withMates} all night. In the morning nobody could say who had won.",
+        "Night raid on {loc} {withMates}. {name} came back to a trench that asked who won, and had no answer.",
+        "{name} spent the night in the craters around {loc} {withMates}. Neither side kept the ground."
       ],
       "solo": [
         "{name} went out to {loc} {withMates}. No enemy came. The {us} hold it now.",
-        "Night raid on {loc}, {withMates}. The place was empty except for the dead.",
-        "{name}'s expedition account, {loc} ({withMates}): no opposing party appeared, and the {us} secured the site.",
-        "Expedition to {loc} ({withMates}). {name} was among the participants in an unopposed occupation by the {us}.",
-        "{name} took part in securing {loc} ({withMates}). There was no enemy party to contest the position."
+        "Night raid on {loc} {withMates}. The place was empty except for the dead.",
+        "{name} went out to {loc} {withMates}, braced for a fight that never came. The {us} hold it now.",
+        "{name} walked into {loc} {withMates} and found it empty, which was harder on the nerves than a fight.",
+        "Night raid on {loc} {withMates}. Not a single {them} rifle in sight. The {us} moved in."
       ],
       "soloFail": [
         "{name} went out to {loc} {withMates}. The place itself drove them back.",
-        "{name}'s expedition account, {loc} ({withMates}): hazards prevented occupation despite the absence of an opposing party.",
-        "Expedition to {loc} ({withMates}). The ground defeated the attempt; {name} was listed among the participants.",
-        "{name} took part in the attempt on {loc} ({withMates}). No enemy party appeared, but the site could not be secured."
+        "{name} went out to {loc} {withMates}. No enemy came, but the place itself sent them home.",
+        "{name} reached {loc} {withMates} and found mines, gas and loose walls instead of the enemy. They turned back.",
+        "Night raid on {loc} {withMates}. The ground did what the {them} had not bothered to."
       ]
     },
     "fate": {
@@ -2335,52 +2335,52 @@
         "{He} came back without a scratch, mud to the eyebrows.",
         "{He} was back in the bay before sunrise.",
         "Not a scratch on {him}.",
-        "{He} returned unhurt and answered at roll call.",
-        "{He} came through without injury, though the kit needed a thorough cleaning.",
-        "{He} returned unhurt to a mug left exactly where it had been before departure."
+        "{He} came back with nothing worse than torn knees.",
+        "{He} was back in the bay before the tea went cold.",
+        "{He} came back whole and slept for eleven hours."
       ],
       "wounded": [
         "{He} was carried back on a stretcher and sent to the aid post.",
         "A splinter found {him}. {He} is in the field hospital.",
-        "{He} was wounded and evacuated for treatment.",
-        "The bearers brought {him} to the aid post. Wounded, and now in the medical staff's care.",
-        "{He} needed hospital care. The section received the name of the hospital."
+        "{He} came back on a stretcher, swearing at every bump.",
+        "A fragment found {him} on the way home. The aid post has {him} now.",
+        "{He} was dragged in through the wire with a wound {he} keeps calling a scratch."
       ],
       "missing": [
         "{He} did not make it back by roll call. Listed missing.",
         "Nobody saw where {he} went. Missing.",
-        "{He} could not be located after the fighting and is listed as missing.",
-        "{He} was absent at the final count. No confirmed word followed.",
-        "{He} remains missing. The search produced no certain news."
+        "{He} was not in the line at roll call. Nobody saw {him} after the last flare.",
+        "{His} name was called twice at roll call. Nobody answered.",
+        "{He} did not come back. The others swear {he} was right behind them."
       ],
       "captured": [
         "{He} was taken prisoner by the {them}.",
         "The {them} dragged {him} back to their lines. Prisoner of war.",
-        "{He} was captured by the {them} and taken away from the fighting.",
-        "{He} was confirmed as a prisoner of the {them}.",
-        "{He} was listed among those captured by the {them}."
+        "{He} was last seen with {his} hands up and a {them} rifle at {his} back.",
+        "The {them} took {him} alive. Somewhere behind their wire, {he} is counting the days.",
+        "{He} was dragged into the {them} trench. Prisoner of war."
       ],
       "fallen": [
         "{He} did not come back. {His} comrades brought {his} helmet home.",
         "{name} fell at {loc}.",
-        "{He} was killed during the expedition. {His} name remains on its roll.",
-        "{name} did not survive the operation at {loc}.",
-        "The casualty report confirmed {his} death. The section was informed before the next roll call."
+        "{He} stayed at {loc}. The party brought back {his} pay book and {his} last cigarette.",
+        "{He} did not come back from {loc}. {His} spoon is still in the mug by the bunk.",
+        "{He} fell at {loc}. That night the section kept {his} place on the fire step empty."
       ]
     },
     "mvp": [
       "The squad says it was {his} night.",
       "They call {him} the Raider of {short} now.",
-      "The expedition report singles out {his} contribution.",
-      "The party gave {him} special credit for the fight.",
-      "Special mention was made of {his} part in the operation."
+      "Nobody in the party argues about who did the most.",
+      "The others say {he} buys the first round, whenever there is a round to buy.",
+      "The sergeant wrote {his} name in the report twice, once underlined."
     ],
     "cross": [
       "Third raid: {name} wears the Raider's Cross.",
       "Three raids behind {him}: the Raider's Cross.",
-      "The third raid earned {name} the Raider's Cross.",
-      "Three expeditions are recorded beside {name}'s name, together with the Raider's Cross.",
-      "{name} was awarded the Raider's Cross after a third raid."
+      "Three raids now. {name} wears the Raider's Cross and has stopped trying to explain it.",
+      "A third raid behind {him}: {name} has earned the Raider's Cross.",
+      "After the third raid, {name} pinned on the Raider's Cross with muddy fingers."
     ]
   }
 }

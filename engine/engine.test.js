@@ -189,7 +189,7 @@ test('převelení: jen převzatý voják, jednou za 7 dní, ne na důstojníka',
 
 test('90 dní války s výpravami: žádný text nemá nedoplněnou proměnnou ani [volbu]', () => {
   const s = emptyState(theme);
-  const bad = /\{\w+\}|undefined|NaN|\[|\]|\|/;
+  const bad = /\{\w+\}|undefined|NaN|\[|\]|\||\(\)| [.,]/;
   let n = 0;
   for (let i = 0; i < 400; i++) applyComment(s, { id: `c${i}`, userId: `u${i}`, username: `user${i}`, text: i % 3 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
   s.soldiers.slice(0, 40).forEach((x) => (x.claimed = true));
