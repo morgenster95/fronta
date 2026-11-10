@@ -8,6 +8,7 @@ import { createLife } from './life.js';
 import { createSound } from './sound.js';
 import { startReel } from './reel.js';
 import { buildHospitals, roofAlpha } from './hospital.js';
+import { hospitalNav } from './hospital-nav.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
 
@@ -560,6 +561,10 @@ async function boot() {
     cam.set(first.x, first.y + toNml * (cam.w < 600 ? -70 : 60), initZoom);
   }
 
+  // odznak nemocnice na oddálené mapě a směrovka k ní v detailu (při natáčení reelů skryté)
+  const reelMode = import.meta.env.DEV && new URLSearchParams(location.search).has('reel');
+  const hospNav = hospitalNav({ world, cam, sites: hospitals?.sites, theme, soldiers, hidden: reelMode });
+
   // --- smyčka ---
   if (import.meta.env.DEV) window.__front = { life, cam, soldiers }; // ladění v konzoli
   const visibleSoldiers = [];
@@ -597,6 +602,7 @@ async function boot() {
       const a = roofAlpha(z);
       for (const r of hospitals.roofs.children) r.alpha = a;
     }
+    hospNav.update(now);
     for (const [k, e] of chunks) if (e.sprite) e.sprite.visible = e.over.visible = visible.has(k);
 
     const showSprites = z >= SPRITE_ZOOM;

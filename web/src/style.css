@@ -387,3 +387,13 @@ body.reel #card { bottom: 18%; width: 86%; }
 #boards .rows .me { background: #3a2a1c; outline: 1px solid var(--accent); }
 .you { margin-top: 12px; background: #3a2a1c; border: 2px solid var(--accent); padding: 8px 10px; display: flex; justify-content: space-between; gap: 8px; }
 .you .sil { font-size: 11px; color: var(--accent); }
+
+/* směrovka k nemocnici (hospital-nav.js): u okraje obrazovky, šipka míří k nemocnici, klik = přelet */
+.hosp-ptr { position: fixed; left: 0; top: 0; z-index: 5; width: 52px; height: 52px; padding: 0; border-radius: 50%;
+  background: rgba(14, 13, 12, 0.88); border: 2px solid var(--c, #c4b8a0); color: #9a2f22; display: grid; place-items: center;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.5); cursor: pointer; will-change: transform; }
+.hosp-ptr .ic { font-size: 26px; line-height: 1; background: #e3d9c3; width: 30px; height: 30px; border-radius: 4px; display: grid; place-items: center; margin-top: -6px; }
+.hosp-ptr .lb { position: absolute; bottom: 3px; left: 0; right: 0; font-family: 'Silkscreen', monospace; font-size: 7px; color: #e3d9c3; letter-spacing: 0.02em; }
+.hosp-ptr .arr { position: absolute; left: 50%; top: 50%; width: 0; height: 0; margin: -7px 0 0 -6px; border-left: 12px solid var(--c, #c4b8a0); border-top: 7px solid transparent; border-bottom: 7px solid transparent; transform-origin: 6px 7px; }
+.hosp-ptr:hover, .hosp-ptr:focus-visible { background: rgba(43, 39, 34, 0.95); outline: none; }
+body.reel .hosp-ptr { display: none; }
