@@ -380,7 +380,7 @@ test('boj: stavby jen hlasováním, obvaziště 2 lůžka, každá nemocnice má
   assert.equal(hospital(s, theme, 0).dugouts, theme.battle.buildings.dugout.max, 'nejvýš max nemocnic');
 });
 
-test('boj: bombardování po výhře udělá paseku ve 2 sektorech poražené strany, nováčky nešetří, roztrhá drát', () => {
+test('boj: bombardování po výhře udělá paseku v několika sektorech poražené strany (theme.battle.shell.sectors), nováčky nešetří, roztrhá drát', () => {
   const s = emptyState(theme);
   enlist(s, 120, 'sh');
   s.day = 2; // všichni jsou nováčci
@@ -390,7 +390,7 @@ test('boj: bombardování po výhře udělá paseku ve 2 sektorech poražené st
   const news = out.news.find((n) => n.kind === 'barrage');
   assert.ok(news, 'Gazette hlásí bombardování');
   const secs = news.h.replace(/.* fell on /, '').split(' and ');
-  assert.equal(secs.length, 2);
+  assert.equal(secs.length, theme.battle.shell.sectors);
   const there = s.soldiers.filter((x) => x.faction === 1 && secs.includes(x.sector));
   const elsewhere = s.soldiers.filter((x) => x.faction === 1 && !secs.includes(x.sector));
   const rate = (l) => l.filter((x) => x.wound).length / l.length;
@@ -542,7 +542,7 @@ test('rod: odznaky rodu zůstávají napříč generacemi, bot dostane oznámen�
 });
 
 // --- péče, střelba, role (docs/COMBAT_ROLES.md) ---
-const quiet = (over = {}) => ({ ...theme, battle: { ...theme.battle, hit: 0, roles: { ...theme.battle.roles, default: { fire: 0 }, rifleman: { ...theme.battle.roles.rifleman, fire: 0 }, machinegunner: { ...theme.battle.roles.machinegunner, fire: 0 }, sniper: { ...theme.battle.roles.sniper, fire: 0 }, officer: { ...theme.battle.roles.officer, fire: 0 } }, ...over } });
+const quiet = (over = {}) => ({ ...theme, battle: { ...theme.battle, hit: 0, daily: { ...theme.battle.daily, min: 0 }, roles: { ...theme.battle.roles, default: { fire: 0 }, rifleman: { ...theme.battle.roles.rifleman, fire: 0 }, machinegunner: { ...theme.battle.roles.machinegunner, fire: 0 }, sniper: { ...theme.battle.roles.sniper, fire: 0 }, officer: { ...theme.battle.roles.officer, fire: 0 } }, ...over } });
 const setup = (n = 40, tag = 'pc') => {
   const s = emptyState(theme);
   enlist(s, n, tag);
@@ -722,4 +722,33 @@ test('zásah → lůžko: těžce/kriticky zasažený palbou jde hned na lůžko
     const p = s.soldiers.find((x) => x.id === id);
     assert.ok(!p || p.status !== 'wounded' || p.wound.sev === 'light', `po 40 dnech pořád na lůžku (${p?.wound?.sev})`);
   }
+});
+
+test('denní mez: za klidu 1–3 nově ranění na stranu, pod granáty víc, ale nejvýš shellMax', () => {
+  const D = theme.battle.daily;
+  const s = emptyState(theme);
+  enlist(s, 160, 'dm_');
+  s.soldiers.forEach((x) => { x.enlisted = 0; });
+  for (let day = 30; day < 44; day++) {
+    s.day = day;
+    battleTick(s, theme, story, day);
+    const st = s.battle.stats.at(-1);
+    for (const f of [0, 1]) {
+      const n = st.sides[f].sev.light + st.sides[f].sev.heavy + st.sides[f].sev.crit;
+      assert.ok(n >= D.min, `den ${day}, strana ${f}: ${n} raněných (min ${D.min})`);
+      assert.ok(n <= D.max, `den ${day}, strana ${f}: ${n} raněných (max ${D.max})`);
+    }
+  }
+  // bombardování: bombardovaná strana nejvýš shellMax a v průměru víc než za klidu
+  let sum = 0;
+  for (let day = 50; day < 53; day++) {
+    s.victories = [{ id: 'ridge', name: 'Verdel Ridge', faction: 0, day: 49, hero: 'dm_0', from: 50, to: 56, barrageTo: 52, counts: [80, 80] }];
+    s.day = day;
+    battleTick(s, theme, story, day);
+    const a = s.battle.stats.at(-1).sides[1];
+    const n = a.sev.light + a.sev.heavy + a.sev.crit;
+    assert.ok(n <= D.shellMax, `pod granáty ${n} > ${D.shellMax}`);
+    sum += n;
+  }
+  assert.ok(sum / 3 > D.max, `pod granáty v průměru ${sum / 3} za den`);
 });

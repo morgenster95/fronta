@@ -495,9 +495,15 @@
   "battle": {
     "_note": "Denní boj (engine/battle.js, docs/COMBAT_ROLES.md). Všechna čísla se dají ladit; dopad ukáže node tools/sim-battle.mjs --kpi (a --set klíč=hodnota). Pravděpodobnosti jsou na vojáka a den.",
     "enabled": true,
-    "balance": 5,
+    "balance": 6,
     "_balance": "verze vyvážení: zvyš při každé změně čísel, zapisuje se do denních metrik (state.battle.stats)",
     "hit": 0.03,
+    "daily": {
+      "_": "Nových raněných na stranu za den: za klidu aspoň min a nejvýš max (z pozadí; palba hráčů se do max počítá), pod granáty nejvýš shellMax",
+      "min": 1,
+      "max": 3,
+      "shellMax": 8
+    },
     "_hit": "pozadí: dělostřelectvo, granáty, miny (~60 % zásahů). Pásmo 0.008–0.03",
     "line": {
       "front": 1,
@@ -656,8 +662,8 @@
       "repair": 0.08
     },
     "shell": {
-      "sectors": 2,
-      "hit": 0.35,
+      "sectors": 4,
+      "hit": 0.5,
       "severity": {
         "light": 0.55,
         "heavy": 0.2

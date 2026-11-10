@@ -215,8 +215,22 @@ export function battleTick(state, theme, story, day, ctx = {}) {
 
   // 2) pozadí: dělostřelectvo, granáty, miny; bombardování po výhře
   const signallers = theme.factions.map((_, f) => lineup(state, f, (s) => s.archetype === 'signaller' && able(s)));
-  for (const s of state.soldiers) {
+  // denní mez nových raněných na stranu (theme.battle.daily): za klidu nejvýš max, pod granáty nejvýš shellMax, a aspoň min;
+  // pořadí vojáků se každý den losuje, aby mez nešetřila stále stejné
+  const D = cfg.daily;
+  const newToday = (f) => { const v = stats[f].sev; return v.light + v.heavy + v.crit; };
+  const maxOf = (f) => (!D ? Infinity : barrage?.target === f && shelled.size ? D.shellMax ?? Infinity : D.max ?? Infinity);
+  const bgHit = (s, sev, underShells) => {
+    wound(s, sev, underShells ? { shell: true } : {});
+    if (underShells) { shellHits.push(s); stats[s.faction].hits.shell++; } else stats[s.faction].hits.bg++;
+    const kind = hitKind(sev);
+    const k2 = underShells && story[`shell${kind.slice(3)}`] ? `shell${kind.slice(3)}` : kind;
+    ev(s, sev === 'light' ? 'hit' : 'wounded', eventEntry(k2, s, day, theme, story, {}, today));
+  };
+  const order = state.soldiers.map((s) => [rngFor(s.id, 'order', day)(), s]).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
+  for (const s of order) {
     if (!able(s)) continue;
+    if (newToday(s.faction) >= maxOf(s.faction)) continue;
     const side = state.battle.sides[s.faction];
     const rand = rngFor(s.id, 'battle', day);
     const underShells = barrage?.target === s.faction && shelled.has(s.sector);
@@ -225,13 +239,20 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       ? cfg.shell.hit * (cfg.line[s.line] ?? 1) * (1 - cfg.buildings.sandbags.cover * count(side, 'sandbags'))
       : cfg.hit * coverOf(s) * (ctx.dangerOf?.(s) ?? 1) * (barrage?.target === s.faction ? cfg.barrage : 1) * (1 - own); // spojař poblíž: telefon k vlastnímu dělostřelectvu, protipalba
     if (rand() >= p) continue;
-    const sev = severity(s, underShells ? cfg.shell.severity : cfg.severity, rand, underShells);
-    wound(s, sev, underShells ? { shell: true } : {});
-    if (underShells) { shellHits.push(s); stats[s.faction].hits.shell++; } else stats[s.faction].hits.bg++;
-    const kind = hitKind(sev);
-    const k2 = underShells && story[`shell${kind.slice(3)}`] ? `shell${kind.slice(3)}` : kind;
-    ev(s, sev === 'light' ? 'hit' : 'wounded', eventEntry(k2, s, day, theme, story, {}, today));
+    bgHit(s, severity(s, underShells ? cfg.shell.severity : cfg.severity, rand, underShells), underShells);
   }
+  // klidný den bez raněných nebývá: aspoň D.min zásahů z pozadí na stranu (vybráni podle vystavení, přední linie častěji)
+  if (D?.min) theme.factions.forEach((_, f) => {
+    const pool = lineup(state, f, (s) => able(s) && (cfg.line[s.line] ?? 0) > 0);
+    const r = rngFor(theme.id, `floor${f}`, day);
+    while (newToday(f) < D.min && pool.length) {
+      const w = pool.map(coverOf);
+      let k = r() * w.reduce((a, b) => a + b, 0), i = 0;
+      while (i < pool.length - 1 && (k -= w[i]) > 0) i++;
+      const [s] = pool.splice(i, 1);
+      bgHit(s, severity(s, cfg.severity, rngFor(s.id, 'floor', day), false), false);
+    }
+  });
 
   // 3–4) místo pro raněné a péče mediků, po stranách
   const deathsToday = theme.factions.map(() => 0);

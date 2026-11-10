@@ -7,7 +7,9 @@ _Nikdo zatím nemá nemocnici: obě strany mají jen obvaziště (2 lůžka, 6 n
 1. **Palba hráčů.** Každý voják v přední linii má každý den malou šanci trefit nepřítele **naproti** (do 160 px podle pozice).
    Zapíše se **kdo koho trefil**: zasažený má v deníku „Shot by X of the Concord (@x)“, střelec svůj zápis, Gazette blok *Across the wire*.
    Každý cíl nejvýš jeden zásah palbou za den. Prázdný úsek naproti = není na koho střílet (ochrana proti „válcování“ větší strany).
-2. **Pozadí** (dělostřelectvo, granáty, miny): jako ve skutečné válce ~60 % zásahů. Po výhře v závodě bombardování 2 úseků poražené strany 3 dny.
+2. **Pozadí** (dělostřelectvo, granáty, miny): jako ve skutečné válce ~60 % zásahů. Po výhře v závodě bombardování 4 úseků poražené strany 3 dny.
+   **Denní mez (v6, `battle.daily`):** za klidu má každá strana denně 1–3 nově raněné (prázdný den se doplní zásahem z pozadí, nad 3 pozadí už nezasahuje),
+   pod granáty nejvýš 8 (na skutečné soupisce průměr 6,7, padlí ~0,5 za den bombardování).
 3. **Kam s raněným:** lůžko (kritičtí první, pak těžce), pak nosítka. **Lehce raněný leží v zákopu.**
    **Kritický bez nosítek i lůžka noc nepřežije. Těžce raněný bez nosítek leží v zákopu (vyšší riziko).**
 4. **Medici (Stretcher Bearer):** každý má za den **1 práci** (víc se zkušenostmi). Potřeba za den: **lehký 1, těžký 2, kritický 2, na lůžku 0.**
