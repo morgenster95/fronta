@@ -447,7 +447,7 @@ export function buildPublic(state, theme) {
     weather: state.weather ?? null,
     race: raceStatus(state, theme),
     victories: (state.victories || []).slice(-10).reverse(),
-    barrage: activeBarrage(state, state.day),
+    barrage: activeBarrage(state, state.day, true),
     history: (state.events || []).slice(-30).reverse(),
     valley: valley.roster,
     vote: state.vote ? {

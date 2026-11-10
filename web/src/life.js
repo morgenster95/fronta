@@ -12,7 +12,7 @@ const RATE = {
   burst: [7000, 16000], // kulometná dávka (jen kulometčík s animací)
   shell: [20000, 50000],
   flare: [25000, 60000],
-  barrageShell: [500, 1600],
+  barrageShell: [90, 320], // dělostřelectvo z dobyté kóty: hustá palba, ať je to na první pohled vidět
 };
 const rnd = (a, b) => a + Math.random() * (b - a);
 
@@ -299,7 +299,12 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
         // dopady na stranu cílové frakce: přední linie a země nikoho před ní
         const fy = map.front[barrage.faction] * T + 16;
         const toRear = barrage.faction === 0 ? -1 : 1;
-        shell(rnd(view.x0 - 100, view.x1 + 100), fy + toRear * rnd(-140, 260), Math.random() < 0.35);
+        const sx = rnd(view.x0 - 100, view.x1 + 100), sy = fy + toRear * rnd(-60, 220);
+        shell(sx, sy, Math.random() < 0.5);
+        // občas salva: 2–4 dopady těsně u sebe
+        if (Math.random() < 0.18) for (let k = 1 + Math.floor(Math.random() * 3); k > 0; k--)
+          events.push({ at: now + k * rnd(90, 220), run: () => shell(sx + rnd(-50, 50), sy + rnd(-30, 30), Math.random() < 0.4) });
+        if (Math.random() < 0.04) flare(view);
       }
     }
     // zdravotníci k viditelným raněným (max 3 najednou)

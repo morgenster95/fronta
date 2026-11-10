@@ -62,6 +62,38 @@ def drone(dur):
     return out * 0.18
 
 
+def lament(dur):
+    """tesklivá dobová melodie (d moll, pomalý chorál): housle s vibratem nad harmoniem, lehký dozvuk kostela; vše syntetizované"""
+    n = int(dur * SR)
+    out = np.zeros(n)
+    hz = lambda m: 440.0 * 2 ** ((m - 69) / 12)
+    # akordy (MIDI, 4 doby) a melodie [tón, doby]; 8 taktů, rozprostřeno na délku videa
+    chords = [[50, 57, 62, 65], [46, 53, 58, 62], [41, 53, 57, 60], [45, 52, 57, 61], [50, 57, 62, 65], [43, 55, 58, 62], [45, 52, 57, 61], [50, 57, 62, 66 - 1]]
+    mel = [[69, 2], [65, 1], [64, 1], [62, 2], [65, 1], [70, 1], [69, 3], [67, 1], [64, 2], [69, 1], [67, 1],
+           [65, 2], [64, 1], [62, 1], [67, 2], [70, 1], [69, 1], [64, 2], [61, 2], [62, 4]]
+    beat = dur / 32.5
+    def tone(f, d, harm, attack, vib=0.0, bright=1.0):
+        m = int((d + 0.6) * SR)
+        t = np.arange(m) / SR
+        ph = 2 * np.pi * f * (t + vib * np.clip(t - 0.35, 0, None) / (2 * np.pi * 5.3) * np.sin(2 * np.pi * 5.3 * t))
+        sig = sum((bright / k) ** 1.2 * np.sin(k * ph) for k in range(1, harm + 1))
+        e = np.minimum(1, t / attack) * np.where(t < d, 1, np.exp(-(t - d) / 0.25))
+        return sig * e
+    for i, ch in enumerate(chords):
+        for m in ch:
+            add(out, tone(hz(m), beat * 4, 5, 0.5) * (0.09 if m > 47 else 0.12), i * beat * 4)
+    t0 = 0.0
+    for m, d in mel:
+        add(out, tone(hz(m), beat * d * 0.97, 8, 0.18, vib=0.006, bright=0.8) * 0.16, t0)
+        t0 += beat * d
+    out = lowpass_fast(out, 3200, 1)
+    wet = np.zeros(n)
+    for d, g in ((0.061, 0.45), (0.113, 0.36), (0.173, 0.3), (0.251, 0.24), (0.347, 0.18), (0.479, 0.12), (0.653, 0.08)):
+        k = int(d * SR)
+        wet[k:] += out[:-k] * g
+    return (out + lowpass_fast(wet, 1800, 1)) * 0.9
+
+
 def rain(dur):
     n = int(dur * SR)
     noise = rng.standard_normal(n)
@@ -259,7 +291,7 @@ def build_story(name="story"):
     start, quiet_parts, double = drums_of(name)
     dur = meta["seconds"]
     n = int(dur * SR)
-    music = drone(dur) * 1.1 + rain(dur)
+    music = (lament(dur) * 1.3 + drone(dur) * 0.35 + rain(dur) * 0.7) if name == "barrage" else drone(dur) * 1.1 + rain(dur)
     fx = np.zeros(n)
     beat = 60 / 70
     # bubny: od Hegemonie, ztichnou před půlnocí a po dědicovi se rozjedou ke konci
@@ -268,13 +300,16 @@ def build_story(name="story"):
         quiet = any(a < t < b for a, b in quiet_parts)
         if not quiet:
             strength = 0.3 + 0.7 * min(1, (t - start) / (dur - start - 10))
-            add(music, drum(strength), t)
-            if t > double:
+            dk = 0.4 if name == "barrage" else 1  # u tesklivé hudby jen tlumený pohřební buben
+            add(music, drum(strength) * dk, t)
+            if t > double and name != "barrage":
                 add(music, drum(strength * 0.5), t + beat / 2)
         t += beat
     for at, kind, arg in meta["sfx"]:
         if kind == "shell":
             add(fx, boom(bool(arg)), at)
+        elif kind == "boomv":  # výbuch v obraze, hlasitost podle scénáře
+            add(fx, boom(arg > 0.45) * arg, at)
         elif kind == "shoot":
             add(fx, rifle(1.0), at)
         elif kind == "type":
@@ -300,7 +335,7 @@ def build_story(name="story"):
         elif kind == "end":
             add(fx, drum(1.8), at)
             add(fx, boom(True) * 0.7, at)
-    for at in rng.uniform(4, dur - 2, int(dur * 0.7)):
+    for at in rng.uniform(4, dur - 2, int(dur * (0.25 if name == "barrage" else 0.7))):
         add(fx, rifle(rng.uniform(3, 6)), at)
     # hlas: lehké teplo + krátká ozvěna zákopu
     with wave.open(os.path.join(REELS, f"_{name}_vo.wav")) as w:

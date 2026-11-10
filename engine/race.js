@@ -73,9 +73,9 @@ export function raceDanger(state, theme, faction, day) {
   return m;
 }
 
-// aktivní dělostřelectvo (pro web): cílová frakce, nebo null
-export function activeBarrage(state, day) {
-  const v = (state.victories || []).filter((x) => day >= x.from && day <= x.barrageTo).at(-1);
+// aktivní dělostřelectvo: cílová frakce, nebo null. visual = pro web už v den dobytí (palba je vidět hned, zásahy počítá boj až od dalšího dne)
+export function activeBarrage(state, day, visual = false) {
+  const v = (state.victories || []).filter((x) => day >= (visual ? x.day : x.from) && day <= x.barrageTo).at(-1);
   return v ? { target: 1 - v.faction, by: v.faction, name: v.name } : null;
 }
 

@@ -108,12 +108,24 @@ export async function startBarrageReel({ cam, life, map, theme, soldiers, tex, a
   ]);
 
   // --- zvuk ---
-  const SFX = [[0, 'barrage', tF], [tR, 'barrage', tW - tR], [tW, 'barrage', tA - tW], [tA, 'barrage', END - tA - 1.2]];
-  for (const h of hero) SFX.push([h.t + 0.55, 'shell', 1], [h.t, 'tick', 0.15]);
+  // dunění jen u výbuchů, které jsou opravdu v obraze (hlasitost podle velikosti a vzdálenosti od středu), tlumeně pod hudbou
+  const SFX = [];
+  let lastS = -1;
+  for (const [ts, sx, sy, big] of SHELLS) {
+    if (!isGame(ts)) continue;
+    const [cx, cy, cz] = camAt(ts);
+    const dx = Math.abs(sx - cx) * cz / 270, dy = Math.abs(sy - cy) * cz / 480; // 1 = okraj obrazu
+    if (dx > 1 || dy > 1) continue;
+    const vol = (big ? 0.55 : 0.32) * (1 - 0.5 * Math.max(dx, dy));
+    if (ts - lastS < 0.09 && !big) continue; // v hustém dešti nekupit zvuky přes sebe
+    lastS = ts;
+    SFX.push([ts, 'boomv', +vol.toFixed(2)]);
+  }
   const NB = [0.25, 1.05, 1.6, 2.5, 3.1, 3.7, 4.5, 5.0, 5.8];
-  for (const u of NB) if (tC + u < tR) SFX.push([tC + u, 'shell', 1]);
-  for (const u of NB) if (tA + u < END - 1) SFX.push([tA + u, 'shell', u % 2 > 1 ? 1 : 0]);
-  SFX.push([0.3, 'whistle', 0], [tR, 'drum', 0], [tR + 0.8, 'tick', 0.6], [tW, 'drum', 0], [END - 2.2, 'end', 0]);
+  const NK = [1.3, 0.9, 1.4, 1.0, 1.2, 1.5, 0.9, 1.3, 1.1];
+  for (const [i, u] of NB.entries()) if (tC + u < tR) SFX.push([tC + u, 'boomv', +(0.35 * NK[i]).toFixed(2)]);
+  for (const [i, u] of NB.entries()) if (tA + u < END - 1) SFX.push([tA + u, 'boomv', +(0.3 * NK[i]).toFixed(2)]);
+  SFX.push([END - 2.2, 'bell', 0]);
 
   // --- DOM ---
   document.body.classList.add('reel');
@@ -151,6 +163,8 @@ export async function startBarrageReel({ cam, life, map, theme, soldiers, tex, a
   let si = 0, lastBoom = -9;
   function frame(t) {
     const f = fx(t);
+    // žádní „duchové“: neobsazená stanoviště ve videu v plných barvách jako skuteční vojáci
+    for (const q of soldiers) if (q.vacant && q.sprite && q.sprite.alpha < 1) { q.sprite.alpha = 1; q.sprite.tint = [0xffffff, 0xf0ece4, 0xe6e2da, 0xfff4e8][q.variant % 4]; }
     const [x, y, z] = camAt(t);
     const boom = Math.exp(-(t - lastBoom) * 6);
     cam.set(x, y, z * (1 + 0.035 * f.punch));
