@@ -1,6 +1,6 @@
 # Denní boj, medici, nemocnice a ostnatý drát
 
-_Stav: **ladí se ve větvi `battle`, NENASAZENO (nemergovat do main bez souhlasu).** Čísla v tabulce níže jsou z doby před úpravou mediků (10. 11.): úmrtnost je teď asi o 40–50 % nižší, aktuální čísla dá `node tools/sim-battle.mjs`. Kód: `engine/battle.js`, nastavení `themes/front-ww1/theme.json` → `battle`,
+_Stav: **nasazeno 10. 11. 2026; aktuální pravidla a čísla jsou v `docs/COMBAT_ROLES.md`, tabulky níže jsou starší.** Čísla v tabulce níže jsou z doby před úpravou mediků (10. 11.): úmrtnost je teď asi o 40–50 % nižší, aktuální čísla dá `node tools/sim-battle.mjs`. Kód: `engine/battle.js`, nastavení `themes/front-ww1/theme.json` → `battle`,
 texty `themes/front-ww1/story.json` (`hitLight`, `hitHeavy`, `hitCrit`, `shellLight`, `shellHeavy`, `shellCrit`, `worsened`, `patched`, `stretcher`, `admitted`, `stabilized`, `diedNoBed`, `diedInBed`)._
 
 ## Inspirace

@@ -1,6 +1,6 @@
 # Střelba, role, zkušenosti a péče o raněné
 
-_Stav: **postaveno ve větvi `battle` (10. 11. 2026), vyvážení v4, NENASAZENO.** Kód `engine/battle.js`, čísla `themes/front-ww1/theme.json` → `battle`._
+_Stav: **nasazeno 10. 11. 2026 (vyvážení v5), první ostrý tah 10. 11. 13:00 UTC.** Kód `engine/battle.js`, čísla `themes/front-ww1/theme.json` → `battle`._
 _Nikdo zatím nemá nemocnici: obě strany mají jen obvaziště (2 lůžka, 6 nosítek), které jim dáváme my._
 
 ## 1. Pravidla jednoho dne (ranní tah, 13:00 UTC)

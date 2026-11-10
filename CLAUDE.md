@@ -56,7 +56,7 @@ Postup pro nový reel `<name>`:
   1. snímek kreslí `marketing/victory_scene.py` (kopec s praporem, v popředí sprity ze zákopů ve hře, pytle stejného vzoru jako ve hře).
 - **Denní boj, medici, nemocnice, drát** (`docs/BATTLE.md`, `engine/battle.js`): zásah sám nezabíjí, zabije chybějící lůžko nebo medik.
   Každý raněný potřebuje 2 mediky; těžce/kriticky ranění lůžko (obvaziště 2, nemocnice = jediný dugout se 4 lůžky, staví se jen hlasováním).
-  Bombardování po výhře v závodě: 2 sektory poraženého denně, 3 dny. Zatím se ladí, nenasazovat bez souhlasu.
+  Bombardování po výhře v závodě: 2 sektory poraženého denně, 3 dny. **Nasazeno 2026-11-10** (vyvážení v5, poprvé v tahu 13:00 UTC); podrobná pravidla `docs/COMBAT_ROLES.md`.
   Převzatí hráči nejsou chránění. Vyzkoušení nanečisto: `node tools/sim-battle.mjs 14` (nic neukládá).
 - **Další na řadě (domluvený návrh, zatím nepostavený):** změny terénu,
   hlášení se jmény skutečných hráčů. Výměna zajatců jako společná událost.
