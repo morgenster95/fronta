@@ -368,11 +368,18 @@ export function dailyTick(state, theme, story, ctx = {}) {
 export function leaderboards(state, theme, n = 20) {
   const live = state.soldiers.filter((s) => s.status !== 'fallen');
   const row = (s, value) => ({ handle: s.handle, name: s.name, faction: s.faction, gen: s.generation || 1, value });
-  const top = (list, fn) => list.map((s) => [s, fn(s)]).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1] || a[0].handle.localeCompare(b[0].handle)).slice(0, n).map(([s, v]) => row(s, v));
+  // remíza: kdo narukoval dřív (pořadí narukování), ne abeceda; top n pro KAŽDOU stranu (web filtruje podle strany)
+  const rank = (a, b) => (a.order ?? Infinity) - (b.order ?? Infinity) || a.handle.localeCompare(b.handle);
+  const top = (list, fn) => {
+    const all = list.map((s) => [s, fn(s)]).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1] || rank(a[0], b[0]));
+    return (theme?.factions || [0, 1]).flatMap((_, f) => all.filter(([s]) => s.faction === f).slice(0, n))
+      .sort((a, b) => b[1] - a[1] || rank(a[0], b[0])).map(([s, v]) => row(s, v));
+  };
   const honours = (x) => (x.medals || []).length + (x.titles || []).length;
+  const days = (s) => Math.max(0, state.day - s.enlisted) + 1; // dnešní den se počítá: kdo narukoval dnes, je na frontě 1. den
   return {
-    longest: top(live, (s) => state.day - s.enlisted), // dní na frontě bez přestávky (nástupce začíná od nuly)
-    houses: top(state.soldiers, (s) => (s.fallen || []).reduce((a, p) => a + (p.days || 0), 0) + Math.max(0, state.day - s.enlisted)), // dní rodu celkem
+    longest: top(live, days), // dní na frontě bez přestávky (nástupce začíná od 1. dne)
+    houses: top(state.soldiers, (s) => (s.fallen || []).reduce((a, p) => a + (p.days || 0), 0) + (s.status === 'fallen' ? 0 : days(s))), // dní rodu celkem
     decorated: top(live, honours),
     houseHonours: top(state.soldiers, (s) => honours(s) + (s.fallen || []).reduce((a, p) => a + (p.medals || []).length + (p.titles || []).length, 0)),
     survivors: top(live, (s) => s.scars || 0),

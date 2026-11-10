@@ -509,7 +509,7 @@ test('žebříčky: nejdéle na frontě, nejstarší rody, vyznamenaní, přeži
   s.soldiers[5].fallen = [{ name: 'Old One', day: 15, days: 40, medals: ['a', 'b', 'c'] }];
   const b = leaderboards(s, theme);
   assert.equal(b.longest[0].handle, s.soldiers[0].handle);
-  assert.equal(b.longest[0].value, 28);
+  assert.equal(b.longest[0].value, 29, 'dnešní den se počítá');
   assert.equal(b.houses[0].handle, s.soldiers[5].handle, 'rod se počítá i s padlými předky');
   assert.equal(b.decorated[0].handle, s.soldiers[2].handle);
   assert.equal(b.houseHonours[0].handle, s.soldiers[5].handle);
@@ -790,4 +790,19 @@ test('děla mlčí do první výhry v závodě: žádné texty o ostřelování,
   s.victories = [{ id: 'ridge', name: 'Verdel Ridge', faction: 0, day: s.day, hero: 'gs_0', from: s.day + 1, to: s.day + 7, barrageTo: s.day + 3, counts: [100, 60] }];
   dailyTick(s, theme, story);
   assert.ok(s.battle.stats.at(-1).sides[1].hits.shell > 0, 'bombardování po výhře');
+});
+
+test('žebříčky: při shodě rozhoduje pořadí narukování, každá strana má vlastní top, nováček dne se počítá', () => {
+  const s = emptyState(theme);
+  enlist(s, 60, 'tie_'); // střídavě Hegemony / Concord
+  s.day = 1;
+  s.soldiers.forEach((x, i) => { x.enlisted = i < 4 ? 0 : 1; });
+  s.soldiers.find((x) => x.handle === 'tie_2').handle = '_aaa_first_by_name'; // abecedně první, ale narukoval později než tie_0
+  const b = leaderboards(s, theme);
+  const heg = b.longest.filter((r) => r.faction === 0), con = b.longest.filter((r) => r.faction === 1);
+  assert.equal(heg[0].handle, 'tie_0', 'první narukovaný je první, ne abecedně první');
+  assert.equal(heg[1].handle, '_aaa_first_by_name');
+  assert.equal(heg.length, 20, 'Hegemony má plný žebříček');
+  assert.equal(con.length, 20, 'Concord taky (i ti, co narukovali dnes)');
+  assert.equal(con.at(-1).value, 1);
 });

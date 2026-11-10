@@ -256,7 +256,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
 
   // ---------- žebříčky ----------
   const BOARDS = [
-    ['longest', 'LONGEST ALIVE', 'Days at the front without dying. When a soldier falls, his heir starts again from Day 1.', (v) => `${v} days`],
+    ['longest', 'LONGEST ALIVE', 'Days at the front without dying. When a soldier falls, his heir starts again from Day 1.', (v) => (v === 1 ? 'Day 1' : `${v} days`)],
     ['houses', 'OLDEST HOUSES', 'Days the whole house has spent at the front, every generation together.', (v) => `${v} days`],
     ['decorated', 'MOST DECORATED', 'Medals and titles of the living.', (v) => `${v} honours`],
     ['houseHonours', 'HOUSE HONOURS', 'Every medal and title the house has ever won.', (v) => `${v} honours`],
@@ -270,7 +270,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
     show('boards');
     boardsData ??= await fetch('/data/boards.json', { cache: 'no-cache' }).then((r) => r.json()).catch(() => ({}));
     const [, , desc, fmt] = BOARDS.find((b) => b[0] === tab);
-    const rows = (boardsData[tab] || []).filter((r) => side === 'all' || r.faction === Number(side));
+    const rows = (boardsData[tab] || []).filter((r) => side === 'all' || r.faction === Number(side)).slice(0, 20);
     const me = store.get(ME);
     const meAt = rows.findIndex((r) => r.handle === me);
     const pod = (r, cls, pl) => (r ? `<button type="button" class="pod ${cls}" data-h="${esc(r.handle)}"><img class="spr" src="${sprite(r.faction, soldiers.find((x) => x.handle === r.handle)?.archetype?.id)}" alt="">
