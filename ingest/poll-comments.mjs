@@ -11,7 +11,8 @@
 //   FIREBASE_SERVICE_ACCOUNT  JSON service accountu (pro párování převzetí přes Firestore), volitelné
 //   DRY_RUN=1         nic neukládat
 import fs from 'node:fs';
-import { loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
+import path from 'node:path';
+import { ROOT, loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
 import { applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 import { deathReply } from '../engine/house.js';
@@ -139,9 +140,28 @@ async function main() {
 
   const posts = await mediaToPoll(state);
   console.log(`posty ke kontrole: ${posts.length}`);
+  // hlasy fronty: delší komentáře pod hlasováním (proč chtějí nemocnici…) do data/voices.json, pro reely a výběr nejlepších
+  const VOICES = path.join(ROOT, 'data', 'voices.json');
+  const voices = fs.existsSync(VOICES) ? JSON.parse(fs.readFileSync(VOICES, 'utf8')) : {};
+  voices.posts ??= {};
+  const voteMedia = new Set([state.vote?.mediaId, ...(state.events || []).filter((e) => e.perFaction && e.day >= state.day - 2).map((e) => e.mediaId)].filter(Boolean));
+  for (const mid of voteMedia) if (!posts.some((p) => p.id === mid)) posts.push({ id: mid, count: undefined }); // hlasování projít vždy
+  let voicesDirty = false;
+  const keepVoice = (c, mid) => {
+    const text = (c.text || '').trim();
+    if (text.split(/\s+/).length < 6) return; // jen heslo nebo pár slov: to není zdůvodnění
+    const list = (voices.posts[mid] ??= []);
+    if (list.some((v) => v.id === c.id)) return;
+    const s = state.soldiers.find((x) => x.id === c.userId) || state.soldiers.find((x) => x.handle === (c.username || '').toLowerCase());
+    const kw = (text.toUpperCase().match(/\b(HOSPITAL|SANDBAGS|WIRE|FORTIFY)\b/) || [])[1] || null;
+    list.push({ id: c.id, handle: c.username, faction: s?.faction ?? null, kw, text: text.slice(0, 800), at: c.timestamp, reply: !!c.parentId });
+    voicesDirty = true;
+  };
   for (const { id: mid, count } of posts) {
-    const changed = count === undefined || state.mediaCounts?.[mid] !== count;
+    const fullVote = voteMedia.has(mid) && !voices.scanned?.[mid]; // první průchod hlasováním: projít i už viděné komentáře
+    const changed = count === undefined || state.mediaCounts?.[mid] !== count || fullVote;
     for await (const c of comments(mid, seen, changed)) {
+      if (voteMedia.has(mid)) keepVoice(c, mid);
       // náborový komentář starších vojáků (před uložením s.reply): pod něj bot odpoví při smrti
       if (seen.has(c.id) && c.userId) {
         const own = state.soldiers.find((s) => s.id === c.userId);
@@ -302,6 +322,9 @@ async function main() {
   }
   for (const s of applyTransfers(state, theme, story)) console.log(`⇄ @${s.handle} převelen: ${s.archetype}`);
 
+  for (const mid of voteMedia) if (posts.some((p) => p.id === mid)) { (voices.scanned ??= {})[mid] = true; voicesDirty = true; }
+  if (voicesDirty && !process.env.DRY_RUN) fs.writeFileSync(VOICES, JSON.stringify(voices, null, 1) + '\n');
+  console.log(`hlasy fronty: ${Object.values(voices.posts).reduce((a, l) => a + l.length, 0)} delších komentářů pod hlasováním`);
   console.log(`hotovo: +${enlisted} rekrutů, ${claimed} převzetí, celkem ${state.soldiers.length}, followers ${state.followers}`);
   if (process.env.DRY_RUN) return;
   saveState(state);
