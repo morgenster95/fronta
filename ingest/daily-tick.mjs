@@ -7,7 +7,8 @@ const state = loadState(theme);
 // Nový den války začíná jednou denně v pevnou hodinu UTC (theme.schedule.editionUtc, ranní noviny pro USA/UK).
 // Klíč dne = datum UTC posunuté o tuto hodinu: smyčka i ruční spuštění se nepřekryjí a nezáleží na letním čase.
 const H = theme.schedule?.editionUtc ?? 0;
-const key = new Date(Date.now() - H * 3600e3).toISOString().slice(0, 10);
+// TICK_KEY=RRRR-MM-DD (s FORCE=1): vydání o něco dřív než v editionUtc, zapíše se jako dnešní, takže v editionUtc už neproběhne druhé
+const key = process.env.TICK_KEY || new Date(Date.now() - H * 3600e3).toISOString().slice(0, 10);
 if (!state.lastTickKey) {
   // přechod ze starého pravidla (pražská půlnoc): dnešní den už proběhl, další vydání v nejbližší editionUtc
   state.lastTickKey = key;
