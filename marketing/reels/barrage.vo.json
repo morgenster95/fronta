@@ -1,0 +1,54 @@
+{
+ "seconds": 27.9,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   3.6,
+   1.15,
+   "Night on Verdel Ridge.",
+   "night"
+  ],
+  [
+   5.0,
+   1.52,
+   "The guns have not stopped for an hour.",
+   "guns"
+  ],
+  [
+   6.77,
+   2.36,
+   "Every man who goes down out there is a real player.",
+   "fall"
+  ],
+  [
+   9.38,
+   1.95,
+   "And this is what the winning side gets to do.",
+   "cine"
+  ],
+  [
+   11.58,
+   2.41,
+   "The first army to a hundred soldiers takes the ridge.",
+   "race"
+  ],
+  [
+   14.24,
+   3.28,
+   "Three days of artillery. On the enemy's trenches.",
+   "reward"
+  ],
+  [
+   17.77,
+   4.72,
+   "Pick your side. Bring your friends. Every recruit counts.",
+   "cta"
+  ],
+  [
+   22.74,
+   1.69,
+   "Comment Concord... or Hegemony.",
+   "cta2"
+  ]
+ ]
+}
