@@ -806,3 +806,13 @@ test('žebříčky: při shodě rozhoduje pořadí narukování, každá strana 
   assert.equal(con.length, 20, 'Concord taky (i ti, co narukovali dnes)');
   assert.equal(con.at(-1).value, 1);
 });
+
+test('web: obvaziště jsou vidět i před prvním tahem s bojem (stav se nemění)', () => {
+  const s = emptyState(theme);
+  enlist(s, 4, 'pre_');
+  const pub = battlePublic(s, theme);
+  assert.equal(pub.length, 2);
+  assert.equal(pub[0].hospital.beds, 2);
+  assert.deepEqual(pub[1].beds, []);
+  assert.equal(s.battle, undefined, 'náhled stav neupravil');
+});

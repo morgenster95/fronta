@@ -439,7 +439,9 @@ export function battleTick(state, theme, story, day, ctx = {}) {
 
 // pro web: stavby, lůžka a nosítka se jmény, raněnými v zákopu, pokrytí mediky, stav drátu
 export function battlePublic(state, theme) {
-  if (!B(theme) || !state.battle) return null;
+  if (!B(theme)) return null;
+  // před prvním tahem s bojem: prázdná obvaziště (web je má ukázat hned), stav se tu nemění
+  if (!state.battle) state = { ...state, battle: { sides: theme.factions.map(() => ({ built: {}, beds: [], wire: {} })) } };
   return theme.factions.map((_, f) => {
     const side = state.battle.sides[f];
     const H = hospital(state, theme, f);
