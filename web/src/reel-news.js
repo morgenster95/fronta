@@ -167,7 +167,7 @@ export async function startNewsReel({ cam, life, map, theme, soldiers, tex, anim
     if (t < at('fire')) return ['flare', t + 1.2];
     if (t >= at('diary') && t < at('roles')) return ['letter', t - at('diary') + 0.8];
     if (t >= at('mud') && t < tf) return ['aidpost', t - at('mud')];
-    if (t >= at('house') && t < at('ranks')) return ['grim', t - at('house')];
+    if (t >= at('house') && t < at('ranks')) return [me.faction === 0 ? 'dawnwire' : 'grim', t - at('house')]; // scéna podle strany hráče
     return null;
   };
   const paint = fxLayers(root);
@@ -234,7 +234,7 @@ export async function startNewsReel({ cam, life, map, theme, soldiers, tex, anim
     // zkušenosti: stupně se rozsvěcují s hlasem
     show('#rn-xp', win(t, at('xp') + 0.1, at('aid') - 0.05, 0.15));
     root.querySelectorAll('#rn-xp .step').forEach((el, i) => el.classList.toggle('on', t > at('xp') + C.len('xp') * (0.45 + i * 0.14)));
-    tagAt($('#rn-tag-me'), me, cam, win(t, at('xp') + 0.2, at('aid') - 0.05, 0.15) + win(t, at('house') + 0.2, at('ranks') - 0.05, 0.15));
+    tagAt($('#rn-tag-me'), me, cam, win(t, at('xp') + 0.2, at('aid') - 0.05, 0.15)); // při rodu běží filmová scéna, jmenovka z mapy by visela ve vzduchu
     tagAt($('#rn-tag-aid'), hosp, cam, win(t, at('aid') + 0.3, tf - 0.05, 0.15), 52);
 
     // klik na směrovku (kurzor dojede, ťukne, kamera přeletí)
