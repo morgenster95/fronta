@@ -4,7 +4,7 @@ Kreslí se ze skutečného stavu PO denním tahu (data/state.json), takže jmén
 Použití (z kořene repa):
   node tools/shot-hospital.mjs (běžící vite) → promo/hosp_0.png, hosp_1.png (obvaziště ze hry, volitelné)
   python marketing/make_day.py casualties [state.json]   → marketing/promo/day<N>_wounded_1.jpg, _2.jpg, _3.jpg
-  python marketing/make_day.py vote                      → marketing/promo/vote_build_1.jpg
+  python marketing/make_day.py vote                      → marketing/promo/vote_build_2.jpg (HOSPITAL / SANDBAGS)
 """
 import json
 import os
@@ -149,26 +149,26 @@ def slide_vote():
     text_c(d, W // 2, 22, "BUILDS ONE", font(16, True), P["gold"])
     text_c(d, W // 2, 40, "EACH SIDE VOTES FOR ITSELF", font(8), P["pale"])
     opts = [
-        ("HOSPITAL", "4 beds, not 2.", "Fewer die.", A.tile_hospital),
-        ("WIRE", "Fewer men hit.", "Wears out.", A.tile_wire),
-        ("SANDBAGS", "Fewer men hit.", "Lasts for good.", A.tile_sandbags),
+        ("HOSPITAL", "4 beds, not 2.", "Fewer men die.", "Lasts for good.", A.tile_hospital),
+        ("SANDBAGS", "Higher walls.", "Fewer men hit.", "Lasts for good.", A.tile_sandbags),
     ]
-    for i, (kw, b, c, art) in enumerate(opts):
-        y = 52 + i * 54
-        im.alpha_composite(x2(art(54, 25)), (8, y))
+    for i, (kw, a, b, c, art) in enumerate(opts):
+        y = 54 + i * 80
+        im.alpha_composite(x2(art(54, 36)), (8, y))
         d = ImageDraw.Draw(im)
-        d.rectangle((8, y, 115, y + 49), outline=P["mud2"])
-        d.rectangle((118, y, W - 9, y + 49), fill=P["mud0"], outline=P["mud2"])
-        d.rectangle((121, y + 4, W - 12, y + 16), fill=P["rust"])
-        text_c(d, (121 + W - 12) // 2, y + 6, kw, font(8, True), P["white"])
-        d.text((122, y + 20), b, font=vt(14), fill=P["white"])
-        d.text((122, y + 32), c, font=vt(14), fill=P["bone"])
+        d.rectangle((8, y, 115, y + 71), outline=P["mud2"])
+        d.rectangle((118, y, W - 9, y + 71), fill=P["mud0"], outline=P["mud2"])
+        d.rectangle((121, y + 5, W - 12, y + 19), fill=P["rust"])
+        text_c(d, (121 + W - 12) // 2, y + 8, kw, font(8, True), P["white"])
+        d.text((123, y + 25), a, font=vt(14), fill=P["white"])
+        d.text((123, y + 38), b, font=vt(14), fill=P["bone"])
+        d.text((123, y + 51), c, font=vt(14), fill=P["bone"])
     text_c(d, W // 2, 218, "COMMENT ONE WORD BELOW.", font(8, True), P["white"])
     text_c(d, W // 2, 230, "YOUR SOLDIER IS YOUR BALLOT.", font(8), P["pale"])
     text_c(d, W // 2, 242, "NO VOTES = NOTHING BUILT", font(8), P["gold"])
     footer(d, H - 14)
     frame(im)
-    return save(im, "vote_build_1.jpg")
+    return save(im, "vote_build_2.jpg")
 
 
 if __name__ == "__main__":

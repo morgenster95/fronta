@@ -4,7 +4,7 @@
 import { makeCinema, CSS as BASE } from './reel-day1.js';
 import { paperTexture, tornClip } from './paper.js';
 import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, tagAt, slam, ease, easeOut, clamp01, win, typed } from './reel-kit.js';
-import voteImg from '../../marketing/promo/vote_build_1.jpg';
+import voteImg from '../../marketing/promo/vote_build_2.jpg';
 import { makeScenes, pickScene, CINEMA_CSS } from './cinema.js';
 
 const files = import.meta.glob('../../marketing/reels/day*.json', { eager: true, import: 'default' });
@@ -92,7 +92,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const SFX = [];
   for (const e of EV) if (e[1] === 'shoot' || e[1] === 'shootAt') SFX.push([e[0] + 0.62, 'shoot', 0]);
   SFX.push([0.5, 'type', 0.4], [at('guns'), 'type', 0.9], [tSh, 'reveal', 0], [(tShot ?? tCount) + 0.3, 'stamp', 0], [tCount, 'drum', 0], [tAid, 'bell', 0],
-    ...(tRaid ? [[tRaid, 'whistle', 0]] : []), [tVote, 'drum', 0], ...[0, 1, 2].map((i) => [tOpts + i * 0.75, 'stamp', 0]), [tCta, 'end', 0]);
+    ...(tRaid ? [[tRaid, 'whistle', 0]] : []), [tVote, 'drum', 0], ...[0, 1].map((i) => [tOpts + i * 1.1, 'stamp', 0]), [tCta, 'end', 0]);
 
   // --- DOM ---
   document.body.classList.add('reel');
@@ -121,7 +121,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
       <div class="side" style="color:#c9c26a"><span>CONCORD</span><b>0</b></div><ul>${list(1)}</ul></div>
     ${data.raid ? `<div id="rd-raid"><img src="/assets/locations/church.png" alt=""><div class="title">VOLUNTEERS WANTED<br>${data.raid.short.toUpperCase()}</div>
       <div class="m">${data.raid.seats} per side · tonight</div><div class="kw">COMMENT ${data.raid.kw}</div></div>` : ''}
-    <div id="rd-vote"><img src="${voteImg}" alt="">${[0, 1, 2].map((i) => `<div class="hl" style="top:${(52 + i * 54) / 2.7}%;height:${50 / 2.7}%"></div>`).join('')}</div>
+    <div id="rd-vote"><img src="${voteImg}" alt="">${[0, 1].map((i) => `<div class="hl" style="top:${(54 + i * 80) / 2.7}%;height:${72 / 2.7}%"></div>`).join('')}</div>
     <div id="rd-sub"></div>
     <div id="rd-every"><span>EVERY MORNING · 13:00 UTC</span></div>
   `;
@@ -221,8 +221,8 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     v.style.opacity = t < tVote || t > tCta ? 0 : Math.min(1, vu * 2, (tCta - t) / 0.2);
     v.style.transform = `rotate(${(1 - vu) * -9}deg) scale(${0.7 + 0.3 * vu})`;
     root.querySelectorAll('#rd-vote .hl').forEach((el, i) => {
-      const a = tOpts + i * 0.75;
-      el.style.opacity = t > a && t < tCta ? (t < a + 0.75 || i === 2 ? 1 : 0.25) : 0;
+      const a = tOpts + i * 1.1;
+      el.style.opacity = t > a && t < tCta ? (t < a + 1.1 || i === 1 ? 1 : 0.25) : 0;
     });
   }
 

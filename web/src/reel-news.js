@@ -4,7 +4,7 @@
 import { makeCinema, CSS as BASE } from './reel-day1.js';
 import { paperTexture, tornClip } from './paper.js';
 import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, tagAt, slam, easeOut, clamp01, win, typed } from './reel-kit.js';
-import voteImg from '../../marketing/promo/vote_build_1.jpg';
+import voteImg from '../../marketing/promo/vote_build_2.jpg';
 import script from '../../marketing/reels/news.script.json';
 import { makeScenes, CINEMA_CSS } from './cinema.js';
 
@@ -146,7 +146,7 @@ export async function startNewsReel({ cam, life, map, theme, soldiers, tex, anim
     <div class="rd-tag" id="rn-tag-me">@${me.handle}<span>${role(me.archetype?.id)?.name ?? ''}</span></div>
     <div class="rd-tag" id="rn-tag-aid">${site?.beds >= 4 ? 'HOSPITAL' : 'AID POST'}<span>2 beds</span></div>
     <div id="rn-cursor"></div><div id="rn-ripple"></div>
-    <div id="rn-vote"><img src="${voteImg}" alt="">${[0, 1, 2].map((i) => `<div class="hl" style="top:${(52 + i * 54) / 2.7}%;height:${50 / 2.7}%"></div>`).join('')}</div>
+    <div id="rn-vote"><img src="${voteImg}" alt="">${[0, 1].map((i) => `<div class="hl" style="top:${(54 + i * 80) / 2.7}%;height:${72 / 2.7}%"></div>`).join('')}</div>
     <div class="rn-card" id="rn-house"><div class="paper" style="background-image:url(${paperTexture(9)});clip-path:${tornClip(9)}">
       <div class="h"><span>HOUSE OF ${(me.family || me.name.split(' ').at(-1)).toUpperCase()}</span><span>${short(me.faction).toUpperCase()}</span></div>
       <div class="gen"><span>${me.name}</span><span>1st · on the line</span></div>
@@ -258,7 +258,7 @@ export async function startNewsReel({ cam, life, map, theme, soldiers, tex, anim
     v.style.transform = `rotate(${(1 - vu) * -9}deg) scale(${0.7 + 0.3 * vu})`;
     const opts = tv + C.len('vote') * 0.5;
     root.querySelectorAll('#rn-vote .hl').forEach((el, i) => {
-      const a = opts + i * (C.len('vote') * 0.17);
+      const a = opts + i * (C.len('vote') * 0.25);
       el.style.opacity = t > a && t < at('house') ? 1 : 0;
     });
     slam($('#rn-house'), t, at('house') + 0.15, at('ranks') - 0.05, 1.25, -3);
