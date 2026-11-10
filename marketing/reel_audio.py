@@ -240,14 +240,18 @@ DRUMS = {"story": (11.6, [(50.4, 53.5), (59.8, 63.4)], 63.4), "day1": (11.0, [(4
 
 
 def drums_of(name):
-    """bubny: pevné u ručních scénářů, u denních reelů ze <scénář>.script.json (tools/day-reel.mjs)"""
+    """bubny: pevné u ručních scénářů, u denních/novinkových reelů ze <scénář>.script.json;
+    časy tam můžou být id vět (auto časování podle hlasu), převedou se přes <scénář>.vo.json"""
     if name in DRUMS:
         return DRUMS[name]
     p = os.path.join(REELS, f"{name}.script.json")
-    if os.path.exists(p):
-        start, quiet, double = json.load(open(p))["drums"]
-        return start, [tuple(q) for q in quiet], double
-    return None
+    if not os.path.exists(p):
+        return None
+    start, quiet, double = json.load(open(p))["drums"]
+    vp = os.path.join(REELS, f"{name}.vo.json")
+    cue = {l[3]: l[0] for l in json.load(open(vp))["lines"] if len(l) > 3} if os.path.exists(vp) else {}
+    at = lambda v: cue.get(v, 0) if isinstance(v, str) else v
+    return at(start), [(at(a), at(b)) for a, b in quiet], at(double)
 
 
 def build_story(name="story"):

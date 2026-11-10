@@ -16,7 +16,7 @@ function badge(color) {
   return g;
 }
 
-export function hospitalNav({ world, cam, sites, theme, soldiers, hidden = false }) {
+export function hospitalNav({ world, cam, sites, theme, soldiers, hidden = false, badgesHidden = false }) {
   if (!sites?.length) return { update() {} };
   const color = (f) => parseInt(theme.factions[f].dot.slice(1), 16);
   // odznaky ve světě
@@ -59,7 +59,7 @@ export function hospitalNav({ world, cam, sites, theme, soldiers, hidden = false
     update(now) {
       const z = cam.zoom;
       // odznak: stálá velikost na obrazovce, mizí, když už je nemocnice vidět sama
-      const a = hidden ? 0 : Math.max(0, Math.min(1, (BADGE_TO - z) / (BADGE_TO - BADGE_FROM)));
+      const a = badgesHidden ? 0 : Math.max(0, Math.min(1, (BADGE_TO - z) / (BADGE_TO - BADGE_FROM)));
       layer.visible = a > 0;
       if (a > 0) for (const b of badges) { b.alpha = a; b.scale.set(1 / z); }
       if (now - checked > 3000) { myFaction = mine(); checked = now; } // po přihlášení se přepne bez obnovení stránky

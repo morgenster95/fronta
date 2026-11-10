@@ -562,8 +562,9 @@ async function boot() {
   }
 
   // odznak nemocnice na oddálené mapě a směrovka k ní v detailu (při natáčení reelů skryté)
-  const reelMode = import.meta.env.DEV && new URLSearchParams(location.search).has('reel');
-  const hospNav = hospitalNav({ world, cam, sites: hospitals?.sites, theme, soldiers, hidden: reelMode });
+  const reelParam = import.meta.env.DEV ? new URLSearchParams(location.search).get('reel') : null;
+  // v reelech jen odznaky; směrovku ukazuje reel s novinkami (news)
+  const hospNav = hospitalNav({ world, cam, sites: hospitals?.sites, theme, soldiers, hidden: !!reelParam && reelParam !== 'news' });
 
   // --- smyčka ---
   if (import.meta.env.DEV) window.__front = { life, cam, soldiers }; // ladění v konzoli

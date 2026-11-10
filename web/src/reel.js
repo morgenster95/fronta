@@ -89,6 +89,14 @@ const SCRIPTS = {
 const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
 export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick, tex, anims, select, hospitals }) {
+  if (name === 'news') {
+    // novinky na frontě: palba, role, XP, obvaziště, hlasování, rod, žebříčky (reel-news.js)
+    return import('./reel-news.js').then(async ({ startNewsReel }) => {
+      await startNewsReel({ cam, life, map, theme, soldiers, tex, anims, hospitals });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (/^day\d+$/.test(name) && name !== 'day1') {
     // denní reel „co se stalo“ z podkladů tools/day-reel.mjs (reel-daily.js)
     return import('./reel-daily.js').then(({ startDailyReel }) => {

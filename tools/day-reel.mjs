@@ -35,32 +35,32 @@ const raid = open && open.day === day && loc ? { name: loc.name, short: loc.shor
 
 const sevWord = { light: 'Grazed.', heavy: 'Badly wounded.', crit: 'Gravely wounded.' };
 const total = hit[0].length + hit[1].length;
-const lines = [
-  [1.0, `Day ${say(day)}.`],
-  [3.0, gunsSilent(state, theme) ? 'The big guns are still silent. But on Verdel Ridge, the rifles are not.' : 'The guns spoke all night over Verdel Ridge.'],
-];
-if (fire) {
-  lines.push([8.6, `A ${short(fire.by.faction)} ${role(fire.by.role)} saw a movement across the wire.`]);
-  lines.push([13.2, `One shot. ${sevWord[fire.sev]}`]);
-} else {
-  lines.push([8.6, 'Stray rounds, a grenade, the wire. The front takes its toll.']);
-}
-lines.push([17.4, `By morning, ${say(total)} men were hit. ${say(hit[0].length)} for the Hegemony, ${say(hit[1].length)} for the Concord.`.replace(/^(.)/, (m) => m.toUpperCase()).replace(/\. (.)/g, (m, c) => `. ${c.toUpperCase()}`)]);
+const cap = (t) => t.replace(/(^|\. )([a-z])/g, (m, a, c) => a + c.toUpperCase());
 const nb = beds[focus].length;
-lines.push([24.0, `The ${short(focus)} aid post has two beds. ${nb >= 2 ? 'Both are taken.' : nb === 1 ? 'One is taken.' : 'Both are still empty.'}`]);
-lines.push([29.0, nb >= 2 ? 'The next man badly hit waits on a stretcher, in the mud.' : 'When they fill, the badly hit wait on stretchers, in the mud.']);
-if (raid) lines.push([34.0, `Field HQ also wants ${say(raid.seats)} volunteers from each side for a night raid on the church of ${raid.short}. Comment ${raid.kw.toLowerCase()}.`]);
-const t2 = raid ? 41.4 : 34.0;
-lines.push([t2, 'Tonight, each side votes what to build.']);
-lines.push([t2 + 3.6, 'A hospital. New wire. Or sandbags.']);
-lines.push([t2 + 7.4, 'Your soldier is your ballot. Link in bio.']);
-const seconds = Math.ceil(t2 + 12);
+// [nejdřív v s, věta, id]; story_vo.py (auto) je řadí hned za sebe podle skutečné délky hlasu, reel si časy bere podle id
+const lines = [
+  [0.6, `Day ${say(day)}.`, 'day'],
+  [1.8, gunsSilent(state, theme) ? 'The big guns are silent. The rifles are not.' : 'The guns spoke all night.', 'guns'],
+  ...(fire ? [
+    [4.6, `A ${short(fire.by.faction)} ${role(fire.by.role)} saw a movement across the wire.`, 'shooter'],
+    [0, `One shot. ${sevWord[fire.sev]}`, 'shot'],
+  ] : [[4.6, 'Stray rounds. A grenade. The wire. The front takes its toll.', 'shooter']]),
+  [0, cap(`${say(total)} men hit by morning. ${say(hit[0].length)} Hegemony, ${say(hit[1].length)} Concord.`), 'count'],
+  [0, `The ${short(focus)} aid post has two beds. ${nb >= 2 ? 'Both are taken.' : nb === 1 ? 'One is taken.' : 'Both still empty.'}`, 'aid'],
+  [0, nb >= 2 ? 'The next man badly hit waits on a stretcher, in the mud.' : 'When they fill, the badly hit wait on stretchers, in the mud.', 'stretcher'],
+  ...(raid ? [[0, `Field HQ wants ${say(raid.seats)} volunteers a side, for a night raid on Saint-Ash. Comment ${raid.kw.toLowerCase()}.`.replace('Saint-Ash', raid.short), 'raid']] : []),
+  [0, 'Tonight, each side votes what to build.', 'vote'],
+  [0, 'A hospital. New wire. Or sandbags.', 'opts'],
+  [0, 'Your soldier is your ballot. Link in bio.', 'cta'],
+];
+const seconds = 60; // horní odhad; skutečnou délku určí hlas (story_vo.py, auto)
+const t2 = null;
 
 const data = { day, total, hit, fire, beds, stretchers, focus, raid, seconds, t2, silent: gunsSilent(state, theme) };
 const name = `day${day}`;
 const dir = path.join(ROOT, 'marketing', 'reels');
 fs.writeFileSync(path.join(dir, `${name}.data.json`), JSON.stringify(data, null, 1));
 // bubny: start po úvodu, ticho pod obvazištěm, zdvojené ke konci
-fs.writeFileSync(path.join(dir, `${name}.script.json`), JSON.stringify({ seconds, lines, drums: [8.4, [[23.6, 33.6]], t2] }, null, 1));
-console.log(`${name}: ${total} raněných, palba ${fire ? `@${fire.by.handle} → @${fire.handle}` : '—'}, obvaziště ${short(focus)} ${nb}/2, výprava ${raid ? raid.kw : '—'}, ${seconds} s`);
-for (const [t, l] of lines) console.log(`  ${t.toFixed(1).padStart(5)}  ${l}`);
+fs.writeFileSync(path.join(dir, `${name}.script.json`), JSON.stringify({ seconds, auto: true, lines, drums: ['shooter', [['aid', 'raid']], 'vote'] }, null, 1));
+console.log(`${name}: ${total} raněných, palba ${fire ? `@${fire.by.handle} → @${fire.handle}` : '—'}, obvaziště ${short(focus)} ${nb}/2, výprava ${raid ? raid.kw : '—'}`);
+for (const [, l, id] of lines) console.log(`  ${id.padEnd(9)} ${l}`);

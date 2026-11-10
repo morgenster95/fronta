@@ -67,13 +67,19 @@ SCRIPTS = {
 # denní reely (tools/day-reel.mjs) mají věty v marketing/reels/<scénář>.script.json
 if NAME not in SCRIPTS and os.path.exists(os.path.join(REELS, f"{NAME}.script.json")):
     _sc = json.load(open(os.path.join(REELS, f"{NAME}.script.json")))
-    SCRIPTS[NAME] = (_sc["lines"], _sc["seconds"])
-LINES, SECONDS = SCRIPTS[NAME]
+    SCRIPTS[NAME] = (_sc["lines"], _sc["seconds"], _sc.get("auto", False))
+LINES, SECONDS, *_auto = SCRIPTS[NAME]
+# auto: věta začne hned po předchozí (nejdřív ve svém čase), žádná hluchá místa; délka videa podle hlasu
+AUTO = bool(_auto and _auto[0])
+RATE = "+4%" if AUTO else "-6%"  # denní a novinkové reely svižněji
+GAP, TAIL = 0.25, 3.2
+
+
 
 
 async def speak(text, path):
-    # pomalejší a hlubší vypravěč
-    await edge_tts.Communicate(text, VOICE, rate="-6%", pitch="-6Hz").save(path)
+    # pomalejší a hlubší vypravěč (denní a novinkové reely svižněji, viz RATE ze .script.json)
+    await edge_tts.Communicate(text, VOICE, rate=RATE, pitch="-6Hz").save(path)
 
 
 def to_wav(src, dst):
@@ -87,27 +93,37 @@ def to_wav(src, dst):
 
 def main():
     os.makedirs(TMP, exist_ok=True)
-    track = np.zeros(int(SECONDS * SR), np.float32)
+    track = np.zeros(int((SECONDS + (60 if AUTO else 0)) * SR), np.float32)
     meta = []
     ok = True
-    for i, (at, text) in enumerate(LINES):
+    cursor = 0.0
+    for i, line in enumerate(LINES):
+        at, text = line[0], line[1]
+        lid = line[2] if len(line) > 2 else None
         mp3 = os.path.join(TMP, f"{NAME}{i:02d}.mp3")
         asyncio.run(speak(text, mp3))
         x = to_wav(mp3, os.path.join(TMP, f"{NAME}{i:02d}.wav"))
         dur = len(x) / SR
-        nxt = LINES[i + 1][0] if i + 1 < len(LINES) else SECONDS - 1
-        flag = "" if at + dur + 0.25 <= nxt else f"  !!! přetéká o {at + dur + 0.25 - nxt:.2f} s"
+        if AUTO:
+            at = round(max(at, cursor), 2)
+            cursor = at + dur + GAP
+            flag = ""
+        else:
+            nxt = LINES[i + 1][0] if i + 1 < len(LINES) else SECONDS - 1
+            flag = "" if at + dur + 0.25 <= nxt else f"  !!! přetéká o {at + dur + 0.25 - nxt:.2f} s"
         ok = ok and not flag
         print(f"{at:6.1f}  {dur:5.2f} s  {text}{flag}")
         s = int(at * SR)
         track[s:s + len(x)] += x[: len(track) - s]
-        meta.append([at, round(dur, 2), text])
+        meta.append([at, round(dur, 2), text] + ([lid] if lid else []))
+    seconds = round(cursor + TAIL, 1) if AUTO else SECONDS
+    track = track[: int(seconds * SR)]
     with wave.open(os.path.join(REELS, f"_{NAME}_vo.wav"), "wb") as w:
         w.setnchannels(1)
         w.setsampwidth(2)
         w.setframerate(SR)
         w.writeframes((np.clip(track, -1, 1) * 32767).astype(np.int16).tobytes())
-    json.dump({"seconds": SECONDS, "voice": VOICE, "lines": meta}, open(os.path.join(REELS, f"{NAME}.vo.json"), "w"), indent=1)
+    json.dump({"seconds": seconds, "voice": VOICE, "lines": meta}, open(os.path.join(REELS, f"{NAME}.vo.json"), "w"), indent=1)
     print("OK" if ok else "NĚKTERÉ VĚTY PŘETÉKAJÍ")
 
 
