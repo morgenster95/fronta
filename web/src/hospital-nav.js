@@ -31,7 +31,7 @@ export function hospitalNav({ world, cam, sites, theme, soldiers, hidden = false
   });
   // směrovky v DOM (jedna na stranu, ukazují na první nemocnici strany)
   const firstOf = theme.factions.map((_, f) => sites.find((s) => s.faction === f)).filter(Boolean);
-  const label = (s) => (s.beds >= 4 ? 'HOSPITAL' : 'AID POST');
+  const label = (s) => ((s.beds?.length ?? s.beds) >= 4 ? 'HOSPITAL' : 'AID POST'); // sites z buildHospitals mají beds = pozice lůžek
   const ptrs = firstOf.map((s) => {
     const el = document.createElement('button');
     el.type = 'button';

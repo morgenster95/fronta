@@ -21,7 +21,7 @@ for (const f of [0, 1]) {
     const { cam, hospitals, soldiers } = window.__front;
     const site = hospitals.sites.find((s) => s.faction === f);
     cam.anim = null;
-    cam.set(site.x, site.y + (f === 0 ? 10 : -10), 4.6);
+    cam.set(site.x, site.y + (f === 0 ? 10 : -10), site.beds.length >= 4 ? 2.3 : 4.6); // nemocniční dugout je širší
     window.__hs = { site, who: soldiers.filter((s) => s.faction === f && (s.hosp === 'bed' || s.hosp === 'stretcher')) };
   }, f);
   await new Promise((r) => setTimeout(r, 2500)); // terén a sprity se dokreslí

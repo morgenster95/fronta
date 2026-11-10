@@ -80,7 +80,7 @@ Kdo se nevešel, leží na nosítkách před vchodem. Každá další odhlasovan
 Na hráčích je, jestli si odhlasují další nemocnici.
 
 ## Další fáze
-2. **Web a mapa:** nemocniční dugout(y) za zákopem každé strany, na lůžkách ležící sprite raněných hráčů (poslední snímek `@fall_south`),
+2. **Web a mapa:** obvaziště = stan mezi podpůrnou linií a zálohami; postavená nemocnice = větší hluboký dugout (168×104 px, `dugoutArt` v `web/src/hospital.js`) dál v týlu za zálohami, napojený spojovacím zákopem, střecha z vlnitého plechu s křížem (náhled `/?hospital=dugout`). Nemocniční dugout(y) za zákopem každé strany, na lůžkách ležící sprite raněných hráčů (poslední snímek `@fall_south`),
    nosítka před vchodem, medici u raněných, řídnoucí drát podle výdrže, staty na kartě vojáka (výdrž, jizvy, ošetření u mediků).
    Data už jsou v `roster.json` → `battle` (`battlePublic`).
 3. **Grafika:** interiér dugoutu se 4 lůžky (PixelLab), nosítka.

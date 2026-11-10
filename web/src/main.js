@@ -7,7 +7,7 @@ import { initUI } from './ui.js';
 import { createLife } from './life.js';
 import { createSound } from './sound.js';
 import { startReel } from './reel.js';
-import { buildHospitals, roofAlpha } from './hospital.js';
+import { buildHospitals, roofAlpha, hospitalSize } from './hospital.js';
 import { hospitalNav } from './hospital-nav.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
@@ -205,14 +205,23 @@ async function boot() {
     theme.factions.forEach((_, f) => {
       const cx = (openX0 + openX1) / 2; // střed otevřené fronty: stálé místo (nemění se s vojáky), jen když se otevřou nové sektory
       const sup = ext(f, 'support'), res = ext(f, 'reserve');
-      const y = sup && res ? (f === 0 ? (res[1] + sup[0]) / 2 : (sup[1] + res[0]) / 2) : map.front[f] * map.tile + (f === 0 ? -200 : 200);
+      // náhled postavené nemocnice na vývojovém serveru: /?hospital=dugout
+      const built = !!pub[f]?.hospital?.dugout || (import.meta.env.DEV && new URLSearchParams(location.search).get('hospital') === 'dugout');
+      const { W: HW, H: HH } = hospitalSize(built ? 4 : 2);
+      // obvaziště (stan) mezi podpůrnou linií a zálohami; postavená nemocnice je hluboký dugout dál v týlu, za zálohami
+      // (mimo dosah kulek, ranění se k ní nosí spojovacím zákopem), když se tam vejde; jinak na místě obvaziště
+      let y = sup && res ? (f === 0 ? (res[1] + sup[0]) / 2 : (sup[1] + res[0]) / 2) : map.front[f] * map.tile + (f === 0 ? -200 : 200);
+      if (built && res) {
+        const back = f === 0 ? res[0] - 70 - HH / 2 : res[1] + 70 + HH / 2;
+        if (back - HH / 2 > 24 && back + HH / 2 < map.H * map.tile - 24) y = back;
+      }
       const n = Math.max(1, pub[f]?.hospital?.dugouts || 0);
       // volné místo bez zákopů (nemocnice nesmí stát na spojovacím zákopu), co nejblíž středu vojáků
       const T2 = map.tile, taken = [];
       const free = (x, y0) => {
-        for (const t of taken) if (Math.abs(t - x) < 140) return false;
-        for (let ty = Math.floor((y0 - 56) / T2); ty <= Math.floor((y0 + 56) / T2); ty++)
-          for (let tx = Math.floor((x - 70) / T2); tx <= Math.floor((x + 70) / T2); tx++) {
+        for (const t of taken) if (Math.abs(t - x) < HW + 30) return false;
+        for (let ty = Math.floor((y0 - HH / 2 - 12) / T2); ty <= Math.floor((y0 + HH / 2 + 12) / T2); ty++)
+          for (let tx = Math.floor((x - HW / 2 - 8) / T2); tx <= Math.floor((x + HW / 2 + 8) / T2); tx++) {
             const g = map.grid[ty * map.W + tx];
             if (g === T.TRENCH || g === T.PARAPET || g === T.DUGOUT || g === T.WATER) return false;
           }
@@ -225,12 +234,12 @@ async function boot() {
           if (free(cand, y)) { x = cand; break; }
         }
         taken.push(x);
-        sites.push({ faction: f, x, y, beds: pub[f]?.hospital?.dugout ? 4 : 2, entrance: f === 0 ? 1 : -1 });
+        sites.push({ faction: f, x, y, beds: built ? 4 : 2, entrance: f === 0 ? 1 : -1 });
       }
     });
     const H = buildHospitals(sites);
     // ke každé nemocnici vede spojovací zákop od vchodu k nejbližšímu zákopu (skutečné dlaždice: později se po něm bude chodit)
-    for (const site of H.sites) connectSite(map, site.faction, site.x, site.y + site.entrance * (site.beds >= 4 ? 40 : 27), site.entrance);
+    for (const site of H.sites) connectSite(map, site.faction, site.x, site.y + site.entrance * (hospitalSize(site.beds.length).H / 2), site.entrance);
     overview.texture = Texture.from(paintOverview(map));
     world.addChildAt(H.base, world.getChildIndex(terrainLayer) + 1);
     world.addChildAt(H.roofs, world.getChildIndex(overLayer) + 1);

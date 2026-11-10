@@ -686,7 +686,7 @@
     "buildings": {
       "dugout": {
         "name": "Hospital dugout",
-        "done": "dug a hospital dugout behind the line: 4 beds",
+        "done": "dug a deep hospital dugout behind the reserve line, out of rifle range: 4 beds",
         "beds": 4,
         "care": 1.5,
         "max": 6,
