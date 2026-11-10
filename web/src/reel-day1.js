@@ -36,7 +36,7 @@ export const CSS = `
 #rd-day { left: 0; right: 0; top: 30%; text-align: center; }
 #rd-day .big { font-family: 'Silkscreen', monospace; font-size: 86px; letter-spacing: 0.08em; text-shadow: 5px 5px 0 #0e0d0c; min-height: 100px; }
 #rd-day .sub { font-size: 30px; color: #c9b99a; letter-spacing: 0.08em; text-shadow: 2px 2px 0 #0e0d0c; min-height: 34px; }
-#rd-sub { left: 6%; right: 6%; top: 10.5%; text-align: center; }
+#rd-sub { left: 6%; right: 6%; top: 15.5%; text-align: center; }
 #rd-sub span { font-size: 31px; line-height: 1.12; background: rgba(14, 13, 12, 0.72); padding: 2px 10px; box-decoration-break: clone; -webkit-box-decoration-break: clone; text-shadow: 2px 2px 0 #0e0d0c; }
 #rd-big { left: 0; right: 0; top: 36%; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
 #rd-big span { font-family: 'Silkscreen', monospace; font-size: 40px; letter-spacing: 0.04em; line-height: 1.05; background: rgba(14, 13, 12, 0.8); padding: 6px 14px; text-shadow: 3px 3px 0 #0e0d0c; }

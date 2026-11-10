@@ -25,7 +25,7 @@ const CSS = `${BASE}${FX_CSS}${CINEMA_CSS}
 #rd-raid img { width: 62%; image-rendering: pixelated; filter: drop-shadow(0 6px 0 rgba(0,0,0,0.6)); }
 #rd-raid .title { font-family: 'Silkscreen', monospace; font-size: 26px; line-height: 1.1; margin: 6px 0; }
 #rd-raid .kw { display: inline-block; font-family: 'Silkscreen', monospace; font-size: 30px; background: rgba(126, 59, 42, 0.95); padding: 4px 14px; margin-top: 8px; }
-#rd-vote { left: 9%; right: 9%; top: 13%; }
+#rd-vote { left: 17%; right: 17%; top: 25%; }
 #rd-vote img { width: 100%; display: block; image-rendering: pixelated; box-shadow: 0 8px 0 rgba(0,0,0,0.5), 0 16px 28px rgba(0,0,0,0.6); }
 #rd-vote .hl { position: absolute; left: 2.5%; right: 2.5%; border: 4px solid #d98f3f; box-shadow: 0 0 0 3px #0e0d0c, 0 0 22px rgba(217,143,63,0.7); opacity: 0; }
 `;
@@ -186,7 +186,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     const subEl = $('#rd-sub');
     if (s && t > tSh && !logo) {
       subEl.style.opacity = 1;
-      subEl.style.top = t >= tVote && t < tCta ? '7.5%' : '10.5%';
+      subEl.style.top = '15.5%'; // pod horní lištou Instagramu (~12 % výšky)
       if (subEl.dataset.text !== s) { subEl.dataset.text = s; subEl.innerHTML = `<span>${s}</span>`; }
     } else subEl.style.opacity = 0;
 
