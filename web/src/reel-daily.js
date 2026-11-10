@@ -129,7 +129,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const cine = makeCinema(tex, anims);
   root.prepend(cine.canvas);
   // filmové mezizáběry: úvod a závěr se mezi dny střídají, k nosítkům obvaziště při lucerně, k výpravě kostel
-  const scenes = makeScenes(tex);
+  const scenes = makeScenes(tex, anims);
   root.insertBefore(scenes.canvas, cine.canvas.nextSibling);
   const intro = pickScene(data.day, data.raid ? ['march', 'flare'] : ['march', 'flare', 'church']);
   const outro = pickScene(data.day, ['dawn', 'dawnwire'], 1);

@@ -567,7 +567,7 @@ async function boot() {
   const hospNav = hospitalNav({ world, cam, sites: hospitals?.sites, theme, soldiers, hidden: !!reelParam && reelParam !== 'news' });
 
   // --- smyčka ---
-  if (import.meta.env.DEV) window.__front = { life, cam, soldiers, tex }; // ladění v konzoli
+  if (import.meta.env.DEV) window.__front = { life, cam, soldiers, tex, anims }; // ladění v konzoli
   const visibleSoldiers = [];
   // ?slow=N zpomalí animace a efekty N× (jen pro kontrolu výstřelů na snímcích obrazovky)
   const slow = Math.max(1, Number(new URLSearchParams(location.search).get('slow')) || 1);

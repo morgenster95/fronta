@@ -78,13 +78,33 @@ function stakeWire(g, x0, x1, base, tall, step, col, hi) {
   }
 }
 
-export function makeScenes(tex) {
+// skutečný sprite ze hry (barevně), zvětšený a nasvícený: tint = barva přes sprite (světlo nebo protisvětlo)
+function lit(tx, tint, flip = false) {
+  if (!tx?.source?.resource) return null;
+  const f = tx.frame;
+  const o = off(f.width, f.height), og = o.getContext('2d');
+  if (flip) { og.translate(f.width, 0); og.scale(-1, 1); }
+  og.drawImage(tx.source.resource, f.x, f.y, f.width, f.height, 0, 0, f.width, f.height);
+  og.setTransform(1, 0, 0, 1, 0, 0);
+  if (tint) { og.globalCompositeOperation = 'source-atop'; og.fillStyle = tint; og.fillRect(0, 0, f.width, f.height); }
+  return o;
+}
+const easeOut = (x) => 1 - Math.pow(1 - clamp01(x), 3);
+
+export function makeScenes(tex, anims = {}) {
   const canvas = off(W, H);
   canvas.id = 'rd-cine2';
   const g = canvas.getContext('2d');
   const L = {}; // statické vrstvy
   const sentry = silhouette(tex.hegemony?.north || tex.concord?.north, '#0b0a09');
-  const medic = silhouette(tex.hegemony_medic?.east || tex.concord_medic?.east, '#140f0c');
+  const medic = silhouette(tex.hegemony_medic?.west || tex.concord_medic?.west, '#140f0c');
+  // skutečné sprity v barvě: raněný (poslední snímek pádu), zdravotník, vojáci u drátu za úsvitu
+  const fallTx = anims.hegemony?.fall?.south?.at(-1) || anims.concord?.fall?.south?.at(-1);
+  const woundedLit = lit(fallTx, 'rgba(217,143,63,0.18)');
+  const medicLit = lit(tex.hegemony_medic?.west || tex.concord_medic?.west, 'rgba(217,143,63,0.16)');
+  const dawnA = lit(tex.hegemony?.['north-east'], 'rgba(30,16,14,0.42)');
+  const dawnB = lit(tex.concord?.['north-west'] || tex.concord?.north, 'rgba(30,16,14,0.5)');
+  const dawnC = lit(tex.hegemony_medic?.north || tex.hegemony?.north, 'rgba(30,16,14,0.55)');
   const church = new Image();
   church.src = '/assets/locations/church.png';
   let churchSil = null;
@@ -161,7 +181,13 @@ export function makeScenes(tex) {
       rain(g, t, 90, 0.3);
     },
     church(t) {
+      // výbuch za kostelem (jednou, 0,9 s po začátku záběru): otřes obrazu, záblesk oblohy, ohnivá koule, kouř, trosky
+      const u = t - 0.9;
+      const shake = u > 0 && u < 0.45 ? Math.round(Math.sin(u * 70) * 2.5 * (1 - u / 0.45)) : 0;
+      g.setTransform(1, 0, 0, 1, shake, Math.round(shake * 0.6));
       g.drawImage(L.church, 0, 0);
+      const ex = 124, ey = 196;
+      if (u > 0 && u < 0.6) { glow(g, ex, ey, 170, '#4a2e2c', 1.4 * (1 - u / 0.6), 1.3); glow(g, ex, ey, 110, '#7e3b2a', 1.2 * (1 - u / 0.6), 1.2); }
       // měsíc s korónou
       glow(g, 120, 78, 52, '#2a3150', 1.1);
       glow(g, 120, 78, 26, '#4c5470', 1);
@@ -174,6 +200,31 @@ export function makeScenes(tex) {
       for (const [x0, y, w, sp] of [[-40, 70, 80, 3], [60, 96, 70, 2], [20, 120, 100, 1.4]]) {
         const x = ((x0 + t * sp) % (W + 140)) - 60;
         g.fillRect(Math.round(x), y, w, 3); g.fillRect(Math.round(x + 8), y - 2, w - 22, 2);
+      }
+      // ohnivá koule a kouř (za kopcem a kostelem → kostel je proti ní silueta)
+      if (u > 0) {
+        // kouřový sloup: obláčky se rodí u země a stoupají (vítr je unáší doprava), dole je nasvítí oheň
+        for (let i = 0; i < 46; i++) {
+          const a = u - 0.12 - i * 0.075;
+          if (a <= 0 || a > 6) continue;
+          const py = ey + 22 - a * 26, px = ex + Math.sin(i * 2.1) * 3 + a * a * 3, r = 4 + a * 4.5 * (1 - i / 80) + Math.sin(i * 3.3) * 1.5;
+          g.fillStyle = a < 0.35 ? '#5c2a22' : a < 0.9 ? '#2e2426' : '#1d1b20';
+          g.beginPath(); g.ellipse(px, py, r, r * 0.85, 0, 0, Math.PI * 2); g.fill();
+          if (a > 0.9) { g.fillStyle = '#26232b'; g.fillRect(Math.round(px - r * 0.6), Math.round(py - r * 0.7), Math.round(r * 0.8), 1); } // horní okraj od měsíce
+        }
+        if (u < 1.4) { // ohnivá koule přes spodek kouře
+          const k = easeOut(u / 0.7), fade = clamp01(1 - (u - 0.45) / 0.9);
+          glow(g, ex, ey - k * 12, 16 + 52 * k, '#7e3b2a', 1.4 * fade);
+          glow(g, ex, ey - k * 14, 12 + 40 * k, '#a85a36', 1.3 * fade);
+          glow(g, ex, ey - k * 16, 8 + 28 * k, '#d98f3f', 1.25 * fade);
+          glow(g, ex, ey - k * 18, 5 + 16 * k, '#fff6dc', 1.2 * clamp01(1 - u / 0.55));
+        }
+        if (u < 1.5) for (let i = 0; i < 14; i++) { // trosky
+          const vx = Math.cos(i * 2.4) * (18 + (i % 4) * 10), vy = 40 + (i % 5) * 12;
+          const px = ex + vx * u, py = ey - vy * u + 60 * u * u;
+          g.fillStyle = i % 3 ? '#0b0a09' : '#a85a36';
+          g.fillRect(Math.round(px), Math.round(py), 2, 2);
+        }
       }
       // kopec a kostel
       g.fillStyle = '#0b0a09';
@@ -193,6 +244,8 @@ export function makeScenes(tex) {
       g.fillStyle = '#070605';
       g.fillRect(0, 286, W, 40);
       stakeWire(g, 0, W, 300, 16, 26, '#070605', '#2a2a36');
+      if (u > 0 && u < 0.5) { g.fillStyle = `rgba(255,220,160,${0.25 * (1 - u / 0.5)})`; g.fillRect(0, 0, W, H); } // záblesk přes celý obraz
+      g.setTransform(1, 0, 0, 1, 0, 0);
     },
     aidpost(t) {
       // lucerna se houpe; světlo a obří stín zdravotníka na stěně se hýbou s ní
@@ -209,7 +262,7 @@ export function makeScenes(tex) {
       for (let x = 0; x < W; x += 12) g.fillRect(x, 0, 1, 236);
       g.fillRect(0, 60, W, 3);
       // obří stín zdravotníka na stěně (opačně od lucerny)
-      if (medic) { g.globalAlpha = 0.5; g.imageSmoothingEnabled = false; g.drawImage(medic, 40 + (92 - lx) * 1.4, 40, 150, 150); g.globalAlpha = 1; }
+      if (medic) { g.globalAlpha = 0.4; g.imageSmoothingEnabled = false; g.drawImage(medic, 70 + (92 - lx) * 1.4, 30, 160, 160); g.globalAlpha = 1; }
       // plachta s křížem
       g.fillStyle = '#a39782'; g.fillRect(14, 84, 32, 28);
       g.fillStyle = '#c4b8a0'; g.fillRect(14, 84, 32, 2);
@@ -218,18 +271,24 @@ export function makeScenes(tex) {
       g.fillStyle = '#0e0d0c'; g.fillRect(0, 236, W, 90);
       for (let y = 240; y < H; y += 7) { g.fillStyle = '#1a1714'; g.fillRect(0, y, W, 5); }
       glow(g, lx, 240, 90, '#2b2722', 0.9, 0.35);
-      // lůžko a raněný (silueta, okraj nasvícený)
-      g.fillStyle = '#0b0a09';
-      g.fillRect(16, 222, 130, 8);
-      for (const x of [22, 136]) { g.fillRect(x, 230, 4, 26); }
-      g.beginPath(); g.ellipse(30, 214, 10, 8, 0, 0, Math.PI * 2); g.fill();
-      g.beginPath(); g.ellipse(84, 216, 56, 9, 0, 0, Math.PI * 2); g.fill();
-      g.fillStyle = '#e3d9c3'; g.fillRect(22, 207, 13, 3);
-      g.fillStyle = '#7e3b2a'; g.fillRect(29, 207, 3, 2);
-      g.fillStyle = '#857a68';
-      for (let x = 30; x < 140; x++) { const y = 216 - Math.round(9 * Math.sqrt(Math.max(0, 1 - ((x - 84) / 56) ** 2))); g.fillRect(x, y, 1, 1); }
-      // zdravotník se sklání nad raněným (3×)
-      if (medic) { g.drawImage(medic, 108, 128, 96, 96); }
+      // polní lůžko (dřevo, plachtovina, nohy do X), nasvícené lucernou
+      g.fillStyle = '#0b0a09'; g.fillRect(12, 214, 116, 3);
+      g.fillStyle = '#6b6152'; g.fillRect(12, 211, 116, 4);
+      g.fillStyle = '#857a68'; g.fillRect(12, 211, 116, 1);
+      g.fillStyle = '#8c8a5c'; g.fillRect(16, 208, 108, 3); // plachtovina
+      g.fillStyle = '#2b2722';
+      for (const x of [18, 104]) for (let k = 0; k < 22; k++) { g.fillRect(x + k * 0.8, 217 + k, 2, 1); g.fillRect(x + 18 - k * 0.8, 217 + k, 2, 1); }
+      g.fillStyle = '#c4b8a0'; g.fillRect(16, 203, 22, 6); g.fillStyle = '#e3d9c3'; g.fillRect(16, 203, 22, 1); // polštář
+      // raněný: náš sprite padlého vojáka (3×), přikrytý dekou od pasu dolů
+      g.imageSmoothingEnabled = false;
+      if (woundedLit) g.drawImage(woundedLit, 6, 136, 96, 96);
+      g.fillStyle = '#6b6152'; g.fillRect(58, 200, 66, 9);
+      g.fillStyle = '#857a68'; g.fillRect(58, 200, 66, 2);
+      g.fillStyle = '#524a3f'; for (const x of [72, 90, 108]) g.fillRect(x, 202, 1, 7);
+      // zdravotník: náš Stretcher Bearer (3×), stojí u lůžka čelem k raněnému
+      if (medicLit) g.drawImage(medicLit, 104, 146, 96, 96);
+      // stín pod lůžkem a zdravotníkem
+      g.fillStyle = 'rgba(14,13,12,0.6)'; g.fillRect(14, 239, 180, 3);
       // lucerna na drátu
       g.strokeStyle = '#0b0a09'; g.lineWidth = 1;
       g.beginPath(); g.moveTo(92, 0); g.lineTo(lx, ly - 7); g.stroke();
@@ -261,13 +320,14 @@ export function makeScenes(tex) {
         for (let x = 0; x < w; x += 3) g.fillRect(-40 + x, -24 + i * 7, 2 + ((x * 7 + i) % 2), 1);
       }
       g.restore();
-      // ruka s perem na konci řádku
+      // pero na konci rozepsaného řádku (bez ruky)
       const pi = Math.min(6, Math.floor(t * 1.3));
-      const px = 16 + Math.min(80, ((t * 1.3) % 1) * 80) * 0.98, py = 212 + pi * 7 - px * 0.06 + 6;
-      g.fillStyle = '#0b0a09';
-      g.fillRect(px - 2, py - 18, 3, 18); // pero
-      g.beginPath(); g.ellipse(px + 6, py - 4, 9, 5, -0.4, 0, Math.PI * 2); g.fill(); // ruka
-      g.fillRect(px + 10, py - 8, 40, 9); // rukáv
+      const px = 16 + Math.min(80, ((t * 1.3) % 1) * 80) * 0.98, py = 212 + pi * 7 - px * 0.06 + 1;
+      g.strokeStyle = '#1c1a17'; g.lineWidth = 2;
+      g.beginPath(); g.moveTo(px, py); g.lineTo(px + 14, py - 26); g.stroke();
+      g.strokeStyle = '#a39782'; g.lineWidth = 1;
+      g.beginPath(); g.moveTo(px + 9, py - 16); g.lineTo(px + 14, py - 26); g.stroke();
+      g.fillStyle = '#d98f3f'; g.fillRect(Math.round(px), Math.round(py) - 1, 1, 1); // odlesk hrotu
       // svíčka
       g.fillStyle = '#a39782'; g.fillRect(cx - 4, 172, 8, 26);
       g.fillStyle = '#c4b8a0'; g.fillRect(cx - 4, 172, 2, 26);
@@ -293,6 +353,12 @@ export function makeScenes(tex) {
       // popředí: velké kůly s drátem, vrány vzlétají
       g.fillStyle = '#120e0c';
       g.fillRect(0, 268, W, 60);
+      // naši vojáci (skutečné sprity, 3×) hledí do úsvitu; zadní řada menší
+      g.imageSmoothingEnabled = false;
+      if (dawnC) g.drawImage(dawnC, 120, 214, 64, 64);
+      if (dawnB) g.drawImage(dawnB, 84 + Math.round(Math.sin(t * 0.8)), 196, 96, 96);
+      if (dawnA) g.drawImage(dawnA, 4, 188, 108, 108);
+      // protisvětlo: teplý lem na okrajích postav dělá slunce, drát jde přes ně
       stakeWire(g, -6, W + 6, 292, 44, 46, '#120e0c', '#7e4a32');
       stakeWire(g, 17, W + 6, 293, 30, 46, '#120e0c', null);
       for (let k = 0; k < 4; k++) {

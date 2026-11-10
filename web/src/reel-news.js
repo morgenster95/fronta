@@ -161,7 +161,7 @@ export async function startNewsReel({ cam, life, map, theme, soldiers, tex, anim
   const cine = makeCinema(tex, anims);
   root.prepend(cine.canvas);
   // filmové mezizáběry: světlice v úvodu, dopis pod záznamy z deníku, obvaziště při lucerně, úsvit nad drátem k rodu
-  const scenes = makeScenes(tex);
+  const scenes = makeScenes(tex, anims);
   root.insertBefore(scenes.canvas, cine.canvas.nextSibling);
   const sceneAt = (t) => {
     if (t < at('fire')) return ['flare', t + 1.2];
