@@ -238,6 +238,46 @@
           }
         ]
       }
+    },
+    {
+      "id": "casualties-d2",
+      "type": "carousel",
+      "files": [
+        "day2_wounded_1.jpg",
+        "day2_wounded_2.jpg",
+        "day2_wounded_3.jpg"
+      ],
+      "tags": {
+        "day2_wounded_1.jpg": [
+          {
+            "username": "0__freddie__0",
+            "x": 0.278,
+            "y": 0.47
+          },
+          {
+            "username": "slightlyretarded69",
+            "x": 0.338,
+            "y": 0.541
+          },
+          {
+            "username": "wolfmanantony",
+            "x": 0.278,
+            "y": 0.611
+          },
+          {
+            "username": "pavla.9_",
+            "x": 0.208,
+            "y": 0.737
+          },
+          {
+            "username": "the_cowboii",
+            "x": 0.25,
+            "y": 0.807
+          }
+        ]
+      },
+      "caption": "🩸 DAY 2: FIRST BLOOD ON VERDEL RIDGE\n\nThe big guns are still silent. The rifles are not. Five men were hit overnight.\n\n🩶 HEGEMONY: 3 hit\n• @0__freddie__0 badly wounded, shot by @ghai.gpt of the Concord. Now in a bed at the aid post.\n• @slightlyretarded69 grazed, shot by @leo.glc\n• @wolfmanantony grazed, shot by @csllgaks\n\n🫒 CONCORD: 2 hit\n• @pavla.9_ and @the_cowboii grazed by stray bullets\n\nEach side has only an aid post with 2 beds. When they fill, the badly wounded wait on stretchers in the mud. No side has a hospital yet.\n🗳️ Today at 15:00 UTC each side votes what to build. Watch this account.\n\nRead the Trench Gazette and find your soldier: link in bio.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
+      "publishAt": "2026-11-10T12:34:00.000Z"
     }
   ]
 }

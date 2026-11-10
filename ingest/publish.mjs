@@ -58,8 +58,21 @@ async function publish(item) {
     creation = (await call('POST', `${USER}/media`, { image_url: url(item.files[0]), caption: item.caption })).id;
   } else if (item.type === 'carousel') {
     const children = [];
-    for (const f of item.files) children.push((await call('POST', `${USER}/media`, { image_url: url(f), is_carousel_item: 'true' })).id);
-    for (const c of children) await waitReady(c);
+    // item.tags = { "<soubor>": [{ username, x, y }] } → označení lidí na snímku (x, y 0–1); když je IG odmítne
+    // (soukromý nebo neexistující účet), snímek se nahraje bez označení (@zmínky v popisku zůstávají)
+    for (const f of item.files) {
+      const base = { image_url: url(f), is_carousel_item: 'true' };
+      const tags = item.tags?.[f];
+      let id = null;
+      if (tags?.length) {
+        try { id = (await call('POST', `${USER}/media`, { ...base, user_tags: JSON.stringify(tags) })).id; } catch (e) { console.warn(`! ${f}: označení odmítnuto (${e.message}), bez označení`); }
+      }
+      if (id) {
+        try { await waitReady(id); } catch (e) { console.warn(`! ${f}: snímek s označením neprošel (${e.message}), bez označení`); id = null; }
+      }
+      if (!id) { id = (await call('POST', `${USER}/media`, base)).id; await waitReady(id); }
+      children.push(id);
+    }
     creation = (await call('POST', `${USER}/media`, { media_type: 'CAROUSEL', children: children.join(','), caption: item.caption })).id;
   } else if (item.type === 'story') {
     // příběh (24 h): video max 60 s, bez popisku; .mp4 = video, jinak obrázek

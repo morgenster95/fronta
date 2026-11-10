@@ -19,6 +19,7 @@ PROMO = os.path.join(ROOT, "marketing", "promo")
 SOLD = os.path.join(ROOT, "web", "public", "assets", "soldiers")
 LOC = os.path.join(ROOT, "web", "public", "assets", "locations")
 SIDES = [("HEGEMONY", HEG, "hegemony"), ("CONCORD", CON, "concord")]
+TAGS = []  # označení na 1. snímku (Instagram user_tags, x/y 0–1)
 SEV = {"light": ("GRAZED", P["pale"]), "heavy": ("BADLY WOUNDED", P["gold"]), "crit": ("GRAVELY WOUNDED", P["fire"])}
 PLACE = {"bed": "in a bed", "stretcher": "on a stretcher", "trench": "in the trench"}
 
@@ -92,6 +93,7 @@ def slide_list(day, out):
             else:
                 tag, where = SEV[r["sev"]][0], PLACE.get(r["place"], "")
             d.text((18, y - 3), fit(d, f"@{r['handle']}", vt(16), 110), font=vt(16), fill=ink)
+            TAGS.append({"username": r["handle"], "x": round((18 + min(110, d.textlength("@" + r["handle"], font=vt(16))) / 2) / W, 3), "y": round((y + 5) / H, 3)})
             d.text((W - 16 - d.textlength(tag, font=font(8)), y), tag, font=font(8), fill=red if r["sev"] != "light" else soft)
             how = f"shot by @{r['by']}" if r["by"] else "shellfire" if r.get("shell") else "stray bullet"
             d.text((20, y + 7), fit(d, how, vt(14), W - 44 - d.textlength(where, font=vt(14))), font=vt(14), fill=soft)
@@ -178,6 +180,8 @@ if __name__ == "__main__":
         state = json.load(open(path))
         day, out = today(state)
         shots = [os.path.join(PROMO, f"hosp_{f}.png") for f in (0, 1)]  # node tools/shot-hospital.mjs (snímky ze hry)
-        print(slide_list(day, out), *[slide_aidpost(day, state, f, shots[f] if os.path.exists(shots[f]) else None) for f in (0, 1)])
+        first = slide_list(day, out)
+        json.dump({first: TAGS}, open(os.path.join(PROMO, f"day{day}_wounded_tags.json"), "w"), indent=1)
+        print(first, *[slide_aidpost(day, state, f, shots[f] if os.path.exists(shots[f]) else None) for f in (0, 1)])
         for f, (name, _, _) in enumerate(SIDES):
             print(name, ", ".join(f"@{r['handle']} ({r['sev']}, {r['place']}{', by @' + r['by'] if r['by'] else ''})" for r in out[f]) or "-")
