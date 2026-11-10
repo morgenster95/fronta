@@ -1,0 +1,66 @@
+{
+ "seconds": 33.3,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.6,
+   0.6,
+   "Day two.",
+   "day"
+  ],
+  [
+   1.8,
+   3.24,
+   "The big guns are silent. The rifles are not.",
+   "guns"
+  ],
+  [
+   5.29,
+   2.49,
+   "A Concord sniper saw a movement across the wire.",
+   "shooter"
+  ],
+  [
+   8.03,
+   2.42,
+   "One shot. Badly wounded.",
+   "shot"
+  ],
+  [
+   10.7,
+   4.07,
+   "Five men hit by morning. Three Hegemony, two Concord.",
+   "count"
+  ],
+  [
+   15.02,
+   3.67,
+   "The Hegemony aid post has two beds. One is taken.",
+   "aid"
+  ],
+  [
+   18.94,
+   3.22,
+   "When they fill, the badly hit wait on stretchers, in the mud.",
+   "stretcher"
+  ],
+  [
+   22.41,
+   2.25,
+   "And today, each side votes what to build.",
+   "vote"
+  ],
+  [
+   24.91,
+   1.67,
+   "A hospital, or sandbags.",
+   "opts"
+  ],
+  [
+   26.83,
+   3.05,
+   "Your soldier is your ballot. Link in bio.",
+   "cta"
+  ]
+ ]
+}
