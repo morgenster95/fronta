@@ -39,8 +39,10 @@ export function hospital(state, theme, f) {
   const side = ensureBattle(state, theme).sides[f];
   const n = count(side, 'dugout');
   const a = cfg.aidPost, d = cfg.buildings.dugout;
-  if (!n) return { name: a.name, dugout: false, dugouts: 0, beds: a.beds, stretchers: a.stretchers, care: a.care, critDie: a.critDie };
-  return { name: d.name, dugout: true, dugouts: n, beds: n * d.beds, stretchers: a.stretchers + n * (d.stretchers || 0), care: d.care, critDie: d.critDie };
+  // care = násobek hojení těžce raněného proti nosítkům s plnou péčí (≥ 1), critRisk = násobek rizika smrti kritického za noc
+  // proti nosítkům (≤ 1): lůžko je tak VŽDY lepší než nosítka, nemocnice lepší než obvaziště
+  if (!n) return { name: a.name, dugout: false, dugouts: 0, beds: a.beds, stretchers: a.stretchers, care: a.care, critRisk: a.critRisk };
+  return { name: d.name, dugout: true, dugouts: n, beds: n * d.beds, stretchers: a.stretchers + n * (d.stretchers || 0), care: d.care, critRisk: d.critRisk };
 }
 
 export function build(state, theme, f, id) {
@@ -312,11 +314,12 @@ export function battleTick(state, theme, story, day, ctx = {}) {
           ev(s, 'patched', eventEntry('patched', s, day, theme, story, {}, today));
         }
       } else if (w.place === 'bed') {
-        const days = day - (w.bedDay ?? day) + 1;
+        // na lůžku: plná péče místa (medika nepotřebuje); stejný vzorec jako na nosítkách, jen s lepšími násobky místa
         if (w.sev === 'crit') {
-          if (days === 1 && rand() < H.critDie) die(s, 'diedInBed', 'wounds');
-          else if (days >= C.stabilize) { w.sev = 'heavy'; ev(s, 'stabilized', eventEntry('stabilized', s, day, theme, story, {}, today)); }
-        } else if (days >= cfg.care.heavy.minDays && rand() < cfg.care.heavy.bedHeal * H.care * (ctx.careOf?.(s) ?? 1)) {
+          if (rand() < C.dieBase * H.critRisk) { if (die(s, 'diedInBed', 'wounds')) continue; }
+          w.critDays = (w.critDays || 0) + 1;
+          if (w.critDays >= C.stabilizeBed) { w.sev = 'heavy'; ev(s, 'stabilized', eventEntry('stabilized', s, day, theme, story, {}, today)); }
+        } else if (!fresh && day - w.day >= cfg.care.heavy.minDays && rand() < cfg.care.heavy.heal * H.care * (ctx.careOf?.(s) ?? 1)) {
           recover(s, 'recovered');
         }
       } else if (w.sev === 'heavy') {
