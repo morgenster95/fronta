@@ -192,6 +192,8 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     if (!roster.vote) $('dispatch-more').textContent = `▸ Volunteers wanted · ${roster.valley.open.keyword}`;
   }
   // na telefonu je horní panel vždy sbalený do jednoho řádku, klepnutím se rozbalí
+  // tlačítko × panel sbalí (klepnutí na sbalený panel ho zase rozbalí)
+  $('dispatch-close').onclick = (e) => { e.stopPropagation(); $('dispatch').classList.add('collapsed'); };
   if (!$('dispatch').hidden && !$('dispatch').onclick) {
     if (!$('dispatch-more').textContent) $('dispatch-more').textContent = '▸ News from the front';
     if (innerWidth < 600) $('dispatch').classList.add('collapsed');

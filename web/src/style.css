@@ -132,6 +132,12 @@ body.card-open #dispatch { display: none; }
 .unlock .bar { display: block; height: 4px; background: #2b2722; margin: 3px 0; }
 .unlock .bar i { display: block; height: 100%; background: var(--blood); }
 #dispatch.collapsed .unlock { display: none; }
+/* sbalit panel: zřetelné tlačítko v rohu (dřív šlo jen klepnout kamkoli na panel, to nikdo nepoznal) */
+#dispatch { padding-right: 40px; }
+#dispatch.collapsed { padding-right: 10px; }
+#dispatch-close { position: absolute; top: 2px; right: 2px; width: 34px; height: 34px; padding: 0; font-size: 24px; line-height: 1;
+  background: rgba(14, 13, 12, 0.6); border: 1px solid var(--line); color: var(--fg, #e3d9c3); z-index: 1; }
+#dispatch.collapsed #dispatch-close { display: none; }
 
 .tagline { font-family: 'Silkscreen', monospace; color: var(--accent); font-size: 15px; margin: 0 30px 6px 0; }
 .sides { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 14px; }
