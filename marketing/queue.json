@@ -319,6 +319,16 @@
         "permalink": "https://www.instagram.com/reel/Dfk07JrCkrd/",
         "at": "2026-11-10T21:03:38.650Z"
       }
+    },
+    {
+      "id": "letters-1",
+      "type": "image",
+      "files": [
+        "letters_1.jpg"
+      ],
+      "caption": "LETTERS FROM THE FRONT ✉️\n\nTonight the lamps are low and the guns have gone quiet for an hour. Your soldier finally has time to write home.\n\nWrite the letter in the comments. Take your time:\n✏️ What is it like in your trench?\n🏥 Why does your side need a hospital? Who did you see carried past on a stretcher?\n⛰️ What would taking the ridge mean to you?\n\nLong letters welcome. Write it as your soldier, in your own words.\nThe best letters will be read on the front in the next Day reel. ✉️\n\nNot enlisted yet? Comment CONCORD or HEGEMONY first, and your soldier takes a post on the line.\n\n#pixelart #ww1 #lettershome #indiegame #gamedev #trenchwarfare #mudandiron",
+      "voices": true,
+      "_note": "Dopisy domů do komentářů; ukládají se do data/voices.json. Bez publishAt se nezveřejní: čas doplnit se souhlasem uživatele."
     }
   ]
 }

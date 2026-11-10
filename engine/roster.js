@@ -117,7 +117,8 @@ export function applyComment(state, comment, theme, story, map) {
   if (parsed?.type === 'claim') return { type: 'claim', handle: existing?.handle ?? handle, code: parsed.code, soldier: existing };
   // heslo otevřené výpravy (např. CHURCH): přihláška dobrovolníka
   const raid = raidKeyword(state, theme, comment.text);
-  const wish = parseRole(comment.text, theme);
+  // dopis domů (post s voices): zmínka role v textu („the medic carried me…“) není přání role
+  const wish = comment.letter ? null : parseRole(comment.text, theme);
   if (!parsed || existing) {
     // přání role od už narukovaného (před přihláškou na výpravu: role se hned počítá)
     const role = existing && wish ? { role: wish, reason: wishRole(state, existing, wish, theme, story) } : null;

@@ -829,3 +829,15 @@ test('výpravy vypnuté: žádná výzva, otevřená se zruší', () => {
   assert.equal(s.valley.open, null);
   assert.ok(!JSON.stringify(s.chronicle.at(-1)).includes('Volunteers wanted'));
 });
+
+test('dopis domů: zmínka role v komentáři pod dopisovým postem roli nemění', async () => {
+  const { theme, story } = await import('../tools/lib.mjs').then((m) => m.loadTheme());
+  const map = (await import('../tools/lib.mjs')).loadMap(theme);
+  const state = (await import('../tools/lib.mjs')).loadState(theme);
+  const s = state.soldiers.find((x) => x.userId || x.id) || state.soldiers[0];
+  const before = s.archetype;
+  const role = theme.archetypes.find((a) => a.id !== before && a.id !== 'officer').id;
+  const text = `The ${theme.archetypes.find((a) => a.id === role).name.toLowerCase()} dragged a man past our post last night and nobody slept after that.`;
+  applyComment(state, { id: 'x1', text, username: s.handle, userId: s.id, mediaId: 'm', letter: true }, theme, story, map);
+  assert.equal(s.archetype, before);
+});

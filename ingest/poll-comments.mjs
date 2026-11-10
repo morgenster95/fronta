@@ -140,11 +140,14 @@ async function main() {
 
   const posts = await mediaToPoll(state);
   console.log(`posty ke kontrole: ${posts.length}`);
-  // hlasy fronty: delší komentáře pod hlasováním (proč chtějí nemocnici…) do data/voices.json, pro reely a výběr nejlepších
+  // hlasy fronty: delší komentáře pod hlasováním (proč chtějí nemocnici…) a pod dopisovým postem do data/voices.json, pro reely a výběr nejlepších
   const VOICES = path.join(ROOT, 'data', 'voices.json');
   const voices = fs.existsSync(VOICES) ? JSON.parse(fs.readFileSync(VOICES, 'utf8')) : {};
   voices.posts ??= {};
-  const voteMedia = new Set([state.vote?.mediaId, ...(state.events || []).filter((e) => e.perFaction && e.day >= state.day - 2).map((e) => e.mediaId)].filter(Boolean));
+  // + posty z fronty s `voices: true` (např. „Letters from the front“: dopisy domů do komentářů)
+  const queue = JSON.parse(fs.readFileSync(path.join(ROOT, 'marketing', 'queue.json'), 'utf8'));
+  const letterMedia = (queue.items || []).filter((i) => i.voices && i.published?.id).map((i) => i.published.id);
+  const voteMedia = new Set([state.vote?.mediaId, ...(state.events || []).filter((e) => e.perFaction && e.day >= state.day - 2).map((e) => e.mediaId), ...letterMedia].filter(Boolean));
   for (const mid of voteMedia) if (!posts.some((p) => p.id === mid)) posts.push({ id: mid, count: undefined }); // hlasování projít vždy
   let voicesDirty = false;
   const keepVoice = (c, mid) => {
@@ -162,6 +165,7 @@ async function main() {
     const changed = count === undefined || state.mediaCounts?.[mid] !== count || fullVote;
     for await (const c of comments(mid, seen, changed)) {
       if (voteMedia.has(mid)) keepVoice(c, mid);
+      if (letterMedia.includes(mid)) c.letter = true;
       // náborový komentář starších vojáků (před uložením s.reply): pod něj bot odpoví při smrti
       if (seen.has(c.id) && c.userId) {
         const own = state.soldiers.find((s) => s.id === c.userId);
