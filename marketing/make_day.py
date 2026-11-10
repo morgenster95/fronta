@@ -2,6 +2,7 @@
 
 Kreslí se ze skutečného stavu PO denním tahu (data/state.json), takže jména sedí s Gazette.
 Použití (z kořene repa):
+  node tools/shot-hospital.mjs (běžící vite) → promo/hosp_0.png, hosp_1.png (obvaziště ze hry, volitelné)
   python marketing/make_day.py casualties [state.json]   → marketing/promo/day<N>_wounded_1.jpg, _2.jpg, _3.jpg
   python marketing/make_day.py vote                      → marketing/promo/vote_build_1.jpg
 """
@@ -92,7 +93,7 @@ def slide_list(day, out):
                 tag, where = SEV[r["sev"]][0], PLACE.get(r["place"], "")
             d.text((18, y - 3), fit(d, f"@{r['handle']}", vt(16), 110), font=vt(16), fill=ink)
             d.text((W - 16 - d.textlength(tag, font=font(8)), y), tag, font=font(8), fill=red if r["sev"] != "light" else soft)
-            how = f"shot by @{r['by']}" if r["by"] else "shellfire" if r.get("shell") else "stray round"
+            how = f"shot by @{r['by']}" if r["by"] else "shellfire" if r.get("shell") else "stray bullet"
             d.text((20, y + 7), fit(d, how, vt(14), W - 44 - d.textlength(where, font=vt(14))), font=vt(14), fill=soft)
             d.text((W - 16 - d.textlength(where, font=vt(14)), y + 7), where, font=vt(14), fill=soft)
             y += 19
@@ -107,28 +108,36 @@ def slide_list(day, out):
     return save(im, f"day{day}_wounded_1.jpg")
 
 
-def slide_aidpost(day, state, f):
-    """2–3) obvaziště strany: lůžka se skutečnými raněnými, cedulky se jmény"""
+def slide_aidpost(day, state, f, shot=None):
+    """2–3) obvaziště strany: snímek přímo ze hry (tools/shot-hospital.mjs, jména jsou na cedulkách ve hře),
+    bez snímku kreslený interiér; nahoře stav lůžek, dole co to znamená"""
     name, col, _ = SIDES[f]
     by_id = {x["id"]: x for x in state["soldiers"]}
     beds = [by_id[i] for i in state["battle"]["sides"][f]["beds"] if i in by_id]
     stretch = [x for x in state["soldiers"] if x["faction"] == f and (x.get("wound") or {}).get("place") == "stretcher"]
-    im = x2(A.interior2(f, beds, len(stretch), seed=7 + f))
+    im = Image.new("RGBA", (W, H), (0, 0, 0, 0)) if shot else x2(A.interior2(f, beds, len(stretch), seed=7 + f))
     d = band(im, 0, 30, 200)
     text_c(d, W // 2, 4, f"{name} AID POST", font(8, True), col)
     full = len(beds) >= 2
     text_c(d, W // 2, 15, f"BEDS {len(beds)}/2" + (" · FULL" if full else ""), font(8, True), P["fire"] if full else P["white"])
-    for i in range(2):
-        who = beds[i] if i < len(beds) else None
-        A.tag(d, 6 + i * 106, 146, 98, fit(d, f"@{who['handle']}" if who else "empty bed", vt(14), 94), vt(14))
-    if stretch:
-        A.tag(d, 40, 232, 110, fit(d, f"@{stretch[0]['handle']}" + (f" +{len(stretch) - 1}" if len(stretch) > 1 else ""), vt(14), 104), vt(14))
+    if not shot:
+        for i in range(2):
+            who = beds[i] if i < len(beds) else None
+            A.tag(d, 6 + i * 106, 146, 98, fit(d, f"@{who['handle']}" if who else "empty bed", vt(14), 94), vt(14))
+        if stretch:
+            A.tag(d, 40, 232, 110, fit(d, f"@{stretch[0]['handle']}" + (f" +{len(stretch) - 1}" if len(stretch) > 1 else ""), vt(14), 104), vt(14))
     d = band(im, H - 34, H, 215)
     msg = f"{len(stretch)} WAITING ON STRETCHERS" if stretch else "NEXT ONE BADLY HIT: A STRETCHER" if full else "A BED IS STILL FREE"
     text_c(d, W // 2, H - 31, msg, font(8, True), P["gold"] if full or stretch else P["pale"])
     text_c(d, W // 2, H - 20, "A HOSPITAL HAS 4 BEDS. VOTE TODAY", font(8), P["white"])
     footer(d, H - 10)
-    return save(im, f"day{day}_wounded_{2 + f}.jpg")
+    out = f"day{day}_wounded_{2 + f}.jpg"
+    if shot:  # texty v pixelové mřížce přes snímek ze hry (1080×1350)
+        base = Image.open(shot).convert("RGBA").resize((W * K, H * K))
+        base.alpha_composite(up(im, K))
+        base.convert("RGB").save(os.path.join(PROMO, out), quality=92)
+        return out
+    return save(im, out)
 
 
 def slide_vote():
@@ -168,6 +177,7 @@ if __name__ == "__main__":
         path = sys.argv[2] if len(sys.argv) > 2 else os.path.join(ROOT, "data", "state.json")
         state = json.load(open(path))
         day, out = today(state)
-        print(slide_list(day, out), slide_aidpost(day, state, 0), slide_aidpost(day, state, 1))
+        shots = [os.path.join(PROMO, f"hosp_{f}.png") for f in (0, 1)]  # node tools/shot-hospital.mjs (snímky ze hry)
+        print(slide_list(day, out), *[slide_aidpost(day, state, f, shots[f] if os.path.exists(shots[f]) else None) for f in (0, 1)])
         for f, (name, _, _) in enumerate(SIDES):
             print(name, ", ".join(f"@{r['handle']} ({r['sev']}, {r['place']}{', by @' + r['by'] if r['by'] else ''})" for r in out[f]) or "-")
