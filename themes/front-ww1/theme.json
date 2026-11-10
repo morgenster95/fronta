@@ -287,6 +287,8 @@
     "_note": "Denní rytmus v UTC (pevně, bez letního času). editionUtc = nový den války: denní tah, nové číslo novin, vyhodnocení hlasování. reelUtc = večerní reel/příspěvek (fronta marketing/queue.json)."
   },
   "valley": {
+    "enabled": false,
+    "_enabled": "Výpravy (CHURCH…) jsou vypnuté, dokud je uživatel nezapne; hlasuje se jen o stavbách na IG.",
     "_note": "Výpravy (docs/MAP_MISSIONS.md). Každé `every` dny ranní noviny vyhlásí výpravu, přihlášky do dalšího vydání, `slots` míst na frakci. Místo: x,y v mřížce mapy 192×120, img v web/public/assets/locations (size = velikost v buňkách; bez obrázku se nakreslí náhradní ikona). perk: observe|morale|supplies|intel|crossing|cover|hospital|tunnels; demolition = ženista +3 útok.",
     "every": 3,
     "firstDay": 2,

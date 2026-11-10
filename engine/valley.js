@@ -420,6 +420,8 @@ export function valleyTick(state, theme, story, day, weatherOfNight) {
     out.events.push(...r.events);
     r.ids.forEach((id) => out.ids.add(id));
   }
+  // výpravy jdou vypnout (theme.valley.enabled = false): žádná nová výzva, otevřená se zruší bez boje
+  if (V(theme).enabled === false) { v.open = null; return out; }
   if (!v.open && day >= v.next) out.news.push(announce(state, theme, story, day));
   return out;
 }

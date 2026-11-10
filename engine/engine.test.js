@@ -187,7 +187,10 @@ test('převelení: jen převzatý voják, jednou za 7 dní, ne na důstojníka',
   assert.equal(x.archetype, 'sniper');
 });
 
+// výpravy jsou ve hře zatím vypnuté (theme.valley.enabled = false), mechanika se testuje zapnutá
+const raidsOn = { ...theme, valley: { ...theme.valley, enabled: true } };
 test('90 dní války s výpravami: žádný text nemá nedoplněnou proměnnou ani [volbu]', () => {
+  const theme = raidsOn;
   const s = emptyState(theme);
   const bad = /\{\w+\}|undefined|NaN|\[|\]|\||\(\)| [.,]/;
   let n = 0;
@@ -208,6 +211,7 @@ test('90 dní války s výpravami: žádný text nemá nedoplněnou proměnnou a
 });
 
 test('výpravy: vyhlášení, přihlášky komentářem, vyhodnocení, převzatí nepadnou', async () => {
+  const theme = raidsOn;
   const { resolveExpedition } = await import('./valley.js');
   const s = emptyState(theme);
   for (let i = 0; i < 40; i++) applyComment(s, { id: `c${i}`, userId: `u${i}`, username: `user${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
@@ -815,4 +819,13 @@ test('web: obvaziště jsou vidět i před prvním tahem s bojem (stav se neměn
   assert.equal(pub[0].hospital.beds, 2);
   assert.deepEqual(pub[1].beds, []);
   assert.equal(s.battle, undefined, 'náhled stav neupravil');
+});
+
+test('výpravy vypnuté: žádná výzva, otevřená se zruší', () => {
+  const s = emptyState(theme);
+  enlist(s, 10, 'off_');
+  s.valley = { holders: {}, contested: {}, next: 2, open: { id: 'x1-church-d2', loc: 'church', day: 2, closesDay: 3, volunteers: [] }, history: [], n: 1 };
+  dailyTick(s, theme, story);
+  assert.equal(s.valley.open, null);
+  assert.ok(!JSON.stringify(s.chronicle.at(-1)).includes('Volunteers wanted'));
 });
