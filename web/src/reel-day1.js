@@ -23,7 +23,7 @@ const ARTICLE = [
   'The Hegemony holds the centre of Verdel Ridge with fifteen rifles. The Concord holds the low ground opposite with thirteen and says it prefers it that way. @masis_xiii has the only machine gun in the sector. The Concord has a sapper (@yee.zle) and a cook (@knightowlvt), which may matter more than it sounds.',
 ];
 
-const CSS = `
+export const CSS = `
 #rd { position: fixed; inset: 0; pointer-events: none; z-index: 40; font-family: 'VT323', monospace; color: #e3d9c3; }
 #rd > * { position: absolute; opacity: 0; }
 #rd .sil { font-family: 'Silkscreen', monospace; letter-spacing: 0.04em; }
@@ -88,7 +88,7 @@ const lerpC = (a, b, u) => a.map((v, i) => Math.round(v + (b[i] - v) * u));
 const hills = (x) => 208 + 5 * Math.sin(x * 0.031) + 3 * Math.sin(x * 0.113 + 2) + 2 * Math.sin(x * 0.27);
 const ridge = (x) => 224 - 9 * Math.sin(x * 0.011 + 1.2) - 3 * Math.sin(x * 0.063) - 1.5 * Math.sin(x * 0.21);
 
-function makeCinema(tex, anims) {
+export function makeCinema(tex, anims) {
   const canvas = document.createElement('canvas');
   canvas.id = 'rd-cine';
   canvas.width = CW;

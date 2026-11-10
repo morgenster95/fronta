@@ -239,9 +239,20 @@ def counter(dur):
 DRUMS = {"story": (11.6, [(50.4, 53.5), (59.8, 63.4)], 63.4), "day1": (11.0, [(41.6, 45.0), (52.4, 55.2)], 55.2)}
 
 
+def drums_of(name):
+    """bubny: pevné u ručních scénářů, u denních reelů ze <scénář>.script.json (tools/day-reel.mjs)"""
+    if name in DRUMS:
+        return DRUMS[name]
+    p = os.path.join(REELS, f"{name}.script.json")
+    if os.path.exists(p):
+        start, quiet, double = json.load(open(p))["drums"]
+        return start, [tuple(q) for q in quiet], double
+    return None
+
+
 def build_story(name="story"):
     meta = json.load(open(os.path.join(REELS, f"{name}.sfx.json")))
-    start, quiet_parts, double = DRUMS[name]
+    start, quiet_parts, double = drums_of(name)
     dur = meta["seconds"]
     n = int(dur * SR)
     music = drone(dur) * 1.1 + rain(dur)
@@ -321,4 +332,4 @@ def build_story(name="story"):
 
 if __name__ == "__main__":
     for nm in sys.argv[1:] or ["teaser", "enlist", "sides", "howto"]:
-        build_story(nm) if nm in DRUMS else build(nm)
+        build_story(nm) if drums_of(nm) else build(nm)

@@ -64,6 +64,10 @@ SCRIPTS = {
         [60.6, "Link in bio."],
     ], 64),
 }
+# denní reely (tools/day-reel.mjs) mají věty v marketing/reels/<scénář>.script.json
+if NAME not in SCRIPTS and os.path.exists(os.path.join(REELS, f"{NAME}.script.json")):
+    _sc = json.load(open(os.path.join(REELS, f"{NAME}.script.json")))
+    SCRIPTS[NAME] = (_sc["lines"], _sc["seconds"])
 LINES, SECONDS = SCRIPTS[NAME]
 
 

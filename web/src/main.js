@@ -660,7 +660,7 @@ async function boot() {
     app.ticker.stop();
     Ticker.shared.stop();
     startReel({
-      name: reelName, app, cam, life, map, theme, soldiers, ui, tex, anims, select,
+      name: reelName, app, cam, life, map, theme, soldiers, ui, tex, anims, select, hospitals,
       tick: (ms) => {
         reelTime = ms;
         app.ticker.update(ms);
