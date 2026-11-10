@@ -574,7 +574,7 @@ test('péče: kritičtí první na lůžka, pak nosítka; kritický bez nosítek
   const side = s.soldiers.filter((x) => x.faction === 0);
   side.slice(0, 2).forEach((x) => { x.archetype = 'medic'; });
   hurt(side[2], 'heavy', 19); hurt(side[3], 'crit', 20); hurt(side[4], 'crit', 20); hurt(side[5], 'crit', 20);
-  const cfg = quiet({ aidPost: { ...theme.battle.aidPost, beds: 2, stretchers: 1, critDie: 0 }, care: { ...theme.battle.care, crit: { ...theme.battle.care.crit, dieBase: 0 } } });
+  const cfg = quiet({ aidPost: { ...theme.battle.aidPost, beds: 2, stretchers: 1, critRisk: 0 }, care: { ...theme.battle.care, crit: { ...theme.battle.care.crit, dieBase: 0 } } });
   battleTick(s, cfg, story, 20);
   const bedded = [side[3], side[4], side[5]].filter((x) => x.wound?.place === 'bed');
   assert.equal(bedded.length, 2, 'dva kritičtí na lůžkách');
@@ -650,4 +650,15 @@ test('vypínač: battle.enabled = false nic nedělá', () => {
   hurt(x, 'crit', 20);
   battleTick(s, { ...theme, battle: { ...theme.battle, enabled: false } }, story, 20);
   assert.equal(x.status, 'wounded');
+});
+
+test('nastavení dává smysl: lůžko je vždy lepší než nosítka s plnou péčí, nemocnice lepší než obvaziště', () => {
+  const b = theme.battle, C = b.care.crit, Hv = b.care.heavy;
+  const dieStretcher = 1 - (1 - C.dieBase) ** C.stabilize; // kritický na nosítkách s 2 mediky, dokud se nezlepší
+  const dieBed = (risk) => 1 - (1 - C.dieBase * risk) ** C.stabilizeBed;
+  assert.ok(dieBed(b.aidPost.critRisk) < dieStretcher, `obvaziště ${dieBed(b.aidPost.critRisk)} vs nosítka ${dieStretcher}`);
+  assert.ok(dieBed(b.buildings.dugout.critRisk) < dieBed(b.aidPost.critRisk), 'nemocnice < obvaziště');
+  assert.ok(b.aidPost.care >= 1 && b.buildings.dugout.care >= b.aidPost.care, 'hojení na lůžku ≥ nosítka s plnou péčí');
+  assert.ok(C.stabilizeBed <= C.stabilize);
+  assert.ok(Hv.heal * b.aidPost.care <= 1);
 });

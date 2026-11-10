@@ -495,7 +495,7 @@
   "battle": {
     "_note": "Denní boj (engine/battle.js, docs/COMBAT_ROLES.md). Všechna čísla se dají ladit; dopad ukáže node tools/sim-battle.mjs --kpi (a --set klíč=hodnota). Pravděpodobnosti jsou na vojáka a den.",
     "enabled": true,
-    "balance": 4,
+    "balance": 5,
     "_balance": "verze vyvážení: zvyš při každé změně čísel, zapisuje se do denních metrik (state.battle.stats)",
     "hit": 0.03,
     "_hit": "pozadí: dělostřelectvo, granáty, miny (~60 % zásahů). Pásmo 0.008–0.03",
@@ -530,15 +530,15 @@
         "trench": 1.5,
         "heal": 0.35,
         "minDays": 2,
-        "bedHeal": 0.45,
-        "_": "těžce: nosítka/lůžko; bez péče riziko zhoršení na kriticky (v zákopu ×trench); s péčí se hojí od minDays"
+        "_": "těžce: nosítka/lůžko; bez péče riziko zhoršení (v zákopu ×trench); hojí se od minDays s heal × péče (na lůžku × care místa)"
       },
       "crit": {
         "need": 2,
         "dieBase": 0.08,
         "dieNoCare": 0.7,
         "stabilize": 3,
-        "_": "kriticky: musí mít nosítka nebo lůžko, jinak noc nepřežije; na nosítkách smrt = dieBase + dieNoCare × chybějící péče; po stabilize dnech s plnou péčí se zlepší na těžce"
+        "_": "kriticky: musí mít nosítka nebo lůžko, jinak noc nepřežije. Smrt za noc = dieBase × critRisk místa (nosítka 1) + dieNoCare × chybějící péče (na lůžku 0). Zlepší se na těžce po stabilize nocích na nosítkách s plnou péčí, po stabilizeBed na lůžku",
+        "stabilizeBed": 2
       }
     },
     "roles": {
@@ -668,19 +668,19 @@
       "name": "Aid post",
       "beds": 2,
       "stretchers": 6,
-      "care": 0.6,
-      "critDie": 0.35,
-      "_": "obvaziště: každá strana ho má vždy"
+      "care": 1.15,
+      "_": "obvaziště (vždy): care = hojení těžkého na lůžku ×care proti nosítkům s plnou péčí; critRisk = riziko smrti kritického za noc ×critRisk proti nosítkům",
+      "critRisk": 0.6
     },
     "buildings": {
       "dugout": {
         "name": "Hospital dugout",
         "done": "dug a hospital dugout behind the line: 4 beds",
         "beds": 4,
-        "care": 1,
-        "critDie": 0.25,
+        "care": 1.5,
         "max": 6,
-        "stretchers": 4
+        "stretchers": 4,
+        "critRisk": 0.4
       },
       "sandbags": {
         "name": "Sandbag parapets",
