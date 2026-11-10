@@ -49,7 +49,7 @@ const lines = [
   [0, `The ${short(focus)} aid post has two beds. ${nb >= 2 ? 'Both are taken.' : nb === 1 ? 'One is taken.' : 'Both still empty.'}`, 'aid'],
   [0, nb >= 2 ? 'The next man badly hit waits on a stretcher, in the mud.' : 'When they fill, the badly hit wait on stretchers, in the mud.', 'stretcher'],
   ...(raid ? [[0, `Field HQ wants ${say(raid.seats)} volunteers a side, for a night raid on Saint-Ash. Comment ${raid.kw.toLowerCase()}.`.replace('Saint-Ash', raid.short), 'raid']] : []),
-  [0, 'Tonight, each side votes what to build.', 'vote'],
+  [0, 'And today, each side votes what to build.', 'vote'],
   [0, 'A hospital. New wire. Or sandbags.', 'opts'],
   [0, 'Your soldier is your ballot. Link in bio.', 'cta'],
 ];

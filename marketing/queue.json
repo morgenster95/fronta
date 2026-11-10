@@ -203,6 +203,41 @@
           }
         ]
       }
+    },
+    {
+      "id": "vote-build-d2",
+      "type": "image",
+      "files": [
+        "vote_build_1.jpg"
+      ],
+      "caption": "🗳️ YOUR SIDE BUILDS ONE. Comment one word below 👇\n\n🏥 HOSPITAL: a hospital dugout. 4 beds instead of 2, fewer men die of their wounds.\n〰️ WIRE: new belts of barbed wire. Fewer men hit, but it wears out.\n🧱 SANDBAGS: higher parapets. Fewer men hit, for good.\n\nEach side votes for itself. Your soldier is your ballot: we know which side you serve, so no need to write it. A side that sends no votes builds nothing.\n\nBuilt and announced in the Trench Gazette tomorrow at 13:00 UTC.\nNot enlisted yet? Comment HEGEMONY or CONCORD together with your choice.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
+      "publishAt": "2026-11-10T15:00:00Z",
+      "vote": {
+        "question": "What does your side build?",
+        "perFaction": true,
+        "minHours": 8,
+        "note": "Each side builds its own: comment HOSPITAL, WIRE or SANDBAGS under the vote post on @mudandiron. Your soldier is your ballot.",
+        "options": [
+          {
+            "kw": "HOSPITAL",
+            "label": "Hospital dugout: 4 beds",
+            "build": "dugout",
+            "outcome": "The {side} dug a hospital dugout behind the line."
+          },
+          {
+            "kw": "WIRE",
+            "label": "New barbed wire",
+            "build": "wire",
+            "outcome": "The {side} ran new belts of wire across no-man's land."
+          },
+          {
+            "kw": "SANDBAGS",
+            "label": "Sandbag parapets",
+            "build": "sandbags",
+            "outcome": "The {side} raised the parapets with fresh sandbags."
+          }
+        ]
+      }
     }
   ]
 }

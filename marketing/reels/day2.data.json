@@ -1,0 +1,92 @@
+{
+ "day": 2,
+ "total": 5,
+ "hit": [
+  [
+   {
+    "handle": "0__freddie__0",
+    "sev": "heavy",
+    "place": "bed",
+    "by": {
+     "handle": "ghai.gpt",
+     "name": "Ulrich Gpt",
+     "role": "sniper",
+     "faction": 1
+    },
+    "role": "machinegunner"
+   },
+   {
+    "handle": "slightlyretarded69",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "leo.glc",
+     "name": "Isidor Glc",
+     "role": "medic",
+     "faction": 1
+    },
+    "role": "rifleman"
+   },
+   {
+    "handle": "wolfmanantony",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "csllgaks",
+     "name": "Dorian \"Whistle\" Csllgaks",
+     "role": "machinegunner",
+     "faction": 1
+    },
+    "role": "sapper"
+   }
+  ],
+  [
+   {
+    "handle": "pavla.9_",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "sniper"
+   },
+   {
+    "handle": "the_cowboii",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "sniper"
+   }
+  ]
+ ],
+ "fire": {
+  "handle": "0__freddie__0",
+  "sev": "heavy",
+  "place": "bed",
+  "by": {
+   "handle": "ghai.gpt",
+   "name": "Ulrich Gpt",
+   "role": "sniper",
+   "faction": 1
+  },
+  "role": "machinegunner"
+ },
+ "beds": [
+  [
+   "0__freddie__0"
+  ],
+  []
+ ],
+ "stretchers": [
+  [],
+  []
+ ],
+ "focus": 0,
+ "raid": {
+  "name": "Ruined Church of Saint-Ash",
+  "short": "Saint-Ash",
+  "kw": "CHURCH",
+  "seats": 5
+ },
+ "seconds": 60,
+ "t2": null,
+ "silent": true
+}

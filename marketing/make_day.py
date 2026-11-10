@@ -126,7 +126,7 @@ def slide_aidpost(day, state, f):
     d = band(im, H - 34, H, 215)
     msg = f"{len(stretch)} WAITING ON STRETCHERS" if stretch else "NEXT ONE BADLY HIT: A STRETCHER" if full else "A BED IS STILL FREE"
     text_c(d, W // 2, H - 31, msg, font(8, True), P["gold"] if full or stretch else P["pale"])
-    text_c(d, W // 2, H - 20, "A HOSPITAL HAS 4 BEDS. VOTE TONIGHT", font(8), P["white"])
+    text_c(d, W // 2, H - 20, "A HOSPITAL HAS 4 BEDS. VOTE TODAY", font(8), P["white"])
     footer(d, H - 10)
     return save(im, f"day{day}_wounded_{2 + f}.jpg")
 

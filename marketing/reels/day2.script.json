@@ -1,0 +1,71 @@
+{
+ "seconds": 60,
+ "auto": true,
+ "lines": [
+  [
+   0.6,
+   "Day two.",
+   "day"
+  ],
+  [
+   1.8,
+   "The big guns are silent. The rifles are not.",
+   "guns"
+  ],
+  [
+   4.6,
+   "A Concord sniper saw a movement across the wire.",
+   "shooter"
+  ],
+  [
+   0,
+   "One shot. Badly wounded.",
+   "shot"
+  ],
+  [
+   0,
+   "Five men hit by morning. Three Hegemony, two Concord.",
+   "count"
+  ],
+  [
+   0,
+   "The Hegemony aid post has two beds. One is taken.",
+   "aid"
+  ],
+  [
+   0,
+   "When they fill, the badly hit wait on stretchers, in the mud.",
+   "stretcher"
+  ],
+  [
+   0,
+   "Field HQ wants five volunteers a side, for a night raid on Saint-Ash. Comment church.",
+   "raid"
+  ],
+  [
+   0,
+   "And today, each side votes what to build.",
+   "vote"
+  ],
+  [
+   0,
+   "A hospital. New wire. Or sandbags.",
+   "opts"
+  ],
+  [
+   0,
+   "Your soldier is your ballot. Link in bio.",
+   "cta"
+  ]
+ ],
+ "drums": [
+  "shooter",
+  [
+   [
+    "aid",
+    "raid"
+   ]
+  ],
+  "vote"
+ ]
+}
