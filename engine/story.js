@@ -117,3 +117,24 @@ export function eventEntry(kind, soldier, day, theme, story, extra = {}, today =
   const vars = soldierVars(soldier, theme, story, { place: pick(rand, story.places), ...extra });
   return fill(pickVaried(rand, even(story[kind]), soldier, today), vars, rand);
 }
+
+// Dokud děla mlčí (téma: battle.gunsAfterVictory), vypustí ze šablon texty se slovy z battle.gunsWords (granáty z děl, ostřelování…).
+// Pole, ve kterém by nic nezbylo, zůstane celé. Výsledek se pamatuje (stejný story objekt = stejná kopie).
+const silentCache = new WeakMap();
+export function silenceGuns(story, words) {
+  const hit = silentCache.get(story);
+  if (hit && hit.words === words) return hit.story;
+  const re = new RegExp(words, 'i');
+  const walk = (v) => {
+    if (Array.isArray(v)) {
+      const loud = (x) => (typeof x === 'string' ? re.test(x) : Array.isArray(x) ? typeof x[0] === 'string' && re.test(x[0]) : typeof x?.text === 'string' && re.test(x.text));
+      const kept = v.filter((x) => !loud(x)).map(walk);
+      return kept.length ? kept : v.map(walk);
+    }
+    if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, walk(x)]));
+    return v;
+  };
+  const out = walk(story);
+  silentCache.set(story, { words, story: out });
+  return out;
+}

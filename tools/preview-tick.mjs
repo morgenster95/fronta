@@ -3,6 +3,7 @@
 //   node tools/preview-tick.mjs                  stav z origin/main (git fetch)
 //   node tools/preview-tick.mjs --state soubor   jiný stav
 //   node tools/preview-tick.mjs --md out.md      zapsat i jako Markdown (k procházení)
+//   node tools/preview-tick.mjs --save-state f   uložit stav po tahu do souboru (k vyzkoušení grafiky, NE do data/)
 import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { ROOT, loadTheme } from './lib.mjs';
@@ -59,3 +60,4 @@ for (const [f, pub] of battlePublic(s, theme).entries()) {
 const text = out.join('\n');
 console.log(text);
 if (opt('--md')) fs.writeFileSync(opt('--md'), text);
+if (opt('--save-state')) fs.writeFileSync(opt('--save-state'), JSON.stringify(s));

@@ -110,6 +110,9 @@ function near(list, x, r) {
 }
 
 // ctx: { dangerOf(s), careOf(s), busy: Set (výprava) }
+// dělostřelectvo střílí až po první výhře v závodě (theme.battle.gunsAfterVictory); do té doby zásahy z pozadí = kulky, granáty, drát
+export const gunsSilent = (state, theme) => !!B(theme)?.gunsAfterVictory && !(state.victories || []).length;
+
 export function battleTick(state, theme, story, day, ctx = {}) {
   const cfg = B(theme);
   const out = { events: [], news: [], ids: new Set(), stats: null };
@@ -218,13 +221,16 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   // denní mez nových raněných na stranu (theme.battle.daily): za klidu nejvýš max, pod granáty nejvýš shellMax, a aspoň min;
   // pořadí vojáků se každý den losuje, aby mez nešetřila stále stejné
   const D = cfg.daily;
+  const silent = gunsSilent(state, theme);
   const newToday = (f) => { const v = stats[f].sev; return v.light + v.heavy + v.crit; };
   const maxOf = (f) => (!D ? Infinity : barrage?.target === f && shelled.size ? D.shellMax ?? Infinity : D.max ?? Infinity);
   const bgHit = (s, sev, underShells) => {
     wound(s, sev, underShells ? { shell: true } : {});
     if (underShells) { shellHits.push(s); stats[s.faction].hits.shell++; } else stats[s.faction].hits.bg++;
     const kind = hitKind(sev);
-    const k2 = underShells && story[`shell${kind.slice(3)}`] ? `shell${kind.slice(3)}` : kind;
+    const bullet = `bullet${kind.slice(3)}`;
+    const k2 = underShells && story[`shell${kind.slice(3)}`] ? `shell${kind.slice(3)}`
+      : silent && story[bullet] && rngFor(s.id, 'quiet', day)() < 0.5 ? bullet : kind;
     ev(s, sev === 'light' ? 'hit' : 'wounded', eventEntry(k2, s, day, theme, story, {}, today));
   };
   const order = state.soldiers.map((s) => [rngFor(s.id, 'order', day)(), s]).sort((a, b) => a[0] - b[0]).map((x) => x[1]);

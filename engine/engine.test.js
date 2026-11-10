@@ -752,3 +752,42 @@ test('denní mez: za klidu 1–3 nově ranění na stranu, pod granáty víc, al
   }
   assert.ok(sum / 3 > D.max, `pod granáty v průměru ${sum / 3} za den`);
 });
+
+test('hlasování po frakcích: strana bez hlasů nic nepostaví (nemocnice nepřijde zadarmo)', () => {
+  const s = emptyState(theme);
+  enlist(s, 6, 'nv');
+  openVote(s, { mediaId: 'mn', perFaction: true, question: 'Build?', options: [
+    { kw: 'HOSPITAL', label: 'h', build: 'dugout', outcome: 'The {side} dug a hospital.' },
+    { kw: 'WIRE', label: 'w', build: 'wire', outcome: 'The {side} ran new wire.' },
+    { kw: 'SANDBAGS', label: 's', build: 'sandbags', outcome: 'The {side} raised sandbags.' },
+  ] });
+  applyComment(s, { id: 'y1', userId: 'nv1', username: 'nv1', text: 'wire!', mediaId: 'mn' }, theme, story, map); // Concord
+  applyComment(s, { id: 'y2', userId: 'nv3', username: 'nv3', text: 'SANDBAGS', mediaId: 'mn' }, theme, story, map);
+  applyComment(s, { id: 'y3', userId: 'nv5', username: 'nv5', text: 'sandbags please', mediaId: 'mn' }, theme, story, map);
+  dailyTick(s, theme, story);
+  const ev = s.events.at(-1);
+  assert.deepEqual(ev.winners, [null, 'SANDBAGS']);
+  assert.ok(!s.battle.sides[0].built.dugout, 'Hegemony nehlasovala, nic nedostala');
+  assert.equal(s.battle.sides[1].built.sandbags, 1);
+  assert.match(ev.text, /No word came back from the Hegemony/);
+});
+
+test('děla mlčí do první výhry v závodě: žádné texty o ostřelování, bombardování až po výhře', () => {
+  const re = new RegExp(theme.battle.gunsWords, 'i');
+  const s = emptyState(theme);
+  enlist(s, 160, 'gs_');
+  s.soldiers.forEach((x) => { x.enlisted = -10; });
+  const len = new Map(s.soldiers.map((x) => [x.id, x.record.length]));
+  for (let i = 0; i < 20; i++) dailyTick(s, theme, story);
+  const fresh = s.soldiers.flatMap((x) => x.record.slice(len.get(x.id) ?? 0).map(([, t]) => t));
+  const loud = fresh.filter((t) => re.test(t.replace(/more than shelling|shell fuses/g, ''))); // povahové rysy z minulých zim jsou v pořádku
+  assert.equal(loud.length, 0, `texty s děly před výhrou: ${loud.slice(0, 3).join(' | ')}`);
+  const gaz = JSON.stringify(s.chronicle.slice(-20).map((c) => ({ ...c, blocks: (c.blocks || []).filter((b) => b.kind !== 'expedition-call') }))); // popis odměn výprav není palba
+  assert.ok(!re.test(gaz.replace(/shell holes?/gi, '')), 'Gazette bez ostřelování');
+  assert.ok(s.battle.stats.slice(-20).every((x) => x.sides.every((a) => a.hits.shell === 0)));
+  assert.ok(s.battle.stats.slice(-20).some((x) => x.sides.some((a) => a.hits.bg > 0)), 'zásahy z pozadí jsou dál (kulky, granáty)');
+  // po výhře: děla se ozvou (texty i bombardování)
+  s.victories = [{ id: 'ridge', name: 'Verdel Ridge', faction: 0, day: s.day, hero: 'gs_0', from: s.day + 1, to: s.day + 7, barrageTo: s.day + 3, counts: [100, 60] }];
+  dailyTick(s, theme, story);
+  assert.ok(s.battle.stats.at(-1).sides[1].hits.shell > 0, 'bombardování po výhře');
+});

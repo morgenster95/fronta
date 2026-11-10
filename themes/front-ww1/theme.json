@@ -498,6 +498,9 @@
     "balance": 6,
     "_balance": "verze vyvážení: zvyš při každé změně čísel, zapisuje se do denních metrik (state.battle.stats)",
     "hit": 0.03,
+    "gunsAfterVictory": true,
+    "gunsWords": "\\bshell(?!\\s*holes?\\b)|shrapnel|bombard|barrage|artillery|near miss|splinter|mortar|howitzer|whizz",
+    "_guns": "Dělostřelectvo střílí až po první výhře v závodě o kótu (pak 3 dny bombardování). Do té doby se texty se slovy gunsWords nepoužijí a zásahy z pozadí jsou kulky, granáty, drát.",
     "daily": {
       "_": "Nových raněných na stranu za den: za klidu aspoň min a nejvýš max (z pozadí; palba hráčů se do max počítá), pod granáty nejvýš shellMax",
       "min": 1,

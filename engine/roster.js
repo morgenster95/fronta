@@ -1,14 +1,14 @@
 // Stav světa (soupiska) a jeho změny: komentář → narukování, kód → převzetí, denní tah, export statických dat pro web.
 
 import { createSoldier, tickSoldier, heir, selectForStory } from './soldier.js';
-import { enlistEntry, weatherFor, eventEntry, tplKey, makeBackground, backgroundLine } from './story.js';
+import { enlistEntry, weatherFor, eventEntry, tplKey, makeBackground, backgroundLine, silenceGuns } from './story.js';
 import { writeChronicle } from './chronicle.js';
 import { checkRace, raceStatus, raceDanger, activeBarrage, awardHonors } from './race.js';
 import { pick } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
 import { orderDanger, orderRecover, issueOrders } from './orders.js';
-import { battleTick, battlePublic, build as buildStructure, ensureBattle, levelOf } from './battle.js';
+import { battleTick, battlePublic, build as buildStructure, ensureBattle, levelOf, gunsSilent } from './battle.js';
 import { awardHouseBadges, noticeDeath } from './house.js';
 import { ensureValley, valleyTick, valleyDanger, valleyRecover, raidKeyword, volunteer, valleyPublic } from './valley.js';
 
@@ -260,16 +260,17 @@ function resolveFactionVote(state, v, theme) {
   const per = Array.from({ length: nf }, (_, f) => {
     const counts = Object.fromEntries(v.options.map((o) => [o.kw, 0]));
     for (const t of Object.values(v.tallies)) if (t.f === f) counts[t.kw] = (counts[t.kw] || 0) + 1;
-    const winner = v.options.reduce((best, o) => (counts[o.kw] > counts[best.kw] ? o : best), v.options[0]);
+    // strana bez jediného hlasu nedostane nic (stavba ani rozkaz nepřijde zadarmo); remíza → dřívější možnost
+    const winner = Object.values(counts).some((n) => n > 0) ? v.options.reduce((best, o) => (counts[o.kw] > counts[best.kw] ? o : best), v.options[0]) : null;
     return { faction: f, counts, winner };
   });
   const total = Object.keys(v.tallies).length;
-  const text = per.map((p) => (p.winner.outcome || '').replaceAll('{side}', sideName(theme, p.faction))).join(' ');
-  const winner = per.map((p) => `${sideName(theme, p.faction)}: ${p.winner.kw}`).join(' · ');
-  const orders = issueOrders(state, per.map((p) => ({ ...p.winner, faction: p.faction })), state.day + 1);
+  const text = per.map((p) => (p.winner ? p.winner.outcome || '' : 'No word came back from the {side}: nothing was built.').replaceAll('{side}', sideName(theme, p.faction))).join(' ');
+  const winner = per.map((p) => `${sideName(theme, p.faction)}: ${p.winner?.kw ?? 'no votes'}`).join(' · ');
+  const orders = issueOrders(state, per.filter((p) => p.winner).map((p) => ({ ...p.winner, faction: p.faction })), state.day + 1);
   // stavby (dugout, pytle, drát…): trvalé, staví se jen hlasováním
-  const built = per.filter((p) => p.winner.build).map((p) => buildStructure(state, theme, p.faction, p.winner.build)).filter(Boolean);
-  const result = { day: state.day, mediaId: v.mediaId, question: v.question, perFaction: true, winner, winners: per.map((p) => p.winner.kw),
+  const built = per.filter((p) => p.winner?.build).map((p) => buildStructure(state, theme, p.faction, p.winner.build)).filter(Boolean);
+  const result = { day: state.day, mediaId: v.mediaId, question: v.question, perFaction: true, winner, winners: per.map((p) => p.winner?.kw ?? null),
     counts: per.map((p) => p.counts), total, text: [text, ...built.map((b) => `${b}.`)].join(' ').trim(), danger: 1, orders, built };
   state.events = [...(state.events || []), result].slice(-60);
   state.vote = null;
@@ -301,6 +302,8 @@ export function unlocks(state, theme) {
 
 // Denní tah: nový den, zápisy, osudy, nástupci padlých, kronika dne do Deníku fronty.
 export function dailyTick(state, theme, story, ctx = {}) {
+  // děla mlčí do první výhry v závodě o kótu: žádné texty o ostřelování (bombardování začne až po výhře)
+  if (gunsSilent(state, theme)) story = silenceGuns(story, theme.battle.gunsWords);
   const decided = resolveVote(state, theme, ctx.now);
   if (decided && !decided.perFaction) {
     ctx = { ...ctx, danger: ctx.danger ?? decided.danger };
