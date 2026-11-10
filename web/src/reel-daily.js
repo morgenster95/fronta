@@ -132,7 +132,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const scenes = makeScenes(tex, anims);
   root.insertBefore(scenes.canvas, cine.canvas.nextSibling);
   const intro = pickScene(data.day, data.raid ? ['march', 'flare'] : ['march', 'flare', 'church']);
-  const outro = pickScene(data.day, ['dawn', 'dawnwire'], 1);
+  const outro = pickScene(data.day, ['dawn', 'dawnwire', 'grim'], 1); // dawnwire = Hegemony za úsvitu, grim = Concord v ohni
   const sceneAt = (t) => {
     if (t < tSh && intro !== 'march') return [intro, t];
     if (t >= tStr && t < (tRaid ?? tVote)) return ['aidpost', t - tStr];

@@ -167,7 +167,7 @@ export async function startNewsReel({ cam, life, map, theme, soldiers, tex, anim
     if (t < at('fire')) return ['flare', t + 1.2];
     if (t >= at('diary') && t < at('roles')) return ['letter', t - at('diary') + 0.8];
     if (t >= at('mud') && t < tf) return ['aidpost', t - at('mud')];
-    if (t >= at('house') && t < at('ranks')) return ['dawnwire', t - at('house')];
+    if (t >= at('house') && t < at('ranks')) return ['grim', t - at('house')];
     return null;
   };
   const paint = fxLayers(root);

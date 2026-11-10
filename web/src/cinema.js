@@ -10,7 +10,7 @@ const rgb = (c) => `rgb(${c[0]},${c[1]},${c[2]})`;
 const off = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
 const clamp01 = (x) => Math.min(1, Math.max(0, x));
 
-export const SCENES = ['flare', 'church', 'aidpost', 'letter', 'dawnwire'];
+export const SCENES = ['flare', 'church', 'aidpost', 'letter', 'dawnwire', 'grim'];
 export const pickScene = (day, list, k = 0) => list[(day * 7 + k * 3) % list.length];
 
 // dithered svislý přechod (barvy palety, žádné plynulé přechody)
@@ -91,6 +91,44 @@ function lit(tx, tint, flip = false) {
 }
 const easeOut = (x) => 1 - Math.pow(1 - clamp01(x), 3);
 
+
+// výbuch: záblesk, ohnivá koule, trosky, pak oheň u země a kouřový sloup, který nepřestane (obláčky se pořád rodí)
+// u = s od výbuchu, k = velikost; smoke = barvy kouře podle stáří [nasvícený, mladý, starý, nejstarší (do barvy oblohy)]
+function blast(g, ex, ey, u, k = 1, smoke = ['#5c2a22', '#2e2426', '#1d1b20', '#141a2c'], ground = 22) {
+  if (u <= 0) return;
+  const LIFE = 5, DT = 0.075;
+  for (let i = 0; i < LIFE / DT; i++) {
+    let a = u - 0.12 - i * DT;
+    if (a <= 0) continue;
+    a %= LIFE;
+    const py = ey + ground - a * 26 * k, px = ex + Math.sin(i * 2.1) * 3 * k + a * a * 3 * k;
+    const r = (4 + a * 4.5) * k + Math.sin(i * 3.3) * 1.5;
+    g.fillStyle = a < 0.35 ? smoke[0] : a < 0.9 ? smoke[1] : a < 3.6 ? smoke[2] : smoke[3];
+    g.beginPath(); g.ellipse(px, py, r, r * 0.85, 0, 0, Math.PI * 2); g.fill();
+  }
+  // oheň, který po výbuchu hoří dál (mihotá se)
+  if (u > 0.5) {
+    const fl = 0.75 + 0.25 * Math.sin(u * 13) * Math.sin(u * 7.7);
+    glow(g, ex, ey + ground - 4, 18 * k, '#7e3b2a', 1.1 * fl);
+    glow(g, ex, ey + ground - 4, 10 * k, '#d98f3f', 0.9 * fl);
+    g.fillStyle = '#d98f3f';
+    for (let i = 0; i < 6 * k; i++) g.fillRect(Math.round(ex - 6 * k + i * 2 + Math.sin(u * 9 + i) * 1.5), Math.round(ey + ground - 6 - Math.abs(Math.sin(u * 11 + i * 1.3)) * 7 * k), 1, 3);
+  }
+  if (u < 1.4) { // ohnivá koule přes spodek kouře
+    const e = easeOut(u / 0.7), fade = clamp01(1 - (u - 0.45) / 0.9);
+    glow(g, ex, ey - e * 12 * k, (16 + 52 * e) * k, '#7e3b2a', 1.4 * fade);
+    glow(g, ex, ey - e * 14 * k, (12 + 40 * e) * k, '#a85a36', 1.3 * fade);
+    glow(g, ex, ey - e * 16 * k, (8 + 28 * e) * k, '#d98f3f', 1.25 * fade);
+    glow(g, ex, ey - e * 18 * k, (5 + 16 * e) * k, '#fff6dc', 1.2 * clamp01(1 - u / 0.55));
+  }
+  if (u < 1.6) for (let i = 0; i < 14; i++) { // trosky a hlína
+    const vx = Math.cos(i * 2.4) * (18 + (i % 4) * 10) * k, vy = (40 + (i % 5) * 12) * k;
+    g.fillStyle = i % 3 ? '#0b0a09' : '#a85a36';
+    g.fillRect(Math.round(ex + vx * u), Math.round(ey - vy * u + 60 * u * u), 2, 2);
+  }
+}
+const shakeOf = (u, k = 1) => (u > 0 && u < 0.45 ? Math.round(Math.sin(u * 70) * 2.5 * k * (1 - u / 0.45)) : 0);
+
 export function makeScenes(tex, anims = {}) {
   const canvas = off(W, H);
   canvas.id = 'rd-cine2';
@@ -103,7 +141,11 @@ export function makeScenes(tex, anims = {}) {
   const woundedLit = lit(fallTx, 'rgba(217,143,63,0.18)');
   const medicLit = lit(tex.hegemony_medic?.west || tex.concord_medic?.west, 'rgba(217,143,63,0.16)');
   const dawnA = lit(tex.hegemony?.['north-east'], 'rgba(30,16,14,0.42)');
-  const dawnB = lit(tex.concord?.['north-west'] || tex.concord?.north, 'rgba(30,16,14,0.5)');
+  const dawnB = lit(tex.hegemony_machinegunner?.north || tex.hegemony?.north, 'rgba(30,16,14,0.5)');
+  // ponurá varianta pro Concord: vojáci nasvícení požáry
+  const grimA = lit(tex.concord?.north, 'rgba(92,42,34,0.35)');
+  const grimB = lit(tex.concord_medic?.['north-east'] || tex.concord?.['north-east'], 'rgba(92,42,34,0.42)');
+  const grimC = lit(tex.concord_machinegunner?.['north-west'] || tex.concord?.['north-west'], 'rgba(92,42,34,0.5)');
   const dawnC = lit(tex.hegemony_medic?.north || tex.hegemony?.north, 'rgba(30,16,14,0.55)');
   const church = new Image();
   church.src = '/assets/locations/church.png';
@@ -154,6 +196,15 @@ export function makeScenes(tex, anims = {}) {
     L.dawn = c;
   }
 
+  {
+    const c = off(W, H), cg = c.getContext('2d');
+    sky(cg, 0, 250, ['#141210', '#1f1a17', '#2e211d', '#4a2620', '#6e2e22', '#8a3c26']);
+    L.grim = c;
+  }
+  // ponurý úsvit pro Concord: krvavé slunce v kouři, výbuchy všude kolem, padá hlína a popel
+  const BOOMS = [[0.2, 30, 196, 0.8], [0.7, 132, 200, 1.1], [1.3, 76, 206, 0.7], [1.9, 160, 194, 0.9], [2.4, 14, 204, 1.2], [3.0, 104, 198, 0.8],
+    [3.5, 56, 192, 1.0], [4.1, 150, 206, 0.7], [4.6, 88, 200, 1.3], [5.2, 24, 198, 0.9], [5.8, 128, 196, 1.0], [6.4, 66, 204, 0.8]];
+  const GRIM_SMOKE = ['#6e2e22', '#2e211d', '#1f1a17', '#2a1d19'];
   const scenes = {
     flare(t) {
       g.drawImage(L.flare, 0, 0);
@@ -183,7 +234,7 @@ export function makeScenes(tex, anims = {}) {
     church(t) {
       // výbuch za kostelem (jednou, 0,9 s po začátku záběru): otřes obrazu, záblesk oblohy, ohnivá koule, kouř, trosky
       const u = t - 0.9;
-      const shake = u > 0 && u < 0.45 ? Math.round(Math.sin(u * 70) * 2.5 * (1 - u / 0.45)) : 0;
+      const shake = shakeOf(u);
       g.setTransform(1, 0, 0, 1, shake, Math.round(shake * 0.6));
       g.drawImage(L.church, 0, 0);
       const ex = 124, ey = 196;
@@ -201,31 +252,8 @@ export function makeScenes(tex, anims = {}) {
         const x = ((x0 + t * sp) % (W + 140)) - 60;
         g.fillRect(Math.round(x), y, w, 3); g.fillRect(Math.round(x + 8), y - 2, w - 22, 2);
       }
-      // ohnivá koule a kouř (za kopcem a kostelem → kostel je proti ní silueta)
-      if (u > 0) {
-        // kouřový sloup: obláčky se rodí u země a stoupají (vítr je unáší doprava), dole je nasvítí oheň
-        for (let i = 0; i < 46; i++) {
-          const a = u - 0.12 - i * 0.075;
-          if (a <= 0 || a > 6) continue;
-          const py = ey + 22 - a * 26, px = ex + Math.sin(i * 2.1) * 3 + a * a * 3, r = 4 + a * 4.5 * (1 - i / 80) + Math.sin(i * 3.3) * 1.5;
-          g.fillStyle = a < 0.35 ? '#5c2a22' : a < 0.9 ? '#2e2426' : '#1d1b20';
-          g.beginPath(); g.ellipse(px, py, r, r * 0.85, 0, 0, Math.PI * 2); g.fill();
-          if (a > 0.9) { g.fillStyle = '#26232b'; g.fillRect(Math.round(px - r * 0.6), Math.round(py - r * 0.7), Math.round(r * 0.8), 1); } // horní okraj od měsíce
-        }
-        if (u < 1.4) { // ohnivá koule přes spodek kouře
-          const k = easeOut(u / 0.7), fade = clamp01(1 - (u - 0.45) / 0.9);
-          glow(g, ex, ey - k * 12, 16 + 52 * k, '#7e3b2a', 1.4 * fade);
-          glow(g, ex, ey - k * 14, 12 + 40 * k, '#a85a36', 1.3 * fade);
-          glow(g, ex, ey - k * 16, 8 + 28 * k, '#d98f3f', 1.25 * fade);
-          glow(g, ex, ey - k * 18, 5 + 16 * k, '#fff6dc', 1.2 * clamp01(1 - u / 0.55));
-        }
-        if (u < 1.5) for (let i = 0; i < 14; i++) { // trosky
-          const vx = Math.cos(i * 2.4) * (18 + (i % 4) * 10), vy = 40 + (i % 5) * 12;
-          const px = ex + vx * u, py = ey - vy * u + 60 * u * u;
-          g.fillStyle = i % 3 ? '#0b0a09' : '#a85a36';
-          g.fillRect(Math.round(px), Math.round(py), 2, 2);
-        }
-      }
+      // výbuch za kopcem a kostelem → kostel je proti ohni silueta; kouř a oheň zůstávají
+      blast(g, ex, ey, u, 1);
       // kopec a kostel
       g.fillStyle = '#0b0a09';
       for (let x = 0; x < W; x++) g.fillRect(x, Math.round(236 - 16 * Math.exp(-(((x - 84) / 60) ** 2)) + 2 * Math.sin(x * 0.11)), 1, 100);
@@ -251,7 +279,7 @@ export function makeScenes(tex, anims = {}) {
       // lucerna se houpe; světlo a obří stín zdravotníka na stěně se hýbou s ní
       g.fillStyle = '#141210';
       g.fillRect(0, 0, W, H);
-      const ang = Math.sin(t * 1.5) * 0.22;
+      const ang = Math.sin(t * 1.2) * 0.07;
       const lx = 92 + Math.sin(ang) * 70, ly = 20 + Math.cos(ang) * 70;
       for (let x = 0; x < W; x += 12) { g.fillStyle = x % 24 ? '#1c1a17' : '#191714'; g.fillRect(x, 0, 11, 236); }
       glow(g, lx, ly + 20, 150, '#2b2722', 1.4, 1.2);
@@ -262,7 +290,6 @@ export function makeScenes(tex, anims = {}) {
       for (let x = 0; x < W; x += 12) g.fillRect(x, 0, 1, 236);
       g.fillRect(0, 60, W, 3);
       // obří stín zdravotníka na stěně (opačně od lucerny)
-      if (medic) { g.globalAlpha = 0.4; g.imageSmoothingEnabled = false; g.drawImage(medic, 70 + (92 - lx) * 1.4, 30, 160, 160); g.globalAlpha = 1; }
       // plachta s křížem
       g.fillStyle = '#a39782'; g.fillRect(14, 84, 32, 28);
       g.fillStyle = '#c4b8a0'; g.fillRect(14, 84, 32, 2);
@@ -338,6 +365,41 @@ export function makeScenes(tex, anims = {}) {
       // kouř ze svíčky
       g.fillStyle = 'rgba(163,151,130,0.25)';
       for (let k = 1; k < 10; k++) g.fillRect(Math.round(cx + Math.sin(t * 2 + k * 0.7) * k * 0.6), 160 - k * 6, 1, 3);
+    },
+    grim(t) {
+      const sh = BOOMS.reduce((m, [t0, , , k]) => (Math.abs(shakeOf(t - t0, k)) > Math.abs(m) ? shakeOf(t - t0, k) : m), 0);
+      g.setTransform(1, 0, 0, 1, sh, Math.round(sh * 0.6));
+      g.drawImage(L.grim, 0, 0);
+      // krvavé slunce za kouřem
+      glow(g, 120, 150, 70, '#8a3c26', 0.9);
+      g.fillStyle = '#a85a36';
+      for (let y = -10; y <= 10; y++) for (let x = -10; x <= 10; x++) if (x * x + y * y <= 100) g.fillRect(120 + x, 150 + y, 1, 1);
+      g.fillStyle = '#2e211d';
+      for (const [x0, y, w, sp] of [[-30, 146, 90, 4], [40, 156, 120, 2.5], [0, 132, 70, 3]]) g.fillRect(Math.round(((x0 + t * sp) % (W + 120)) - 60), y, w, 3);
+      // obzor, zbytky stromů
+      g.fillStyle = '#120e0c';
+      for (let x = 0; x < W; x++) g.fillRect(x, Math.round(220 + 3 * Math.sin(x * 0.07) + 2 * Math.sin(x * 0.23)), 1, 100);
+      for (const [tx, h] of [[44, 26], [118, 18], [168, 30]]) { g.fillRect(tx, 220 - h, 2, h); g.fillRect(tx - 4, 220 - h + 6, 4, 1); g.fillRect(tx + 2, 220 - h + 10, 5, 1); }
+      // výbuchy (za obzorem)
+      for (const [t0, x, y, k] of BOOMS) blast(g, x, y, t - t0, k, GRIM_SMOKE, 24);
+      if (BOOMS.some(([t0]) => t - t0 > 0 && t - t0 < 0.12)) { g.fillStyle = 'rgba(255,200,140,0.22)'; g.fillRect(-4, -4, W + 8, H + 8); }
+      // popředí: rozbitá zem, drát, naši vojáci Concordu nasvícení požáry
+      g.fillStyle = '#0b0908';
+      g.fillRect(-4, 262, W + 8, 70);
+      for (const [cx, w] of [[30, 26], [140, 34]]) { g.beginPath(); g.ellipse(cx, 268, w, 6, 0, Math.PI, 0); g.fillStyle = '#1a1210'; g.fill(); }
+      g.imageSmoothingEnabled = false;
+      if (grimC) g.drawImage(grimC, 118, 204, 72, 72);
+      if (grimB) g.drawImage(grimB, 66, 196, 90, 90);
+      if (grimA) g.drawImage(grimA, 0, 186, 108, 108);
+      stakeWire(g, -6, W + 6, 296, 34, 38, '#0b0908', '#6e2e22');
+      // padající hlína a popel
+      for (let k = 0; k < 70; k++) {
+        const p = (k * 0.6180339) % 1, q = (k * 0.7548776) % 1;
+        const y = ((q * 340 + t * (60 + (k % 5) * 25)) % 340) - 10, x = ((p * 200 + Math.sin(t + k) * 6) % 200) - 10;
+        g.fillStyle = k % 4 ? 'rgba(120,100,90,0.55)' : '#2e211d';
+        g.fillRect(Math.round(x), Math.round(y), k % 4 ? 1 : 2, k % 4 ? 1 : 2);
+      }
+      g.setTransform(1, 0, 0, 1, 0, 0);
     },
     dawnwire(t) {
       g.drawImage(L.dawn, 0, 0);
