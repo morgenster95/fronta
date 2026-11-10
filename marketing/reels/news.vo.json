@@ -1,0 +1,90 @@
+{
+ "seconds": 61.3,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.5,
+   1.03,
+   "What's new on the front.",
+   "title"
+  ],
+  [
+   1.78,
+   4.7,
+   "Every rifle on the line is a real player. Now, every shot can hit one.",
+   "fire"
+  ],
+  [
+   6.73,
+   2.34,
+   "Hit someone, and it goes in both your records.",
+   "diary"
+  ],
+  [
+   9.32,
+   2.12,
+   "Ten trades, and every one matters.",
+   "roles"
+  ],
+  [
+   11.69,
+   6.24,
+   "Snipers pick targets. Machine guns pin men down. Stretcher bearers save lives.",
+   "roles2"
+  ],
+  [
+   18.18,
+   3.21,
+   "Sappers mend the wire. Cooks keep spirits up.",
+   "roles3"
+  ],
+  [
+   21.64,
+   7.1,
+   "Every day makes you better. Recruit. Seasoned. Veteran. Elite.",
+   "xp"
+  ],
+  [
+   28.99,
+   3.72,
+   "The badly wounded need a bed. Each side has just two.",
+   "aid"
+  ],
+  [
+   32.96,
+   1.82,
+   "When they fill, men wait in the mud.",
+   "mud"
+  ],
+  [
+   35.03,
+   5.32,
+   "Lost? Follow the red cross on the map. Tap the arrow, and you're there.",
+   "find"
+  ],
+  [
+   40.6,
+   4.41,
+   "So each side votes what to build. A hospital, or sandbags.",
+   "vote"
+  ],
+  [
+   45.26,
+   3.78,
+   "Fall, and your house fights on. Your heir takes the rifle.",
+   "house"
+  ],
+  [
+   49.29,
+   4.78,
+   "The longest alive. The best shots. It's all in the Ranks.",
+   "ranks"
+  ],
+  [
+   54.32,
+   3.51,
+   "Comment Concord, or Hegemony. Your front needs you.",
+   "cta"
+  ]
+ ]
+}
