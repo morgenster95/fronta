@@ -80,12 +80,7 @@
   []
  ],
  "focus": 0,
- "raid": {
-  "name": "Ruined Church of Saint-Ash",
-  "short": "Saint-Ash",
-  "kw": "CHURCH",
-  "seats": 5
- },
+ "raid": null,
  "seconds": 60,
  "t2": null,
  "silent": true
