@@ -36,7 +36,8 @@ Postup pro nový reel `<name>`:
 
 ## Stav a plán (aktualizuj při změnách)
 - Den 1 války = 2026-11-09; každé ranní vydání (denní tah, Gazette, výsledky) je ve 13:00 UTC, večerní reel nebo post ve 23:00 UTC.
-- **Výpravy:** první se vyhlásí s Dnem 2 (2026-11-10 13:00 UTC): kostel, heslo **CHURCH**, 5 na stranu, přihlášky se uzavírají Dnem 3 ve 13:00 UTC.
+- **Výpravy jsou VYPNUTÉ** (`theme.valley.enabled = false`, od 2026-11-10 na pokyn uživatele): výzva CHURCH z Dne 2 zrušena. Teď se hlasuje jen na IG o stavbách
+  (HOSPITAL / WIRE / SANDBAGS, post `vote-build-d2` 2026-11-10 15:00 UTC). Zapnout až s výslovným souhlasem uživatele.
 - **TODO 2026-11-10:**
   - Raid reel AŽ PO vyhlášení ve 13:00 UTC: mapa údolí s obrázky míst, detail kostela Saint-Ash, výhoda za dobytí, heslo CHURCH,
     5 na stranu, jak bitva funguje (role kulometčík, zdravotník, kuchař). Publikovat co nejdřív odpoledne, uživatel publikaci schvaluje.
