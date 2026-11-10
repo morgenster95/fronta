@@ -662,3 +662,64 @@ test('nastavení dává smysl: lůžko je vždy lepší než nosítka s plnou p�
   assert.ok(C.stabilizeBed <= C.stabilize);
   assert.ok(Hv.heal * b.aidPost.care <= 1);
 });
+
+test('ostrá čísla: střelci za běžného dne náhodou trefí nepřítele (ne každý, ale za 4 týdny se to stane na obou stranách)', () => {
+  const s = emptyState(theme);
+  enlist(s, 200, 'rnd_');
+  s.soldiers.forEach((x) => { x.enlisted = 0; });
+  let hits = 0, shots = 0;
+  const byF = [0, 0];
+  const shooters = new Set();
+  for (let day = 30; day < 58; day++) {
+    s.day = day;
+    battleTick(s, theme, story, day); // výchozí vyvážení, nic nezvýšeno
+    const st = s.battle.stats.at(-1);
+    shots += st.sides[0].shots + st.sides[1].shots;
+    st.sides.forEach((x, f) => { const n = Object.values(x.hits.fire).reduce((a, b) => a + b, 0); hits += n; byF[f] += n; });
+    for (const x of s.soldiers) if (x.wound?.by && x.wound.day === day) shooters.add(x.wound.by.handle);
+  }
+  assert.ok(byF[0] > 0 && byF[1] > 0, `zásahy palbou Heg ${byF[0]}, Con ${byF[1]}`);
+  assert.ok(hits < shots * 0.05, `trefa je náhoda: ${hits} zásahů z ${shots} výstřelů`);
+  assert.ok(shooters.size > 1, `trefilo víc různých střelců (${shooters.size})`);
+  // deterministické kostky: stejný den a stav = stejné zásahy
+  const a = emptyState(theme), b = emptyState(theme);
+  enlist(a, 200, 'det_'); enlist(b, 200, 'det_');
+  [a, b].forEach((x) => { x.day = 30; x.soldiers.forEach((y) => { y.enlisted = 0; }); battleTick(x, theme, story, 30); });
+  assert.deepEqual(a.soldiers.map((x) => x.wound?.by?.handle ?? null), b.soldiers.map((x) => x.wound?.by?.handle ?? null));
+});
+
+test('zásah → lůžko: těžce/kriticky zasažený palbou jde hned na lůžko (obvaziště i nemocnice), odtud se vrátí do linie', () => {
+  for (const withDugout of [false, true]) {
+    const s = emptyState(theme);
+    enlist(s, 200, withDugout ? 'hd_' : 'ha_');
+    s.soldiers.forEach((x) => { x.enlisted = 0; });
+    if (withDugout) { build(s, theme, 0, 'dugout'); build(s, theme, 1, 'dugout'); }
+    let patient = null;
+    for (let day = 30; day < 90 && !patient; day++) {
+      s.day = day;
+      battleTick(s, theme, story, day);
+      for (let f = 0; f < 2; f++) {
+        const H = hospital(s, theme, f);
+        const serious = s.soldiers.filter((x) => x.faction === f && x.status === 'wounded' && x.wound.sev !== 'light');
+        // kdo není na lůžku, je tam jen proto, že jsou lůžka plná
+        if (serious.some((x) => x.wound.place !== 'bed')) assert.equal(s.battle.sides[f].beds.length, H.beds, `den ${day}: volné lůžko a raněný mimo`);
+        assert.ok(s.battle.sides[f].beds.length <= H.beds);
+      }
+      patient = s.soldiers.find((x) => x.wound?.by && x.wound.day === day && x.wound.sev !== 'light' && x.wound.place === 'bed');
+    }
+    assert.ok(patient, `${withDugout ? 'nemocnice' : 'obvaziště'}: zasažený palbou skončil na lůžku`);
+    assert.ok(s.battle.sides[patient.faction].beds.includes(patient.id));
+    assert.match(patient.record.at(-1)[1], /Shot by .+ \(@.+\)/);
+    assert.ok(battlePublic(s, theme), 'web dostane data o lůžkách');
+    // odtud: buď se uzdraví a vrátí do linie, nebo (kritický) zemře na lůžku; nikdy nezůstane viset
+    const id = patient.id;
+    for (let day = s.day + 1; day < s.day + 40; day++) {
+      battleTick(s, theme, story, day);
+      const p = s.soldiers.find((x) => x.id === id);
+      if (!p || p.status !== 'wounded') break;
+      assert.notEqual(p.wound.place, 'trench', 'z lůžka nikdo nevypadne do zákopu');
+    }
+    const p = s.soldiers.find((x) => x.id === id);
+    assert.ok(!p || p.status !== 'wounded' || p.wound.sev === 'light', `po 40 dnech pořád na lůžku (${p?.wound?.sev})`);
+  }
+});
