@@ -9,7 +9,7 @@ Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md`, `d
 - **Nic nepublikuj na Instagram bez výslovného souhlasu uživatele** (reel, story, post). Tokeny nikdy nezadávej ani nevypisuj.
 - **Statické posty vždy 1080×1350 (4:5)**, víc místa a pro IG nejlepší: kreslí se v mřížce 216×270 a zvětší ×5 (`marketing/make_posts.py` W, H, K; `make_day.py`, `make_victory.py`).
 - **V popiscích na IG hráče neoznačovat** (žádné @jméno, jen role a strana); jména hráčů jen ve videu a ve hře.
-- **Denní reel i jeho popisek vždy uvádí, kolik hráčů je teď na frontě** (celkem + za každou stranu; `tools/day-reel.mjs` věta `army`, `data.army`).
+- **Denní reel i jeho popisek vždy uvádí, kolik hráčů je teď na frontě** (celkem, pak přejezd kamery po první linii Hegemonie a Concordu s počtem každé strany; `tools/day-reel.mjs` věty `army`, `armyH`, `armyC`, `data.army`).
 - Repo je **veřejné**: žádné tajné údaje, e-maily ani tokeny do commitů.
 - Hra běží naostro: https://mudandiron.web.app, IG @mudandiron. Automatika = smyčka `.github/workflows/front-loop.yml` (`tools/loop.sh`)
   každých ~5 min: stáhne komentáře, odpoví, publikuje frontu `marketing/queue.json`, denní tah v 13:00 UTC, nasadí web.

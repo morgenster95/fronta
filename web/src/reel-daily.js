@@ -28,8 +28,9 @@ const CSS = `${BASE}${FX_CSS}${CINEMA_CSS}
 #rd-army { left: 10%; right: 10%; top: 34%; text-align: center; }
 #rd-army .k { font-family: 'Silkscreen', monospace; font-size: 20px; color: #d98f3f; }
 #rd-army .n { font-family: 'Silkscreen', monospace; font-size: 96px; line-height: 1; text-shadow: 5px 5px 0 #0e0d0c; }
-#rd-army .sides { display: flex; justify-content: space-around; font-family: 'Silkscreen', monospace; font-size: 22px; margin-top: 10px; }
-#rd-army .sides b { display: block; font-weight: 400; font-size: 46px; }
+#rd-side { left: 0; right: 0; top: 66%; text-align: center; }
+#rd-side span { display: inline-block; font-family: 'Silkscreen', monospace; font-size: 30px; background: rgba(14, 13, 12, 0.88); border-bottom: 4px solid currentColor; padding: 6px 16px; text-shadow: 3px 3px 0 #0e0d0c; }
+#rd-side b { font-weight: 400; font-size: 64px; margin-right: 14px; vertical-align: -6px; }
 #rd-vote { left: 17%; right: 17%; top: 25%; }
 #rd-vote img { width: 100%; display: block; image-rendering: pixelated; box-shadow: 0 8px 0 rgba(0,0,0,0.5), 0 16px 28px rgba(0,0,0,0.6); }
 #rd-vote .hl { position: absolute; left: 2.5%; right: 2.5%; border: 4px solid #d98f3f; box-shadow: 0 0 0 3px #0e0d0c, 0 0 22px rgba(217,143,63,0.7); opacity: 0; }
@@ -48,7 +49,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const END = vo.seconds;
   const at = (id) => C.at(id);
   const tSh = at('shooter'), tShot = at('shot'), tCount = at('count'), tAid = at('aid'), tStr = at('stretcher');
-  const tArmy = at('army'), tRaid = at('raid'), tVote = at('vote'), tOpts = at('opts'), tCta = at('cta');
+  const tArmy = at('army'), tArmyH = at('armyH'), tArmyC = at('armyC'), tRaid = at('raid'), tVote = at('vote'), tOpts = at('opts'), tCta = at('cta');
   const tEnd = (id) => at(id) + C.len(id);
 
   const T = map.tile;
@@ -57,6 +58,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const byHandle = (h) => soldiers.find((s) => s.handle === h);
   const front = (f) => soldiers.filter((s) => s.faction === f && s.slot?.line === 'front').sort((a, b) => a.x - b.x);
   const hs = front(0), cs = front(1);
+  const real = (f) => front(f).filter((s) => s.handle && !s.vacant && !s.hosp); // skuteční hráči v první linii
   const hx = hs[Math.floor(hs.length / 2)].x;
   const mid = ((map.front[0] + map.front[1]) / 2) * T + 16;
   const shooter = data.fire ? byHandle(data.fire.by.handle) : null;
@@ -66,6 +68,12 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const bedded = soldiers.filter((s) => s.faction === data.focus && s.hosp === 'bed');
   const aim = (s, z) => [s.x, s.y - 14 + 58 / z, z];
 
+  // přejezd po frontové linii jedné strany: střih na první stanoviště, jízda k poslednímu
+  function sweep(line, a, b) {
+    if (!line.length) return [];
+    const f = line[0], l = line[line.length - 1];
+    return [[a, ...aim(f, 2.6), 'cut'], [b, l.x, aim(l, 2.6)[1], 2.6]];
+  }
   // --- kamera: tvrdé střihy na začátcích vět ---
   const afterShot = tShot ?? tCount;
   const K = [
@@ -78,7 +86,8 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     [tAid - 0.01, hx + 120, mid - 20, 1.25],
     [tAid, hosp.x - 30, hosp.y + 2, 3.7, 'cut'],
     [tStr, hosp.x, hosp.y + 4, 4.1],
-    ...(tArmy ? [[Math.min(tStr + C.len('stretcher') + 0.2, tArmy - 0.02), hosp.x + 16, hosp.y + (data.focus === 0 ? 26 : -26), 4.4], [tArmy, hx - 160, mid, 1.15, 'cut']] : []),
+    ...(tArmy ? [[Math.min(tStr + C.len('stretcher') + 0.2, tArmy - 0.02), hosp.x + 16, hosp.y + (data.focus === 0 ? 26 : -26), 4.4], [tArmy, hx - 160, mid, 1.15, 'cut'],
+      ...(tArmyH && tArmyC ? [[tArmyH - 0.01, hx - 60, mid, 1.2], ...sweep(real(0), tArmyH, tArmyC - 0.01), ...sweep(real(1), tArmyC, (tRaid ?? tVote) - 0.02)] : [])] : []),
     tArmy ? [(tRaid ?? tVote) - 0.01, hx + 140, mid, 1.3] : [(tRaid ?? tVote) - 0.01, hosp.x + 16, hosp.y + (data.focus === 0 ? 26 : -26), 4.4],
     [tRaid ?? tVote, hx - 120, mid, 1.2, 'cut'],
     [END, hx + 260, mid, 1.35],
@@ -87,7 +96,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const sub = subtitles(vo);
   const fx = transitions([
     [tSh, 'flash'], ...(tShot ? [[tShot - 0.12, 'flash'], [tShot, 'whip']] : []), [tCount, 'black', 0.36],
-    [tAid, 'whip'], [tStr, 'black', 0.3], ...(tArmy ? [[tArmy, 'black', 0.36]] : []), ...(tRaid ? [[tRaid, 'black', 0.4]] : []), [tVote, 'flash'], [tCta, 'black', 0.5],
+    [tAid, 'whip'], [tStr, 'black', 0.3], ...(tArmy ? [[tArmy, 'black', 0.36], ...(tArmyH ? [[tArmyH, 'whip'], [tArmyC, 'whip']] : [])] : []), ...(tRaid ? [[tRaid, 'black', 0.4]] : []), [tVote, 'flash'], [tCta, 'black', 0.5],
     [tSh + 1.2, 'punch'], ...(tShot ? [[tShot - 0.12, 'punch']] : []),
   ]);
   const NIGHT = { flares: [[0.8, 50], [3.2, 120]], flashes: [[0.3, 40], [2.4, 150]], march: 8 };
@@ -97,7 +106,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     ...(tRaid ? [[tRaid + 0.6, 'flare', hx, mid]] : [])];
   const SFX = [];
   for (const e of EV) if (e[1] === 'shoot' || e[1] === 'shootAt') SFX.push([e[0] + 0.62, 'shoot', 0]);
-  SFX.push([0.5, 'type', 0.4], [at('guns'), 'type', 0.9], [tSh, 'reveal', 0], [(tShot ?? tCount) + 0.3, 'stamp', 0], [tCount, 'drum', 0], [tAid, 'bell', 0], ...(tArmy ? [[tArmy, 'drum', 0]] : []),
+  SFX.push([0.5, 'type', 0.4], [at('guns'), 'type', 0.9], [tSh, 'reveal', 0], [(tShot ?? tCount) + 0.3, 'stamp', 0], [tCount, 'drum', 0], [tAid, 'bell', 0], ...(tArmy ? [[tArmy, 'drum', 0], ...(tArmyH ? [[tArmyH, 'stamp', 0], [tArmyC, 'stamp', 0]] : [])] : []),
     ...(tRaid ? [[tRaid, 'whistle', 0]] : []), [tVote, 'drum', 0], ...[0, 1].map((i) => [tOpts + i * 1.1, 'stamp', 0]), [tCta, 'end', 0]);
 
   // --- DOM ---
@@ -127,8 +136,8 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
       <div class="side" style="color:#c9c26a"><span>CONCORD</span><b>0</b></div><ul>${list(1)}</ul></div>
     ${data.raid ? `<div id="rd-raid"><img src="/assets/locations/church.png" alt=""><div class="title">VOLUNTEERS WANTED<br>${data.raid.short.toUpperCase()}</div>
       <div class="m">${data.raid.seats} per side · tonight</div><div class="kw">COMMENT ${data.raid.kw}</div></div>` : ''}
-    ${data.army ? `<div id="rd-army" class="panel"><div class="k">ON THE LINE TODAY</div><div class="n">0</div>
-      <div class="sides"><span style="color:#a7b4bb">HEGEMONY<b>0</b></span><span style="color:#c9c26a">CONCORD<b>0</b></span></div></div>` : ''}
+    ${data.army ? `<div id="rd-army" class="panel"><div class="k">ON THE LINE TODAY</div><div class="n">0</div></div>` : ''}
+    <div id="rd-side"><span><b></b><em style="font-style:normal"></em></span></div>
     <div id="rd-vote"><img src="${voteImg}" alt="">${[0, 1].map((i) => `<div class="hl" style="top:${(54 + i * 80) / 2.7}%;height:${72 / 2.7}%"></div>`).join('')}</div>
     <div id="rd-sub"></div>
     <div id="rd-every"><span>EVERY MORNING · 13:00 UTC</span></div>
@@ -219,10 +228,17 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
 
     if (tArmy && data.army) {
       const tE = tRaid ?? tVote;
-      show('#rd-army', win(t, tArmy + 0.1, tE - 0.05, 0.15));
+      show('#rd-army', win(t, tArmy + 0.1, (tArmyH ?? tE) - 0.05, 0.15));
+      if (tArmyH && tArmyC) {
+        const f = t >= tArmyC ? 1 : 0, a = f ? tArmyC : tArmyH;
+        const side = $('#rd-side span');
+        show('#rd-side', win(t, tArmyH + 0.15, tE - 0.05, 0.12) * (t < tArmyC - 0.08 || t > tArmyC + 0.12 ? 1 : 0));
+        side.style.color = f ? '#c9c26a' : '#a7b4bb';
+        side.querySelector('b').textContent = Math.round(easeOut(clamp01((t - a - 0.15) / 0.8)) * data.army[f]);
+        side.querySelector('em').textContent = short(f);
+      }
       const u = easeOut(clamp01((t - tArmy - 0.2) / 1.1));
       $('#rd-army .n').textContent = Math.round(u * (data.army[0] + data.army[1]));
-      root.querySelectorAll('#rd-army .sides b').forEach((el, i) => (el.textContent = Math.round(u * data.army[i])));
     }
     show('#rd-dim', (tShot ? win(t, tShot, tCount, 0.1) * 0.55 : 0) + win(t, tRaid ?? tVote, tCta, 0.2) * 0.9);
     if (tRaid) {
