@@ -33,6 +33,8 @@ const open = state.valley?.open;
 const loc = open ? theme.valley?.locations?.find((l) => l.id === open.loc) : null;
 const raid = open && open.day === day && loc ? { name: loc.name, short: loc.short || loc.name, kw: (loc.keyword || loc.id).toUpperCase(), seats: theme.valley?.slots ?? 5 } : null;
 
+// počet hráčů na frontě patří do každého denního reelu (i do popisku)
+const army = [0, 1].map((f) => state.soldiers.filter((s) => s.faction === f && s.status !== 'dead' && !s.dead).length);
 const sevWord = { light: 'Grazed.', heavy: 'Badly wounded.', crit: 'Gravely wounded.' };
 const total = hit[0].length + hit[1].length;
 const cap = (t) => t.replace(/(^|\. )([a-z])/g, (m, a, c) => a + c.toUpperCase());
@@ -49,6 +51,7 @@ const lines = [
   [0, `The ${short(focus)} aid post has two beds. ${nb >= 2 ? 'Both are taken.' : nb === 1 ? 'One is taken.' : 'Both still empty.'}`, 'aid'],
   [0, nb >= 2 ? 'The next man badly hit waits on a stretcher, in the mud.' : 'When they fill, the badly hit wait on stretchers, in the mud.', 'stretcher'],
   ...(raid ? [[0, `Field HQ wants ${say(raid.seats)} volunteers a side, for a night raid on Saint-Ash. Comment ${raid.kw.toLowerCase()}.`.replace('Saint-Ash', raid.short), 'raid']] : []),
+  [0, `${army[0] + army[1]} soldiers hold the line now. ${army[0]} Hegemony, ${army[1]} Concord.`, 'army'],
   [0, 'And today, each side votes what to build.', 'vote'],
   [0, 'A hospital, or sandbags.', 'opts'],
   [0, 'Your soldier is your ballot. Link in bio.', 'cta'],
@@ -56,7 +59,7 @@ const lines = [
 const seconds = 60; // horní odhad; skutečnou délku určí hlas (story_vo.py, auto)
 const t2 = null;
 
-const data = { day, total, hit, fire, beds, stretchers, focus, raid, seconds, t2, silent: gunsSilent(state, theme) };
+const data = { day, army, total, hit, fire, beds, stretchers, focus, raid, seconds, t2, silent: gunsSilent(state, theme) };
 const name = `day${day}`;
 const dir = path.join(ROOT, 'marketing', 'reels');
 fs.writeFileSync(path.join(dir, `${name}.data.json`), JSON.stringify(data, null, 1));
