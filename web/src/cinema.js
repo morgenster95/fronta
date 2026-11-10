@@ -205,7 +205,78 @@ export function makeScenes(tex, anims = {}) {
   const BOOMS = [[0.2, 30, 196, 0.8], [0.7, 132, 200, 1.1], [1.3, 76, 206, 0.7], [1.9, 160, 194, 0.9], [2.4, 14, 204, 1.2], [3.0, 104, 198, 0.8],
     [3.5, 56, 192, 1.0], [4.1, 150, 206, 0.7], [4.6, 88, 200, 1.3], [5.2, 24, 198, 0.9], [5.8, 128, 196, 1.0], [6.4, 66, 204, 0.8]];
   const GRIM_SMOKE = ['#6e2e22', '#2e211d', '#1f1a17', '#2a1d19'];
+  // noční bombardování nad zákopy: v záblesku granátu letí vzduchem siluety vojáků (reel „barrage“)
+  const bodies = [tex.hegemony?.south, tex.hegemony?.['north-east'], tex.hegemony_machinegunner?.north, fallTx, tex.hegemony?.west]
+    .map((tx) => silhouette(tx, '#050405')).filter(Boolean);
+  // [čas, x, y, síla, těla: [vx, vy, rotace/s]]
+  const NIGHT_BOOMS = [
+    [0.25, 120, 214, 1.3, [[-34, -150, -6], [40, -130, 7]]], [1.05, 40, 218, 0.9, []], [1.6, 70, 210, 1.4, [[26, -170, 8], [-50, -120, -5], [8, -190, 4]]],
+    [2.5, 150, 216, 1.0, [[-30, -140, -7]]], [3.1, 20, 212, 1.2, [[46, -160, 6]]], [3.7, 104, 208, 1.5, [[-44, -180, -8], [36, -150, 5]]],
+    [4.5, 160, 214, 0.9, []], [5.0, 60, 216, 1.3, [[30, -165, 7], [-36, -140, -6]]], [5.8, 130, 210, 1.1, [[-28, -150, -5]]],
+  ];
+  {
+    const c = off(W, H), cg = c.getContext('2d');
+    sky(cg, 0, 230, ['#030409', '#070a16', '#0d1124', '#1a1628', '#2c1c22']);
+    cg.fillStyle = '#0e0b0d';
+    for (let x = 0; x < W; x++) cg.fillRect(x, Math.round(214 + 2 * Math.sin(x * 0.06) + 2 * Math.sin(x * 0.21)), 1, 110);
+    for (const [tx, h] of [[24, 22], [96, 14], [150, 26]]) { cg.fillRect(tx, 214 - h, 2, h); cg.fillRect(tx - 3, 214 - h + 5, 3, 1); cg.fillRect(tx + 2, 214 - h + 9, 4, 1); }
+    stakeWire(cg, -4, W + 4, 236, 14, 16, '#080607', null);
+    L.night = c;
+  }
   const scenes = {
+    nightshell(t) {
+      const sh = NIGHT_BOOMS.reduce((m, [t0, , , k]) => (Math.abs(shakeOf(t - t0, k * 1.4)) > Math.abs(m) ? shakeOf(t - t0, k * 1.4) : m), 0);
+      g.setTransform(1, 0, 0, 1, sh, Math.round(sh * 0.7));
+      g.drawImage(L.night, 0, 0);
+      // záblesk: celé nebe zbělá/zoranžoví, siluety jsou proti němu černé
+      const fl = NIGHT_BOOMS.reduce((m, [t0, , , k]) => { const u = t - t0; return u > -0.01 && u < 0.5 ? Math.max(m, Math.exp(-u * 7) * Math.min(1, k)) : m; }, 0);
+      if (fl > 0.02) {
+        const [bx, by] = NIGHT_BOOMS.filter(([t0]) => t >= t0).at(-1).slice(1, 3);
+        glow(g, bx, by - 30, 200, '#7e3b2a', 1.6 * fl, 1.2);
+        glow(g, bx, by - 30, 140, '#d98f3f', 1.4 * fl, 1.1);
+        glow(g, bx, by - 20, 70, '#fff6dc', 1.3 * fl);
+      }
+      for (const [t0, x, y, k] of NIGHT_BOOMS) blast(g, x, y, t - t0, k, ['#7e3b2a', '#2a2024', '#16141a', '#0d1020'], 6);
+      // horizont přes spodek výbuchů
+      g.fillStyle = '#0e0b0d';
+      for (let x = -4; x < W + 4; x++) g.fillRect(x, Math.round(222 + 2 * Math.sin(x * 0.05 + 2)), 1, 110);
+      // těla ve vzduchu: balistická křivka, otáčí se, dopadnou za obzor
+      g.imageSmoothingEnabled = false;
+      let n = 0;
+      for (const [t0, x, y, , list] of NIGHT_BOOMS) for (const [vx, vy, rot] of list) {
+        const u = t - t0 - 0.04, b = bodies[n++ % bodies.length];
+        if (u <= 0 || u > 2.2 || !b) continue;
+        const px = x + vx * u, py = y - 8 + vy * u + 120 * u * u;
+        if (py > y + 6) continue;
+        const s = 30 + 8 * Math.min(1, u);
+        g.save(); g.translate(Math.round(px), Math.round(py)); g.rotate(rot * u); g.drawImage(b, -s / 2, -s / 2, s, s); g.restore();
+      }
+      // jiskry a hlína
+      for (const [t0, x, y, k] of NIGHT_BOOMS) {
+        const u = t - t0;
+        if (u <= 0 || u > 1.6) continue;
+        for (let i = 0; i < 22; i++) {
+          const vx = Math.cos(i * 2.7) * (30 + (i % 5) * 14) * k, vy = (70 + (i % 6) * 18) * k;
+          g.fillStyle = i % 3 ? '#0b0a09' : u < 0.6 ? '#fff6dc' : '#d98f3f';
+          g.fillRect(Math.round(x + vx * u), Math.round(y - vy * u + 90 * u * u), i % 4 ? 1 : 2, i % 4 ? 1 : 2);
+        }
+      }
+      // popředí: náš parapet z pytlů, okraj nasvícený zábleskem
+      g.drawImage(L.parapet, 0, 0);
+      if (fl > 0.02) {
+        g.fillStyle = `rgba(217,143,63,${0.8 * fl})`;
+        for (let x = 0; x < W; x++) if ((x % 18) > 2 && (x % 18) < 16) g.fillRect(x, 242 - Math.round(Math.sin(((x % 18) / 18) * Math.PI) * 3), 1, 1);
+      }
+      // padající hlína z neba
+      for (let k = 0; k < 50; k++) {
+        const p = (k * 0.6180339) % 1, q = (k * 0.7548776) % 1;
+        const yy = ((q * 340 + t * (70 + (k % 5) * 30)) % 340) - 10, xx = ((p * 200 + Math.sin(t + k) * 5) % 200) - 10;
+        g.fillStyle = 'rgba(90,70,60,0.6)';
+        g.fillRect(Math.round(xx), Math.round(yy), 1, k % 3 ? 1 : 2);
+      }
+      rain(g, t, 60, 0.22);
+      g.setTransform(1, 0, 0, 1, 0, 0);
+    },
     flare(t) {
       g.drawImage(L.flare, 0, 0);
       // vzdálené záblesky děl jen jako mlčící obzor: tlumené mraky

@@ -1,0 +1,15 @@
+{
+ "seconds": 44,
+ "auto": true,
+ "drums": ["race", [["night", "guns"]], "reward"],
+ "lines": [
+  [3.6, "Night on Verdel Ridge.", "night"],
+  [0, "The guns have not stopped for an hour.", "guns"],
+  [0, "Every man who goes down out there is a real player.", "fall"],
+  [0, "And this is what the winning side gets to do.", "cine"],
+  [0, "The first army to a hundred soldiers takes the ridge.", "race"],
+  [0, "Three days of artillery. On the enemy's trenches.", "reward"],
+  [0, "Pick your side. Bring your friends. Every recruit counts.", "cta"],
+  [0, "Comment Concord... or Hegemony.", "cta2"]
+ ]
+}

@@ -97,6 +97,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'barrage') {
+    // noční bombardování + závod o kótu: kdo ji dobude, dostane dělostřelectvo (reel-barrage.js)
+    return import('./reel-barrage.js').then(async ({ startBarrageReel }) => {
+      await startBarrageReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (/^day\d+$/.test(name) && name !== 'day1') {
     // denní reel „co se stalo“ z podkladů tools/day-reel.mjs (reel-daily.js)
     return import('./reel-daily.js').then(({ startDailyReel }) => {
