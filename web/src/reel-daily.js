@@ -5,10 +5,11 @@ import { makeCinema, CSS as BASE } from './reel-day1.js';
 import { paperTexture, tornClip } from './paper.js';
 import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, tagAt, slam, ease, easeOut, clamp01, win, typed } from './reel-kit.js';
 import voteImg from '../../marketing/promo/vote_build_1.jpg';
+import { makeScenes, pickScene, CINEMA_CSS } from './cinema.js';
 
 const files = import.meta.glob('../../marketing/reels/day*.json', { eager: true, import: 'default' });
 
-const CSS = `${BASE}${FX_CSS}
+const CSS = `${BASE}${FX_CSS}${CINEMA_CSS}
 #rd-count { left: 7%; right: 7%; top: 54%; }
 #rd-count .side { display: grid; grid-template-columns: 1fr auto; align-items: baseline; margin: 8px 0 2px; font-family: 'Silkscreen', monospace; font-size: 22px; }
 #rd-count .side b { font-weight: 400; font-size: 50px; line-height: 1; display: inline-block; }
@@ -80,7 +81,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const sub = subtitles(vo);
   const fx = transitions([
     [tSh, 'flash'], ...(tShot ? [[tShot - 0.12, 'flash'], [tShot, 'whip']] : []), [tCount, 'black', 0.36],
-    [tAid, 'whip'], ...(tRaid ? [[tRaid, 'black', 0.4]] : []), [tVote, 'flash'], [tCta, 'black', 0.5],
+    [tAid, 'whip'], [tStr, 'black', 0.3], ...(tRaid ? [[tRaid, 'black', 0.4]] : []), [tVote, 'flash'], [tCta, 'black', 0.5],
     [tSh + 1.2, 'punch'], ...(tShot ? [[tShot - 0.12, 'punch']] : []),
   ]);
   const NIGHT = { flares: [[0.8, 50], [3.2, 120]], flashes: [[0.3, 40], [2.4, 150]], march: 8 };
@@ -127,6 +128,18 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   document.body.appendChild(root);
   const cine = makeCinema(tex, anims);
   root.prepend(cine.canvas);
+  // filmové mezizáběry: úvod a závěr se mezi dny střídají, k nosítkům obvaziště při lucerně, k výpravě kostel
+  const scenes = makeScenes(tex);
+  root.insertBefore(scenes.canvas, cine.canvas.nextSibling);
+  const intro = pickScene(data.day, data.raid ? ['march', 'flare'] : ['march', 'flare', 'church']);
+  const outro = pickScene(data.day, ['dawn', 'dawnwire'], 1);
+  const sceneAt = (t) => {
+    if (t < tSh && intro !== 'march') return [intro, t];
+    if (t >= tStr && t < (tRaid ?? tVote)) return ['aidpost', t - tStr];
+    if (tRaid && t >= tRaid && t < tVote) return ['church', t - tRaid];
+    if (t >= tCta && outro !== 'dawn') return [outro, t - tCta];
+    return null;
+  };
   const paint = fxLayers(root);
   const $ = (s) => root.querySelector(s);
   const show = (sel, o) => { const el = $(sel); if (el) el.style.opacity = o; };
@@ -153,9 +166,12 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     }
     // noc na začátku, úsvit na konci
     const night = t < tSh, dawn = t >= tCta;
-    if (night) cine.draw(t + 3, 'night', { ...NIGHT, pan: t * 6 });
+    const sc = sceneAt(t);
+    if (sc) scenes.draw(sc[0], sc[1]);
+    else if (night) cine.draw(t + 3, 'night', { ...NIGHT, pan: t * 6 });
     else if (dawn) cine.draw(t - tCta, 'dawn', { ...DAWN, pan: (t - tCta) * 5 });
-    show('#rd-cine', night || dawn ? 1 : 0);
+    show('#rd-cine', !sc && (night || dawn) ? 1 : 0);
+    show('#rd-cine2', sc ? 1 : 0);
     paint({ ...f, black: Math.max(f.black, t < 0.4 ? 1 - t / 0.4 : 0, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) });
 
     show('#rd-day', night ? Math.min(1, t / 0.3) : 0);
@@ -182,7 +198,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
       st.style.opacity = t > tShot + 0.55 ? 1 : 0;
       st.style.transform = `translate(-50%, -50%) rotate(-12deg) scale(${2.2 - 1.2 * su})`;
     }
-    bedded.forEach((who, i) => tagAt($(`#rd-bed${i}`), who, cam, win(t, tAid + 0.3 + i * 0.35, (tRaid ?? tVote) - 0.05, 0.15)));
+    bedded.forEach((who, i) => tagAt($(`#rd-bed${i}`), who, cam, win(t, tAid + 0.3 + i * 0.35, tStr - 0.05, 0.15)));
 
     show('#rd-count', win(t, tCount, tAid - 0.05, 0.15));
     root.querySelectorAll('#rd-count b').forEach((el, i) => {

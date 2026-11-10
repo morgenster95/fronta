@@ -6,10 +6,11 @@ import { paperTexture, tornClip } from './paper.js';
 import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, tagAt, slam, easeOut, clamp01, win, typed } from './reel-kit.js';
 import voteImg from '../../marketing/promo/vote_build_1.jpg';
 import script from '../../marketing/reels/news.script.json';
+import { makeScenes, CINEMA_CSS } from './cinema.js';
 
 const files = import.meta.glob('../../marketing/reels/{news.vo,day*.data}.json', { eager: true, import: 'default' });
 
-const CSS = `${BASE}${FX_CSS}
+const CSS = `${BASE}${FX_CSS}${CINEMA_CSS}
 #rn-title { left: 0; right: 0; top: 30%; text-align: center; }
 #rn-title .a { font-family: 'Silkscreen', monospace; font-size: 30px; color: #d98f3f; letter-spacing: 0.1em; text-shadow: 3px 3px 0 #0e0d0c; min-height: 36px; }
 #rn-title .b { font-family: 'Silkscreen', monospace; font-size: 58px; line-height: 1.05; text-shadow: 4px 4px 0 #0e0d0c; min-height: 124px; }
@@ -106,7 +107,7 @@ export async function startNewsReel({ cam, life, map, theme, soldiers, tex, anim
   const sub = subtitles(vo);
   const fx = transitions([
     [at('fire'), 'flash'], [at('fire') + 1.3, 'punch'], [at('diary'), 'whip'], ...montage.map((m) => [m.t, 'whip']),
-    [at('xp'), 'black', 0.3], [at('aid'), 'whip'], [tf, 'black', 0.3], [tf + 0.42 * L, 'whip'], [tf + 0.8 * L, 'flash'], [tv, 'flash'],
+    [at('xp'), 'black', 0.3], [at('aid'), 'whip'], [at('mud'), 'black', 0.3], [tf, 'black', 0.3], [tf + 0.42 * L, 'whip'], [tf + 0.8 * L, 'flash'], [tv, 'flash'],
     [at('house'), 'black', 0.3], [at('ranks'), 'whip'], [at('cta'), 'black', 0.5],
   ]);
   const NIGHT = { flares: [[0.5, 60]], flashes: [[0.2, 40], [1.4, 150]], march: 8 };
@@ -159,6 +160,16 @@ export async function startNewsReel({ cam, life, map, theme, soldiers, tex, anim
   document.body.appendChild(root);
   const cine = makeCinema(tex, anims);
   root.prepend(cine.canvas);
+  // filmové mezizáběry: světlice v úvodu, dopis pod záznamy z deníku, obvaziště při lucerně, úsvit nad drátem k rodu
+  const scenes = makeScenes(tex);
+  root.insertBefore(scenes.canvas, cine.canvas.nextSibling);
+  const sceneAt = (t) => {
+    if (t < at('fire')) return ['flare', t + 1.2];
+    if (t >= at('diary') && t < at('roles')) return ['letter', t - at('diary') + 0.8];
+    if (t >= at('mud') && t < tf) return ['aidpost', t - at('mud')];
+    if (t >= at('house') && t < at('ranks')) return ['dawnwire', t - at('house')];
+    return null;
+  };
   const paint = fxLayers(root);
   const $ = (s) => root.querySelector(s);
   const show = (sel, o) => { const el = $(sel); if (el) el.style.opacity = o; };
@@ -179,9 +190,11 @@ export async function startNewsReel({ cam, life, map, theme, soldiers, tex, anim
       if (who) life.debug.shoot([who]);
     }
     const night = t < at('fire'), dawn = t >= at('cta');
-    if (night) cine.draw(t + 4, 'night', { ...NIGHT, pan: t * 6 });
+    const sc = sceneAt(t);
+    if (sc) scenes.draw(sc[0], sc[1]);
     else if (dawn) cine.draw(t - at('cta'), 'dawn', { ...DAWN, pan: (t - at('cta')) * 5 });
-    show('#rd-cine', night || dawn ? 1 : 0);
+    show('#rd-cine', !sc && dawn ? 1 : 0);
+    show('#rd-cine2', sc ? 1 : 0);
     paint({ ...f, black: Math.max(f.black, t < 0.3 ? 1 - t / 0.3 : 0, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) });
 
     show('#rn-title', night ? 1 : 0);
@@ -202,7 +215,7 @@ export async function startNewsReel({ cam, life, map, theme, soldiers, tex, anim
     } else subEl.style.opacity = 0;
 
     tagAt($('#rn-tag-sh'), shooter, cam, win(t, at('fire') + 0.25, at('diary') - 0.05, 0.15));
-    show('#rd-dim', win(t, at('diary'), at('roles'), 0.12) * 0.75 + win(t, tv, at('house'), 0.15) * 0.85 + win(t, at('ranks'), at('cta'), 0.15) * 0.6);
+    show('#rd-dim', win(t, at('diary'), at('roles'), 0.12) * 0.3 + win(t, tv, at('house'), 0.15) * 0.85 + win(t, at('ranks'), at('cta'), 0.15) * 0.6);
     slam($('#rn-d1'), t, at('diary') + 0.1, at('roles') - 0.05, 1.3, -4);
     slam($('#rn-d2'), t, at('diary') + 1.3, at('roles') - 0.05, 1.3, 4);
 
