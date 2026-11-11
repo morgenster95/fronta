@@ -1,0 +1,91 @@
+{
+ "seconds": 70,
+ "auto": true,
+ "lines": [
+  [
+   0.6,
+   "Day three.",
+   "day"
+  ],
+  [
+   0,
+   "24 new soldiers joined the front today.",
+   "new"
+  ],
+  [
+   0,
+   "And the race for Verdel Ridge is over.",
+   "race"
+  ],
+  [
+   0,
+   "The Concord reached one hundred first.",
+   "won"
+  ],
+  [
+   0,
+   "The deciding soldier was Marek Buddy, a machine gunner. The Medal of Valor is theirs.",
+   "hero"
+  ],
+  [
+   0,
+   "The Concord hold the high ground now. A safer week for every one of them.",
+   "safe"
+  ],
+  [
+   0,
+   "~6.5",
+   "talk"
+  ],
+  [
+   0,
+   "But the guns of the ridge have turned on the Hegemony. Three nights of shelling begin tonight.",
+   "guns"
+  ],
+  [
+   0,
+   "~5",
+   "bomb"
+  ],
+  [
+   0,
+   "And the front is writing back.",
+   "voice"
+  ],
+  [
+   0,
+   "~6.5",
+   "quote"
+  ],
+  [
+   0,
+   "190 soldiers hold the line now.",
+   "army"
+  ],
+  [
+   0,
+   "92 for the Hegemony.",
+   "armyH"
+  ],
+  [
+   0,
+   "98 for the Concord.",
+   "armyC"
+  ],
+  [
+   0,
+   "Comment Concord... or Hegemony. Link in bio.",
+   "cta"
+  ]
+ ],
+ "drums": [
+  "won",
+  [
+   [
+    "talk",
+    "bomb"
+   ]
+  ],
+  "guns"
+ ]
+}

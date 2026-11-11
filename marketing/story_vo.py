@@ -100,9 +100,12 @@ def main():
     for i, line in enumerate(LINES):
         at, text = line[0], line[1]
         lid = line[2] if len(line) > 2 else None
-        mp3 = os.path.join(TMP, f"{NAME}{i:02d}.mp3")
-        asyncio.run(speak(text, mp3))
-        x = to_wav(mp3, os.path.join(TMP, f"{NAME}{i:02d}.wav"))
+        if text.startswith("~"):  # „~6.5“ = ticho 6,5 s (scéna bez vypravěče, např. dialog vojáků v obraze)
+            x = np.zeros(int(float(text[1:]) * SR), np.float32)
+        else:
+            mp3 = os.path.join(TMP, f"{NAME}{i:02d}.mp3")
+            asyncio.run(speak(text, mp3))
+            x = to_wav(mp3, os.path.join(TMP, f"{NAME}{i:02d}.wav"))
         dur = len(x) / SR
         if AUTO:
             at = round(max(at, cursor), 2)

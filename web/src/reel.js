@@ -109,6 +109,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'ridge') {
+    // závod o kótu rozhodnut: nábor, hrdina s medailí, dialog vojáků, bombardování, hlas hráče (reel-ridge.js)
+    return import('./reel-ridge.js').then(({ startRidgeReel }) => {
+      startRidgeReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (/^day\d+$/.test(name) && name !== 'day1') {
     // denní reel „co se stalo“ z podkladů tools/day-reel.mjs (reel-daily.js)
     return import('./reel-daily.js').then(({ startDailyReel }) => {
