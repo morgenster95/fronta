@@ -55,7 +55,7 @@ Postup pro nový reel `<name>`:
 - **Výpravy jsou VYPNUTÉ** (`theme.valley.enabled = false`, od 2026-11-10 na pokyn uživatele): výzva CHURCH z Dne 2 zrušena. Zapnout až s výslovným souhlasem uživatele.
   Dokud jsou vypnuté, příběhy se slovy `theme.valley.words` („raid“) se nepoužijí; stejně tak místa kót, o které se ještě nebojuje (`storyFor` v `engine/roster.js`).
 - **Hlasování o stavbách** (post `vote-build-d2`, zveřejněn 2026-11-10 12:46 UTC, HOSPITAL / SANDBAGS po frakcích): vyhodnocení ve vydání Dne 3 (2026-11-11 13:00 UTC).
-- **Čeká na uživatele:** nová nabídka hlasování po dobytí kóty (místo FORTIFY / HOSPITAL, návrhy z 2026-11-11 ke schválení); čas pro `reel-sides` (ve frontě bez termínu).
+- **Čeká na uživatele:** nová nabídka hlasování po dobytí kóty (místo FORTIFY / HOSPITAL, návrhy z 2026-11-11 ke schválení); čas pro `reel-sides` a pro `letters-1` (ve frontě bez termínu).
   Z dřívějška: uživatel ověří kartu přihlášeného hráče (tlačítko „Request a transfer“ jen u vlastního vojáka).
 - **Přání rolí z komentářů** (od 2026-11-09): komentář, který zmíní právě jednu roli („CONCORD medic“, „MG“), dá roli hned. Zdarma je jen první volba,
   další změny přes převelení na kartě. Lieutenant jen povýšením. Aliasy rolí: `theme.archetypes[].aliases`.
@@ -77,7 +77,7 @@ Postup pro nový reel `<name>`:
 - **Hlasování je vždy jen jedno** (od 2026-11-11): post s `vote`, který vyjde při běžícím hlasování, ho nepřepíše; počká (`votePending` ve frontě)
   a otevře se po vyhodnocení (`ingest/triggers.mjs`, `ingest/publish.mjs`). Hlasy napsané dřív se dopočítají (`lateVote`), heslo platí i v jednotném čísle.
 - **Hlasy fronty** (od 2026-11-10): komentáře se 6+ slovy pod hlasováním a pod posty s `voices: true` se ukládají do `data/voices.json`
-  (výběr nejlepších do reelu, vždy ke schválení uživatelem). **Dopisový post se dělat nebude** (zrušeno 2026-11-11, položka `letters-1` odstraněna).
+  (výběr nejlepších do reelu, vždy ke schválení uživatelem). **Dopisový post „Letters from the front“** (`letters-1`, `marketing/make_letters.py`, obrázek `letters_1.jpg` 1080×1350) je od 2026-11-11 večer znovu ve frontě **bez termínu** (uživatel ho chce mít připravený). Zveřejnit až s časem od uživatele (`publishAt`).
 - **Nemocnice na mapě** (od 2026-11-10): postavená nemocnice = velký dugout za zálohami (`dugoutArt` v `web/src/hospital.js`), jen když je ve stavu hry
   (`state.battle.sides[f].built.dugout`, staví jen vyhodnocené hlasování). Bombardování poraženého je na webu vidět už v den dobytí kóty.
 - **Publikace hlídá verzi souboru** (od 2026-11-11): položka vyjde, až je na GitHub Pages soubor stejné velikosti jako v repu (po novém renderu).
