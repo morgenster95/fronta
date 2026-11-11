@@ -1,6 +1,6 @@
 // Stav světa (soupiska) a jeho změny: komentář → narukování, kód → převzetí, denní tah, export statických dat pro web.
 
-import { createSoldier, tickSoldier, heir, selectForStory } from './soldier.js';
+import { createSoldier, tickSoldier, heir, selectForStory, promotionOnly } from './soldier.js';
 import { enlistEntry, weatherFor, eventEntry, tplKey, makeBackground, backgroundLine, silenceGuns } from './story.js';
 import { writeChronicle } from './chronicle.js';
 import { checkRace, raceStatus, raceDanger, activeBarrage, awardHonors } from './race.js';
@@ -55,15 +55,15 @@ export function parseRole(text, theme) {
 // Splní přání role: první volba je zdarma a hned (i bez převzetí karty), další změny už jen převelením z karty.
 // Vrací důvod: granted | same | officer | used | fallen | locked
 export function wishRole(state, s, role, theme, story) {
-  if (role === 'officer') return 'officer';
+  if (promotionOnly(theme, role)) return 'officer';
   if (!s || s.status === 'fallen') return 'fallen';
   const fresh = !s.record.length; // právě vzniká (komentář s heslem frakce)
-  if (s.archetype === 'officer' && !fresh) return 'locked';
+  if (promotionOnly(theme, s.archetype) && !fresh) return 'locked';
   if (role === s.archetype) return 'same';
   if (s.roleWish || s.transferDay != null) return 'used';
   const nameOf = (id) => theme.archetypes.find((a) => a.id === id)?.name.toLowerCase();
   const oldRole = nameOf(s.archetype);
-  if (s.archetype === 'officer') s.rank = 0;
+  if (promotionOnly(theme, s.archetype)) s.rank = 0;
   s.archetype = role;
   s.roleWish = role;
   s.pendingRole = null;
@@ -82,7 +82,7 @@ export function roleReply(theme, s, role, reason) {
   switch (reason) {
     case 'granted': return `@${s.handle} Granted. ${s.name} now serves as ${name}. Find your soldier on the front, link in bio.`;
     case 'same': return `@${s.handle} ${s.name} already serves as ${name}, soldier.`;
-    case 'officer': return `@${s.handle} Lieutenants are made by promotion only. Survive, get decorated, and the bars will come.`;
+    case 'officer': return `@${s.handle} ${name}s are made by promotion only. Survive, get decorated, and the bars will come.`;
     case 'used': return `@${s.handle} ${s.name} already chose a role. Claim your soldier on the front (link in bio) to request a transfer to ${name}.`;
     case 'notEnlisted': return `@${s.handle} Pick a side first: comment ${kw} together with ${name} and you'll be enlisted straight into that role.`;
     default: return null;
@@ -419,7 +419,7 @@ export function leaderboards(state, theme, n = 20) {
     decorated: top(live, honours),
     houseHonours: top(state.soldiers, (s) => honours(s) + (s.fallen || []).reduce((a, p) => a + (p.medals || []).length + (p.titles || []).length, 0)),
     survivors: top(live, (s) => s.scars || 0),
-    medics: top(live.filter((s) => s.archetype === 'medic'), (s) => s.treated || 0),
+    medics: top(live.filter((s) => theme?.battle?.roles?.[s.archetype]?.work || s.treated), (s) => s.treated || 0),
     marksmen: top(live, (s) => s.hits || 0), // zásahy nepřítele palbou (docs/COMBAT_ROLES.md)
     experienced: top(live, (s) => Math.round(s.xp || 0)),
   };
@@ -445,8 +445,8 @@ export function rollOfHonour(state, n = 300) {
 // --- převelení (výběr povolání převzatým hráčem) ---
 export const TRANSFER_COOLDOWN = 7;
 export function requestTransfer(state, s, role, theme) {
-  const ok = theme.archetypes.some((a) => a.id === role && a.id !== 'officer');
-  if (!ok || !s || !s.claimed || s.archetype === 'officer') return false;
+  const ok = theme.archetypes.some((a) => a.id === role && !a.promotionOnly);
+  if (!ok || !s || !s.claimed || promotionOnly(theme, s.archetype)) return false;
   s.pendingRole = role === s.archetype ? null : role;
   return true;
 }

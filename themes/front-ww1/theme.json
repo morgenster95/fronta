@@ -174,6 +174,10 @@
     },
     {
       "id": "officer",
+      "promotionOnly": true,
+      "startRank": 5,
+      "_promotion": "promotionOnly = roli nejde dostat přáním, převelením ani losem při narukování, jen povýšením z nejvyšší poddůstojnické hodnosti (startRank − 1); nejvýš 1 na `per` vojáků strany.",
+      "per": 25,
       "name": "Lieutenant",
       "weight": 4,
       "desc": "Earned by promotion only.",
@@ -555,10 +559,14 @@
       }
     },
     "roles": {
-      "_note": "fire = šance za den, že voják v přední linii trefí nepřítele naproti (do roles.range px). severity = závažnost zásahu (jako u pozadí).",
+      "_note": "Klíč = id role z archetypes. fire = šance za den, že voják v přední linii trefí nepřítele naproti (do roles.range px). severity = závažnost zásahu (jako u pozadí). Schopnosti určují KLÍČE, ne jméno role (engine/battle.js): work (ošetřuje), suppress + suppressMax (potlačení), lead + xp (velení), relay (spojka), counter (protipalba), repair (drát), heal + worsen (morálka lehce raněných), faith (útěcha), pick (výběr cílů s priority: true). Nová role může kombinovat libovolné z nich.",
       "range": 160,
       "default": {
         "fire": 0.004,
+        "severity": {
+          "light": 0.4,
+          "heavy": 0.12
+        },
         "_": "podpůrné role (nosič, kuchař, kaplan, spojař, runner, ženista): občas vystřelí"
       },
       "rifleman": {
@@ -576,6 +584,7 @@
         },
         "suppress": 0.15,
         "suppressMax": 0.45,
+        "priority": true,
         "_": "potlačení: každý kulomet naproti sníží palbu nepřítele o suppress (nejvýš suppressMax)"
       },
       "sniper": {
@@ -589,6 +598,7 @@
       },
       "officer": {
         "fire": 0.008,
+        "priority": true,
         "lead": 0.2,
         "xp": 0.25,
         "_": "velení: +lead palby a +xp zkušeností vojákům poblíž"

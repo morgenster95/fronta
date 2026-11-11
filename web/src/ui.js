@@ -339,7 +339,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     if ($('card-name').dataset.handle !== s.handle) return; // mezitím otevřená jiná karta
     const h = a?.handle;
     if (h) house.setMe(h); // přihlášený hráč: jeho rod (pamětní listina „My house“, žebříčky „You“)
-    $('card-transfer').hidden = !(s.claimed && s.archetype?.id !== 'officer' && h && h === s.handle);
+    $('card-transfer').hidden = !(s.claimed && !s.archetype?.promotionOnly && h && h === s.handle);
     // kdo už vojáka má (nebo na něj čeká), nemá u cizích karet nabízené převzetí
     $('card-claim').hidden = s.claimed || !!h || !!(a?.pending && a.pending !== s.handle);
     const box = $('card-account');
@@ -379,7 +379,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     box.innerHTML = '<h3>Request a transfer</h3>' +
       (wait ? `<p class="muted">Your last transfer was recent. You can ask now; it goes through in ${days(wait)}.</p>`
             : `<p class="muted">Choose where ${esc(s.name)} serves. One transfer per 7 days. The new role changes your soldier on the map and the stories you get.</p>`) +
-      theme.archetypes.filter((a) => a.id !== 'officer').map((a) =>
+      theme.archetypes.filter((a) => !a.promotionOnly).map((a) =>
         `<button class="role${a.id === s.archetype?.id ? ' on' : ''}" data-role="${a.id}"><b>${esc(a.name)}</b><span>${esc(a.desc || '')}</span></button>`).join('');
     box.hidden = false;
     box.onclick = async (ev) => {

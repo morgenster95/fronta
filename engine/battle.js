@@ -76,12 +76,20 @@ const gainXp = (theme, s, n) => { if (s && n) s.xp = (s.xp || 0) + n; };
 const isWounded = (s) => s.status !== 'fallen' && !!s.wound;
 const toughOf = (s) => (s.tough ??= 1 + Math.floor(rngFor(s.id, 'tough', s.generation || 1)() * 4)); // 1–4, jizvy až 5
 const role = (cfg, s, key) => cfg.roles[s.archetype]?.[key] ?? cfg.roles.default?.[key] ?? 0;
+// Schopnosti rolí určuje TÉMA, engine nezná žádné jméno role: schopnost má ten, kdo má v theme.battle.roles[<id role>] její klíč.
+//   work = ošetřuje raněné · suppress = potlačuje palbu naproti · lead (+ xp) = velí vojákům poblíž · relay = spojka (bez velitele)
+//   counter = protipalba (méně zásahů z pozadí poblíž) · repair = opravuje drát · heal / worsen = morálka lehce raněných poblíž
+//   faith = útěcha kritických na nosítkách · pick = vybírá si cíle s `priority: true`
+// Nová role = záznam v theme.archetypes + (volitelně) theme.battle.roles[id] s libovolnou kombinací klíčů. Kód se nemění.
+const ab = (cfg, s, key) => cfg.roles[s.archetype]?.[key] || 0;
+const best = (cfg, list, key) => list.reduce((m, s) => Math.max(m, ab(cfg, s, key)), 0);
+const fit = (s) => s.status !== 'fallen' && !(s.wound && s.wound.sev !== 'light'); // schopen práce (lehké zranění nevadí)
 
 // práce mediků (pro web a výpočet). Medik: 1 × úroveň; lehce raněný medik polovina, těžce/kriticky raněný nic.
 export function medicWork(state, theme, f, busy = new Set()) {
   let supply = 0;
   for (const s of state.soldiers) {
-    if (s.faction !== f || s.archetype !== 'medic' || busy.has(s.id) || s.status === 'fallen') continue;
+    if (s.faction !== f || !ab(B(theme), s, 'work') || busy.has(s.id) || s.status === 'fallen') continue;
     if (s.wound && s.wound.sev !== 'light') continue;
     supply += role(B(theme), s, 'work') * mult(theme, s) * (s.wound ? 0.5 : 1);
   }
@@ -119,6 +127,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   if (!cfg || cfg.enabled === false) return out;
   ensureBattle(state, theme);
   const R = cfg.roles, range = R.range;
+  const suppressMax = R.suppressMax ?? Math.max(0, ...Object.values(R).map((r) => r?.suppressMax || 0));
   const busy = ctx.busy || new Set();
   const today = new Set();
   const ev = (s, type, text) => {
@@ -183,17 +192,17 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const fire = role(cfg, s, 'fire');
     if (!fire) continue;
     const mates = near(front[f], X(s), range);
-    const lead = mates.some((m) => m.archetype === 'officer') ? R.officer.lead : mates.some((m) => m.archetype === 'runner') ? R.runner.relay : 0;
-    const mgs = near(front[e], X(s), range).filter((m) => m.archetype === 'machinegunner').length;
-    const suppress = Math.min(R.machinegunner.suppressMax, mgs * R.machinegunner.suppress);
+    const lead = best(cfg, mates, 'lead') || best(cfg, mates, 'relay'); // velitel poblíž, jinak spojka
+    const suppress = Math.min(suppressMax, near(front[e], X(s), range).reduce((a, m) => a + ab(cfg, m, 'suppress'), 0));
     const p = fire * mult(theme, s) * (1 + lead) * (1 - suppress) * (ctx.fireOf?.(s) ?? 1);
     stats[f].shots++;
     const rand = rngFor(s.id, 'fire', day);
     if (rand() >= p) continue;
     let pool = near(targetsOf[e], X(s), range).filter((t) => !taken.has(t.id));
     if (!pool.length) continue; // naproti nikdo (prázdný úsek)
-    if (s.archetype === 'sniper' && rand() < R.sniper.pick) {
-      const pri = pool.filter((t) => t.archetype === 'machinegunner' || t.archetype === 'officer');
+    const pk = ab(cfg, s, 'pick');
+    if (pk && rand() < pk) {
+      const pri = pool.filter((t) => R[t.archetype]?.priority);
       if (pri.length) pool = pri;
     }
     // výběr cíle podle vystavení (krytí cíle snižuje šanci, že zásah sedí)
@@ -201,14 +210,13 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     let k = rand() * w.reduce((a, b) => a + b, 0), t = pool[0];
     for (let i = 0; i < pool.length; i++) { k -= w[i]; if (k <= 0) { t = pool[i]; break; } }
     if (rand() > coverOf(t) / (cfg.line.front || 1)) continue; // krytí zachytilo kulku
-    const src = R[s.archetype]?.severity ? s.archetype : 'rifleman';
-    const sev = severity(t, R[src].severity, rand, false);
+    const sev = severity(t, R[s.archetype]?.severity ?? R.default?.severity ?? cfg.severity, rand, false);
     taken.add(t.id);
     wound(t, sev, { by: { handle: s.handle, name: s.name, role: s.archetype, faction: f } });
     stats[f].hits.fire[s.archetype] = (stats[f].hits.fire[s.archetype] || 0) + 1;
     s.hits = (s.hits || 0) + 1;
     s.hitsBy = { ...(s.hitsBy || {}), [sev]: ((s.hitsBy || {})[sev] || 0) + 1 };
-    gainXp(theme, s, cfg.xp.gain.hit[sev] * (mates.some((m) => m.archetype === 'officer') ? 1 + R.officer.xp : 1));
+    gainXp(theme, s, cfg.xp.gain.hit[sev] * (1 + best(cfg, mates, 'xp')));
     const by = ` Shot by ${s.name} of the ${short(theme, f)} (@${s.handle}).`;
     const bk = { light: 'bulletLight', heavy: 'bulletHeavy', crit: 'bulletCrit' }[sev];
     ev(t, sev === 'light' ? 'hit' : 'wounded', eventEntry(story[bk] ? bk : hitKind(sev), t, day, theme, story, {}, today) + by);
@@ -217,7 +225,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   }
 
   // 2) pozadí: dělostřelectvo, granáty, miny; bombardování po výhře
-  const signallers = theme.factions.map((_, f) => lineup(state, f, (s) => s.archetype === 'signaller' && able(s)));
+  const signallers = theme.factions.map((_, f) => lineup(state, f, (s) => ab(cfg, s, 'counter') && able(s)));
   // denní mez nových raněných na stranu (theme.battle.daily): za klidu nejvýš max, pod granáty nejvýš shellMax, a aspoň min;
   // pořadí vojáků se každý den losuje, aby mez nešetřila stále stejné
   const D = cfg.daily;
@@ -240,7 +248,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const side = state.battle.sides[s.faction];
     const rand = rngFor(s.id, 'battle', day);
     const underShells = barrage?.target === s.faction && shelled.has(s.sector);
-    const own = near(signallers[s.faction], X(s), range).length ? R.signaller.counter : 0;
+    const own = best(cfg, near(signallers[s.faction], X(s), range), 'counter');
     const p = underShells
       ? cfg.shell.hit * (cfg.line[s.line] ?? 1) * (1 - cfg.buildings.sandbags.cover * count(side, 'sandbags'))
       : cfg.hit * coverOf(s) * (ctx.dangerOf?.(s) ?? 1) * (barrage?.target === s.faction ? cfg.barrage : 1) * (1 - own); // spojař poblíž: telefon k vlastnímu dělostřelectvu, protipalba
@@ -303,12 +311,12 @@ export function battleTick(state, theme, story, day, ctx = {}) {
 
     // práce mediků podle závažnosti: kritičtí, těžce, lehce (stejná skupina: kdo je raněný déle)
     let supply = medicWork(state, theme, f, busy);
-    const cooks = lineup(state, f, (s) => s.archetype === 'cook' && s.status !== 'fallen' && !(s.wound && s.wound.sev !== 'light'));
-    const chaplain = state.soldiers.some((s) => s.faction === f && s.archetype === 'chaplain' && s.status !== 'fallen' && !(s.wound && s.wound.sev !== 'light'));
+    const cooks = lineup(state, f, (s) => (ab(cfg, s, 'heal') || ab(cfg, s, 'worsen')) && fit(s));
+    const faith = best(cfg, state.soldiers.filter((s) => s.faction === f && fit(s)), 'faith');
     const patients = mine().filter((s) => s.wound.place !== 'bed').sort((a, b) => pri(a) - pri(b) || a.wound.day - b.wound.day);
     const need = patients.reduce((a, s) => a + needOf(cfg, s), 0);
     stats[f].cover = need ? Math.min(1, supply / need) : 1;
-    const medics = state.soldiers.filter((s) => s.faction === f && s.archetype === 'medic' && s.status !== 'fallen' && !(s.wound && s.wound.sev !== 'light') && !busy.has(s.id));
+    const medics = state.soldiers.filter((s) => s.faction === f && ab(cfg, s, 'work') && fit(s) && !busy.has(s.id));
     for (const s of patients) {
       const n = needOf(cfg, s);
       const g = n ? Math.min(1, supply / n) : 1;
@@ -329,7 +337,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       const fresh = w.day === day;
       if (w.sev === 'light') {
         if (fresh) continue; // ošetří se a druhý den je v pořádku
-        const cook = near(cooks, X(s), range).length ? R.cook : null;
+        const by = near(cooks, X(s), range);
+        const cook = by.length ? { heal: best(cfg, by, 'heal'), worsen: best(cfg, by, 'worsen') } : null;
         const worsen = C.worsen * (1 - g) * (cook ? 1 - cook.worsen : 1);
         if (!(day - (s.enlisted ?? day) < cfg.newbieDays) && rand() < worsen) {
           w.sev = 'heavy';
@@ -364,7 +373,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         if (w.place === 'trench') {
           if (die(s, 'diedNoBed', 'nobed')) continue;
         } else {
-          const pDie = (C.dieBase + C.dieNoCare * (1 - g)) * (chaplain ? 1 - R.chaplain.faith : 1);
+          const pDie = (C.dieBase + C.dieNoCare * (1 - g)) * (1 - faith);
           if (rand() < pDie) { if (die(s, 'diedNoBed', 'nocare')) continue; }
           w.critDays = (w.critDays || 0) + 1;
           if (w.critDays >= C.stabilize && g >= 1) { w.sev = 'heavy'; ev(s, 'stabilized', eventEntry('stabilized', s, day, theme, story, {}, today)); }
@@ -381,8 +390,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     for (const sec of sectorsOf(state, f)) side.wire[sec] ??= cfg.wire.start;
     for (const sec of Object.keys(side.wire)) {
       let v = side.wire[sec] - cfg.wire.decay - (barrage?.target === f ? cfg.wire.barrage : 0) - (barrage?.target === f && shelled.has(sec) ? cfg.shell.wire : 0);
-      for (const sp of state.soldiers.filter((s) => s.faction === f && s.archetype === 'sapper' && able(s) && s.sector === sec)) {
-        const add = R.sapper.repair * mult(theme, sp);
+      for (const sp of state.soldiers.filter((s) => s.faction === f && ab(cfg, s, 'repair') && able(s) && s.sector === sec)) {
+        const add = ab(cfg, sp, 'repair') * mult(theme, sp);
         if (v < 1) gainXp(theme, sp, cfg.xp.gain.repair * Math.min(1, (1 - v) / add));
         v += add;
       }

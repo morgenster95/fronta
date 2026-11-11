@@ -6,6 +6,10 @@ import { dailyEntry, eventEntry, soldierVars, fill, pickVaried, tplKey, makeBack
 
 export const STATUS = ['active', 'wounded', 'missing', 'captured', 'fallen'];
 
+// Role jen za povýšení (theme.archetypes[].promotionOnly, např. důstojník): nejde ji dostat přáním, převelením ani losem.
+export const promotionOnly = (theme, id) => !!theme.archetypes.find((a) => a.id === id)?.promotionOnly;
+const startRank = (theme, id) => theme.archetypes.find((a) => a.id === id)?.startRank ?? 0;
+
 // Smrt vojáka. cause: nobed (zemřel na nosítkách, lůžka plná) | wounds (zemřel na lůžku) | raid (na výpravě) | line (starý model)
 // extra: { shell: true } = zasažen při bombardování, place = kde
 export function fallSoldier(s, day, cause, extra = {}) {
@@ -51,7 +55,7 @@ export function createSoldier({ id, handle, faction, day, order }, theme, story)
     order, // pořadí narukování v rámci frakce = index slotu
     enlisted: day,
     archetype,
-    rank: archetype === 'officer' ? 5 : 0,
+    rank: startRank(theme, archetype),
     status: 'active',
     family: familyName(handle),
     generation: 1, // kolikátý člen rodu na frontě
@@ -232,7 +236,7 @@ export function heir(s, day, theme, story, today = null) {
   const rand = rngFor(s.id, 'heir', s.generation);
   const prev = lifeRecord(s);
   const gen = s.generation + 1;
-  const roles = theme.archetypes.filter((a) => a.id !== 'officer').map((a) => [a.id, a.weight]);
+  const roles = theme.archetypes.filter((a) => !a.promotionOnly).map((a) => [a.id, a.weight]);
   const n = {
     id: s.id, handle: s.handle, faction: s.faction, order: s.order, family: s.family, pronoun: s.pronoun,
     claimed: s.claimed, ownerUid: s.ownerUid, bio: s.bio, reply: s.reply, houseBadges: s.houseBadges, slot: s.slot, pos: s.pos, sector: s.sector, line: s.line, unit: s.unit, seen: s.seen,
