@@ -37,7 +37,7 @@ export function noticeDeath(state, heir) {
   if (!p) return;
   state.notices = [...(state.notices || []), {
     kind: 'death', handle: heir.handle, day: heir.enlisted, gen: heir.generation,
-    prev: p.name, days: p.days, cause: p.cause?.kind || 'line', heir: heir.name, relation: heir.relation || null,
+    prev: p.name, days: p.days, cause: p.cause?.kind || 'line', heir: heir.name, relation: heir.relation || null, pronoun: heir.pronoun || 'he',
   }].slice(-500);
 }
 
@@ -45,8 +45,9 @@ export function noticeDeath(state, heir) {
 export const INVERSE = { brother: 'brother', 'older brother': 'younger brother', father: 'son', uncle: 'nephew', cousin: 'cousin' };
 
 export function deathReply(n, theme, site) {
-  const why = { nobed: 'on a stretcher, waiting for a bed', wounds: 'of his wounds', raid: 'on a night raid', line: 'at the front' }[n.cause] || 'at the front';
+  const his = { he: 'his', she: 'her', they: 'their' }[n.pronoun] || 'his';
+  const why = { nobed: 'on a stretcher, waiting for a bed', wounds: `of ${his} wounds`, raid: 'on a night raid', line: 'at the front' }[n.cause] || 'at the front';
   const kin = INVERSE[n.relation] || 'kin';
   return `@${n.handle} ${n.prev} fell on Day ${n.day} ${why}, after ${n.days} ${n.days === 1 ? 'day' : 'days'} at the front. ` +
-    `His ${kin} ${n.heir} has taken up the rifle. Your house: ${site || ''}/?s=${encodeURIComponent(n.handle)}&fell=1`;
+    `${his[0].toUpperCase()}${his.slice(1)} ${kin} ${n.heir} has taken up the rifle. Your house: ${site || ''}/?s=${encodeURIComponent(n.handle)}&fell=1`;
 }

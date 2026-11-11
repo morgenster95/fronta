@@ -1,6 +1,6 @@
 // Stav světa (soupiska) a jeho změny: komentář → narukování, kód → převzetí, denní tah, export statických dat pro web.
 
-import { createSoldier, tickSoldier, heir, selectForStory, promotionOnly } from './soldier.js';
+import { createSoldier, tickSoldier, heir, selectForStory, promotionOnly, daysAtFront } from './soldier.js';
 import { enlistEntry, weatherFor, eventEntry, tplKey, makeBackground, backgroundLine, silenceGuns } from './story.js';
 import { writeChronicle } from './chronicle.js';
 import { checkRace, raceStatus, raceDanger, activeBarrage, awardHonors } from './race.js';
@@ -97,6 +97,8 @@ export function parseComment(text, theme) {
     .map((f, i) => ({ i, at: t.search(new RegExp(`\\b${f.keyword}\\b`)) }))
     .filter((h) => h.at >= 0)
     .sort((a, b) => a.at - b.at);
+  // obě strany v jednom komentáři („HEGEMONY sucks, CONCORD!“): stranu nejde změnit, proto se nehádá. Bot se zeptá.
+  if (hits.length > 1) return { type: 'ambiguous' };
   if (hits.length) return { type: 'enlist', faction: hits[0].i };
   return null;
 }
@@ -118,6 +120,10 @@ export function applyComment(state, comment, theme, story, map) {
   // voják patří IG účtu (trvalé ID), ne jménu: @jméno jde změnit a uvolněné jméno si může vzít někdo jiný
   const existing = findOwnSoldier(state, comment.userId, handle);
   if (existing === TAKEN) return null; // jméno patří vojákovi jiného účtu: nic nepřebírá, nenarukuje pod cizím jménem
+  if (parsed?.type === 'ambiguous') {
+    if (!existing) return { type: 'ambiguous', handle };
+    parsed = null; // už narukovaný: zmínka obou stran nic nemění, role nebo hlas v komentáři platí dál
+  }
   if (parsed?.type === 'claim') return { type: 'claim', handle: existing?.handle ?? handle, code: parsed.code, soldier: existing };
   // heslo otevřené výpravy (např. CHURCH): přihláška dobrovolníka
   const raid = raidKeyword(state, theme, comment.text);
@@ -241,7 +247,9 @@ function voteOption(state, comment) {
   if (!v || !comment.mediaId || comment.mediaId !== v.mediaId) return null;
   const t = (comment.text || '').toUpperCase();
   // „Sandbag“, „hospitals“: jednotné i množné číslo hesla platí stejně
-  return v.options.find((o) => new RegExp(`\\b${o.kw.replace(/S$/, '')}S?\\b`).test(t)) || null;
+  // víc hesel v jednom komentáři („SANDBAGS, not hospital“): platí to, které je v textu dřív (ne pořadí možností v hlasování)
+  const hits = v.options.map((o) => ({ o, at: t.search(new RegExp(`\\b${o.kw.replace(/S$/, '')}S?\\b`)) })).filter((h) => h.at >= 0);
+  return hits.sort((a, b) => a.at - b.at)[0]?.o || null;
 }
 
 // Dodatečný hlas z už zpracovaného komentáře: hlasování se otevřelo až po komentáři (odložené hlasování pod postem),
@@ -373,6 +381,13 @@ export function dailyTick(state, theme, story, ctx = {}) {
     const them = onLine[1 - s.faction]?.filter((o) => o.status === 'active') || [];
     return them.length ? pick(rand, them) : null;
   };
+  // volné místo pro povýšení do role za povýšení (důstojník): nejvýš 1 na `per` živých vojáků strany
+  const commission = (s) => {
+    const up = theme.archetypes.find((a) => a.promotionOnly);
+    if (!up) return false;
+    const mine = state.soldiers.filter((o) => o.faction === s.faction && o.status !== 'fallen');
+    return mine.filter((o) => o.archetype === up.id).length < Math.floor(mine.length / (up.per || 25));
+  };
   for (let i = 0; i < state.soldiers.length; i++) {
     let s = state.soldiers[i];
     if (s.status === 'fallen') {
@@ -385,10 +400,12 @@ export function dailyTick(state, theme, story, ctx = {}) {
       continue;
     }
     if (raid.ids.has(s.id) || fight.ids.has(s.id)) continue; // dnes už má zápis z výpravy nebo z boje
-    if (!chosen.has(s.id) && s.status === 'active') continue;
+    // kdo dnes nemá příběh, má jen los osudu (nezvěstný); bez denního boje (starý model) se takový voják přeskočí jako dřív
+    const quiet = !chosen.has(s.id) && s.status === 'active';
+    if (quiet && !(theme.battle && theme.fate?.everyone)) continue;
     const danger = dangerOf(s);
     const recover = orderRecover(state, s.faction, day, valleyRecover(state, theme, s));
-    const sctx = { active: active.has(s.id), danger, weather, events, comrade, foe, today, recover, battle: !!theme.battle };
+    const sctx = { active: active.has(s.id), danger, weather, events, comrade, foe, today, recover, battle: !!theme.battle, quiet, commission };
     for (const text of tickSoldier(s, day, theme, story, sctx)) {
       s.record.push([day, text]);
     }
@@ -412,7 +429,7 @@ export function leaderboards(state, theme, n = 20) {
       .sort((a, b) => b[1] - a[1] || rank(a[0], b[0])).map(([s, v]) => row(s, v));
   };
   const honours = (x) => (x.medals || []).length + (x.titles || []).length;
-  const days = (s) => Math.max(0, state.day - s.enlisted) + 1; // dnešní den se počítá: kdo narukoval dnes, je na frontě 1. den
+  const days = (s) => daysAtFront(s, state.day); // dnešní den se počítá: kdo narukoval dnes, je na frontě 1. den
   return {
     longest: top(live, days), // dní na frontě bez přestávky (nástupce začíná od 1. dne)
     houses: top(state.soldiers, (s) => (s.fallen || []).reduce((a, p) => a + (p.days || 0), 0) + (s.status === 'fallen' ? 0 : days(s))), // dní rodu celkem
@@ -435,7 +452,7 @@ export function rollOfHonour(state, n = 300) {
     }
     if (s.status === 'fallen') {
       all.push({ handle: s.handle, family: s.family, faction: s.faction, name: s.name, gen: s.generation || 1, day: s.fallenDay,
-        days: s.fallenDay - s.enlisted, archetype: s.archetype, rank: s.rank, cause: s.cause || null });
+        days: daysAtFront(s, s.fallenDay), archetype: s.archetype, rank: s.rank, cause: s.cause || null });
     }
   }
   return all.sort((a, b) => b.day - a.day || a.name.localeCompare(b.name)).slice(0, n);
@@ -537,7 +554,7 @@ export function buildPublic(state, theme) {
       recFrom: s.recFrom || 0,
       relation: s.relation || null,
       archetype: s.archetype,
-      days: Math.max(0, state.day - s.enlisted),
+      days: daysAtFront(s, state.day),
       scars: s.scars || 0,
       wounds: s.woundsTaken || 0,
       treated: s.treated || 0,

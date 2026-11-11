@@ -9,6 +9,24 @@ export const STATUS = ['active', 'wounded', 'missing', 'captured', 'fallen'];
 // Role jen za povýšení (theme.archetypes[].promotionOnly, např. důstojník): nejde ji dostat přáním, převelením ani losem.
 export const promotionOnly = (theme, id) => !!theme.archetypes.find((a) => a.id === id)?.promotionOnly;
 const startRank = (theme, id) => theme.archetypes.find((a) => a.id === id)?.startRank ?? 0;
+// Dní na frontě včetně dneška (kdo narukoval dnes, je na frontě 1. den). Jedno pravidlo pro kartu, žebříčky, rod i oznámení.
+export const daysAtFront = (s, day) => Math.max(0, day - s.enlisted) + 1;
+
+// Povýšení o jednu hodnost. Nad nejvyšší poddůstojnickou hodností je už jen role za povýšení (důstojník):
+// voják ji dostane, jen když je na jeho straně volné místo (ctx.commission(s) → true). Vrací starou hodnost, nebo null.
+export function promote(s, theme, ctx = {}) {
+  const up = theme.archetypes.filter((a) => a.promotionOnly && a.startRank != null).sort((a, b) => a.startRank - b.startRank)[0];
+  const top = up ? up.startRank - 1 : theme.ranks.length - 1; // nejvyšší hodnost dosažitelná bez změny role
+  if (promotionOnly(theme, s.archetype)) return null; // důstojníci zatím dál nepostupují
+  const oldRank = theme.ranks[s.rank];
+  if (s.rank < top) { s.rank++; return oldRank; }
+  if (!up || !ctx.commission?.(s)) return null;
+  s.archetype = up.id;
+  s.rank = up.startRank;
+  s.pendingRole = null;
+  s.arc = null;
+  return oldRank;
+}
 
 // Smrt vojáka. cause: nobed (zemřel na nosítkách, lůžka plná) | wounds (zemřel na lůžku) | raid (na výpravě) | line (starý model)
 // extra: { shell: true } = zasažen při bombardování, place = kde
@@ -25,7 +43,7 @@ export function lifeRecord(s) {
   return {
     name: s.name, day: s.fallenDay, rank: s.rank,
     gen: s.generation, first: s.first, nick: s.nick || null, archetype: s.archetype, variant: s.variant,
-    enlisted: s.enlisted, days: Math.max(0, (s.fallenDay ?? s.enlisted) - s.enlisted),
+    enlisted: s.enlisted, days: daysAtFront(s, s.fallenDay ?? s.enlisted),
     cause: s.cause || { kind: 'line' }, relation: s.relation || null,
     medals: s.medals || [], titles: s.titles || [], scars: s.scars || 0, wounds: s.woundsTaken || 0,
     treated: s.treated || 0, raids: s.raids || 0, sector: s.sector || null, xp: Math.round(s.xp || 0), hits: s.hits || 0,
@@ -46,7 +64,8 @@ export function familyName(handle) {
 
 export function createSoldier({ id, handle, faction, day, order }, theme, story) {
   const rand = rngFor(id, 'soldier');
-  const archetype = weighted(rand, theme.archetypes.map((a) => [a.id, a.weight]));
+  // role za povýšení (důstojník) se při narukování nelosuje
+  const archetype = weighted(rand, theme.archetypes.filter((a) => !a.promotionOnly).map((a) => [a.id, a.weight]));
   const first = pick(rand, story.firstNames);
   const s = {
     id,
@@ -126,19 +145,23 @@ export function tickSoldier(s, day, theme, story, ctx = {}) {
   const danger = (ctx.danger ?? 1) * (s.line === 'front' ? 1.5 : s.line === 'reserve' ? 0.4 : 1);
   const protect = ctx.active || s.claimed ? 0.35 : 1; // aktivní hráči padají ~3× méně
   const wound = 0.03 * danger;
-  const lost = wound + (story.missing ? 0.006 * danger : 0);
+  const pMissing = theme.fate?.missing ?? 0.006;
+  const lost = wound + (story.missing ? pMissing * danger : 0);
   const r = rand();
   if (ctx.battle) {
     // zásahy a smrt řeší denní boj (engine/battle.js); tady jen nezvěstní, povýšení a příběh
-    if (story.missing && r < 0.006 * danger && day - s.enlisted >= 2) {
+    // Nezvěstný se losuje KAŽDÉMU každý den stejně (ctx.quiet = voják dnes nemá příběh, jen los): dřív se losovalo jen těm,
+    // kdo ten den dostali zápis, takže převzatí hráči (zápis denně) mizeli 4× častěji než ostatní.
+    if (story.missing && r < pMissing * danger && day - s.enlisted >= 2) {
       s.status = 'missing';
       s.missingDay = day;
       out.push(ev('missing', eventEntry('missing', s, day, theme, story, {}, ctx.today)));
-    } else if (r > 0.985 && s.rank < 4) {
-      const oldRank = theme.ranks[s.rank];
-      s.rank++;
-      out.push(ev('promotion', eventEntry('promotion', s, day, theme, story, { oldRank }, ctx.today)));
-    } else out.push(storyDay(s, day, theme, story, ctx, ev));
+      return out;
+    }
+    if (ctx.quiet) return out;
+    const oldRank = r > 1 - (theme.fate?.promotion ?? 0.015) ? promote(s, theme, ctx) : null;
+    if (oldRank) out.push(ev('promotion', eventEntry('promotion', s, day, theme, story, { oldRank }, ctx.today)));
+    else out.push(storyDay(s, day, theme, story, ctx, ev));
     return out;
   }
   if (r < 0.004 * danger * protect && day - s.enlisted >= 5) {

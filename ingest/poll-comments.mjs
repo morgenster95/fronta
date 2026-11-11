@@ -178,6 +178,12 @@ async function main() {
       }
       const res = applyComment(state, c, theme, story, map);
       if (!res) continue;
+      if (res.type === 'ambiguous') {
+        console.log(`? @${res.handle}: obě strany v jednom komentáři, nenarukován`);
+        const kws = theme.factions.map((f) => f.keyword);
+        if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) await replyOnce(c, `@${res.handle} Which side, soldier? There is no switching later, so comment just one word: ${kws.join(' or ')}.`).catch((e) => console.warn(e.message));
+        continue;
+      }
       // přihláška na výpravu (heslo místa v komentáři), i u nováčka, který tím zároveň narukoval
       const raid = res.type === 'volunteer' ? res : res.raid;
       if (raid) {
@@ -325,7 +331,8 @@ async function main() {
       // dobrovolník na výpravu z webu (tlačítko Volunteer), platí jen pro právě otevřenou výpravu
       if (typeof p.volunteer === 'string' && p.volunteer === state.valley?.open?.id) console.log(`⚑ výprava (web) @${s.handle}: ${volunteer(state, theme, s, 'web').reason}`);
     }
-    state.profilesSyncedAt = new Date().toISOString();
+    // posunout jen když něco přišlo: jinak by se stav měnil (a commitoval a nasazoval) každých 5 minut i bez jediné změny
+    if (snap.size || !state.profilesSyncedAt) state.profilesSyncedAt = new Date().toISOString();
   } catch (e) {
     console.warn('Firestore:', e.message);
   }

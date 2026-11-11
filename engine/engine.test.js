@@ -489,7 +489,7 @@ test('rod: nástupce je nový voják – nic nedědí, dny od nuly, přijde hned
   assert.deepEqual(p.medals, ['first-wave', 'obj:ridge']);
   assert.equal(p.cause.kind, 'nobed');
   assert.equal(p.cause.shell, true);
-  assert.equal(p.days, 20 - x.enlisted + 1);
+  assert.equal(p.days, 21 - x.enlisted + 1); // padl 21. den; dny se počítají včetně prvního i posledního (stejně jako v žebříčcích)
   assert.equal(p.treated, 14);
   assert.match(n.record.at(-1)[1], new RegExp(p.name.split(' ')[0]), 'příchod nástupce zmiňuje padlého');
   assert.equal(n.recFrom, n.record.length - 1, 'deník nástupce začíná jeho příchodem');
@@ -892,4 +892,58 @@ test('příběhy nezmiňují výpravy, když jsou vypnuté, ani kóty, o které 
   const later = storyFor({ ...s, race: { idx: 1, base: [0, 0] }, victories: [{ id: 'ridge' }] }, { ...theme, valley: { ...theme.valley, enabled: true } }, story);
   assert.ok(later.places.includes(theme.race.objectives[1].name));
   assert.ok(/\braid/i.test(JSON.stringify(later.daily)));
+});
+
+test('komentář se dvěma stranami nenarukuje, bot se zeptá; už narukovanému nic nemění', () => {
+  const s = emptyState(theme);
+  const r = applyComment(s, { id: 'a1', userId: 'ua', username: 'both.sides', text: 'HEGEMONY sucks, CONCORD!' }, theme, story, map);
+  assert.equal(r.type, 'ambiguous');
+  assert.equal(s.soldiers.length, 0);
+  assert.equal(applyComment(s, { id: 'a2', userId: 'ua', username: 'both.sides', text: 'concord' }, theme, story, map).type, 'enlist');
+  assert.equal(applyComment(s, { id: 'a3', userId: 'ua', username: 'both.sides', text: 'CONCORD will crush HEGEMONY' }, theme, story, map), null);
+});
+
+test('hlasování: při více heslech platí to, které je v komentáři dřív', async () => {
+  const { openVote } = await import('./roster.js');
+  const s = emptyState(theme);
+  applyComment(s, { id: 'v0', userId: 'uv', username: 'voter.one', text: 'concord' }, theme, story, map);
+  openVote(s, { mediaId: 'm1', question: 'Q?', perFaction: true, options: [{ kw: 'HOSPITAL', label: 'h' }, { kw: 'SANDBAGS', label: 's' }] });
+  const r = applyComment(s, { id: 'v1', userId: 'uv', username: 'voter.one', text: 'Sandbag first, hospital later', mediaId: 'm1' }, theme, story, map);
+  assert.equal(r.kw, 'SANDBAGS');
+});
+
+test('role za povýšení se nelosuje při narukování; povýšení z nejvyšší poddůstojnické hodnosti jen na volné místo', async () => {
+  const { promote } = await import('./soldier.js');
+  const s = emptyState(theme);
+  for (let i = 0; i < 300; i++) applyComment(s, { id: `o${i}`, userId: `uo${i}`, username: `rekrut${i}x`, text: i % 2 ? 'concord' : 'hegemony' }, theme, story, map);
+  const up = theme.archetypes.find((a) => a.promotionOnly);
+  assert.ok(up, 'téma má roli za povýšení');
+  assert.equal(s.soldiers.filter((x) => x.archetype === up.id).length, 0);
+  const x = s.soldiers[0];
+  x.rank = up.startRank - 2;
+  assert.ok(promote(x, theme, {}));
+  assert.equal(x.rank, up.startRank - 1);
+  assert.equal(promote(x, theme, { commission: () => false }), null, 'bez volného místa se nepovýší');
+  assert.ok(promote(x, theme, { commission: () => true }));
+  assert.equal(x.archetype, up.id);
+  assert.equal(x.rank, up.startRank);
+  assert.equal(theme.ranks[x.rank] != null, true);
+});
+
+test('nová role jen z tématu: schopnosti podle klíčů, bez úpravy enginu', async () => {
+  const { medicWork } = await import('./battle.js');
+  const t = structuredClone(theme);
+  t.archetypes.push({ id: 'nurse', name: 'Field Nurse', weight: 0, desc: 'test', aliases: [] });
+  t.battle.roles.nurse = { work: 2, faith: 0.1 };
+  const s = emptyState(t);
+  for (let i = 0; i < 20; i++) applyComment(s, { id: `n${i}`, userId: `un${i}`, username: `sestra${i}x`, text: 'concord' }, t, story, map);
+  const before = medicWork(s, t, 1);
+  s.soldiers[0].archetype = 'nurse';
+  s.soldiers[1].archetype = 'rifleman';
+  const base = medicWork(s, t, 1);
+  s.soldiers[1].archetype = 'nurse';
+  assert.equal(Math.round((medicWork(s, t, 1) - base) * 100) / 100, 2, 'nová role odvádí práci medika podle svého čísla');
+  assert.ok(before >= 0);
+  dailyTick(s, t, story); // tah s neznámou rolí nespadne
+  assert.ok(parseRole('I want to be a field nurse', t) === 'nurse');
 });

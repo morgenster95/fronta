@@ -284,6 +284,12 @@
       }
     ]
   },
+  "fate": {
+    "_": "Los osudu v denním tahu mimo boj (engine/soldier.js). everyone = nezvěstný se losuje každému každý den (ne jen těm, kdo mají ten den zápis); missing = šance za den × nebezpečí (přední linie ×1,5); promotion = šance na povýšení v den, kdy má voják zápis.",
+    "everyone": true,
+    "missing": 0.0035,
+    "promotion": 0.015
+  },
   "honors": {},
   "schedule": {
     "editionUtc": 13,
