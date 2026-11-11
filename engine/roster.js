@@ -347,6 +347,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
   const nightWeather = state.weather ?? weatherFor(theme, story, state.day)?.id ?? null; // počasí noci, kdy výprava vyrazila
   state.day++;
   const day = state.day;
+  if (decided) decided.day = day; // výsledek vyjde v ranním vydání tohoto dne (vyhodnocuje se před přechodem na nový den)
   const weather = weatherFor(theme, story, day);
   state.weather = weather?.id ?? null;
   // výpravy: vyhodnocení té z minulého vydání, vyhlášení nové (účastníci dnes nemají běžný zápis)

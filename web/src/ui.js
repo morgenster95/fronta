@@ -35,7 +35,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   if (roster.dispatch || roster.vote) {
     $('dispatch').hidden = false;
     // na telefonu sbalené do jednoho řádku, klepnutím se rozbalí
-    $('dispatch-more').textContent = roster.vote ? `▸ The front decides · ${roster.vote.votes} votes` : `▸ Dispatch · Day ${roster.dispatch.day}`;
+    $('dispatch-more').textContent = roster.vote ? `▸ The front decides · ${roster.vote.votes} votes` : `▸ Dispatch · ${dayLabel(roster.dispatch.day)}`;
     if (innerWidth < 600) $('dispatch').classList.add('collapsed');
     $('dispatch').onclick = () => $('dispatch').classList.toggle('collapsed');
     if (roster.dispatch) {
@@ -178,7 +178,8 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     el.innerHTML = `<span class="d">Front Diary · ${dayLabel(roster.diary.day)}</span>${esc(roster.diary.title)} <span class="muted">· read</span>`;
     el.onclick = (ev) => { ev.stopPropagation(); openDiary(); };
     $('dispatch').prepend(el);
-    if (!roster.dispatch && !roster.vote) $('dispatch-more').textContent = `▸ Front Diary · ${dayLabel(roster.diary.day)}`;
+    // sbalený řádek ukazuje nejnovější: dnešní Deník fronty má přednost před starší zprávou (hlasování má přednost vždy)
+    if (!roster.vote && (!roster.dispatch || roster.diary.day >= roster.dispatch.day)) $('dispatch-more').textContent = `▸ Front Diary · ${dayLabel(roster.diary.day)}`;
   }
   // Údolí a výpravy; upoutávka na otevřenou výpravu v horním panelu
   const valley = initValley({ theme, roster, soldiers, openSoldier: (s) => openSoldier(s), toast: (m) => toast(m), show: (id) => show(id) });
