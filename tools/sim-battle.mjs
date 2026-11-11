@@ -34,7 +34,7 @@ function withSets(theme, sets) {
 }
 const theme = withSets(base, all('--set'));
 const statePath = opt('--state', null);
-const real = statePath ? JSON.parse(fs.readFileSync(statePath, 'utf8')) : loadState(theme);
+const real = loadState(theme, statePath || undefined);
 const H = 0, C = 1;
 const short = (f) => theme.factions[f].name.replace(/^The /, '');
 

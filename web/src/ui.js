@@ -332,15 +332,28 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       }
       return days.reverse().map(({ d, t }) => `<li><span class="d">${dayLabel(d)}</span>${t.map((x) => esc(x)).join('<br>')}</li>`).join('');
     };
-    $('card-record').innerHTML = li(rec.record) + (rec.older ? `<li class="older"><button type="button" id="card-older">Show ${rec.older} older entries</button></li>` : '');
-    if (rec.older) $('card-older').onclick = async (e) => {
-      e.target.disabled = true;
-      const k = shardOf(s.handle);
-      if (!oldCache.has(k)) oldCache.set(k, fetch(`/data/records-old/${k}.json`).then((r) => r.json()).catch(() => ({})));
-      const old = (await oldCache.get(k))[s.handle] || [];
-      if ($('card-name').dataset.handle !== s.handle) return; // mezitím jiná karta
-      e.target.closest('li').outerHTML = li(old);
+    // karta ukáže poslední 3 zápisy; „Show more“ odkryje dalších (už načtených) a nakonec starší (stáhnou se až teď)
+    const FIRST = 3;
+    const wireOlder = () => {
+      if (!rec.older) return;
+      $('card-older').onclick = async (e) => {
+        e.target.disabled = true;
+        const old = await loadOlder(s.handle);
+        if ($('card-name').dataset.handle !== s.handle) return; // mezitím jiná karta
+        e.target.closest('li').outerHTML = li(old);
+      };
     };
+    const hidden = Math.max(0, rec.record.length - FIRST);
+    if (hidden || rec.older) {
+      $('card-record').innerHTML = li(rec.record.slice(-FIRST)) + `<li class="older"><button type="button" id="card-more">Show ${hidden + (rec.older || 0)} more entries</button></li>`;
+      $('card-more').onclick = () => {
+        if ($('card-name').dataset.handle !== s.handle) return;
+        $('card-record').innerHTML = li(rec.record) + (rec.older ? `<li class="older"><button type="button" id="card-older">Show ${rec.older} older entries</button></li>` : '');
+        wireOlder();
+      };
+    } else {
+      $('card-record').innerHTML = li(rec.record);
+    }
   }
 
   // Řádek účtu pod kartou + co smí přihlášený dělat. Převelení jen když s jistotou víme, že voják je můj.
@@ -419,16 +432,21 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   }
 
   async function loadOlder(handle) {
-    const k = shardOf(handle);
+    const k = shardOf(handle, roster.shards);
     if (!oldCache.has(k)) oldCache.set(k, fetch(`/data/records-old/${k}.json`).then((r) => r.json()).catch(() => ({})));
     return (await oldCache.get(k))[handle] || [];
   }
 
   async function loadRecord(handle) {
-    const k = shardOf(handle);
+    const k = shardOf(handle, roster.shards);
     if (!shardCache.has(k)) shardCache.set(k, fetch(`/data/records/${k}.json`).then((r) => r.json()));
     try {
-      return (await shardCache.get(k))[handle];
+      const hit = (await shardCache.get(k))[handle];
+      if (hit) return hit;
+      // dávka ze starší verze dat (po nasazení do minuty): načíst znovu bez mezipaměti
+      const fresh = await fetch(`/data/records/${k}.json`, { cache: 'no-cache' }).then((r) => r.json());
+      shardCache.set(k, Promise.resolve(fresh));
+      return fresh[handle] ?? null;
     } catch {
       return null;
     }

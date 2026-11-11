@@ -9,6 +9,7 @@ art/pixellab/**/_zoom_*.png
 art/pixellab/**/_qa*.png
 web/public/data/
 data/state.fake.json
+data/state.fake-records/
 marketing/reels/_frames_*/
 marketing/reels/_check/
 marketing/posts/_contact.png

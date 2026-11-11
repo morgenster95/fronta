@@ -21,7 +21,7 @@ Ostatní přenos jedné nové návštěvy: JS+CSS+HTML 193 KB (Firebase), obráz
 ## Plán
 1. **Doména na Firebase Hosting** (DNS u Cloudflare, „DNS only“): `authDomain`, povolená doména ve Firebase Auth, OAuth redirect URI, `SITE_URL`, bio, přesměrování staré adresy.
 2. **Cloudflare Pages + R2** (test vedle ostrého webu): kód na Pages, data do R2 (smyčka nahrává jen změněné soubory), přihlášení Supabase Auth nebo Firebase s proxy.
-3. **Stav mimo git** (R2 / Supabase) a **omezení rychlosti odpovědí** na komentáře.
+3. **Omezení rychlosti odpovědí** na komentáře. (Zápisy mimo `state.json` jsou hotové od 2026-11-11: `data/state-records`, 128 dávek, web ~25 vojáků na dávku, karta 3 zápisy. Stav v R2/Supabase až při desítkách tisíc zápisů.)
 
 ## Závěr rozhodnutí
 Vercel + Supabase (jako thaloriaworld.com) pro nás není lepší: Vercel Hobby je nekomerční, Supabase zdarma má malý přenos. Supabase se hodí na přihlášení a profily (funguje na jakékoli doméně).

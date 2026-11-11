@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 350
     env:
+      SPLIT_STATE: '1' # stav po částech: zápisy vojáků v data/state-records (viz tools/lib.mjs); převede se při prvním uložení
       IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
       IG_USER_ID: ${{ secrets.IG_USER_ID }}
       IG_MEDIA_IDS: ${{ vars.IG_MEDIA_IDS }}

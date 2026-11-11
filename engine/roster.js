@@ -12,7 +12,9 @@ import { battleTick, battlePublic, build as buildStructure, ensureBattle, levelO
 import { awardHouseBadges, noticeDeath } from './house.js';
 import { ensureValley, valleyTick, valleyDanger, valleyRecover, raidKeyword, volunteer, valleyPublic } from './valley.js';
 
-export const SHARDS = 64;
+export const SHARDS = 64; // nejmenší počet dávek se zápisy pro web
+// Dávek přibývá s vojáky (~25 vojáků na dávku), ať otevření karty stahuje pár KB i při tisících hráčů; počet je v roster.json (`shards`)
+export const shardCount = (n) => Math.min(400, Math.max(SHARDS, Math.ceil(n / 25)));
 
 export function emptyState(theme) {
   return {
@@ -468,7 +470,7 @@ export function applyTransfers(state, theme, story) {
   return done;
 }
 
-const RECENT = 40;
+const RECENT = 10; // posledních 10 zápisů je v dávce karty (karta ukáže 3, „Show more“ zbylých 7), starší v records-old
 export function buildPublic(state, theme) {
   awardHonors(state, theme);
   ensureValley(state, theme);
@@ -512,12 +514,14 @@ export function buildPublic(state, theme) {
       s.name,
     ]),
   };
-  const shards = Array.from({ length: SHARDS }, () => ({}));
+  const NS = shardCount(state.soldiers.length);
+  roster.shards = NS;
+  const shards = Array.from({ length: NS }, () => ({}));
   // starší zápisy (nad RECENT) jdou do archivních shardů, web je načte až na „Show older entries“
-  const older = Array.from({ length: SHARDS }, () => ({}));
+  const older = Array.from({ length: NS }, () => ({}));
   for (const s of state.soldiers) {
-    if (s.record.length > RECENT) older[shardOf(s.handle)][s.handle] = s.record.slice(0, -RECENT);
-    shards[shardOf(s.handle)][s.handle] = {
+    if (s.record.length > RECENT) older[shardOf(s.handle, NS)][s.handle] = s.record.slice(0, -RECENT);
+    shards[shardOf(s.handle, NS)][s.handle] = {
       name: s.name,
       unit: s.unit,
       sector: s.sector,
@@ -560,6 +564,6 @@ export function nextEdition(state, theme) {
   return new Date(Date.parse(`${state.lastTickKey}T00:00:00Z`) + 86400e3 + H * 3600e3).toISOString();
 }
 
-export function shardOf(handle) {
-  return hashString(handle) % SHARDS;
+export function shardOf(handle, n = SHARDS) {
+  return hashString(handle) % n;
 }

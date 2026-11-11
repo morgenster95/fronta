@@ -23,7 +23,7 @@ jobs:
         run: |
           git config user.name "front-bot"
           git config user.email "front-bot@users.noreply.github.com"
-          git add data/state.json 2>/dev/null || true
+          git add data/state.json data/state-records 2>/dev/null || true
           git diff --cached --quiet || (git commit -m "tick: day $(date -u +%F)" && git push)
       - run: npm run build
       - name: Deploy to Firebase Hosting

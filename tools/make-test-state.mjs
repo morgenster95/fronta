@@ -12,7 +12,7 @@ const extra = Number(process.argv[3] || 150);
 const { theme, story } = loadTheme();
 const map = loadMap(theme);
 const real = path.join(ROOT, 'data', 'state.json');
-const s = JSON.parse(fs.readFileSync(real, 'utf8'));
+const s = loadState(theme); // včetně zápisů vojáků (state-records)
 s.vote = null;
 for (let i = 0; i < extra; i++) {
   applyComment(s, { id: `test-c${i}`, userId: `test-u${i}`, username: `test_recruit_${i}`, text: `${i % 2 ? 'CONCORD' : 'HEGEMONY'}${i % 9 === 0 ? ' medic' : ''}` }, theme, story, map);

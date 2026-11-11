@@ -41,7 +41,7 @@ round() {
   node ingest/publish.mjs --due || echo "publish selhal"
   node ingest/daily-tick.mjs || echo "tick selhal" # sám pozná, jestli už dnes (pražský čas) proběhl
   npm run -s data:build || { echo "data:build selhal"; return 1; }
-  git add data/state.json data/voices.json marketing/queue.json
+  git add data/state.json data/state-records data/voices.json marketing/queue.json
   git add -u marketing/promo # zveřejněná videa, která publish.mjs smazal
   if ! git diff --cached --quiet; then
     git commit -qm "loop: $(date -u +%FT%TZ)" || return 1

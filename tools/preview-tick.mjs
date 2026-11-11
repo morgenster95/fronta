@@ -6,20 +6,19 @@
 //   node tools/preview-tick.mjs --save-state f   uložit stav po tahu do souboru (k vyzkoušení grafiky, NE do data/)
 import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { ROOT, loadTheme } from './lib.mjs';
+import { ROOT, loadTheme, loadState, stateFromGit } from './lib.mjs';
 import { dailyTick } from '../engine/roster.js';
 import { battlePublic } from '../engine/battle.js';
 
 const args = process.argv.slice(2);
 const opt = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : null; };
-let raw;
-if (opt('--state')) raw = fs.readFileSync(opt('--state'), 'utf8');
+const { theme, story } = loadTheme();
+let s;
+if (opt('--state')) s = loadState(theme, opt('--state'));
 else {
   execFileSync('git', ['fetch', '-q', 'origin', 'main'], { cwd: ROOT });
-  raw = execFileSync('git', ['show', 'origin/main:data/state.json'], { cwd: ROOT, maxBuffer: 1 << 28 }).toString();
+  s = stateFromGit('origin/main');
 }
-const { theme, story } = loadTheme();
-const s = JSON.parse(raw);
 const before = new Map(s.soldiers.map((x) => [x.id, { len: x.record.length, gen: x.generation || 1 }]));
 dailyTick(s, theme, story);
 const short = (f) => theme.factions[f].name.replace(/^The /, '');

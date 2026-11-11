@@ -994,3 +994,43 @@ test('deník: každý voják má každý den právě jeden zápis, bez mezer (th
   }
   assert.ok(checked > 40);
 });
+
+test('stav se ukládá po částech: state.json bez zápisů, zápisy po dávkách; načtení vrátí totéž a ztracenou dávku pozná', async () => {
+  const os = await import('node:os'), path = await import('node:path');
+  const { loadState, saveState, recordsDir } = await import('../tools/lib.mjs');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fronta-state-'));
+  const f = path.join(dir, 'state.json');
+  const s = emptyState(theme);
+  enlist(s, 30, 'sp');
+  for (let d = 0; d < 4; d++) dailyTick(s, theme, story);
+  const ref = JSON.parse(JSON.stringify(s)); // stav tak, jak ho vrátí JSON (bez undefined)
+  saveState(s, f);
+  const slim = JSON.parse(fs.readFileSync(f, 'utf8'));
+  assert.ok(slim.soldiers.every((x) => x.record === undefined && x.recN > 0), 'state.json nemá zápisy, jen jejich počet');
+  assert.ok(fs.statSync(f).size < JSON.stringify(s).length, 'state.json je menší');
+  assert.deepEqual(loadState(theme, f), ref, 'načtení vrátí totéž');
+  // starý formát (zápisy přímo ve state.json) se načte a při uložení převede
+  fs.writeFileSync(f, JSON.stringify(s));
+  assert.deepEqual(loadState(theme, f), ref);
+  saveState(loadState(theme, f), f);
+  assert.deepEqual(loadState(theme, f), ref);
+  // pojistka: ztracená dávka zápisů shodí načtení, deník se neuloží zkrácený
+  const shards = fs.readdirSync(recordsDir(f)).filter((n) => fs.readFileSync(path.join(recordsDir(f), n), 'utf8') !== '{}');
+  fs.writeFileSync(path.join(recordsDir(f), shards[0]), '{}');
+  assert.throws(() => loadState(theme, f), /nenačetly celé/);
+});
+
+test('web: počet dávek se zápisy roste s vojáky (~25 na dávku), roster ho udává a karta má v dávce jen posledních 10 zápisů', async () => {
+  const { shardCount, buildPublic } = await import('./roster.js');
+  assert.equal(shardCount(100), 64);
+  assert.equal(shardCount(5000), 200);
+  assert.equal(shardCount(50000), 400, 'strop 400 dávek');
+  const s = emptyState(theme);
+  enlist(s, 20, 'sh');
+  s.soldiers[0].record = Array.from({ length: 30 }, (_, i) => [i, `e${i}`]);
+  const pub = buildPublic(s, theme);
+  assert.equal(pub.roster.shards, 64);
+  const card = pub.shards.flatMap((x) => Object.entries(x)).find(([h]) => h === s.soldiers[0].handle)[1];
+  assert.equal(card.record.length, 10);
+  assert.equal(card.older, 20);
+});

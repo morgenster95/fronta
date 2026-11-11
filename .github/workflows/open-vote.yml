@@ -31,5 +31,5 @@ jobs:
       - run: |
           git config user.name "front-bot"
           git config user.email "front-bot@users.noreply.github.com"
-          git add data/state.json && git commit -m "vote: $Q" && git push
+          git add data/state.json data/state-records && git commit -m "vote: $Q" && git push
         env: { Q: '${{ inputs.question }}' }
