@@ -189,19 +189,6 @@
         "officer",
         "commanding officer"
       ]
-    },
-    {
-      "id": "accordionist",
-      "name": "Accordionist",
-      "weight": 3,
-      "desc": "Plays when the guns go quiet. The whole trench knows the tune.",
-      "aliases": [
-        "accordion",
-        "accordionist",
-        "musician",
-        "bard",
-        "squeezebox"
-      ]
     }
   ],
   "ranks": [
@@ -648,11 +635,6 @@
       "medic": {
         "work": 1,
         "_": "práce za den (× úroveň)"
-      },
-      "accordionist": {
-        "heal": 0.2,
-        "worsen": 0.2,
-        "_": "hudba zvedne morálku: lehce raněni poblíž se hojí i bez medika a méně se zhoršují (slabší kuchař)"
       }
     },
     "xp": {

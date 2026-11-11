@@ -541,13 +541,5 @@
    }
   }
  },
- "concord_accordionist": {
-  "south": "concord_accordionist_south.png",
-  "north": "concord_accordionist_north.png"
- },
- "hegemony_accordionist": {
-  "south": "hegemony_accordionist_south.png",
-  "north": "hegemony_accordionist_north.png"
- },
- "_v": "mwcm7bsg"
+ "_v": "1a1bbfcce86"
 }
