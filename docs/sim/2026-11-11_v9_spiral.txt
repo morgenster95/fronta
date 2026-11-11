@@ -1,0 +1,9 @@
+Matice simulací, vyvážení v7 + aidPost.stretchersPerMedic=1 roles.medic.work=2 care.crit.dieBase=0.35 aidPost.critRisk=0.8 buildings.dugout.critRisk=0.4 care.crit.stabilizeBed=3 shell.kill=0.5 shell.severity.light=0.7 shell.severity.heavy=0.3 daily.shellMax=15 shell.hit=0.5 roles.saturation=1.5 roles.machinegunner.suppressMax=0.3 roles.kill=0.35 roles.sniper.kill=0.6 hit=0.02 daily.max=99 daily.min=1 roles.rifleman.fire=0.09 roles.machinegunner.fire=0.14 roles.sniper.fire=0.14 roles.kill=0.5 roles.sniper.kill=0.7 roles.rifleman.severity.heavy=0.15 care.crit.dieNoCare=0.4; 60 dní, padlí na stranu DENNĚ (v závorce na 100 vojáků)
+
+=== Klidná fronta ===
+×1/1 │ Heg   87 (REAL, medici 6, nemocnic 1): 0.34 (0.40)/den · palba dává 4.3/den, ranění 5.1/den · medici 92 % · nosítka ø 1.2 │ Con   90 (REAL, medici 12, nemocnic 1): 0.38 (0.43)/den · palba dává 4.1/den, ranění 5.3/den · medici 100 % · nosítka ø 1.2
+×10/10 │ Heg  870 (REAL, medici 60, nemocnic 1): 25.18 (2.89)/den · palba dává 34.1/den, ranění 56.2/den · medici 31 % · nosítka ø 58.2 │ Con  900 (REAL, medici 120, nemocnic 1): 3.53 (0.39)/den · palba dává 47.6/den, ranění 43.9/den · medici 100 % · nosítka ø 47.9
+
+=== Hegemony dobude kótu → Concord 3 dny pod granáty ===
+×1/1 │ Heg   87 (REAL, medici 6, nemocnic 1): 0.26 (0.30)/den · palba dává 4.9/den, ranění 4.3/den · medici 95 % · nosítka ø 0.8 │ Con   90 (REAL, medici 12, nemocnic 1): granáty 2.11 (2.35)/den, 7 dní 15.7 (17.4 %) · palba dává 3.3/den, ranění 6.4/den · medici 59 % · nosítka ø 9.0
+×10/10 │ Heg  870 (REAL, medici 60, nemocnic 1): 13.14 (1.51)/den · palba dává 46.5/den, ranění 42.6/den · medici 46 % · nosítka ø 55.6 │ Con  900 (REAL, medici 120, nemocnic 1): granáty 28.67 (3.19)/den, 7 dní 232.0 (25.8 %) · palba dává 33.9/den, ranění 60.3/den · medici 51 % · nosítka ø 82.1

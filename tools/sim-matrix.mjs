@@ -28,9 +28,12 @@ const MIX = {
   'MÁLO MEDIKŮ 3 %': { rifleman: 45, machinegunner: 15, sniper: 12, medic: 3, cook: 5, chaplain: 3, signaller: 5, runner: 4, officer: 2, sapper: 6 },
   'HODNĚ MEDIKŮ 15 %': { rifleman: 37, machinegunner: 12, sniper: 8, medic: 15, cook: 5, chaplain: 3, signaller: 6, runner: 5, officer: 2, sapper: 7 },
   'KULOMETY 35 %': { rifleman: 25, machinegunner: 35, sniper: 10, medic: 5, cook: 4, chaplain: 2, signaller: 6, runner: 5, officer: 2, sapper: 6 },
+  'STŘELCI 60 %': { rifleman: 60, machinegunner: 12, sniper: 8, medic: 8, cook: 3, chaplain: 1, signaller: 3, runner: 2, officer: 1, sapper: 2 },
+  'KULOMETY 35 % + MEDICI 13 %': { rifleman: 25, machinegunner: 35, sniper: 8, medic: 13, cook: 4, chaplain: 2, signaller: 5, runner: 3, officer: 1, sapper: 4 },
+  'STŘELCI 55 % + MEDICI 13 %': { rifleman: 55, machinegunner: 12, sniper: 8, medic: 13, cook: 3, chaplain: 1, signaller: 3, runner: 2, officer: 1, sapper: 2 },
   'ODSTŘELOVAČI 30 %': { rifleman: 30, machinegunner: 10, sniper: 30, medic: 6, cook: 4, chaplain: 3, signaller: 5, runner: 4, officer: 2, sapper: 6 },
 };
-const ALLPAIRS = [['REAL', 'REAL'], ['MÁLO MEDIKŮ 3 %', 'HODNĚ MEDIKŮ 15 %'], ['KULOMETY 35 %', 'ODSTŘELOVAČI 30 %']];
+const ALLPAIRS = [['REAL', 'REAL'], ['MÁLO MEDIKŮ 3 %', 'HODNĚ MEDIKŮ 15 %'], ['KULOMETY 35 %', 'ODSTŘELOVAČI 30 %'], ['REAL', 'KULOMETY 35 %'], ['REAL', 'STŘELCI 60 %'], ['REAL', 'KULOMETY 35 % + MEDICI 13 %'], ['REAL', 'STŘELCI 55 % + MEDICI 13 %']];
 const SIZES = opt('--sizes') ? opt('--sizes').split(',').map((x) => x.split('/').map(Number)) : QUICK ? [[1, 1], [10, 10]] : [[1, 1], [10, 10], [10, 3]];
 const PAIRS = opt('--pairs') ? opt('--pairs').split(',').map((i) => ALLPAIRS[Number(i)]) : QUICK ? [['REAL', 'REAL'], ['MÁLO MEDIKŮ 3 %', 'HODNĚ MEDIKŮ 15 %']]
   : [['REAL', 'REAL'], ['MÁLO MEDIKŮ 3 %', 'HODNĚ MEDIKŮ 15 %'], ['KULOMETY 35 %', 'ODSTŘELOVAČI 30 %']];
@@ -65,26 +68,35 @@ function setup(size, pair, hosp, war, run) {
   return s;
 }
 
+let LAST_EFF = null;
+const CAUSES = [], PLACE = [];
 const mean = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0);
 function sim(size, pair, hosp, war) {
-  const quiet = [[], []], shell = [[], []], week = [0, 0], cover = [[], []], n = [0, 0], medics = [0, 0], str = [[], []];
+  const dealt = [[], []], taken = [[], []], eff = {}, quiet = [[], []], shell = [[], []], week = [0, 0], cover = [[], []], n = [0, 0], medics = [0, 0], str = [[], []];
   const runs = Math.max(2, Math.round(RUNS / Math.max(...size) ** 0.5));
   for (let r = 0; r < runs; r++) {
     const s = setup(size, pair, hosp, war, r);
     for (const f of [0, 1]) { n[f] = s.soldiers.filter((x) => x.faction === f).length; medics[f] = s.soldiers.filter((x) => x.faction === f && x.archetype === 'medic').length; }
     for (let d = 0; d < DAYS; d++) {
+      for (const x of s.soldiers) if (x.line === 'front' && x.status === 'active' && !x.wound) { eff[x.archetype] ??= { h: 0, n: 0 }; eff[x.archetype].n++; }
       dailyTick(s, theme, story);
       const st = s.battle.stats.at(-1);
       for (const f of [0, 1]) {
         const a = st.sides[f];
-        const dead = a.deaths.nobed + a.deaths.nocare + a.deaths.wounds + (a.deaths.shell || 0);
+        const dead = a.deaths.nobed + a.deaths.nocare + a.deaths.wounds + (a.deaths.shell || 0) + (a.deaths.shot || 0);
         (a.hits.shell ? shell : quiet)[f].push(dead);
         if (d < 7) week[f] += dead / runs;
         cover[f].push(a.cover); str[f].push(a.stretchers);
+        CAUSES[f] ??= {}; for (const [k, v] of Object.entries(a.deaths)) CAUSES[f][k] = (CAUSES[f][k] || 0) + v;
+        PLACE[f] ??= { heavyStr: 0, n: 0 }; PLACE[f].heavyStr += s.soldiers.filter((x) => x.faction === f && x.wound?.sev === 'heavy' && x.wound.place === 'stretcher').length; PLACE[f].n++;
+        dealt[f].push(Object.values(a.hits.fire).reduce((x, y) => x + y, 0));
+        taken[f].push(a.sev.light + a.sev.heavy + a.sev.crit);
+        for (const [role, h] of Object.entries(a.hits.fire)) { eff[role] ??= { h: 0, n: 0 }; eff[role].h += h; }
       }
     }
   }
-  return [0, 1].map((f) => ({ n: n[f], medics: medics[f], quiet: mean(quiet[f]), shell: shell[f].length ? mean(shell[f]) : null, shellMax: Math.max(0, ...shell[f]), week: week[f], cover: mean(cover[f]), str: mean(str[f]) }));
+  LAST_EFF = eff;
+  return [0, 1].map((f) => ({ dealt: mean(dealt[f]), taken: mean(taken[f]), n: n[f], medics: medics[f], quiet: mean(quiet[f]), shell: shell[f].length ? mean(shell[f]) : null, shellMax: Math.max(0, ...shell[f]), week: week[f], cover: mean(cover[f]), str: mean(str[f]) }));
 }
 
 console.log(`Matice simulací, vyvážení v${theme.battle.balance}${sets.length ? ` + ${sets.join(' ')}` : ''}; ${DAYS} dní, padlí na stranu DENNĚ (v závorce na 100 vojáků)`);
@@ -93,7 +105,9 @@ for (const war of [false, true]) {
   console.log(`\n=== ${war ? 'Hegemony dobude kótu → Concord 3 dny pod granáty' : 'Klidná fronta'} ===`);
   for (const size of SIZES) for (const pair of PAIRS) for (const hosp of HOSP) {
     const r = sim(size, pair, hosp, war);
-    const line = r.map((x, f) => `${['Heg', 'Con'][f]} ${String(x.n).padStart(4)} (${pair[f]}, medici ${x.medics}, nemocnic ${hosp[f]}): ${war && f === 1 ? `granáty ${f2(x.shell ?? 0, x.n)}/den, 7 dní ${x.week.toFixed(1)} (${(100 * x.week / x.n).toFixed(1)} %)` : `${f2(x.quiet, x.n)}/den`} · medici ${Math.round(100 * x.cover)} % · nosítka ø ${x.str.toFixed(1)}`);
+    const line = r.map((x, f) => `${['Heg', 'Con'][f]} ${String(x.n).padStart(4)} (${pair[f]}, medici ${x.medics}, nemocnic ${hosp[f]}): ${war && f === 1 ? `granáty ${f2(x.shell ?? 0, x.n)}/den, 7 dní ${x.week.toFixed(1)} (${(100 * x.week / x.n).toFixed(1)} %)` : `${f2(x.quiet, x.n)}/den`} · palba dává ${x.dealt.toFixed(1)}/den, ranění ${x.taken.toFixed(1)}/den · medici ${Math.round(100 * x.cover)} % · nosítka ø ${x.str.toFixed(1)}`);
     console.log(`×${size.join('/')} │ ${line.join(' │ ')}`);
+    if (args.includes('--causes')) { console.log('      příčiny smrti: ' + [0, 1].map((f) => JSON.stringify(CAUSES[f]) + ` těžce na nosítkách ø ${(PLACE[f].heavyStr / PLACE[f].n).toFixed(1)}`).join(' │ ')); CAUSES.length = 0; PLACE.length = 0; }
+    if (args.includes('--eff') && !war) console.log('      zásahů na střelce v přední linii za týden: ' + Object.entries(LAST_EFF).filter(([, v]) => v.n).map(([k, v]) => `${k} ${(7 * v.h / v.n).toFixed(2)}`).join(', '));
   }
 }

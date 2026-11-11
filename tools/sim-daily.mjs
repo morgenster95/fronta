@@ -55,7 +55,7 @@ for (const sc of SC) {
       const st = s.battle.stats.at(-1);
       for (const f of [0, 1]) {
         const a = st.sides[f];
-        const dead = a.deaths.nobed + a.deaths.nocare + a.deaths.wounds + (a.deaths.shell || 0);
+        const dead = a.deaths.nobed + a.deaths.nocare + a.deaths.wounds + (a.deaths.shell || 0) + (a.deaths.shot || 0);
         const shelled = a.hits.shell > 0;
         (shelled ? shellDays : per)[f].push(dead);
         byDay[f][d] += dead / RUNS;

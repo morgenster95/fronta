@@ -2440,6 +2440,12 @@
     "{name} did not last the night outside the full aid post. The bearers who carried {him} in carried {him} out again at dawn.",
     "Every bed was taken and every medic was busy. {name} died waiting. The men at {sector} have not stopped talking about it."
   ],
+  "killedShot": [
+    "{name} was killed outright at {sector}, a single bullet from across the wire.",
+    "A rifle cracked from the far side of no man's land. {name} fell at {sector} and never moved again.",
+    "{name} looked over the parapet at {sector} for one second too long. The bullet came before the sound.",
+    "The bearers reached {name} at {sector} too late. One shot, and it was over."
+  ],
   "killedShell": [
     "A shell landed square in the bay at {sector}. {name} was killed outright. The bearers found nothing to carry.",
     "{name} was killed outright by a direct hit at {sector}. The men dug for an hour and found only {his} identity disc.",

@@ -52,59 +52,64 @@ Přínos rolí ověřen (`--roles`): medik, kuchař, kulomet a spojař výrazně
 
 ---
 
-## 2026-11-11 · Vyvážení v8: lůžka pevná, škálují medici · NÁVRH (simulováno, NENASAZOVAT bez schválení)
-**Zadání uživatele:** nemocnice jen hlasováním a pevně 4 lůžka; škálovat smí jen to, co volí hráči (medici, role).
-Ve válce se má umírat občas, víc než teď a hodně při bombardování. Strany budou mít různé složení rolí i velikost.
-**ZAMÍTNUTO:** lůžka rostoucí s velikostí strany (`capacityPer`), z kódu odstraněno.
+## 2026-11-11 (večer) · Vyvážení v10: válka palbou hráčů · NÁVRH (simulováno, NENASAZOVAT bez schválení)
+Nahrazuje návrh v8 (lůžka pevná, nosítka podle mediků), který zůstává jako součást v10. **v8 samostatně: ZAMÍTNUTO**,
+protože ztráty pořád byly malé („~1,5 týdně“) a palba hráčů skoro nic neznamenala.
 
-**Proč v7 nevyhovuje** (matice `docs/sim/2026-11-11_full_v7.txt`):
-- dnešní stav (88 na stranu, 1 nemocnice): ~0,1 padlého denně na stranu, bombardování ~0,2/den;
-- při 10× (880 na stranu): 9–14 padlých denně i za klidu. Nosítka jsou pevně 10, kritický bez nosítek noc nepřežije,
-  a 4 lůžka nic nezmění. Při velké hře by tak umírali hlavně ti, na které nezbyla nosítka.
+**Zadání uživatele:** žádný „klid“ (každý střelec má šanci trefit), umírat se má mnohem víc, hlavně ve velkých číslech.
+Menší strana smí umírat víc, ale ne když má víc střelců a kulometů. Lůžka pevná (nemocnice jen hlasováním), škálují medici a role.
 
-**Návrh v8 (doporučená verze TVRDŠÍ, mírnější STŘEDNÍ pro srovnání):**
-| | v7 | v8 |
+**Co bylo špatně ve v7** (`docs/sim/2026-11-11_v7_roles_asym.txt`):
+- puškař trefil 0,12× za týden (1× za ~8 týdnů), kulomet 0,25×, ostřelovač 0,27×;
+- palba hráčů dělala jen ~35 % zásahů, zbytek byl zásah z pozadí s pevnou denní mezí. Složení stran tak skoro nic neměnilo;
+- strana 270 proti 870 dostávala 18 zásahů denně a sama dávala 3, bez ohledu na to, kolik měla kulometů.
+
+**Jak to řeší jinde:** u palných zbraní platí Lanchesterův zákon: ztráty strany rostou s palbou nepřítele
+([Lanchester's laws](https://en.wikipedia.org/wiki/Lanchester%27s_laws)). Čistá „druhá mocnina“ ale v zákopech neplatí (cíle jsou kryté).
+V praxi se používá kombinace s exponentem kolem 1,5. Klidné úseky 1. světové války: ztráty hlavně od odstřelovačů a občasného ostřelování,
+smrt jednou za den nebo dva na prapor, a polovina všech mrtvých připadla na pár dní velkých akcí
+([Great War Forum: quiet areas](https://www.greatwarforum.org/topic/28581-quiet-areas/), [intensity of warfare](https://www.greatwarforum.org/topic/239432-bef-1914-1918-intensity-of-warfare-concentration-of-fatalities/)).
+Ve hře je to záměrně zhuštěné: denně se má něco stát.
+
+**Návrh v10 (nové volby v kódu jsou vypnuté, dokud se nenastaví čísla):**
+| | v7 | v10 |
 |---|---|---|
-| lůžka | obvaziště 2, nemocnice 4 (jen hlasováním) | **beze změny** |
-| nosítka | pevně 6 (+4 za nemocnici) | 6 (+4 za nemocnici) **+ 1 za každého medika** (`aidPost.stretchersPerMedic`) |
-| práce medika za den | 1 | **2** (nosítkový tým; potřeba lehce 1, těžce 2, kriticky 2) |
-| smrt kritického za noc (základ, nosítka s plnou péčí) | 9 % | **35 %** (střední 30 %) |
-| riziko na lůžku: obvaziště / nemocnice | 0,6 / 0,4 | **0,8 / 0,4** (lůžko v nemocnici = poloviční riziko) |
-| kritický na lůžku do zlepšení | 2 noci | **3 noci** |
-| kritické zásahy z pozadí | 15 % | **21 %** (střední 18 %) |
-| bombardování: zásah / mez | 40 % / 8 na 80 | **50 % / 12 na 80** |
-| bombardování: lehce / těžce / kriticky | 45 / 35 / 20 % | **30 / 40 / 30 %** |
-| přímý zásah granátem (nový) | – | **50 % kritických zásahů granátem zabije na místě** (`shell.kill`) |
-Parametry pro simulaci: TVRDŠÍ `--set aidPost.stretchersPerMedic=1 --set care.crit.stabilizeBed=3 --set shell.kill=0.5 --set shell.severity.light=0.7 --set shell.severity.heavy=0.3 --set daily.shellMax=12 --set shell.hit=0.5 --set roles.medic.work=2 --set aidPost.critRisk=0.8 --set buildings.dugout.critRisk=0.4 --set care.crit.dieBase=0.35 --set severity.heavy=0.21` · STŘEDNÍ `--set aidPost.stretchersPerMedic=1 --set care.crit.stabilizeBed=3 --set shell.kill=0.5 --set shell.severity.light=0.7 --set shell.severity.heavy=0.3 --set daily.shellMax=12 --set shell.hit=0.5 --set roles.medic.work=2 --set aidPost.critRisk=0.8 --set buildings.dugout.critRisk=0.4 --set care.crit.dieBase=0.3 --set severity.heavy=0.18`
+| palba puškař / kulomet / ostřelovač za den | 2,8 / 4,5 / 6 % | **7 / 11 / 12 %** |
+| kritické zásahy puškař / kulomet / ostřelovač | 12 / 5 / 25 % | **20 / 8 / 35 %** |
+| **smrt na místě** po kritickém zásahu kulkou (nové, `roles.kill`) | – | **60 %, ostřelovač 80 %** (Gazette: „Shot by X“, střelec dostane `kills`) |
+| nasycení palby (nové, `roles.saturation`) | – | **1**: střelec trefuje méně, když je u něj víc vlastních střelců než nepřátel na dostřel |
+| potlačení kulometem | max 45 % | **max 30 %** |
+| zásah z pozadí | 4 %, denní mez 2–5 na 80 | **1,5 %, bez meze** (jen pojistka 5 % strany padlých za den) |
+| nosítka | 6 (+4 za nemocnici) | **+1 za každého medika** (`aidPost.stretchersPerMedic`) |
+| práce medika / potřeba těžce raněného | 1 / 2 | **2 / 1** |
+| triáž (nové, `care.triage`) | – | **kritický vezme lůžko nebo nosítka těžce raněnému** |
+| smrt kritického za noc / riziko obvaziště / nemocnice | 9 % / 0,6 / 0,4 | **35 % / 0,8 / 0,4**, na lůžku 3 noci |
+| bombardování: zásah / mez / kritické | 40 % / 8 na 80 / 20 % | **50 % / 15 na 80 / 30 %** |
+| přímý zásah granátem (nové, `shell.kill`) | – | **50 % kritických zásahů granátem zabije na místě** |
+Parametry pro simulaci: `--set aidPost.stretchersPerMedic=1 --set roles.medic.work=2 --set care.crit.dieBase=0.35 --set aidPost.critRisk=0.8 --set buildings.dugout.critRisk=0.4 --set care.crit.stabilizeBed=3 --set shell.kill=0.5 --set shell.severity.light=0.7 --set shell.severity.heavy=0.3 --set daily.shellMax=15 --set shell.hit=0.5 --set roles.saturation=1.5 --set roles.machinegunner.suppressMax=0.3 --set roles.kill=0.35 --set roles.sniper.kill=0.6 --set hit=0.02 --set daily.max=99 --set daily.min=1 --set care.triage=1 --set care.heavy.need=1 --set hit=0.015 --set roles.rifleman.severity.light=0.45 --set roles.rifleman.severity.heavy=0.2 --set roles.machinegunner.severity.heavy=0.08 --set roles.sniper.severity.heavy=0.35 --set roles.kill=0.6 --set roles.sniper.kill=0.8 --set roles.rifleman.fire=0.07 --set roles.machinegunner.fire=0.11 --set roles.sniper.fire=0.12 --set roles.saturation=1`
 
-**Výsledky TVRDŠÍ** (padlí DENNĚ na stranu, v závorce na 100 vojáků; `docs/sim/2026-11-11_full_hard.txt`):
-| Klidná fronta | ×1 (Heg 86 / Con 90) | ×10 (860 / 900) |
+**Výsledky** (padlí na stranu DENNĚ, v závorce na 100 vojáků; `docs/sim/2026-11-11_v10_matrix.txt`, 60 dní `…_v10_long60.txt`):
+| | v7 | **v10** |
 |---|---|---|
-| skutečné role, 1 nemocnice každá (stav hry) | **0,21 / 0,21** (~1,5 týdně na stranu) | 4,8 (0,55) / 3,8 (0,42) |
-| Heg 3 nemocnice / Con žádná | 0,17 / 0,31 | 3,1 (0,36) / 3,9 (0,43) |
-| Heg 3 % mediků / Con 15 % mediků (1 nemocnice) | 0,44 / 0,27 | 9,4 (1,09) / 3,9 (0,43) |
-| Heg 35 % kulometů / Con 30 % odstřelovačů | 0,41 / 0,38 | 4,3 (0,50) / 8,5 (0,95) |
-| ×10 / ×3 (Heg 860 / Con 270), skutečné role | – | 2,5 (0,29) / 2,8 (1,04) |
+| dnes (88 / 90), 1 nemocnice, klid | 0,1 | **0,47 / 0,52** (~3,5 týdně na stranu, obě strany ~7) |
+| 10× (870 / 900), klid | 9–14 (spirála) | **3,8–5,4** (0,44–0,6), stabilní i po 60 dnech |
+| bombardovaný den, ×1 / ×10 | 0,2 / 12 | **2,4–2,8 / 27–29** |
+| poražený za 7 dní od dobytí kóty, ×1 / ×10 | 5 % / 17 % strany | **12–19 % / 14–23 %** |
+| 870 proti 270, malá strana (skutečné role) | dává 3, dostává 18 | **dává 9,4, dostává 15** (0,71 / 0,21 na 100) |
+| 870 proti 270, malá strana s 35 % kulometů a 13 % mediků | dává 3,6 | **dává 11, dostává 14** (padlí 0,64 na 100) |
+| zásahů na puškaře / kulomet / ostřelovače za týden | 0,12 / 0,25 / 0,27 | **0,33 / 0,59 / 0,61** |
+Příčiny smrti v klidu: ~85 % padne přímo zásahem kulkou, zbytek na zranění. Při bombardování rozhodují medici a nemocnice
+(15 % mediků: 14 % strany za týden, 13 % mediků s kulomety: 23 %).
 
-| Bombardování (Concord poražen) | ×1 | ×10 |
-|---|---|---|
-| Concord za den pod granáty | **2,1** (nejhorší den 4–5) | **27** |
-| Concord za 7 dní od dobytí kóty, 1 nemocnice | **13 (15 % strany)** | 188 (21 %) |
-| totéž bez nemocnice | 17 (19 %) | 197 (22 %) |
-| totéž s 15 % mediků | 12 (14 %) | 155 (17 %) |
+**Odmítnuté varianty a proč** (simulace v `docs/sim/`):
+- v8/v9 (víc raněných, smrt hlavně z nedostatku péče): při 10× a 7 % mediků **spirála smrti**: ~25 padlých denně po 60 dnech,
+  medici nestíhají, nosítka ucpaná (`…_v9_spiral.txt`). Proto v10 zabíjí víc přímo palbou a méně „z přetížení“.
+- nasycení 1,5: malá strana dostávala 4,8× víc zásahů na hlavu a složení rolí skoro nehrálo roli. Nasycení 0,7 utlumí palbu i u stejně velkých stran.
 
-**Co z toho plyne:**
-- **Medici rozhodují při každé velikosti.** 3 % mediků znamená 2–2,5× víc padlých než 15 %. Účinek roste s počtem mediků, dokud nepokryjí všechny raněné (~13–15 %).
-- **Nemocnice pomáhá hlavně malé straně nebo při málo medicích.** Při ×1 sníží úmrtí asi o třetinu, 3 nemocnice proti žádné asi na polovinu.
-  Při ×10 jedna nemocnice (4 lůžka) skoro nic neudělá, 3 nemocnice sníží úmrtí asi o třetinu. Velká strana potřebuje víc hlasování o nemocnicích,
-  zvážit vyšší strop než 6 nemocnic.
-- **Bombardování je znatelné** (13–28 % strany za týden). Přímý zásah granátem zabíjí i stranu s plnou nemocnicí.
-- **Menší strana trpí víc:** při 860 proti 270 umírá menší strana ~3,5× víc na hlavu (střílí na ni víc nepřátel). To je motivace verbovat.
-- **Dlouhá hra** (60 dní, `docs/sim/2026-11-11_long_mid.txt`): zkušenosti a úrovně mediků úmrtí postupně snižují, asi o třetinu proti prvním 14 dnům.
-
-**Hotovo v kódu (vypnuté, dokud se nenastaví čísla):** `aidPost.stretchersPerMedic`, `shell.kill` + texty `killedShell` a příčina smrti `shell`,
-nástroje `tools/sim-daily.mjs` (padlí po dnech, klon soupisky ×N) a `tools/sim-matrix.mjs` (matice velikost × složení rolí × nemocnice × bombardování).
-**Před nasazením:** schválení uživatele, úprava `docs/BATTLE.md`, `COMBAT_ROLES.md`, KPI v `tools/sim-battle.mjs`, testy na nová čísla, náhled vydání.
+**Otevřené otázky pro uživatele:**
+1. V klidu teď skoro všechny smrti přijdou z kulek a medici s nemocnicemi rozhodují hlavně při bombardování. Chceš víc smrtí „na zranění“
+   (pak víc váhy medikům a nemocnicím, ale hrozí spirála ve velkém)? Kompromis: smrt na místě 40 % místo 60 %, smrt kritického 45 %.
+2. Ztráty ~0,5 na stranu denně při dnešní velikosti a ~4–5 denně při 10×: stačí, nebo víc?
 
 ---
 

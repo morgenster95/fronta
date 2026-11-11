@@ -45,7 +45,7 @@ export function noticeDeath(state, heir) {
 export const INVERSE = { brother: 'brother', 'older brother': 'younger brother', father: 'son', uncle: 'nephew', cousin: 'cousin' };
 
 export function deathReply(n, theme, site) {
-  const why = { nobed: 'on a stretcher, waiting for a bed', wounds: 'of his wounds', raid: 'on a night raid', line: 'at the front', shell: 'killed outright by a shell' }[n.cause] || 'at the front';
+  const why = { nobed: 'on a stretcher, waiting for a bed', wounds: 'of his wounds', raid: 'on a night raid', line: 'at the front', shell: 'killed outright by a shell', shot: 'shot dead' }[n.cause] || 'at the front';
   const kin = INVERSE[n.relation] || 'kin';
   return `@${n.handle} ${n.prev} fell on Day ${n.day} ${why}, after ${n.days} ${n.days === 1 ? 'day' : 'days'} at the front. ` +
     `His ${kin} ${n.heir} has taken up the rifle. Your house: ${site || ''}/?s=${encodeURIComponent(n.handle)}&fell=1`;
