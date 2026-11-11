@@ -164,7 +164,10 @@
         "race": "ridge"
       },
       "_note": "Vyjde sám, jakmile některá strana dobude Verdel Ridge (ingest/triggers.mjs). Pak se pod ním otevře hlasování po frakcích.",
-      "files": [],
+      "files": [
+        "victory_ridge_concord_1.jpg",
+        "victory_ridge_concord_2.jpg"
+      ],
       "variants": [
         {
           "files": [
@@ -181,7 +184,7 @@
           "caption": "🫒 VERDEL RIDGE HAS FALLEN. Now your side votes: comment FORTIFY or HOSPITAL below 👇\n\nThe Concord reached 100 soldiers first ({win} against {lose}) and took the heights. The deciding rifle belonged to {hero}, now Hero of Verdel Ridge. 🎖️\n\nFor 3 days the guns on the ridge pound the Hegemony lines. For a week the high ground keeps the Concord safer. Every Concord soldier wears the ribbon.\n\n🗳️ NOW EACH SIDE CHOOSES WHAT TO BUILD\nComment one word below. Your soldier is your ballot: we know which side you serve, so no need to write it.\n\n🧱 FORTIFY: sandbag parapets, fewer men hit\n🏥 HOSPITAL: a hospital dugout, 4 more beds. Without a free bed, the badly wounded wait on stretchers\n\nThe Concord vote for the Concord. The Hegemony vote for the Hegemony. Built and announced in the Trench Gazette at 13:00 UTC.\nNot enlisted yet? Comment CONCORD or HEGEMONY together with your choice.\n\n⚔️ The race for {next} starts now. First side to 100 new recruits takes it.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron"
         }
       ],
-      "caption": "",
+      "caption": "🫒 VERDEL RIDGE HAS FALLEN. Now your side votes: comment FORTIFY or HOSPITAL below 👇\n\nThe Concord reached 100 soldiers first (100 against 94) and took the heights. The deciding rifle belonged to jro_se11, now Hero of Verdel Ridge. 🎖️\n\nFor 3 days the guns on the ridge pound the Hegemony lines. For a week the high ground keeps the Concord safer. Every Concord soldier wears the ribbon.\n\n🗳️ NOW EACH SIDE CHOOSES WHAT TO BUILD\nComment one word below. Your soldier is your ballot: we know which side you serve, so no need to write it.\n\n🧱 FORTIFY: sandbag parapets, fewer men hit\n🏥 HOSPITAL: a hospital dugout, 4 more beds. Without a free bed, the badly wounded wait on stretchers\n\nThe Concord vote for the Concord. The Hegemony vote for the Hegemony. Built and announced in the Trench Gazette at 13:00 UTC.\nNot enlisted yet? Comment CONCORD or HEGEMONY together with your choice.\n\n⚔️ The race for Hill 304 starts now. First side to 100 new recruits takes it.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
       "vote": {
         "question": "Verdel Ridge has fallen. What does your side build?",
         "perFaction": true,
@@ -201,6 +204,16 @@
             "outcome": "The {side} dug a hospital dugout behind the line."
           }
         ]
+      },
+      "fired": {
+        "faction": 1,
+        "hero": "jro_se11",
+        "day": 3
+      },
+      "published": {
+        "id": "18087856601321668",
+        "permalink": "https://www.instagram.com/p/Dfnf63qFCNV/",
+        "at": "2026-11-11T21:57:25.552Z"
       }
     },
     {
