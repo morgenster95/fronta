@@ -38,7 +38,12 @@ export function writeChronicle(state, day, { theme, story, weather, events = [],
   }
 
   if (decided) {
-    blocks.push({ h: 'The front decided', text: `${decided.question} The answer was ${decided.winner}. ${decided.text || ''}`.trim() });
+    // po frakcích: „The Hegemony chose HOSPITAL (14 to 10).“; strana bez hlasů je popsaná ve výsledku (decided.text)
+    const tally = (f) => Object.values(decided.counts[f]).sort((x, y) => y - x).join(' to ');
+    const answer = decided.perFaction
+      ? decided.winners.map((kw, f) => (kw ? `The ${short(f)} chose ${kw} (${tally(f)}).` : '')).filter(Boolean).join(' ')
+      : `The answer was ${decided.winner}.`;
+    blocks.push({ h: 'The front decided', text: `${decided.question} ${answer} ${decided.text || ''}`.replace(/\s+/g, ' ').trim() });
   }
 
   // nejzajímavější zápisy dne, každý hráč nejvýš jednou

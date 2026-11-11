@@ -332,7 +332,7 @@ test('hlasování po frakcích: hlas se páruje s vojákem, každá strana má v
   assert.equal(orderDanger(s, 0, s.day + 3), 1);
   assert.equal(orderRecover(s, 1, s.day + 2, 0.35), 0.6);
   assert.equal(orderRecover(s, 0, s.day, 0.35), 0.35);
-  assert.match(s.chronicle.at(-1).blocks?.map((b) => b.text).join(' ') ?? JSON.stringify(s.chronicle.at(-1)), /Hegemony: FORTIFY/);
+  assert.match(s.chronicle.at(-1).blocks?.map((b) => b.text).join(' ') ?? JSON.stringify(s.chronicle.at(-1)), /The Hegemony chose FORTIFY \(2 to 1\)/);
 });
 
 test('hlasování s minHours počká na další vydání', () => {

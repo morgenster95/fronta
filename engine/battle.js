@@ -53,7 +53,7 @@ export function build(state, theme, f, id) {
   if (def.max && count(side, id) >= def.max) return null;
   side.built[id] = count(side, id) + 1;
   if (def.wire) for (const k of Object.keys(side.wire)) side.wire[k] = Math.min(1, side.wire[k] + def.wire);
-  return `${short(theme, f)}: ${def.done || def.name}`;
+  return `The ${short(theme, f)} ${def.done || `built: ${def.name}`}`;
 }
 
 export function canBuild(state, theme, f, id) {
@@ -429,7 +429,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     return `${short(theme, f)}: ${H.dugout ? 'hospital' : 'aid post'} ${st.beds}/${H.beds} beds, ${st.stretchers}/${H.stretchers} stretchers` +
       `${st.trench ? `, ${st.trench} badly wounded still lying in the trench` : ''}, medics covering ${Math.round(st.cover * 100)}% of the wounded.`;
   });
-  out.news.push({ day, h: 'The aid posts', text: lines.join(' '), kind: 'hospital' });
+  const hosp = theme.factions.map((_, f) => hospital(state, theme, f).dugout);
+  out.news.push({ day, h: hosp.every(Boolean) ? 'The hospitals' : hosp.some(Boolean) ? 'Hospitals and aid posts' : 'The aid posts', text: lines.join(' '), kind: 'hospital' });
 
   // denní metriky (ladění, upozornění v ostrém provozu)
   out.stats = { day, balance: cfg.balance ?? 1, sides: stats };
