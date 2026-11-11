@@ -157,7 +157,7 @@ test('závod o kótu: první na 100 vyhraje, dostane výhodu, začne nový závo
   const hero = s.soldiers.find((x) => x.handle === v.hero);
   assert.ok(hero.titles.some((t) => t.startsWith('Hero of')));
   assert.ok(hero.medals.includes(`hero:${v.id}`), 'hrdina dostane medaili za statečnost');
-  assert.equal(s.soldiers.filter((x) => x.medals.some((m) => m.startsWith('hero:'))).length, 1);
+  assert.equal(s.soldiers.filter((x) => (x.medals || []).some((m) => m.startsWith("hero:"))).length, 1);
   assert.ok(s.soldiers.filter((x) => x.faction === 0).every((x) => x.medals.includes(`obj:${v.id}`)));
   assert.ok(s.soldiers.every((x) => x.record.some((r) => /Verdel Ridge/.test(r[1]))));
   assert.ok(s.soldiers.find((x) => x.faction === 0).titles.includes('First of the Hegemony'));
