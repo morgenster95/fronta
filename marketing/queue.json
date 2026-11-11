@@ -172,14 +172,14 @@
             "victory_ridge_hegemony_1.jpg",
             "victory_ridge_hegemony_2.jpg"
           ],
-          "caption": "🩶 VERDEL RIDGE HAS FALLEN. Now your side votes: comment FORTIFY or HOSPITAL below 👇\n\nThe Hegemony reached 100 soldiers first ({win} against {lose}) and took the heights. The deciding rifle belonged to @{hero}, now Hero of Verdel Ridge. 🎖️\n\nFor 3 days the guns on the ridge pound the Concord lines. For a week the high ground keeps the Hegemony safer. Every Hegemony soldier wears the ribbon.\n\n🗳️ NOW EACH SIDE CHOOSES WHAT TO BUILD\nComment one word below. Your soldier is your ballot: we know which side you serve, so no need to write it.\n\n🧱 FORTIFY: sandbag parapets, fewer men hit\n🏥 HOSPITAL: a hospital dugout with 4 beds. Without one, the badly wounded wait on stretchers\n\nThe Hegemony vote for the Hegemony. The Concord vote for the Concord. Built and announced in the Trench Gazette at 13:00 UTC.\nNot enlisted yet? Comment HEGEMONY or CONCORD together with your choice.\n\n⚔️ The race for {next} starts now. First side to 100 new recruits takes it.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron"
+          "caption": "🩶 VERDEL RIDGE HAS FALLEN. Now your side votes: comment FORTIFY or HOSPITAL below 👇\n\nThe Hegemony reached 100 soldiers first ({win} against {lose}) and took the heights. The deciding rifle belonged to @{hero}, now Hero of Verdel Ridge. 🎖️\n\nFor 3 days the guns on the ridge pound the Concord lines. For a week the high ground keeps the Hegemony safer. Every Hegemony soldier wears the ribbon.\n\n🗳️ NOW EACH SIDE CHOOSES WHAT TO BUILD\nComment one word below. Your soldier is your ballot: we know which side you serve, so no need to write it.\n\n🧱 FORTIFY: sandbag parapets, fewer men hit\n🏥 HOSPITAL: a hospital dugout, 4 more beds. Without a free bed, the badly wounded wait on stretchers\n\nThe Hegemony vote for the Hegemony. The Concord vote for the Concord. Built and announced in the Trench Gazette at 13:00 UTC.\nNot enlisted yet? Comment HEGEMONY or CONCORD together with your choice.\n\n⚔️ The race for {next} starts now. First side to 100 new recruits takes it.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron"
         },
         {
           "files": [
             "victory_ridge_concord_1.jpg",
             "victory_ridge_concord_2.jpg"
           ],
-          "caption": "🫒 VERDEL RIDGE HAS FALLEN. Now your side votes: comment FORTIFY or HOSPITAL below 👇\n\nThe Concord reached 100 soldiers first ({win} against {lose}) and took the heights. The deciding rifle belonged to @{hero}, now Hero of Verdel Ridge. 🎖️\n\nFor 3 days the guns on the ridge pound the Hegemony lines. For a week the high ground keeps the Concord safer. Every Concord soldier wears the ribbon.\n\n🗳️ NOW EACH SIDE CHOOSES WHAT TO BUILD\nComment one word below. Your soldier is your ballot: we know which side you serve, so no need to write it.\n\n🧱 FORTIFY: sandbag parapets, fewer men hit\n🏥 HOSPITAL: a hospital dugout with 4 beds. Without one, the badly wounded wait on stretchers\n\nThe Concord vote for the Concord. The Hegemony vote for the Hegemony. Built and announced in the Trench Gazette at 13:00 UTC.\nNot enlisted yet? Comment CONCORD or HEGEMONY together with your choice.\n\n⚔️ The race for {next} starts now. First side to 100 new recruits takes it.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron"
+          "caption": "🫒 VERDEL RIDGE HAS FALLEN. Now your side votes: comment FORTIFY or HOSPITAL below 👇\n\nThe Concord reached 100 soldiers first ({win} against {lose}) and took the heights. The deciding rifle belonged to @{hero}, now Hero of Verdel Ridge. 🎖️\n\nFor 3 days the guns on the ridge pound the Hegemony lines. For a week the high ground keeps the Concord safer. Every Concord soldier wears the ribbon.\n\n🗳️ NOW EACH SIDE CHOOSES WHAT TO BUILD\nComment one word below. Your soldier is your ballot: we know which side you serve, so no need to write it.\n\n🧱 FORTIFY: sandbag parapets, fewer men hit\n🏥 HOSPITAL: a hospital dugout, 4 more beds. Without a free bed, the badly wounded wait on stretchers\n\nThe Concord vote for the Concord. The Hegemony vote for the Hegemony. Built and announced in the Trench Gazette at 13:00 UTC.\nNot enlisted yet? Comment CONCORD or HEGEMONY together with your choice.\n\n⚔️ The race for {next} starts now. First side to 100 new recruits takes it.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron"
         }
       ],
       "caption": "",
@@ -197,7 +197,7 @@
           },
           {
             "kw": "HOSPITAL",
-            "label": "A hospital dugout with 4 beds for the badly wounded",
+            "label": "A hospital dugout: 4 more beds for the badly wounded",
             "build": "dugout",
             "outcome": "The {side} dug a hospital dugout behind the line."
           }
@@ -289,7 +289,7 @@
       "files": [
         "reel_news.mp4"
       ],
-      "caption": "NEW ON THE FRONT 🪖\n\n🎯 Every rifle on the line is a real player, and now every shot can hit one. Hit someone and it goes in both your service records.\n⚔️ Ten trades: snipers, machine gunners, stretcher bearers, sappers, cooks… every one of them matters.\n🎖️ Every day at the front makes you better: Recruit → Seasoned → Veteran → Elite.\n🏥 The badly wounded need a bed. Each side has an aid post with only two. Follow the red cross on the map.\n🗳️ Each side votes what to build: HOSPITAL or SANDBAGS. Vote under our latest post.\n🕯️ Fall, and your house fights on. Your heir takes the rifle.\n🏅 Longest alive, best shots, oldest houses: it's all in the Ranks.\n\nComment CONCORD or HEGEMONY to enlist. Find your soldier: link in bio.\n\n#pixelart #ww1 #indiegame #gamedev #trenchwarfare #instagramgame #mudandiron",
+      "caption": "NEW ON THE FRONT 🪖\n\n🎯 Every rifle on the line is a real player, and now every shot can hit one. Hit someone and it goes in both your service records.\n⚔️ Ten trades: snipers, machine gunners, stretcher bearers, sappers, cooks… every one of them matters.\n🎖️ Every day at the front makes you better: Recruit → Seasoned → Veteran → Elite.\n🏥 The badly wounded need a bed. Each side has an aid post with only two. Follow the red cross on the map.\n🗳️ Each side votes what to build: HOSPITAL or SANDBAGS. Find the vote post on our profile. Voting closes today at 13:00 UTC.\n🕯️ Fall, and your house fights on. Your heir takes the rifle.\n🏅 Longest alive, best shots, oldest houses: it's all in the Ranks.\n\nComment CONCORD or HEGEMONY to enlist. Find your soldier: link in bio.\n\n#pixelart #ww1 #indiegame #gamedev #trenchwarfare #instagramgame #mudandiron",
       "publishAt": "2026-11-11T09:00:00Z"
     },
     {
