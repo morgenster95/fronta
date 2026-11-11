@@ -20,11 +20,12 @@ const MIRROR = { west: 'east', 'south-west': 'south-east', 'north-west': 'north-
 // Mění se jen pár desítek pixelů a barvy zůstávají přesně stejné (žádné blikání mezi snímky).
 function breathFrame(tex) {
   const img = tex.source.resource;
+  const f = tex.frame; // snímek může být výřez z atlasu
   const c = document.createElement('canvas');
-  c.width = img.width;
-  c.height = img.height;
+  c.width = f.width;
+  c.height = f.height;
   const ctx = c.getContext('2d');
-  ctx.drawImage(img, 0, 0);
+  ctx.drawImage(img, f.x, f.y, f.width, f.height, 0, 0, f.width, f.height);
   const src = ctx.getImageData(0, 0, c.width, c.height);
   const out = ctx.createImageData(c.width, c.height);
   out.data.set(src.data);
@@ -61,10 +62,12 @@ function muzzleOf(img, dir) {
 }
 
 async function boot() {
-  const [theme, roster, manifest] = await Promise.all([
+  const [theme, roster, manifest, atlas] = await Promise.all([
     fetch('/data/theme.json').then((r) => r.json()),
     fetch('/data/roster.json').then((r) => r.json()),
     fetch('/assets/soldiers/manifest.json', { cache: 'no-cache' }).then((r) => r.json()),
+    // atlas: všechny sprity vojáků v jednom obrázku (tools/pack_sprites.py) = 1 dotaz místo ~390; bez něj se načtou jednotlivě
+    fetch('/assets/soldiers/atlas.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
   ]);
   const map = generateFront(theme.map);
   const worldW = map.W * map.tile, worldH = map.H * map.tile;
@@ -87,6 +90,12 @@ async function boot() {
   // textury vojáků: klíč = "frakce" (střelec) nebo "frakce_archetyp"; chybějící archetyp → střelec
   const V = `?v=${manifest._v || '1'}`; // verze proti staré mezipaměti
   delete manifest._v;
+  const atlasBase = atlas?.frames ? await Assets.load(`/assets/soldiers/${atlas.image}?v=${atlas._v}`).catch(() => null) : null;
+  // sprite vojáka: výřez z atlasu, jinak (nový soubor, který v atlasu ještě není) samostatný obrázek
+  const loadSprite = async (file) => {
+    const f = atlasBase && atlas.frames[file];
+    return f ? new Texture({ source: atlasBase.source, frame: new Rectangle(f[0], f[1], f[2], f[3]) }) : Assets.load(`/assets/soldiers/${file}${V}`);
+  };
   const tex = {};
   const mirrored = {}; // směr chybí v manifestu → použije se zrcadlený protějšek
   const anims = {}; // anims[klíč][animace][směr] = [Texture]
@@ -97,13 +106,13 @@ async function boot() {
       const jobs = DIRS.map(async (d) => {
         mirrored[key][d] = !manifest[key][d] && !!manifest[key][MIRROR[d]];
         const file = manifest[key][d] ?? manifest[key][MIRROR[d]] ?? manifest[key].south;
-        tex[key][d] = await Assets.load(`/assets/soldiers/${file}${V}`);
+        tex[key][d] = await loadSprite(file);
       });
       for (const [anim, byDir] of Object.entries(manifest[key].anims || {})) {
         anims[key] ??= {};
         anims[key][anim] = {};
         for (const [d, files] of Object.entries(byDir)) {
-          jobs.push(Promise.all(files.map((f) => Assets.load(`/assets/soldiers/${f}${V}`))).then((t) => (anims[key][anim][d] = t)));
+          jobs.push(Promise.all(files.map(loadSprite)).then((t) => (anims[key][anim][d] = t)));
         }
       }
       return jobs;
@@ -331,7 +340,7 @@ async function boot() {
     const meta = await fetch(`/assets/soldiers/aims.json${V}`, { cache: 'no-cache' }).then((r) => r.json());
     await Promise.all(Object.entries(meta).map(async ([key, byDir]) => {
       aims[key] = {};
-      for (const [d, m] of Object.entries(byDir)) aims[key][d] = { tex: await Assets.load(`/assets/soldiers/${m.file}${V}`), mx: m.mx, my: m.my };
+      for (const [d, m] of Object.entries(byDir)) aims[key][d] = { tex: await loadSprite(m.file), mx: m.mx, my: m.my };
     }));
   } catch (e) {
     console.warn('aims', e);

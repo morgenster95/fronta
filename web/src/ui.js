@@ -404,8 +404,8 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     const c = $('card-portrait').getContext('2d');
     c.clearRect(0, 0, 32, 32);
     const t = (s.tex ?? tex[theme.factions[s.faction].sprite]).south;
-    const src = t.source.resource;
-    if (src) c.drawImage(src, 0, 0);
+    const src = t.source.resource, f = t.frame; // snímek může být výřez z atlasu
+    if (src) c.drawImage(src, f.x, f.y, f.width, f.height, 0, 0, f.width, f.height);
   }
 
   async function loadOlder(handle) {

@@ -228,8 +228,8 @@ export function startStoryReel({ cam, life, map, theme, soldiers, tex, anims, se
   const portrait = (canvas, key) => {
     const c = canvas.getContext('2d');
     c.clearRect(0, 0, 32, 32);
-    const src = heroTex(key).south?.source?.resource;
-    if (src) c.drawImage(src, 0, 0);
+    const t = heroTex(key).south, src = t?.source?.resource, f = t?.frame;
+    if (src) c.drawImage(src, f.x, f.y, f.width, f.height, 0, 0, f.width, f.height);
   };
   portrait($('#rs-comment canvas'), 'concord_sniper');
   const ROLES = [[39.4, 'Rifleman', 'concord'], [40.7, 'Sniper', 'concord_sniper'], [41.6, 'Stretcher Bearer', 'concord_medic'], [43.2, 'Sniper', 'concord_sniper']];

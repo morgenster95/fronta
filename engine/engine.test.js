@@ -947,3 +947,16 @@ test('nová role jen z tématu: schopnosti podle klíčů, bez úpravy enginu', 
   dailyTick(s, t, story); // tah s neznámou rolí nespadne
   assert.ok(parseRole('I want to be a field nurse', t) === 'nurse');
 });
+
+test('atlas spritů odpovídá souborům (po změně PNG spustit python tools/pack_sprites.py)', () => {
+  const dir = new URL('../web/public/assets/soldiers/', import.meta.url);
+  const atlas = JSON.parse(fs.readFileSync(new URL('atlas.json', dir)));
+  const files = fs.readdirSync(dir).filter((f) => f.endsWith('.png') && f !== 'atlas.png').sort();
+  assert.deepEqual(Object.keys(atlas.frames).sort(), files, 'atlas a soubory se liší: spusť python tools/pack_sprites.py');
+  const manifest = JSON.parse(fs.readFileSync(new URL('manifest.json', dir)));
+  const used = Object.entries(manifest).filter(([k]) => k !== '_v').flatMap(([, m]) => [
+    ...Object.entries(m).filter(([d]) => d !== 'anims').map(([, f]) => f),
+    ...Object.values(m.anims || {}).flatMap((byDir) => Object.values(byDir).flat()),
+  ]);
+  for (const f of used) assert.ok(atlas.frames[f], `manifest odkazuje na ${f}, který v atlasu není`);
+});

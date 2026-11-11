@@ -78,7 +78,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
       : '<circle cx="16" cy="17" r="7" fill="none" stroke="#0e0d0c" stroke-width="3"/><circle cx="16" cy="17" r="7" fill="none" stroke="#c9c26a" stroke-width="1.5"/><rect x="15" y="16" width="2" height="2" fill="#c9c26a"/>';
     const tree = gens.map((g, i) => `${i ? `<div class="hs-link"><span>${esc(INV[g.relation] || 'kin')}</span></div>` : ''}
       <div class="hs-node ${g.alive ? 'alive' : ''}">
-        <div class="frame"><img class="spr ${g.alive ? '' : 'dead'}" src="${sprite(f, g.archetype)}" alt="">${g.alive ? '' : '<span class="cross">✝</span>'}</div>
+        <div class="frame"><img class="spr ${g.alive ? '' : 'dead'}" src="${sprite(f, g.archetype)}" data-fb="${sprite(f)}" onerror="if(this.src.indexOf(this.dataset.fb)<0)this.src=this.dataset.fb" alt="">${g.alive ? '' : '<span class="cross">✝</span>'}</div>
         <div class="gen">${ORD(g.gen).toUpperCase()} GENERATION</div>
         <div class="nm">${esc(g.first)}</div>
         <div class="yrs">${g.alive ? `${dayL(g.enlisted)} → now` : `Day ${g.enlisted}–${g.day}`}</div>
@@ -95,7 +95,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
     const cards = gens.slice().reverse().map((g, i) => `
       <div class="gen-card ${g.alive ? 'alive' : ''}" data-gen="${g.gen}">
         <div class="gc-head">
-          <div class="pf"><img class="spr ${g.alive ? '' : 'dead'}" src="${sprite(f, g.archetype)}" alt=""></div>
+          <div class="pf"><img class="spr ${g.alive ? '' : 'dead'}" src="${sprite(f, g.archetype)}" data-fb="${sprite(f)}" onerror="if(this.src.indexOf(this.dataset.fb)<0)this.src=this.dataset.fb" alt=""></div>
           <div class="gc-title">
             <div class="rk">${esc(theme.ranks[g.rank] ?? '')} · ${esc(role(g.archetype))}</div>
             <div class="nm">${esc(g.name)}</div>
@@ -205,9 +205,9 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
     o.innerHTML = `<div class="death">
       <div class="ttl">✝ NEWS FROM THE FRONT · DAY ${p.day}</div>
       <div class="pair">
-        <div><div class="frame"><img class="spr dead" src="${sprite(F.faction, p.archetype)}" alt=""></div><div class="nm">${esc(p.first)}</div></div>
+        <div><div class="frame"><img class="spr dead" src="${sprite(F.faction, p.archetype)}" data-fb="${sprite(F.faction)}" onerror="if(this.src.indexOf(this.dataset.fb)<0)this.src=this.dataset.fb" alt=""></div><div class="nm">${esc(p.first)}</div></div>
         <div class="arrow">▸</div>
-        <div><div class="frame new"><img class="spr" src="${sprite(F.faction, cur.archetype)}" alt=""></div><div class="nm">${esc(cur.first)}</div></div>
+        <div><div class="frame new"><img class="spr" src="${sprite(F.faction, cur.archetype)}" data-fb="${sprite(F.faction)}" onerror="if(this.src.indexOf(this.dataset.fb)<0)this.src=this.dataset.fb" alt=""></div><div class="nm">${esc(cur.first)}</div></div>
       </div>
       <p><b>${esc(p.name)}</b> fell on Day ${p.day}.</p>
       <p class="muted">${esc(causeText(p.cause))}</p>
@@ -245,7 +245,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
         .map(([k, l]) => `<button type="button" class="chip ${k === filter ? 'on' : ''}" data-f="${k}">${esc(l)}</button>`).join('')}</div>
       ${list.length ? [...by].map(([d, rows]) => `<div class="day-h">DAY ${d}</div>` + rows.map((r) => `
         <button type="button" class="fallen-row" data-h="${esc(r.handle)}">
-          <img class="spr dead" src="${sprite(r.faction, r.archetype)}" alt="">
+          <img class="spr dead" src="${sprite(r.faction, r.archetype)}" data-fb="${sprite(r.faction)}" onerror="if(this.src.indexOf(this.dataset.fb)<0)this.src=this.dataset.fb" alt="">
           <span><span class="nm"><span class="dot" style="background:${fac(r.faction).color}"></span>${esc(r.name)}</span>
             <span class="sub">@${esc(r.handle)} · ${esc(role(r.archetype))} · ${r.days ?? '?'} days · House of ${esc(r.family)}${r.gen > 1 ? ` (${ORD(r.gen)})` : ''}</span></span>
           <span class="cs">${esc(causeShort(r.cause))}</span>
@@ -273,7 +273,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
     const rows = (boardsData[tab] || []).filter((r) => side === 'all' || r.faction === Number(side)).slice(0, 20);
     const me = store.get(ME);
     const meAt = rows.findIndex((r) => r.handle === me);
-    const pod = (r, cls, pl) => (r ? `<button type="button" class="pod ${cls}" data-h="${esc(r.handle)}"><img class="spr" src="${sprite(r.faction, soldiers.find((x) => x.handle === r.handle)?.archetype?.id)}" alt="">
+    const pod = (r, cls, pl) => (r ? `<button type="button" class="pod ${cls}" data-h="${esc(r.handle)}"><img class="spr" src="${sprite(r.faction, soldiers.find((x) => x.handle === r.handle)?.archetype?.id)}" data-fb="${sprite(r.faction)}" onerror="if(this.src.indexOf(this.dataset.fb)<0)this.src=this.dataset.fb" alt="">
       <span class="blk"><span class="pl">${pl}</span><span class="nm">${esc(r.name)}</span><span class="muted h">@${esc(r.handle)}</span><span class="val" style="color:${fac(r.faction).color}">${esc(fmt(r.value))}</span></span></button>` : '<div></div>');
     $('boards-body').innerHTML = `
       <div class="tabs">${BOARDS.map(([k, l]) => `<button type="button" class="tab ${k === tab ? 'on' : ''}" data-t="${k}">${l}</button>`).join('')}</div>
