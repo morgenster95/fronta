@@ -286,17 +286,104 @@ def drums_of(name):
     return at(start), [(at(a), at(b)) for a, b in quiet], at(double)
 
 
+
+# --- filmová válečná hudba pro reel „ridge“ (c moll, pochodové 96 bpm): smyčcové ostinato, žestě, tympány, malý bubínek,
+#     v klidných místech sólové housle; síla se mění podle scén (dialog = ticho před bouří, děla = plná síla). Vše syntetizované. ---
+def saw(f, n, spread=(0.0, 0.0045, -0.0045)):
+    t = np.arange(n) / SR
+    out = np.zeros(n)
+    for d in spread:
+        out += 2 * ((f * (1 + d) * t) % 1.0) - 1
+    return out / len(spread)
+
+
+def swell(freqs, dur, peak, cutoff=900, attack=0.55):
+    n = int(dur * SR)
+    sig = sum(saw(f, n) for f in freqs) / len(freqs)
+    t = np.arange(n) / SR
+    e = np.minimum(1, t / attack) ** 2 * np.minimum(1, (dur - t) / (dur * 0.45))
+    return lowpass_fast(sig, cutoff, 2) * e * peak
+
+
+def violin(f, dur, vol=0.2):
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    vib = 1 + 0.006 * np.sin(2 * np.pi * 5.2 * t) * np.minimum(1, t / 0.5)
+    ph = 2 * np.pi * np.cumsum(f * vib) / SR
+    s = np.sin(ph) + 0.45 * np.sin(2 * ph) + 0.25 * np.sin(3 * ph) + 0.12 * np.sin(4 * ph)
+    return s * np.minimum(1, t / 0.22) * np.minimum(1, (dur - t) / 0.5) * vol
+
+
+def epic_score(dur, cue):
+    n = int(dur * SR)
+    out = np.zeros(n)
+    beat = 60 / 96
+    bar = 4 * beat
+    pts = [(0, 0.5), (cue.get("won", 6), 0.75), (cue.get("hero", 10), 0.9), (cue.get("safe", 15), 0.7), (cue.get("talk", 20), 0.28),
+           (cue.get("guns", 25) - 0.1, 0.45), (cue.get("guns", 25), 1.0), (cue.get("voice", 38) - 0.2, 0.9), (cue.get("voice", 38), 0.3),
+           (cue.get("army", 48), 0.7), (cue.get("cta", 54), 1.0), (dur, 0.7)]
+    inten = lambda t: float(np.interp(t, [p[0] for p in pts], [p[1] for p in pts]))
+    prog = [(65.41, (1, 1.189, 1.5, 2)), (51.91, (1, 1.26, 1.5, 2)), (58.27, (1, 1.26, 1.5, 2)), (49.0, (1, 1.189, 1.5, 2))]
+    for b in range(int(dur / bar) + 1):
+        t0 = b * bar
+        root, ch = prog[b % 4]
+        I = inten(t0 + bar / 2)
+        # podklad žestí a smyčců (dlouhé tóny)
+        pad = sum(saw(root * 2 * m, int((bar + 0.9) * SR)) for m in ch) / len(ch)
+        e = env(len(pad), 0.5, 3.0) ** 0.6 * np.minimum(1, (bar + 0.9 - np.arange(len(pad)) / SR) / 0.9)
+        add(out, lowpass_fast(pad, 500 + 900 * I, 2) * e * (0.1 + 0.13 * I), t0)
+        add(out, saw(root, int((bar + 0.4) * SR)) * env(int((bar + 0.4) * SR), 0.15, 2.5) * (0.08 + 0.14 * I), t0)  # hluboký bas
+        if I > 0.4:  # osminové staccato smyčců
+            for k in range(8):
+                f = root * 2 * (1.5 if k in (2, 5) else 2 if k == 7 else 1)
+                s = lowpass_fast(saw(f, int(0.22 * SR)), 1400, 1) * env(int(0.22 * SR), 0.004, 0.09)
+                add(out, s * (0.08 + 0.16 * I) * (1.35 if k % 4 == 0 else 1), t0 + k * beat / 2)
+        if I > 0.55:  # tympány na 1 a 3, synkopa a malý bubínek na 2 a 4
+            add(out, drum(0.55 + 0.7 * I), t0)
+            add(out, drum(0.4 + 0.5 * I), t0 + 2 * beat)
+            if I > 0.8:
+                add(out, drum(0.45), t0 + 2.5 * beat)
+            for q in (1, 3):
+                sn = (rng.standard_normal(int(0.2 * SR)) - lowpass_fast(rng.standard_normal(int(0.2 * SR)), 2500, 1)) * env(int(0.2 * SR), 0.001, 0.05)
+                add(out, sn * 0.22 * I, t0 + q * beat)
+    # nástupy: žestě a úder při klíčových místech, nárůst před děly
+    for key, mult, pk in (("won", 1.0, 0.5), ("hero", 1.5, 0.45), ("guns", 1.0, 0.8), ("cta", 1.0, 0.8)):
+        if key in cue:
+            add(out, swell([65.41 * mult, 98.0 * mult, 130.81 * mult, 155.56 * mult], 3.2, pk), cue[key] - 0.2)
+            add(out, drum(1.5), cue[key])
+    if "guns" in cue:
+        ns = int(2.2 * SR)
+        r = rng.standard_normal(ns)
+        add(out, (r - lowpass_fast(r, 800, 1)) * np.linspace(0, 1, ns) ** 2 * 0.35, cue["guns"] - 2.2)
+    # klidný díl s hlasem hráče: sólové housle
+    if "quote" in cue:
+        q0 = cue["quote"]
+        for f, d, o in ((392.0, 1.7, 0), (311.13, 1.2, 1.6), (349.23, 1.4, 2.7), (293.66, 2.4, 4.0)):
+            add(out, violin(f, d, 0.22), q0 + 0.2 + o)
+    # dozvuk
+    wet = np.zeros(n)
+    for d, g in ((0.11, 0.3), (0.23, 0.22), (0.41, 0.16), (0.67, 0.1)):
+        k = int(d * SR)
+        wet[k:] += out[:-k] * g
+    return out + lowpass_fast(wet, 3500, 1)
+
+
 def build_story(name="story"):
     meta = json.load(open(os.path.join(REELS, f"{name}.sfx.json")))
     start, quiet_parts, double = drums_of(name)
     dur = meta["seconds"]
     n = int(dur * SR)
-    music = (lament(dur) * 1.3 + drone(dur) * 0.35 + rain(dur) * 0.7) if name == "barrage" else drone(dur) * 1.1 + rain(dur)
+    vo = json.load(open(os.path.join(REELS, f"{name}.vo.json"))) if os.path.exists(os.path.join(REELS, f"{name}.vo.json")) else {"lines": []}
+    cue = {l[3]: l[0] for l in vo["lines"] if len(l) > 3}
+    if name == "ridge":
+        music = epic_score(dur, cue) * 1.5 + rain(dur) * 0.25
+    else:
+        music = (lament(dur) * 1.3 + drone(dur) * 0.35 + rain(dur) * 0.7) if name == "barrage" else drone(dur) * 1.1 + rain(dur)
     fx = np.zeros(n)
     beat = 60 / 70
     # bubny: od Hegemonie, ztichnou před půlnocí a po dědicovi se rozjedou ke konci
     t = start
-    while t < dur - 3:
+    while t < dur - 3 and name != "ridge":  # ridge má bubny přímo v hudbě (epic_score)
         quiet = any(a < t < b for a, b in quiet_parts)
         if not quiet:
             strength = 0.3 + 0.7 * min(1, (t - start) / (dur - start - 10))
@@ -335,7 +422,7 @@ def build_story(name="story"):
         elif kind == "end":
             add(fx, drum(1.8), at)
             add(fx, boom(True) * 0.7, at)
-    for at in rng.uniform(4, dur - 2, int(dur * (0.25 if name == "barrage" else 0.7))):
+    for at in rng.uniform(4, dur - 2, int(dur * (0.25 if name in ("barrage", "ridge") else 0.7))):
         add(fx, rifle(rng.uniform(3, 6)), at)
     # hlas: lehké teplo + krátká ozvěna zákopu
     with wave.open(os.path.join(REELS, f"_{name}_vo.wav")) as w:

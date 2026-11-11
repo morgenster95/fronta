@@ -21,13 +21,15 @@ const CSS = `${BASE}${FX_CSS}
 #rd-medal .t { font-family: 'Silkscreen', monospace; font-size: 22px; color: #d98f3f; letter-spacing: 0.06em; }
 #rd-medal .n { font-family: 'Silkscreen', monospace; font-size: 30px; margin: 2px 0; }
 #rd-medal .h { font-size: 26px; color: #c9b99a; }
-.rd-say { position: absolute; transform: translate(-50%, -100%); width: 280px; background: #e3d9c3; color: #1c1a17; border: 4px solid #0e0d0c; box-shadow: 4px 4px 0 rgba(0,0,0,0.55); padding: 6px 10px 8px; font-size: 27px; line-height: 1.05; }
+.rd-say { position: absolute; transform: translate(-50%, -100%); width: 310px; background: #efe6cf; color: #14110e; border: 4px solid #0e0d0c; box-shadow: 4px 4px 0 rgba(0,0,0,0.6); padding: 6px 12px 9px; font-size: 31px; line-height: 1.04; }
 .rd-say::after { content: ''; position: absolute; left: 50%; bottom: -14px; margin-left: -9px; border: 9px solid transparent; border-top: 11px solid #0e0d0c; border-bottom: 0; }
-.rd-say .w { display: block; font-family: 'Silkscreen', monospace; font-size: 12px; color: #7e3b2a; margin-bottom: 2px; }
+.rd-say .w { display: block; font-family: 'Silkscreen', monospace; font-size: 13px; color: #7e3b2a; margin-bottom: 3px; }
+.rd-say .w i { font-style: normal; color: #4a463c; }
 #rd-guns { left: 0; right: 0; top: 54%; text-align: center; }
 #rd-guns span { display: inline-block; font-family: 'Silkscreen', monospace; font-size: 30px; background: rgba(126,59,42,0.95); padding: 6px 16px; margin: 3px 0; text-shadow: 3px 3px 0 #0e0d0c; }
 #rd-quote { left: 7%; right: 7%; top: 60%; }
 #rd-quote .paper { background: #d9cfb6; color: #1c1a17; border: 4px solid #0e0d0c; box-shadow: 6px 6px 0 rgba(0,0,0,0.5); padding: 12px 16px 12px; font-size: 29px; line-height: 1.08; }
+#rd-quote .hd { font-family: 'Silkscreen', monospace; font-size: 14px; color: #7e3b2a; margin-bottom: 6px; }
 #rd-quote .by { font-family: 'Silkscreen', monospace; font-size: 17px; color: #7e3b2a; margin-top: 8px; }
 #rd-army { left: 10%; right: 10%; top: 46%; text-align: center; }
 #rd-army .k { font-family: 'Silkscreen', monospace; font-size: 20px; color: #d98f3f; }
@@ -108,10 +110,9 @@ export function startRidgeReel({ cam, life, map, theme, soldiers, tex, anims }) 
     <div id="rd-day"><div class="big"></div><div class="sub"></div></div>
     <div id="rd-score"><div class="row" style="color:${W ? '#c9c26a' : '#a7b4bb'}"><span>${short(W)}</span><b>100</b></div><div class="row" style="color:${L ? '#c9c26a' : '#a7b4bb'}"><span>${short(L)}</span><b>${Math.min(99, data.counts[L])}</b></div></div>
     <div id="rd-medal"><div class="plate"><div class="t">MEDAL OF VALOR</div><div class="n">${(data.hero?.name || '').replace(/"[^"]*"\s*/, '').toUpperCase()}</div><div class="h">@${data.hero?.handle || ''} · ${role(data.hero?.role)}</div></div></div>
-    <div class="rd-say" id="rd-say0"><span class="w">SOLDIER 1</span><span class="x"></span></div>
-    <div class="rd-say" id="rd-say1"><span class="w">SOLDIER 2</span><span class="x"></span></div>
+    ${[0, 1].map((i) => `<div class="rd-say" id="rd-say${i}"><span class="w">${(pair[i].name || '').replace(/"[^"]*"\s*/, '').toUpperCase()} <i>@${pair[i].handle}</i></span><span class="x"></span></div>`).join('')}
     <div id="rd-guns"><span>TONIGHT</span><br><span>TOMORROW</span><br><span>THE NIGHT AFTER</span></div>
-    <div id="rd-quote"><div class="paper"><span class="x"></span><div class="by">@${q?.handle || ''} · ${q ? `${theme.factions[q.faction].name.replace(/^The /, '')} ${role(q.role).toLowerCase()}` : ''}</div></div></div>
+    <div id="rd-quote"><div class="paper"><div class="hd">HOSPITAL OR SANDBAGS? SOMEONE CALLED IT.</div><span class="x"></span><div class="by">@${q?.handle || ''} · ${q ? `${theme.factions[q.faction].name.replace(/^The /, '')} ${role(q.role).toLowerCase()}` : ''}</div></div></div>
     <div id="rd-army" class="panel"><div class="k">ON THE LINE TODAY</div><div class="n">0</div></div>
     <div id="rd-side"><span><b></b><em style="font-style:normal"></em></span></div>
     <div id="rd-sub"></div>
@@ -167,8 +168,9 @@ export function startRidgeReel({ cam, life, map, theme, soldiers, tex, anims }) 
     // dialog dvou vojáků v obraze
     const lines = ['Hell is about to break loose out there.', "Yeah, but we'll be safe. Unless our own artillery hits us."];
     [0, 1].forEach((i) => {
-      const a = tTalk + 0.4 + i * 2.8, el = $(`#rd-say${i}`);
-      tagAt(el, pair[i], cam, t >= a && t < tGuns - 0.1 ? 1 : 0, 34);
+      const a = tTalk + 0.4 + i * 2.8, end = i ? tGuns - 0.1 : tTalk + 3.1, el = $(`#rd-say${i}`);
+      tagAt(el, pair[i], cam, t >= a && t < end ? 1 : 0, 34);
+      el.style.left = `${Math.max(165, Math.min(375, parseFloat(el.style.left) || 270))}px`; // bublina nesmí utéct z obrazu
       el.querySelector('.x').textContent = typed(lines[i], t, a + 0.1, 26);
     });
     // bombardování: tři noci

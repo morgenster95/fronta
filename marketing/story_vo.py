@@ -19,7 +19,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REELS = os.path.join(ROOT, "marketing", "reels")
 TMP = os.path.join(REELS, "_vo")
 NAME = sys.argv[1] if len(sys.argv) > 1 else "story"
-VOICE = sys.argv[2] if len(sys.argv) > 2 else "en-GB-RyanNeural"
+# profil vypravěče podle scénáře: (hlas, rychlost, výška); reel „ridge“ má energičtější hlas
+PROFILES = {"ridge": ("en-US-GuyNeural", "+12%", "+0Hz")}
+PROFILE = PROFILES.get(NAME)
+VOICE = sys.argv[2] if len(sys.argv) > 2 else (PROFILE[0] if PROFILE else "en-GB-RyanNeural")
 SR = 44100
 
 # [začátek s, text]; časy drží krok se scénářem „story“ v reel.js
@@ -71,7 +74,8 @@ if NAME not in SCRIPTS and os.path.exists(os.path.join(REELS, f"{NAME}.script.js
 LINES, SECONDS, *_auto = SCRIPTS[NAME]
 # auto: věta začne hned po předchozí (nejdřív ve svém čase), žádná hluchá místa; délka videa podle hlasu
 AUTO = bool(_auto and _auto[0])
-RATE = "+4%" if AUTO else "-6%"  # denní a novinkové reely svižněji
+RATE = PROFILE[1] if PROFILE else ("+4%" if AUTO else "-6%")  # denní a novinkové reely svižněji
+PITCH = PROFILE[2] if PROFILE else "-6Hz"
 GAP, TAIL = 0.25, 3.2
 
 
@@ -79,7 +83,7 @@ GAP, TAIL = 0.25, 3.2
 
 async def speak(text, path):
     # pomalejší a hlubší vypravěč (denní a novinkové reely svižněji, viz RATE ze .script.json)
-    await edge_tts.Communicate(text, VOICE, rate=RATE, pitch="-6Hz").save(path)
+    await edge_tts.Communicate(text, VOICE, rate=RATE, pitch=PITCH).save(path)
 
 
 def to_wav(src, dst):

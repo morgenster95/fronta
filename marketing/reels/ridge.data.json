@@ -1,22 +1,23 @@
 {
+ "since": "2026-11-11T09:00:00Z",
  "day": 3,
- "decided": false,
+ "decided": true,
  "winner": 1,
  "loser": 0,
  "objective": "Verdel Ridge",
  "counts": [
-  92,
-  98
+  94,
+  100
  ],
  "hero": {
-  "handle": "big_fat_buddy",
-  "name": "Marek \"Brick\" Buddy",
-  "role": "machinegunner"
+  "handle": "jro_se11",
+  "name": "Lucien \"Shadow\" Jro",
+  "role": "cook"
  },
- "newToday": 24,
+ "newToday": 37,
  "army": [
-  92,
-  98
+  94,
+  100
  ],
  "quote": {
   "handle": "yaboypolarbear",
