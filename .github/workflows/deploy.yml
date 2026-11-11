@@ -10,7 +10,7 @@ jobs:
         with: { node-version: 22, cache: npm }
       - run: npm ci
       - run: npm i -g firebase-tools@14
-      - run: npm run -s data:build && npm run -s build && du -sh dist
+      - run: export VITE_ASSET_BASE="$(bash tools/asset-base.sh)"; npm run -s data:build && npm run -s build && du -sh dist
       - name: Deploy
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

@@ -1,10 +1,13 @@
 // Obrázek vojáka ke sdílení do Instagram story (1080×1920).
 // Pixelová vrstva se kreslí na malé plátno a zvětšuje se celočíselně (ostré pixely), text je ostrý přímo ve velkém rozlišení.
+import { loadImage } from './assets.js';
 
 const W = 1080, H = 1920, K = 5; // pixelová vrstva 216×384, zvětšená ×5
 const PAL = { ink: '#0e0d0c', dark: '#1c1a17', mud: '#2b2722', bone: '#a39782', white: '#e3d9c3', gold: '#d98f3f', rust: '#7e3b2a', grey: '#8a9295', khaki: '#c9c26a' };
 
 function loadImg(src) {
+  // rekvizity ze zrcadla (GitHub Pages) s pádem zpět na vlastní doménu; ostatní zdroje (data:, blob:) přímo
+  if (src.startsWith('/assets/')) return loadImage(src);
   return new Promise((ok, err) => {
     const i = new Image();
     i.onload = () => ok(i);

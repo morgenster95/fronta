@@ -86,8 +86,13 @@ Instagram API (secrets `IG_ACCESS_TOKEN`, `IG_USER_ID`), Firebase Auth přes Goo
 service account pro nasazování (`FIREBASE_SERVICE_ACCOUNT`). Postup zapojení je v `docs/ONBOARDING.md`.
 
 ## Známá slabá místa
-- **Limit Firebase Hosting (Spark): 360 MB přenosu denně, 10 GB úložiště.** Úložiště je bez problému (web má ~5 MB). První návštěva stáhne
-  nejvýš ~1,8 MB (z toho ~1 MB obrázky PNG, ~0,4 MB JavaScript), takže limit stačí zhruba na 200–300 nových návštěvníků denně.
+- **Limit Firebase Hosting (Spark): 360 MB přenosu denně, 10 GB úložiště.** Po vyčerpání denního limitu web neodpovídá do dalšího dne (půlnoc tichomořského času).
+  Úložiště je bez problému (dist 4,7 MB). **Změřeno 2026-11-11 (telefon, nová návštěva): 0,64 MB** (obrázky 435 KB, JavaScript+CSS 193 KB, data 13 KB), tj. limit vydrží jen ~550 nových návštěvníků denně.
+  **Opatření (od 2026-11-11):** obrázky hry (sprity, efekty, rekvizity) se berou ze **zrcadla na GitHub Pages** (`https://morgenster95.github.io/fronta/game/assets/…`, nahrává je workflow `media.yml`
+  spolu s otiskem `game/assets.sha`). Build zrcadlo zapne jen když tam leží stejná verze (`tools/asset-base.sh`, proměnná `VITE_ASSET_BASE`); jinak jdou obrázky z Firebase. Když zrcadlo za běhu selže,
+  `web/src/assets.js` načte obrázek z vlastní domény. Z Firebase pak jde ~0,2 MB na návštěvu, limit vydrží ~1 700 nových návštěvníků denně (Pages: měkký limit 100 GB měsíčně).
+  Hashované JS/CSS mají `Cache-Control: immutable`. Watchdog (každých 20 min) při odpovědi jiné než HTTP 200 založí issue `site-down` (e-mail).
+  **Kontrola vytížení:** Firebase Console → Hosting → Využití (přenos za den). Další krok, kdyby to nestačilo: JavaScript také na Pages / přesun hostingu na Cloudflare Pages (zdarma, bez limitu přenosu; vyžaduje účet a změnu odkazu v bio).
 - Testy se na GitHubu nespouštějí samy (jen `npm test` před commitem).
 - Historie gitu obsahuje stará videa (~110 MB). Smazání souborů repo nezmenší, to by šlo jen přepsáním historie.
 - Už zveřejněný příběhový reel a `marketing/CAPTIONS.md` zmiňují „every midnight“ a „500 claimed soldiers unlock the artillery“; obojí už neplatí.

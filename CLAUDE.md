@@ -13,6 +13,8 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
 ## Pravidla
 - **Odpovídej česky.** Texty ve hře a na Instagramu jsou anglicky (publikum USA/UK, ne Praha).
 - **Jen zdarma:** žádné placené služby, Firebase Blaze, Cloud Functions ani placená API. Firebase je na Spark, média na GitHub Pages.
+  **Firebase Hosting má limit 360 MB přenosu denně** (po vyčerpání web neodpovídá). Obrázky hry proto běží ze zrcadla na GitHub Pages (`web/src/assets.js`, `tools/asset-base.sh`, `media.yml`);
+  nová návštěva stáhne z Firebase jen ~0,2 MB. **Při přidávání dalších velkých souborů do `web/public/` počítej s limitem** (podrobnosti `docs/STATUS.md`, „Známá slabá místa“).
 - **Nic nepublikuj na Instagram bez výslovného souhlasu uživatele** (reel, story, post). Tokeny nikdy nezadávej ani nevypisuj.
 - **Statické posty vždy 1080×1350 (4:5)**, víc místa a pro IG nejlepší: kreslí se v mřížce 216×270 a zvětší ×5 (`marketing/make_posts.py` W, H, K; `make_day.py`, `make_victory.py`).
 - **V popiscích na IG hráče neoznačovat** (žádné @jméno; hromadné označování může IG vyhodnotit jako spam). Platí i pro hrdinu kóty: v popisku je jeho jméno

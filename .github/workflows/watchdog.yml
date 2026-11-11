@@ -35,6 +35,14 @@ jobs:
             resolve loop-down "Smyčka běží."
           fi
 
+          # 1b) je web vůbec dostupný? Firebase Hosting (Spark) má limit 360 MB přenosu denně; po jeho vyčerpání web do dalšího dne neodpovídá
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$SITE/data/roster.json?w=$(date +%s)")
+          if [ "$code" != "200" ]; then
+            alert site-down "Web neodpovídá (HTTP $code)" "Adresa $SITE/data/roster.json vrací HTTP $code. Nejčastější příčina: vyčerpaný denní limit přenosu Firebase Hosting (Spark, 360 MB/den; web se sám obnoví po půlnoci tichomořského času) nebo výpadek nasazení. Podívej se do Firebase Console → Hosting → Využití. Obrázky hry jsou zrcadlené na GitHub Pages (https://morgenster95.github.io/fronta/game/), ale vstupní stránka a data běží na Firebase."
+          else
+            resolve site-down "Web zase odpovídá."
+          fi
+
           # 2) ukazuje web aktuální data? (počet vojáků a den války z repa vs. živý web)
           want=$(node -e "const s=require('./data/state.json');console.log(s.soldiers.length+'/'+s.day)")
           live=$(curl -sf "$SITE/data/roster.json?w=$(date +%s)" | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{try{const r=JSON.parse(d);console.log(r.soldiers.length+'/'+r.day)}catch{console.log('chyba')}})")

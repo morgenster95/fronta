@@ -1,10 +1,13 @@
-# Soubory pro Instagram (marketing/promo/) na GitHub Pages: https://morgenster95.github.io/fronta/<soubor>.
-# Zdarma a mimo Firebase Hosting (ten má malý limit přenosu a úložiště). Spouští se po každé změně v marketing/promo.
+# GitHub Pages (zdarma, mimo Firebase Hosting, který má malý limit přenosu a úložiště):
+#  1) soubory pro Instagram (marketing/promo/) na https://morgenster95.github.io/fronta/<soubor>
+#  2) zrcadlo obrázků hry (web/public/assets/) na https://morgenster95.github.io/fronta/game/assets/… s otiskem game/assets.sha
+#     (web je bere odtud, dokud tam leží stejná verze; viz tools/asset-base.sh). Obrázky tvoří ~70 % dat jedné návštěvy hry.
+# Spouští se po změně v marketing/promo nebo web/public/assets.
 name: media
 on:
   push:
     branches: [main]
-    paths: ['marketing/promo/**']
+    paths: ['marketing/promo/**', 'web/public/assets/**', 'tools/asset-base.sh']
   workflow_dispatch:
 permissions: { contents: read, pages: write, id-token: write }
 concurrency: { group: pages, cancel-in-progress: true }
@@ -14,8 +17,14 @@ jobs:
     environment: { name: github-pages, url: '${{ steps.d.outputs.page_url }}' }
     steps:
       - uses: actions/checkout@v4
-      - run: touch marketing/promo/.nojekyll
+      - name: Sestavit web Pages
+        run: |
+          mkdir -p site/game
+          cp -r marketing/promo/. site/
+          cp -r web/public/assets site/game/assets
+          (cd web/public/assets && find . -type f | LC_ALL=C sort | xargs sha1sum | sha1sum | cut -d' ' -f1) > site/game/assets.sha
+          touch site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
-        with: { path: marketing/promo }
+        with: { path: site }
       - id: d
         uses: actions/deploy-pages@v4

@@ -43,6 +43,7 @@ round() {
   fi
   # nasadit, kdykoli se změnil obsah (stav, deník, kód)
   if [ "$(git rev-parse HEAD)" != "$DEPLOYED" ]; then
+    export VITE_ASSET_BASE="$(bash tools/asset-base.sh)" # obrázky ze zrcadla na GitHub Pages, když tam leží aktuální verze (šetří limit Firebase)
     npm run -s build > /dev/null || { echo "build selhal"; return 1; }
     if firebase deploy --only hosting --non-interactive --project fronta-ig > "${RUNNER_TEMP:-/tmp}/deploy.log" 2>&1; then
       echo "nasazeno $(git rev-parse --short HEAD)"

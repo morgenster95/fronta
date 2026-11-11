@@ -1,5 +1,5 @@
 // Prohlížeč fronty: terén po blocích, tisíce vojáků, úrovně detailu, kamera a UI.
-import { Application, Assets, Container, Graphics, Rectangle, Sprite, Texture, TextureSource, Ticker, TilingSprite } from 'pixi.js';
+import { Application, Container, Graphics, Rectangle, Sprite, Texture, TextureSource, Ticker, TilingSprite } from 'pixi.js';
 import { generateFront, openRange, DIRS, T, connectSite } from '../../engine/mapgen.js';
 import { Camera } from './camera.js';
 import { paintChunk, paintOverview, CHUNK } from './terrain.js';
@@ -9,6 +9,7 @@ import { createSound } from './sound.js';
 import { startReel } from './reel.js';
 import { buildHospitals, roofAlpha, hospitalSize } from './hospital.js';
 import { hospitalNav } from './hospital-nav.js';
+import { getJson, loadTexture, loadImage } from './assets.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
 
@@ -64,7 +65,7 @@ async function boot() {
   const [theme, roster, manifest] = await Promise.all([
     fetch('/data/theme.json').then((r) => r.json()),
     fetch('/data/roster.json').then((r) => r.json()),
-    fetch('/assets/soldiers/manifest.json', { cache: 'no-cache' }).then((r) => r.json()),
+    getJson('/assets/soldiers/manifest.json', { cache: 'no-cache' }),
   ]);
   const map = generateFront(theme.map);
   const worldW = map.W * map.tile, worldH = map.H * map.tile;
@@ -97,19 +98,19 @@ async function boot() {
       const jobs = DIRS.map(async (d) => {
         mirrored[key][d] = !manifest[key][d] && !!manifest[key][MIRROR[d]];
         const file = manifest[key][d] ?? manifest[key][MIRROR[d]] ?? manifest[key].south;
-        tex[key][d] = await Assets.load(`/assets/soldiers/${file}${V}`);
+        tex[key][d] = await loadTexture(`/assets/soldiers/${file}${V}`);
       });
       for (const [anim, byDir] of Object.entries(manifest[key].anims || {})) {
         anims[key] ??= {};
         anims[key][anim] = {};
         for (const [d, files] of Object.entries(byDir)) {
-          jobs.push(Promise.all(files.map((f) => Assets.load(`/assets/soldiers/${f}${V}`))).then((t) => (anims[key][anim][d] = t)));
+          jobs.push(Promise.all(files.map((f) => loadTexture(`/assets/soldiers/${f}${V}`))).then((t) => (anims[key][anim][d] = t)));
         }
       }
       return jobs;
     }),
   );
-  const loadImg = (src) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = src; });
+  const loadImg = (path) => loadImage(path).catch(() => null);
   const propImages = Object.fromEntries(await Promise.all(['tree', 'grave', 'crater_s', 'crater_m', 'crater_water', 'crater_huge'].map(async (k) => [k, await loadImg(`/assets/props/${k}.png${V}`)])));
   const keyFor = (s) => {
     const k = `${theme.factions[s.faction].sprite}_${s.archetype?.id}`;
@@ -314,8 +315,8 @@ async function boot() {
   const fxSheets = {};
   await Promise.all(['shell-blast', 'shell-small', 'smoke-small'].map(async (name) => {
     try {
-      const meta = await fetch(`/assets/fx/${name}.json`, { cache: 'no-cache' }).then((r) => r.json());
-      const base = await Assets.load(`/assets/fx/${name}.png${V}`);
+      const meta = await getJson(`/assets/fx/${name}.json`, { cache: 'no-cache' });
+      const base = await loadTexture(`/assets/fx/${name}.png${V}`);
       fxSheets[name] = {
         frames: meta.frames.map(({ frame: f }) => new Texture({ source: base.source, frame: new Rectangle(f.x, f.y, f.w, f.h) })),
         pivot: meta.frames[0].pivot,
@@ -328,10 +329,10 @@ async function boot() {
   // snímky zamíření (přesná střelba): props/aim_<klíč>_<směr>.png + ústí hlavně z jejich JSON
   const aims = {};
   try {
-    const meta = await fetch(`/assets/soldiers/aims.json${V}`, { cache: 'no-cache' }).then((r) => r.json());
+    const meta = await getJson(`/assets/soldiers/aims.json${V}`, { cache: 'no-cache' });
     await Promise.all(Object.entries(meta).map(async ([key, byDir]) => {
       aims[key] = {};
-      for (const [d, m] of Object.entries(byDir)) aims[key][d] = { tex: await Assets.load(`/assets/soldiers/${m.file}${V}`), mx: m.mx, my: m.my };
+      for (const [d, m] of Object.entries(byDir)) aims[key][d] = { tex: await loadTexture(`/assets/soldiers/${m.file}${V}`), mx: m.mx, my: m.my };
     }));
   } catch (e) {
     console.warn('aims', e);
@@ -374,7 +375,7 @@ async function boot() {
   const gunMeta = {};
   await Promise.all(['south-east', 'south-west', 'north-east', 'north-west'].map(async (d) => {
     try {
-      const t = await Assets.load(`/assets/props/mg_${d}.png${V}`);
+      const t = await loadTexture(`/assets/props/mg_${d}.png${V}`);
       gunTex[d] = t;
       gunMeta[d] = muzzleOf(t.source.resource, d);
     } catch {
