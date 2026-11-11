@@ -149,6 +149,8 @@ async function main() {
   const letterMedia = (queue.items || []).filter((i) => i.voices && i.published?.id).map((i) => i.published.id);
   const voteMedia = new Set([state.vote?.mediaId, ...(state.events || []).filter((e) => e.perFaction && e.day >= state.day - 2).map((e) => e.mediaId), ...letterMedia].filter(Boolean));
   for (const mid of voteMedia) if (!posts.some((p) => p.id === mid)) posts.push({ id: mid, count: undefined }); // hlasování projít vždy
+  // hesla všech hlasování (běžící, nedávná i čekající ve frontě), ne napevno v kódu
+  const voiceKws = [...new Set([...(state.vote?.options || []), ...(queue.items || []).flatMap((i) => i.vote?.options || [])].map((o) => o.kw))];
   let voicesDirty = false;
   const keepVoice = (c, mid) => {
     const text = (c.text || '').trim();
@@ -156,7 +158,7 @@ async function main() {
     const list = (voices.posts[mid] ??= []);
     if (list.some((v) => v.id === c.id)) return;
     const s = state.soldiers.find((x) => x.id === c.userId) || state.soldiers.find((x) => x.handle === (c.username || '').toLowerCase());
-    const kw = (text.toUpperCase().match(/\b(HOSPITAL|SANDBAGS|WIRE|FORTIFY)\b/) || [])[1] || null;
+    const kw = voiceKws.find((k) => new RegExp(`\\b${k.replace(/S$/, '')}S?\\b`).test(text.toUpperCase())) || null;
     list.push({ id: c.id, handle: c.username, faction: s?.faction ?? null, kw, text: text.slice(0, 800), at: c.timestamp, reply: !!c.parentId });
     voicesDirty = true;
   };
