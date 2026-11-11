@@ -310,7 +310,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     place();
 
     // práce mediků podle závažnosti: kritičtí, těžce, lehce (stejná skupina: kdo je raněný déle)
-    let supply = medicWork(state, theme, f, busy);
+    let supply = medicWork(state, theme, f, busy) * (ctx.workOf?.(f) ?? 1); // rozkaz může práci mediků dočasně zvýšit
     const cooks = lineup(state, f, (s) => (ab(cfg, s, 'heal') || ab(cfg, s, 'worsen')) && fit(s));
     const faith = best(cfg, state.soldiers.filter((s) => s.faction === f && fit(s)), 'faith');
     const patients = mine().filter((s) => s.wound.place !== 'bed').sort((a, b) => pri(a) - pri(b) || a.wound.day - b.wound.day);

@@ -969,3 +969,52 @@ test('titulek novin není každodenní rubrika (Across the wire, obvaziště)', 
   for (const t of titles) assert.ok(!/^(Across the wire|The aid posts|The hospitals|Hospitals and aid posts)$/.test(t), `titulek je rubrika: ${t}`);
   for (let i = 1; i < titles.length; i++) assert.notEqual(titles[i], titles[i - 1], `dva dny po sobě stejný titulek: ${titles[i]}`);
 });
+
+test('rozkazy z hlasování: palba a práce mediků (fire, medics) platí jen po dobu rozkazu', async () => {
+  const { issueOrders, orderFire, orderMedics, orderDanger } = await import('./orders.js');
+  const s = emptyState(theme);
+  issueOrders(s, [{ faction: 0, kw: 'ATTACK', label: 'x', fire: 1.5, days: 3 }, { faction: 1, kw: 'BANDAGES', label: 'y', medics: 1.5, danger: 0.9, days: 2 }], 5);
+  assert.equal(orderFire(s, 0, 5), 1.5);
+  assert.equal(orderFire(s, 0, 7), 1.5);
+  assert.equal(orderFire(s, 0, 8), 1, 'po třech dnech rozkaz končí');
+  assert.equal(orderFire(s, 1, 5), 1, 'rozkaz platí jen pro svou stranu');
+  assert.equal(orderMedics(s, 1, 6), 1.5);
+  assert.equal(orderDanger(s, 1, 6), 0.9);
+  assert.equal(orderMedics(s, 1, 7), 1);
+});
+
+test('denní rozhodnutí v tématu: každá možnost má heslo, popis, výsledek a aspoň jeden účinek, který engine umí', () => {
+  const ids = new Set();
+  for (const d of theme.decisions.list) {
+    assert.ok(!ids.has(d.id), `dvakrát ${d.id}`); ids.add(d.id);
+    assert.ok(d.question && d.title && d.reel && ['any', 'barrage', 'victory'].includes(d.when), d.id);
+    assert.ok(d.options.length >= 2 && new Set(d.options.map((o) => o.kw)).size === d.options.length, `${d.id}: hesla`);
+    for (const o of d.options) {
+      assert.match(o.kw, /^[A-Z]+$/, `${d.id}: heslo jedním slovem velkými písmeny`);
+      assert.ok(o.label && o.outcome?.includes('{side}'), `${d.id}/${o.kw}: popis a výsledek se {side}`);
+      assert.ok(o.build ? theme.battle.buildings[o.build] : ['danger', 'fire', 'medics', 'recover'].some((k) => o[k] != null), `${d.id}/${o.kw}: účinek`);
+      assert.ok(!theme.factions.some((f) => f.keyword === o.kw) && !parseRole(o.kw, theme), `${d.id}/${o.kw}: heslo se plete se stranou nebo rolí`);
+    }
+  }
+});
+
+test('rozhodnutí s obsazením: hlasující pro vítěznou možnost dostanou zápis a Gazette je jmenuje', async () => {
+  const { openVote } = await import('./roster.js');
+  const s = emptyState(theme);
+  for (let i = 0; i < 12; i++) applyComment(s, { id: `k${i}`, userId: `uk${i}`, username: `obsazeni${i}x`, text: i % 2 ? 'concord' : 'hegemony' }, theme, story, map);
+  const d = theme.decisions.list.find((x) => x.id === 'night-patrol');
+  openVote(s, { mediaId: 'mp', question: d.question, options: d.options, perFaction: true });
+  s.soldiers.forEach((x, i) => applyComment(s, { id: `kv${i}`, userId: x.id, username: x.handle, text: x.faction === 0 ? 'patrol!' : 'wait', mediaId: 'mp' }, theme, story, map));
+  const lens = new Map(s.soldiers.map((x) => [x.id, x.record.length]));
+  dailyTick(s, theme, story);
+  const ev = s.events.at(-1);
+  assert.deepEqual(ev.winners, ['PATROL', 'WAIT']);
+  const heg = ev.cast.find((c) => c.faction === 0);
+  assert.equal(heg.handles.length, 3);
+  for (const h of heg.handles) {
+    const x = s.soldiers.find((y) => y.handle === h);
+    assert.ok(x.record.slice(lens.get(x.id)).some(([day, t]) => day === s.day && /gap|shell hole|counting/.test(t)), `${h} nemá zápis z hlídky`);
+  }
+  assert.match(s.chronicle.at(-1).blocks.find((b) => b.h === 'The front decided').text, /Out in front for the Hegemony: @/);
+  assert.equal(s.orders.filter((o) => o.kw === 'PATROL')[0].fire, 1.4);
+});

@@ -4,10 +4,10 @@ import { createSoldier, tickSoldier, heir, selectForStory, promotionOnly, daysAt
 import { enlistEntry, weatherFor, eventEntry, tplKey, makeBackground, backgroundLine, silenceGuns } from './story.js';
 import { writeChronicle } from './chronicle.js';
 import { checkRace, raceStatus, raceDanger, activeBarrage, awardHonors } from './race.js';
-import { pick } from './rng.js';
+import { pick, rngFor } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
-import { orderDanger, orderRecover, issueOrders } from './orders.js';
+import { orderDanger, orderRecover, orderFire, orderMedics, issueOrders } from './orders.js';
 import { battleTick, battlePublic, build as buildStructure, ensureBattle, levelOf, gunsSilent } from './battle.js';
 import { awardHouseBadges, noticeDeath } from './house.js';
 import { ensureValley, valleyTick, valleyDanger, valleyRecover, raidKeyword, volunteer, valleyPublic } from './valley.js';
@@ -302,8 +302,22 @@ function resolveFactionVote(state, v, theme) {
   const built = builtOf.filter(Boolean);
   const text = per.map((p, i) => (builtOf[i] ? `${builtOf[i]}.`
     : (p.winner ? p.winner.outcome || '' : 'No word came back from the {side}: nothing was built.').replaceAll('{side}', sideName(theme, p.faction)))).join(' ');
+  // Obsazení: možnost s `cast` (věty s {name}) dostane tváře. Jdou do toho ti, kdo pro vítěznou možnost své strany hlasovali
+  // (převzatí první), každý dostane zápis do deníku a Gazette je jmenuje. Z rozhodnutí je tak příběh se jmény pro večerní reel.
+  const cast = per.map((p) => {
+    const lines = p.winner?.cast;
+    if (!lines?.length) return null;
+    const voters = Object.entries(v.tallies).filter(([, t]) => t.f === p.faction && t.kw === p.winner.kw)
+      .map(([id]) => state.soldiers.find((x) => x.id === id)).filter((x) => x && x.status === 'active');
+    const rand = rngFor(theme?.id, 'cast', state.day, p.faction);
+    const order = voters.map((x) => [(x.claimed ? 0 : 1) + rand(), x]).sort((a, b) => a[0] - b[0]).map((x) => x[1]).slice(0, lines.length);
+    order.forEach((x, i) => x.record.push([state.day + 1, lines[i].replaceAll('{name}', x.name).replaceAll('{side}', sideName(theme, p.faction))]));
+    return order.length ? { faction: p.faction, kw: p.winner.kw, handles: order.map((x) => x.handle) } : null;
+  }).filter(Boolean);
+  const names = (h) => (h.length > 1 ? `${h.slice(0, -1).map((x) => `@${x}`).join(', ')} and @${h.at(-1)}` : `@${h[0]}`);
+  const castText = cast.map((c) => `Out in front for the ${sideName(theme, c.faction)}: ${names(c.handles)}.`).join(' ');
   const result = { day: state.day, mediaId: v.mediaId, question: v.question, perFaction: true, winner, winners: per.map((p) => p.winner?.kw ?? null),
-    counts: per.map((p) => p.counts), total, text: text.trim(), danger: 1, orders, built };
+    counts: per.map((p) => p.counts), total, text: `${text.trim()} ${castText}`.trim(), danger: 1, orders, built, ...(cast.length ? { cast } : {}) };
   state.events = [...(state.events || []), result].slice(-60);
   state.vote = null;
   return result;
@@ -362,7 +376,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
   // denní boj: zásahy, medici, lůžka, drát (engine/battle.js); účastníci výpravy dnes v linii nejsou
   const dangerOf = (s) => (ctx.danger ?? 1) * (theme.race ? raceDanger(state, theme, s.faction, day) : 1) * valleyDanger(state, theme, s, day) * orderDanger(state, s.faction, day);
   const careOf = (s) => orderRecover(state, s.faction, day, valleyRecover(state, theme, s)) / 0.35;
-  const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf }) : { events: [], news: [], ids: new Set() };
+  const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf, fireOf: (s) => orderFire(state, s.faction, day), workOf: (f) => orderMedics(state, f, day) }) : { events: [], news: [], ids: new Set() };
   const events = [...raid.events, ...fight.events];
   const today = new Set(); // šablony použité dnes (rozmanitost mezi vojáky)
   for (const s of state.soldiers) s.bg ??= makeBackground(s, story);

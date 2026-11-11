@@ -800,5 +800,238 @@
         "fallen": 3
       }
     ]
+  },
+  "decisions": {
+    "_": "Denní rozhodnutí (návrhy, zatím NENASAZENO): každá strana hlasuje sama za sebe jedním slovem pod postem, ranní vydání výsledek provede a otiskne. Účinky možností: build (stavba z battle.buildings), danger (násobek zásahů z pozadí), fire (násobek palby vlastních vojáků), medics (násobek práce mediků), recover (minimální šance uzdravení na lůžku za den), days (kolik dní rozkaz platí). when: any | barrage (jen když je někdo pod palbou děl) | victory (po dobytí kóty). reel = věta, kterou večerní reel příběh otevře. Čísla jsou první odhad: před nasazením ověřit `node tools/decision.mjs <id> --sim`. Návrh postu: `node tools/decision.mjs <id>`. cast = věty se {name}: tolik hráčů, kteří pro vítěznou možnost hlasovali, dostane zápis do deníku a Gazette je jmenuje.",
+    "list": [
+      {
+        "id": "attack-or-dig",
+        "when": "any",
+        "title": "Attack or dig in",
+        "question": "The line is restless. What are your orders?",
+        "reel": "Last night each side gave its men one order.",
+        "options": [
+          {
+            "kw": "ATTACK",
+            "label": "Three days of harder fire on the enemy line",
+            "fire": 1.5,
+            "days": 3,
+            "outcome": "The {side} went over to the attack: every rifle on the fire step, three days of it.",
+            "cast": [
+              "{name} was first on the fire step when the order came, and last off it.",
+              "{name} fired until the barrel was too hot to hold.",
+              "{name} called the targets for the whole bay in a voice that never rose."
+            ]
+          },
+          {
+            "kw": "DIG",
+            "label": "Dig in: fewer of your own men hit for three days",
+            "danger": 0.7,
+            "days": 3,
+            "outcome": "The {side} dug in and kept their heads down for three days.",
+            "cast": [
+              "{name} dug through the night and was still digging when the sun came up.",
+              "{name} carried sandbags until the count was lost."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "night-patrol",
+        "when": "any",
+        "title": "The night patrol",
+        "question": "A gap has been found in the enemy wire. Do you send a patrol tonight?",
+        "reel": "There was a gap in the wire. Only one side went through it.",
+        "options": [
+          {
+            "kw": "PATROL",
+            "label": "Send them out: more hits on the enemy, more risk for you, one night",
+            "fire": 1.4,
+            "danger": 1.15,
+            "days": 1,
+            "outcome": "The {side} sent a patrol through the gap. It did not come back quietly.",
+            "cast": [
+              "{name} was first through the gap in the wire.",
+              "{name} lay in a shell hole for two hours with the enemy talking ten yards away.",
+              "{name} came back last, counting the others in."
+            ]
+          },
+          {
+            "kw": "WAIT",
+            "label": "Stand to and wait: a safer night",
+            "danger": 0.8,
+            "days": 1,
+            "outcome": "The {side} stood to all night and let the gap alone.",
+            "cast": [
+              "{name} stood to all night and watched the gap. Nothing came through it."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "medics-or-rations",
+        "when": "any",
+        "title": "Bandages or bread",
+        "question": "One supply cart got through. What is on it?",
+        "reel": "One cart reached the line. Each side chose what was on it.",
+        "options": [
+          {
+            "kw": "BANDAGES",
+            "label": "Stretcher bearers do half as much again for three days",
+            "medics": 1.5,
+            "days": 3,
+            "outcome": "The {side} cart carried dressings and morphia. The stretcher bearers worked like men possessed.",
+            "cast": [
+              "{name} unloaded the cart under fire and did not drop a single box.",
+              "{name} cut dressings by candlelight until morning."
+            ]
+          },
+          {
+            "kw": "BREAD",
+            "label": "Hot food: men in the beds mend faster for three days",
+            "recover": 0.6,
+            "days": 3,
+            "outcome": "The {side} cart carried bread and hot stew. The men in the beds sat up for the first time.",
+            "cast": [
+              "{name} carried the stew up the communication trench and spilled none of it.",
+              "{name} gave a second helping to the men in the beds first."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "wire-or-rest",
+        "when": "any",
+        "title": "Wire party",
+        "question": "The wire is thin. The men are tired. What tonight?",
+        "reel": "Tired men, thin wire. One night to choose.",
+        "options": [
+          {
+            "kw": "WIRE",
+            "label": "New belts of wire in every sector",
+            "build": "wire",
+            "outcome": "The {side} ran new belts of wire across no-man's land.",
+            "cast": [
+              "{name} went out with the wire party and came back with torn hands.",
+              "{name} hammered pickets in the dark, muffling every blow with a sandbag."
+            ]
+          },
+          {
+            "kw": "REST",
+            "label": "A night's rest: the wounded mend faster for two days",
+            "recover": 0.55,
+            "days": 2,
+            "outcome": "The {side} let the men sleep. The wire can wait."
+          }
+        ]
+      },
+      {
+        "id": "sniper-hunt",
+        "when": "any",
+        "title": "The sniper duel",
+        "question": "Their best shot has been seen at dawn. Hunt him, or keep down?",
+        "reel": "Both sides knew where the other's best shot would be at dawn.",
+        "options": [
+          {
+            "kw": "HUNT",
+            "label": "Every marksman out before dawn: far more hits for one day",
+            "fire": 1.6,
+            "days": 1,
+            "outcome": "The {side} marksmen crawled out before dawn and waited.",
+            "cast": [
+              "{name} crawled out an hour before dawn and did not move until noon.",
+              "{name} spotted for the marksmen and never took the glass down."
+            ]
+          },
+          {
+            "kw": "HIDE",
+            "label": "Heads down for a day: fewer of yours hit",
+            "danger": 0.75,
+            "days": 1,
+            "outcome": "The {side} kept below the parapet and gave the hunters nothing."
+          }
+        ]
+      },
+      {
+        "id": "truce-for-wounded",
+        "when": "any",
+        "title": "A truce for the wounded",
+        "question": "Stretchers are full. Do you raise the white flag for an hour to carry them in?",
+        "reel": "For one hour, one side stopped shooting.",
+        "options": [
+          {
+            "kw": "TRUCE",
+            "label": "Hold fire for a day and bring the wounded in",
+            "fire": 0.4,
+            "medics": 1.6,
+            "recover": 0.6,
+            "days": 1,
+            "outcome": "The {side} raised a white flag and carried their wounded in. Not a shot was fired from their line.",
+            "cast": [
+              "{name} walked out under the white flag with a stretcher and nothing else.",
+              "{name} carried in a man from the other side's wire and asked no questions."
+            ]
+          },
+          {
+            "kw": "FIGHT",
+            "label": "No truce: keep firing",
+            "fire": 1.2,
+            "days": 1,
+            "outcome": "The {side} refused the flag and kept firing."
+          }
+        ]
+      },
+      {
+        "id": "under-the-guns",
+        "when": "barrage",
+        "title": "Under the guns",
+        "question": "The guns on the ridge will fire for three days. What do you do?",
+        "reel": "The guns opened at dawn. Both sides had already chosen.",
+        "options": [
+          {
+            "kw": "SHELTER",
+            "label": "Deep shelters: far fewer hit while the guns fire",
+            "danger": 0.6,
+            "days": 3,
+            "outcome": "The {side} went underground and let the storm pass overhead.",
+            "cast": [
+              "{name} counted heads in the deep dugout after every salvo."
+            ]
+          },
+          {
+            "kw": "ANSWER",
+            "label": "Answer with every rifle: three days of fury",
+            "fire": 1.6,
+            "days": 3,
+            "outcome": "The {side} answered the guns with everything that would shoot.",
+            "cast": [
+              "{name} stood at the parapet through the whole bombardment and fired back.",
+              "{name} kept the bay shooting when every sane man wanted to be underground."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "second-hospital",
+        "when": "any",
+        "title": "Beds or walls",
+        "question": "The engineers can build one thing this week.",
+        "reel": "One work party. Two plans. A vote.",
+        "options": [
+          {
+            "kw": "HOSPITAL",
+            "label": "Another hospital dugout: 4 more beds",
+            "build": "dugout",
+            "outcome": "The {side} dug a second hospital dugout."
+          },
+          {
+            "kw": "SANDBAGS",
+            "label": "Higher parapets: fewer men hit, for good",
+            "build": "sandbags",
+            "outcome": "The {side} raised the parapets with fresh sandbags."
+          }
+        ]
+      }
+    ]
   }
 }
