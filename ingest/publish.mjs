@@ -24,6 +24,13 @@ async function live(item) {
   for (const f of item.files) {
     const r = await fetch(`${MEDIA}/${f}`, { method: 'HEAD' }).catch(() => null);
     if (!r || !r.ok) return false;
+    // je tam opravdu TAHLE verze? (po novém renderu může na Pages ještě ležet stará: nasazení trvá nebo selhalo)
+    const local = path.join(ROOT, 'marketing', 'promo', f);
+    const len = Number(r.headers.get('content-length'));
+    if (len && fs.existsSync(local) && fs.statSync(local).size !== len) {
+      console.log(`… ${f}: na GitHub Pages je jiná verze (${len} B, v repu ${fs.statSync(local).size} B)`);
+      return false;
+    }
   }
   return true;
 }

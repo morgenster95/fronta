@@ -869,3 +869,12 @@ test('hlasování: běžící se nepřepíše (nové počká), jednotné číslo
   assert.equal(lateVote(s, { id: 'v0', userId: 'u2', username: 'bert', text: 'hospital', mediaId: 'm2' }), null);
   assert.equal(lateVote(s, { id: 'v3', userId: 'u9', username: 'nobody', text: 'hospital', mediaId: 'm2' }), null, 'bez vojáka se nepočítá');
 });
+
+test('dopis domů: dlouhý dopis se jménem nepřítele nikoho nenarukuje, krátké heslo ano', () => {
+  const s = emptyState(theme);
+  const c = (id, u, text) => applyComment(s, { id, userId: u, username: u, text, mediaId: 'L', letter: true }, theme, story, map);
+  assert.equal(c('l1', 'pen', 'Dear mother, the Hegemony guns have not stopped for three nights and we need a hospital.'), null);
+  assert.equal(s.soldiers.length, 0);
+  assert.equal(c('l2', 'pen', 'CONCORD')?.type, 'enlist');
+  assert.equal(s.soldiers[0].faction, 1);
+});

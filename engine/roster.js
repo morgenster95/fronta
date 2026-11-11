@@ -108,7 +108,10 @@ export function applyComment(state, comment, theme, story, map) {
   if (state.seenComments.length > 20000) state.seenComments.splice(0, 5000);
   const vote = castVote(state, comment);
   if (vote) return vote;
-  const parsed = parseComment(comment.text, theme);
+  let parsed = parseComment(comment.text, theme);
+  // dopis domů (post s voices): delší text často jmenuje i nepřítele („the Hegemony guns…“), to není narukování;
+  // narukuje jen krátký komentář s heslem strany
+  if (comment.letter && parsed?.type === 'enlist' && (comment.text || '').trim().split(/\s+/).length > 4) parsed = null;
   const handle = (comment.username || '').toLowerCase();
   if (!handle) return null;
   // voják patří IG účtu (trvalé ID), ne jménu: @jméno jde změnit a uvolněné jméno si může vzít někdo jiný
