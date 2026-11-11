@@ -161,7 +161,7 @@
     "kw": null,
     "text": "A night raid attack on Hegemony forces. Concord has a couple sappers to cut the wire",
     "at": "2026-11-11T22:22:35+0000",
-    "likes": 1,
+    "likes": 3,
     "reply": false
    },
    {
@@ -171,6 +171,46 @@
     "kw": null,
     "text": "We need gas 🔥",
     "at": "2026-11-11T22:22:20+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18120880256007460",
+    "handle": "valiantlyvaliancy",
+    "faction": 1,
+    "kw": null,
+    "text": "Reinforce the ridge, the high ground must be held.",
+    "at": "2026-11-11T22:27:13+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18132394786831818",
+    "handle": "axebozo",
+    "faction": 0,
+    "kw": null,
+    "text": "Hegemony should build stronger points such as bunkers, along the line to deter raids day or night.",
+    "at": "2026-11-11T22:26:49+0000",
+    "likes": 1,
+    "reply": false
+   },
+   {
+    "id": "18113520941333636",
+    "handle": "mrpickypants_",
+    "faction": 1,
+    "kw": null,
+    "text": "Use Snipers and Machine Gunners to cover a Concord Raid on the Hegemony line under the cover of night, after a bit of the raid, retreat back to the Concord Trench and prepare for a possible Hegemony retaliation.",
+    "at": "2026-11-11T22:26:23+0000",
+    "likes": 1,
+    "reply": false
+   },
+   {
+    "id": "17988022262891986",
+    "handle": "mateorekon",
+    "faction": 0,
+    "kw": null,
+    "text": "Hegemony builds up trenches (sentry/sniper nets and bomb shelters)",
+    "at": "2026-11-11T22:25:16+0000",
     "likes": 0,
     "reply": false
    }
