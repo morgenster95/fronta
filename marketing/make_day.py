@@ -25,7 +25,7 @@ PLACE = {"bed": "in a bed", "stretcher": "on a stretcher", "trench": "in the tre
 
 
 def save(im, name):
-    up(im, K).convert("RGB").save(os.path.join(PROMO, name), quality=92)
+    up(im, K).convert("RGB").save(os.path.join(PROMO, name), quality=95, subsampling=0)  # bez podvzorkování barev: ostré barevné hrany textu
     return name
 
 
@@ -160,9 +160,8 @@ def slide_vote():
         d.rectangle((118, y, W - 9, y + 71), fill=P["mud0"], outline=P["mud2"])
         d.rectangle((121, y + 5, W - 12, y + 19), fill=P["rust"])
         text_c(d, (121 + W - 12) // 2, y + 8, kw, font(8, True), P["white"])
-        d.text((123, y + 25), a, font=vt(14), fill=P["white"])
-        d.text((123, y + 38), b, font=vt(14), fill=P["bone"])
-        d.text((123, y + 51), c, font=vt(14), fill=P["bone"])
+        for j, (line, col) in enumerate(((a, P["white"]), (b, P["pale"]), (c, P["pale"]))):  # Silkscreen: vejde se do panelu a je ostrý
+            d.text((123, y + 26 + 12 * j), line.upper(), font=font(8), fill=col)
     text_c(d, W // 2, 218, "COMMENT ONE WORD BELOW.", font(8, True), P["white"])
     text_c(d, W // 2, 230, "YOUR SOLDIER IS YOUR BALLOT.", font(8), P["pale"])
     text_c(d, W // 2, 242, "NO VOTES = NOTHING BUILT", font(8), P["gold"])

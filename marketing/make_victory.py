@@ -24,7 +24,7 @@ SIDES = [
 
 
 def save(im, name):
-    up(im, K).convert("RGB").save(os.path.join(PROMO, name), quality=92)
+    up(im, K).convert("RGB").save(os.path.join(PROMO, name), quality=95, subsampling=0)
 
 
 def slide_win(side, other, objective, ext):

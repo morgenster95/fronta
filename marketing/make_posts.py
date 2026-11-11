@@ -1,6 +1,6 @@
 """Promo grafika pro Instagram (Mud & Iron): profilovka a posty 4:5.
 
-Vše se kreslí v malém pixelovém rozlišení (paleta Trench 24, písmo Silkscreen v násobcích 8 px)
+Vše se kreslí v malém pixelovém rozlišení (paleta Trench 24, písmo Silkscreen v násobcích 8 px, VT323 jen ve velikosti 15, text bez vyhlazování)
 a teprve nakonec se celočíselně zvětší, takže pixely zůstanou ostré.
 Použití: python marketing/make_posts.py   (z kořene repa)
 """
@@ -8,6 +8,18 @@ import os
 import random
 
 from PIL import Image, ImageDraw, ImageFont
+
+# Text se kreslí BEZ vyhlazování (1 bit): v malé mřížce a po zvětšení ×5 by šedé odstíny hran vypadaly jako rozpitý text.
+# Platí pro všechny skripty, které importují tenhle modul (make_day, make_victory, day_art, victory_scene).
+_draw_init = ImageDraw.ImageDraw.__init__
+
+
+def _crisp_init(self, im, mode=None):
+    _draw_init(self, im, mode)
+    self.fontmode = "1"
+
+
+ImageDraw.ImageDraw.__init__ = _crisp_init
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOLD = os.path.join(ROOT, "web", "public", "assets", "soldiers")
@@ -29,6 +41,9 @@ def font(size=8, bold=False):
 
 
 def vt(size=16):
+    # VT323 je čistý jen ve velikosti 15 (a násobcích) bez vyhlazování; 14 a 16 mají zlomená písmena (b, g)
+    if 13 <= size <= 17:
+        size = 15
     return ImageFont.truetype(os.path.join(FONTS, "VT323-Regular.ttf"), size)
 
 
