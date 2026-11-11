@@ -420,7 +420,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const how = { light: 'grazed', heavy: 'badly wounded', crit: 'gravely wounded' };
     const roleName = (id) => theme.archetypes.find((a) => a.id === id)?.name.toLowerCase() ?? 'soldier';
     out.news.push({
-      day, kind: 'fire', h: 'Across the wire',
+      day, kind: 'fire', routine: true, h: 'Across the wire',
       text: fireLog.map((x) => `@${x.by} (${short(theme, x.byF)} ${roleName(x.role)}) ${how[x.sev]} @${x.at}.`).join(' '),
     });
   }
@@ -430,7 +430,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       `${st.trench ? `, ${st.trench} badly wounded still lying in the trench` : ''}, medics covering ${Math.round(st.cover * 100)}% of the wounded.`;
   });
   const hosp = theme.factions.map((_, f) => hospital(state, theme, f).dugout);
-  out.news.push({ day, h: hosp.every(Boolean) ? 'The hospitals' : hosp.some(Boolean) ? 'Hospitals and aid posts' : 'The aid posts', text: lines.join(' '), kind: 'hospital' });
+  out.news.push({ day, h: hosp.every(Boolean) ? 'The hospitals' : hosp.some(Boolean) ? 'Hospitals and aid posts' : 'The aid posts', text: lines.join(' '), kind: 'hospital', routine: true });
 
   // denní metriky (ladění, upozornění v ostrém provozu)
   out.stats = { day, balance: cfg.balance ?? 1, sides: stats };

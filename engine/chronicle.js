@@ -24,7 +24,7 @@ export function writeChronicle(state, day, { theme, story, weather, events = [],
   if (weather) blocks.push({ text: pick(rand, weather.diary) });
 
   // velké zprávy (dobytí kóty) jdou na začátek
-  blocks.unshift(...news.map((n) => ({ h: n.h, text: n.text, kind: n.kind })));
+  blocks.unshift(...[...news.filter((n) => !n.routine), ...news.filter((n) => n.routine)].map((n) => ({ h: n.h, text: n.text, kind: n.kind })));
 
   // noví vojáci: narukovali během včerejška (state.day byl day-1)
   const fresh = state.soldiers.filter((s) => s.enlisted === day - 1 && s.generation === 1);
@@ -95,6 +95,16 @@ export function writeChronicle(state, day, { theme, story, weather, events = [],
   })() : null;
   if (race) blocks.splice(blocks.length - 1, 0, race);
 
-  const title = news.length ? news[0].h : weather ? fill(pick(rand, weather.titles), { place }, rand) : `Day ${day}`;
+  // titulek: velká zpráva dne (dobytí kóty, bombardování, výprava). Každodenní rubriky (routine: palba přes drát, obvaziště)
+  // titulkem být nesmí, jinak se noviny každý den jmenují stejně; bez velké zprávy rozhoduje počasí a místo.
+  const lead = news.find((n) => !n.routine);
+  // stejné počasí dva dny po sobě nesmí dát stejný titulek: vybírá se z titulků, které v posledních pěti vydáních nebyly
+  const recent = new Set((state.chronicle || []).slice(-5).map((c) => c.title));
+  const fromWeather = () => {
+    const all = weather.titles.map((t) => fill(t, { place }, rand));
+    const fresh = all.filter((t) => !recent.has(t));
+    return pick(rand, fresh.length ? fresh : all);
+  };
+  const title = lead ? lead.h : weather ? fromWeather() : `Day ${day}`;
   return { day, kind: 'chronicle', by: 'Field Telegraph', title, weather: weather?.id ?? null, blocks };
 }
