@@ -52,7 +52,7 @@ Přínos rolí ověřen (`--roles`): medik, kuchař, kulomet a spojař výrazně
 
 ---
 
-## 2026-11-11 (večer) · Vyvážení v10: válka palbou hráčů · NÁVRH (simulováno, NENASAZOVAT bez schválení)
+## 2026-11-11 (večer) · Vyvážení v10: válka palbou hráčů · NAHRAZENO v11 a v12 (základ: palba hráčů, nasycení, triáž, smrt na místě)
 Nahrazuje návrh v8 (lůžka pevná, nosítka podle mediků), který zůstává jako součást v10. **v8 samostatně: ZAMÍTNUTO**,
 protože ztráty pořád byly malé („~1,5 týdně“) a palba hráčů skoro nic neznamenala.
 
@@ -113,7 +113,7 @@ Příčiny smrti v klidu: ~85 % padne přímo zásahem kulkou, zbytek na zraněn
 
 ---
 
-## 2026-11-11 (noc) · v11 = v10 + víc zásahů střelců · NÁVRH (simulováno, NENASAZOVAT bez schválení)
+## 2026-11-11 (noc) · v11 = v10 + víc zásahů střelců · NAHRAZENO v12 (v12 mění jen smrt na místě, smrt za noc a závažnost puškaře)
 **Podnět uživatele:** puškař trefí 0,33× za týden (1× za 3 týdny), to je na válku málo; odstřelovači mají trefit víc.
 **Nález:** v10 měl nominálně 7 % denně, po krytí cíle a nasycení zbylo 0,33× za týden. Zásahy jde zvednout, ale **každý zásah je zranění někoho jiného**,
 takže víc zásahů znamená víc ranění i mrtvých. Řešení: víc zásahů, z nichž většina jsou **škrábnutí** (lehké zranění na 1 den), kritické a těžké zůstávají podobně časté.
@@ -158,7 +158,7 @@ Rozdíl proti v10: ~15–30 % víc padlých, mnohem víc zásahů a „zranění
 
 ---
 
-## 2026-11-11 (noc) · v12 = v11 + smrt hlavně z nedostatku míst, spojař proti granátům · NÁVRH (simulováno, čeká na „nasadit“)
+## 2026-11-11 (noc) · v12 = v11 + smrt hlavně z nedostatku míst, spojař proti granátům · NASAZENO (od ranního vydání 12. 11. 2026, 13:00 UTC; `theme.battle.balance: 12`)
 **Podnět uživatele:** ve v11 většina mrtvých padla přímo kulkou (~85 %). Logičtěji: pár mrtvých, pár raněných, pár kriticky, a pak dojdou lůžka, nosítka a medici.
 **Změny proti v11:**
 | | v11 | v12 |
@@ -185,7 +185,7 @@ Stabilní i po 60 dnech (`docs/sim/2026-11-11_v12_long60.txt`): žádná spirál
 
 ---
 
-## 2026-11-11 (noc) · Bombardování a složení stran (v11) · NÁVRH (simulováno)
+## 2026-11-11 (noc) · Bombardování a složení stran (v11) · NASAZENO jako součást v12 (spojař proti granátům `counterShell` 0,4)
 **Otázka uživatele:** záleží u bombardování na složení rolí, ne jen na počtu lidí? Testováno na VYROVNANÝCH stranách (88 / 92 a 880 / 920), poražená (bombardovaná)
 strana má různé složení, vítěz skutečné role. Padlí za 7 dní od dobytí kóty (3 dny granátů + 4 dny doznívání), v11, 1 nemocnice:
 | Složení bombardované strany | medici | dnes (~92) | 10× (~920) | s `counterShell=0,4` dnes / 10× |
@@ -223,3 +223,12 @@ večerní reel na to může navázat.
 - **2026-11-10 · Výpravy (raid) · VYPNUTO** na pokyn uživatele (`theme.valley.enabled = false`).
 - **2026-11-11 · Hlasování jen jedno najednou · NASAZENO.**
 - **2026-11-11 · Nezvěstný (missing) není smrt · NASAZENO:** vrátí se do 4 dnů; rodokmen ukazuje skutečný stav.
+
+---
+
+## Provoz v12 (co sledovat první týden)
+- **Nasazeno 2026-11-12 ráno** (první vydání s v12). Testy 53/53, náhled vydání zkontrolován (`node tools/preview-tick.mjs`).
+- Očekávání na dnešní velikost (~90 na stranu): **0,4–0,65 padlých denně na stranu**, ~8–10 raněných denně (většina škrábnutí), bombardovaná strana za týden 11–20 % stavu.
+- Sleduj `state.battle.stats` (příčiny smrti `deaths.nobed/nocare/wounds/shell/shot`): má vycházet ~60 % smrtí z nedostatku míst a péče. Pokud ne nebo je padlých víc, než chceš,
+  ladí se jedním číslem v `theme.json` → `battle`: `care.crit.dieBase` (smrt za noc), `roles.kill` (smrt na místě), `roles.rifleman.fire` (palba), `shell.hit` (bombardování); při změně zvýšit `balance`.
+- Simulace nanečisto: `node tools/sim-matrix.mjs --eff --causes` (velikosti × složení × nemocnice × bombardování), `node tools/sim-daily.mjs --scale 10`, `node tools/sim-battle.mjs --kpi`.

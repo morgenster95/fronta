@@ -4,19 +4,11 @@ Tenhle soubor čte Claude Code i v cloudu (aplikace Claude v mobilu, claude.ai/c
 Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co je teď ve hře), `docs/BATTLE.md` a `docs/COMBAT_ROLES.md` (boj), `docs/ONBOARDING.md` (rekruti a provoz),
 `docs/SCHEDULE.md` (rytmus dne), `docs/MAP_MISSIONS.md` (výpravy, vypnuté), **`docs/MECHANICS.md` (deník domluvených mechanik)**. `docs/DESIGN.md` je původní návrh, neaktualizuje se.
 
-## ROZPRACOVÁNO (přečti jako první a napiš to uživateli hned na začátku relace)
-**Na začátku KAŽDÉ relace uživateli česky napiš, že rozpracovaná je tahle věc, a zeptej se, jestli v ní pokračujeme:**
-**Přepracování boje na v12 (ztráty, role, bombardování; v12 = v11 + smrt hlavně z nedostatku míst + spojař proti granátům), navrženo a nasimulováno 2026-11-11, NENASAZENO.** Ve hře běží v7.
-- Důvod: uživateli přišlo úmrtí a zranění „hrozně málo“, žádný klid, střelci k ničemu, bombardování má být silné, stejně při malé i velké hře a pro různé složení stran.
-- Kompletní návrh, čísla, zamítnuté varianty a otevřené otázky: **`docs/MECHANICS.md`** (nejdřív sekce „v12“, pak „v11“ a „v10“), výstupy simulací `docs/sim/`.
-- Poslední podnět uživatele: střelci se trefují málo (puškař 0,33× za týden). Řešení v11: puškař ~0,85×, kulomet ~1,4×, ostřelovač ~1,65× za týden, většina zásahů jsou škrábnutí.
-- Nové volby v `engine/battle.js` jsou hotové a vypnuté (`roles.saturation`, `roles.kill`, `shell.kill`, `care.triage`, `aidPost.stretchersPerMedic`); zapnou se až čísla v `theme.json`.
-  Parametry v12 pro simulaci jsou v `docs/MECHANICS.md` (řádek „Parametry pro simulaci“ v sekci v12). Simulace: `node tools/sim-matrix.mjs --eff --causes <parametry>`, `tools/sim-daily.mjs`.
-- **Čeká na rozhodnutí uživatele:** (1) kde mají vznikat smrti: teď ~85 % přímo kulkou, kompromis je víc smrtí na zranění (pak větší váha mediků a nemocnic, ale riziko spirály ve velkých číslech);
-  (2) stačí ~0,5 padlého na stranu denně při dnešní velikosti (~4–5 při 10×)? Potom nasadit: čísla do `theme.json`, `balance: 12`, aktualizovat `docs/BATTLE.md`, `docs/COMBAT_ROLES.md`, KPI v `tools/sim-battle.mjs`, testy, náhled `node tools/preview-tick.mjs`.
-- Pravidla návrhu od uživatele: lůžka jsou pevná (nemocnice jen hlasováním, 4 lůžka), škálovat smí jen to, co volí hráči (medici, role); menší strana smí umírat víc,
-  ale ne když má víc střelců a kulometů; testovat různé velikosti (1×, 10×, 870 proti 270) a různé složení rolí.
-- Hotovo a nasazeno 2026-11-11: oprava horního panelu „Dispatch · Day 2“ (výsledek hlasování nese den vydání).
+## Boj v12 nasazen (2026-11-11, první vydání 12. 11. 13:00 UTC)
+Přepracování boje na **v12** (palba hráčů jako hlavní zdroj ztrát, škrábnutí + kritické, nasycení palby, smrt hlavně z nedostatku lůžek, nosítek a mediků,
+silné bombardování se smrtí přímým zásahem, spojař proti granátům) je **nasazeno**. Důvody, čísla, simulace a zamítnuté varianty: `docs/MECHANICS.md`, `docs/sim/`.
+**Na začátku relace to uživateli stručně připomeň a zeptej se, jak se v12 chová ve hře** (padlí, raněni, bombardování po dobytí kóty); ladění jedním číslem v `theme.json` → `battle` (viz „Provoz v12“ v `docs/MECHANICS.md`).
+Čeká na uživatele: útok OVER THE TOP (návrh v `docs/MECHANICS.md`).
 
 ## Pravidla
 - **Odpovídej česky.** Texty ve hře a na Instagramu jsou anglicky (publikum USA/UK, ne Praha).
@@ -77,9 +69,9 @@ Postup pro nový reel `<name>`:
   Vyhodnotí ranní vydání, nejdřív 8 h po otevření (`minHours`).
   Pro další kóty: nová položka s `trigger.race` = id kóty (`theme.race.objectives`) a grafika `python marketing/make_victory.py <id> "<Název>" "<Další>"`.
   1. snímek kreslí `marketing/victory_scene.py` (kopec s praporem, v popředí sprity ze zákopů ve hře, pytle stejného vzoru jako ve hře).
-- **Denní boj, medici, nemocnice, drát** (`docs/BATTLE.md`, `engine/battle.js`, vyvážení v7 od 11. 11., `docs/MECHANICS.md`): zásah sám nezabíjí, zabije chybějící lůžko, nosítka nebo medik.
+- **Denní boj, medici, nemocnice, drát** (`docs/BATTLE.md`, `engine/battle.js`, vyvážení v12 od 12. 11., `docs/MECHANICS.md`): ~60 % smrtí způsobí chybějící lůžko, nosítka nebo medik, zbytek smrt na místě (kulka 20 %, odstřelovač 35 %, přímý zásah granátem 50 % kritických).
   Potřeba práce mediků: lehce raněný 1, těžce a kriticky raněný 2, na lůžku 0. Obvaziště má 2 lůžka a 6 nosítek; nemocnice (dugout, jen hlasováním) 4 lůžka
-  a dalších 4 nosítka za každou. Bombardování po výhře v závodě: 30 % úseků poraženého (aspoň 4) denně, 3 dny. Denní mez na 80 vojáků strany (roste s velikostí): 2–5 nově ranění za klidu, nejvýš 8 pod granáty.
+  a dalších 4 nosítka za každou. Bombardování po výhře v závodě: 30 % úseků poraženého (aspoň 4) denně, 3 dny, zásah 50 %. Palba hráčů: puškař 17 %, kulomet 26 %, odstřelovač 30 % denně (~0,85 / 1,4 / 1,65 zásahu za týden), nasycení `roles.saturation`. Denní mez: aspoň 1 raněný na 80 vojáků, pod granáty nejvýš 30 na 80. Nosítka +1 za medika, medik práce 2.
   Podpůrné role působí podle poměru (`roles.*.covers`), každý voják role má smysl a nikdo není nezranitelný.
   Role a čísla `docs/COMBAT_ROLES.md`. Převzatí hráči nejsou chránění. Nanečisto: `node tools/sim-battle.mjs --kpi`, náhled vydání `node tools/preview-tick.mjs`.
 - **Hlasování je vždy jen jedno** (od 2026-11-11): post s `vote`, který vyjde při běžícím hlasování, ho nepřepíše; počká (`votePending` ve frontě)
@@ -89,6 +81,5 @@ Postup pro nový reel `<name>`:
 - **Nemocnice na mapě** (od 2026-11-10): postavená nemocnice = velký dugout za zálohami (`dugoutArt` v `web/src/hospital.js`), jen když je ve stavu hry
   (`state.battle.sides[f].built.dugout`, staví jen vyhodnocené hlasování). Bombardování poraženého je na webu vidět už v den dobytí kóty.
 - **Publikace hlídá verzi souboru** (od 2026-11-11): položka vyjde, až je na GitHub Pages soubor stejné velikosti jako v repu (po novém renderu).
-- **Návrh čeká na uživatele:** útok OVER THE TOP (`docs/MECHANICS.md`).
 - **Další na řadě (domluvený návrh, zatím nepostavený):** změny terénu,
   hlášení se jmény skutečných hráčů. Výměna zajatců jako společná událost.

@@ -579,7 +579,7 @@ test('péče: kritičtí první na lůžka, pak nosítka; kritický bez nosítek
   const side = s.soldiers.filter((x) => x.faction === 0);
   side.slice(0, 2).forEach((x) => { x.archetype = 'medic'; });
   hurt(side[2], 'heavy', 19); hurt(side[3], 'crit', 20); hurt(side[4], 'crit', 20); hurt(side[5], 'crit', 20);
-  const cfg = quiet({ aidPost: { ...theme.battle.aidPost, beds: 2, stretchers: 1, critRisk: 0 }, care: { ...theme.battle.care, crit: { ...theme.battle.care.crit, dieBase: 0 } } });
+  const cfg = quiet({ aidPost: { ...theme.battle.aidPost, beds: 2, stretchers: 1, critRisk: 0, stretchersPerMedic: 0 }, care: { ...theme.battle.care, crit: { ...theme.battle.care.crit, dieBase: 0 } } });
   battleTick(s, cfg, story, 20);
   const bedded = [side[3], side[4], side[5]].filter((x) => x.wound?.place === 'bed');
   assert.equal(bedded.length, 2, 'dva kritičtí na lůžkách');
@@ -684,7 +684,7 @@ test('ostrá čísla: střelci za běžného dne náhodou trefí nepřítele (ne
     for (const x of s.soldiers) if (x.wound?.by && x.wound.day === day) shooters.add(x.wound.by.handle);
   }
   assert.ok(byF[0] > 0 && byF[1] > 0, `zásahy palbou Heg ${byF[0]}, Con ${byF[1]}`);
-  assert.ok(hits < shots * 0.05, `trefa je náhoda: ${hits} zásahů z ${shots} výstřelů`);
+  assert.ok(hits < shots * 0.15, `trefa je náhoda: ${hits} zásahů z ${shots} výstřelů`);
   assert.ok(shooters.size > 1, `trefilo víc různých střelců (${shooters.size})`);
   // deterministické kostky: stejný den a stav = stejné zásahy
   const a = emptyState(theme), b = emptyState(theme);
@@ -729,14 +729,16 @@ test('zásah → lůžko: těžce/kriticky zasažený palbou jde hned na lůžko
   }
 });
 
-test('denní mez: za klidu 1–3 nově ranění na stranu, pod granáty víc, ale nejvýš shellMax', () => {
-  const D = theme.battle.daily;
+test('denní mez: za klidu 2–5 nově raněných na stranu (výslovná konfigurace), pod granáty víc, ale nejvýš shellMax', () => {
+  // ostrá hra má od v12 max 99 (bez meze) a hlavním zdrojem ztrát je palba hráčů; logiku mezí zkoušíme bez palby a s dřívějšími čísly pozadí
+  const cfgD = { ...theme, battle: { ...theme.battle, hit: 0.04, daily: { min: 2, max: 5, shellMax: 8, per: 80 }, roles: { ...theme.battle.roles, default: { fire: 0 }, rifleman: { ...theme.battle.roles.rifleman, fire: 0 }, machinegunner: { ...theme.battle.roles.machinegunner, fire: 0 }, sniper: { ...theme.battle.roles.sniper, fire: 0 }, officer: { ...theme.battle.roles.officer, fire: 0 } } } };
+  const D = cfgD.battle.daily;
   const s = emptyState(theme);
   enlist(s, 160, 'dm_');
   s.soldiers.forEach((x) => { x.enlisted = 0; });
   for (let day = 30; day < 44; day++) {
     s.day = day;
-    battleTick(s, theme, story, day);
+    battleTick(s, cfgD, story, day);
     const st = s.battle.stats.at(-1);
     for (const f of [0, 1]) {
       const n = st.sides[f].sev.light + st.sides[f].sev.heavy + st.sides[f].sev.crit;
@@ -749,7 +751,7 @@ test('denní mez: za klidu 1–3 nově ranění na stranu, pod granáty víc, al
   for (let day = 50; day < 53; day++) {
     s.victories = [{ id: 'ridge', name: 'Verdel Ridge', faction: 0, day: 49, hero: 'dm_0', from: 50, to: 56, barrageTo: 52, counts: [80, 80] }];
     s.day = day;
-    battleTick(s, theme, story, day);
+    battleTick(s, cfgD, story, day);
     const a = s.battle.stats.at(-1).sides[1];
     const n = a.sev.light + a.sev.heavy + a.sev.crit;
     assert.ok(n <= D.shellMax, `pod granáty ${n} > ${D.shellMax}`);
@@ -916,15 +918,17 @@ test('role škálují s počtem hráčů: účinek podle poměru (kulomet, spoja
   assert.equal(share(3, 4, 6), 1);
 });
 
-test('denní meze rostou s velikostí strany (battle.daily.per)', () => {
-  const D = theme.battle.daily;
+test('denní meze rostou s velikostí strany (battle.daily.per; výslovná konfigurace)', () => {
+  // ostrá hra má od v12 max 99 (bez meze) a hlavním zdrojem ztrát je palba hráčů; logiku mezí zkoušíme bez palby a s dřívějšími čísly pozadí
+  const cfgD = { ...theme, battle: { ...theme.battle, hit: 0.04, daily: { min: 2, max: 5, shellMax: 8, per: 80 }, roles: { ...theme.battle.roles, default: { fire: 0 }, rifleman: { ...theme.battle.roles.rifleman, fire: 0 }, machinegunner: { ...theme.battle.roles.machinegunner, fire: 0 }, sniper: { ...theme.battle.roles.sniper, fire: 0 }, officer: { ...theme.battle.roles.officer, fire: 0 } } } };
+  const D = cfgD.battle.daily;
   const s = emptyState(theme);
   enlist(s, D.per * 4, 'big_'); // 2× per na stranu
   s.soldiers.forEach((x) => { x.enlisted = 0; });
   let most = 0;
   for (let day = 30; day < 40; day++) {
     s.day = day;
-    battleTick(s, theme, story, day);
+    battleTick(s, cfgD, story, day);
     for (const f of [0, 1]) {
       const v = s.battle.stats.at(-1).sides[f].sev;
       const n = v.light + v.heavy + v.crit;
@@ -933,4 +937,42 @@ test('denní meze rostou s velikostí strany (battle.daily.per)', () => {
     }
   }
   assert.ok(most > D.max, 'větší strana může mít víc raněných než malá');
+});
+
+test('v12: nosítka rostou s medici (aidPost.stretchersPerMedic), lůžka zůstávají pevná', () => {
+  const s = setup(60, 'spm');
+  const side = s.soldiers.filter((x) => x.faction === 0);
+  const base = hospital(s, theme, 0);
+  side.slice(0, 5).forEach((x) => { x.archetype = 'medic'; });
+  const withMedics = hospital(s, theme, 0);
+  assert.equal(withMedics.beds, base.beds, 'lůžka pevná');
+  assert.equal(withMedics.stretchers, base.stretchers + 5 * theme.battle.aidPost.stretchersPerMedic, 'nosítka +1 za medika');
+});
+
+test('v12: triáž – kritický bez místa vezme lůžko těžce raněnému', () => {
+  const s = setup(60, 'tri');
+  const side = s.soldiers.filter((x) => x.faction === 0);
+  const cfg = quiet({ aidPost: { ...theme.battle.aidPost, beds: 1, stretchers: 0, stretchersPerMedic: 0, critRisk: 0 }, care: { ...theme.battle.care, triage: 1, crit: { ...theme.battle.care.crit, dieBase: 0 } } });
+  hurt(side[0], 'heavy', 19);
+  battleTick(s, cfg, story, 19);
+  assert.equal(side[0].wound.place, 'bed', 'těžký dostal lůžko');
+  hurt(side[1], 'crit', 20);
+  battleTick(s, cfg, story, 20);
+  assert.equal(side[1].wound.place, 'bed', 'kritický vzal lůžko');
+  assert.equal(side[0].wound.place, 'trench', 'těžký šel o stupeň níž');
+  assert.equal(side[1].status, 'wounded', 'kritický na lůžku přežil noc');
+});
+
+test('v12: přímý zásah granátem (shell.kill) zabije na místě, lůžko ani medik nepomůže', () => {
+  const s = emptyState(theme);
+  enlist(s, 120, 'sk');
+  s.day = 2;
+  s.soldiers.forEach((x) => { x.enlisted = 0; });
+  s.victories = [{ id: 'ridge', name: 'Verdel Ridge', faction: 0, day: 2, hero: 'sk0', from: 3, to: 9, barrageTo: 5, counts: [60, 60] }];
+  const cfg = { ...theme, battle: { ...theme.battle, shell: { ...theme.battle.shell, hit: 1, kill: 1, severity: { light: 2, heavy: 2 } } } };
+  battleTick(s, cfg, story, 3);
+  const st = s.battle.stats.at(-1).sides[1];
+  assert.ok(st.deaths.shell >= 1, `padlí přímým zásahem: ${st.deaths.shell}`);
+  assert.ok(s.soldiers.some((x) => x.faction === 1 && x.status === 'fallen' && x.cause?.kind === 'shell'), 'příčina smrti shell');
+  assert.ok(!s.soldiers.some((x) => x.faction === 0 && x.status === 'fallen'), 'vítěz granáty nedostává');
 });

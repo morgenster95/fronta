@@ -1,11 +1,11 @@
 # Role, zkušenosti, simulace a ladění boje
 
-_Stav k 11. 11. 2026: **nasazeno, vyvážení v7** (změny a důvody: `docs/MECHANICS.md`). Pravidla jednoho dne (zásahy, lůžka, medici, stavby) jsou v `docs/BATTLE.md`;_
+_Stav k 11. 11. 2026: **nasazeno, vyvážení v12** (změny, simulace a důvody: `docs/MECHANICS.md`, výstupy `docs/sim/`). Pravidla jednoho dne (zásahy, lůžka, medici, stavby) jsou v `docs/BATTLE.md`;_
 _tady je, co která role dělá, zkušenosti, výsledky simulací a jak se boj ladí. Kód `engine/battle.js`, čísla `themes/front-ww1/theme.json` → `battle`._
 
 ## 1. Pořadí kroků v ranním tahu (13:00 UTC)
 1. Palba hráčů z přední linie (tabulka rolí níže).
-2. Zásahy z pozadí a bombardování, s denní mezí 2–5 nově raněných na 80 vojáků strany za klidu, nejvýš 8 na 80 pod granáty.
+2. Zásahy z pozadí a bombardování, s doplněním aspoň 1 nově raněného na 80 vojáků strany za klidu a mezí 30 na 80 pod granáty (palba hráčů je hlavní zdroj ztrát).
 3. Rozmístění raněných: lůžka (kritičtí první), nosítka, zákop.
 4. Práce mediků a hojení.
 5. Drát, XP za den, denní metriky, pojistka proti masakru.
@@ -17,18 +17,20 @@ Podrobně v `docs/BATTLE.md`.
 
 | Role | Funkce | Čísla (výchozí) | Očekávaně za 4 týdny (1 voják, Recruit) |
 |---|---|---|---|
-| Rifleman | běžná palba | fire 2,8 %; zásah 60 % lehce / 28 % těžce / 12 % kriticky | ~0,4 zásahu |
-| Machine Gunner | **potlačení**: nepřátelští střelci poblíž −45 % palby × pokrytí (jeden kulomet pokryje 4 střelce); hodně ran, spíš lehká zranění | fire 4,5 %; 70/25/5 % | ~0,7 zásahu |
-| Sniper | **přesnost**: často kriticky, 50 % šance vybrat si kulometčíka/důstojníka | fire 6 %; 35/40/25 % | ~1 zásah |
+| Rifleman | běžná palba | fire 17 %; zásah 83 % lehce / 7 % těžce / 10 % kriticky | ~0,85 zásahu za týden |
+| Machine Gunner | **potlačení**: nepřátelští střelci poblíž −45 % palby × pokrytí (jeden kulomet pokryje 4 střelce); hodně ran, spíš lehká zranění | fire 26 %; 75/21/4 % | ~1,4 zásahu za týden |
+| Sniper | **přesnost**: často kriticky, 50 % šance vybrat si kulometčíka/důstojníka | fire 30 %; 45/25/30 % (smrt na místě 35 % kritických) | ~1,65 zásahu za týden |
 | Lieutenant | **velení**: střelcům poblíž +20 % palby × pokrytí (pokryje 12) a +25 % XP | fire 0,8 % | — (násobí ostatní) |
 | Runner | **spojka**: bez důstojníka poblíž +25 % palby × pokrytí (pokryje 8; rozkazy dojdou) | fire 0,4 % | — |
-| Stretcher Bearer | **péče** (krok 4) | práce 1/den (Elite 1,8) | 1 lehce raněný nebo ½ těžce raněného denně |
-| Signaller | **protipalba**: vojáci poblíž −20 % zásahů z pozadí × pokrytí (pokryje 10) | fire 0,4 % | — |
+| Stretcher Bearer | **péče** (krok 4) | práce 2/den (Elite 3,6); +1 nosítka za medika | 5 lehce raněných nebo 2 těžce raněné denně |
+| Signaller | **protipalba**: vojáci poblíž −20 % zásahů z pozadí a −40 % zásahů granátem, × pokrytí (pokryje 10) | fire 0,4 % | — |
 | Sapper | **drát**: +8 % výdrže drátu v úseku za den (drát kryje až −15 % zásahů) | fire 0,4 % | — |
 | Field Cook | **morálka**: lehce ranění poblíž se i bez medika častěji zahojí (+30 %), méně se zhoršují (×0,5); pokryje 4 | fire 0,4 % | — |
 | Chaplain | **útěcha**: kritičtí na nosítkách umírají o 20 % méně × pokrytí (pokryje 3) | fire 0,4 % | — |
 
-Výpočet střelce: `zásahů za 28 dní ≈ fire × 28 × krytí cíle (~0,8)` → rifleman 0,028 × 28 × 0,8 ≈ 0,63.
+Výpočet střelce: `zásahů za týden ≈ fire × 7 × krytí cíle (~0,8) × nasycení`. Zásah kulkou, který je kritický, zabije na místě s `roles.kill` (puškař/kulomet 20 %, odstřelovač 35 %).
+**Nasycení** (`roles.saturation`): střelec trefuje méně, když je u něj víc vlastních střelců než nepřátel na dostřel. Zásahy ve vyrovnaných stranách ~0,85 / 1,4 / 1,65 za týden (puškař / kulomet / odstřelovač), ve velké straně proti malé ~0,4.
+**Pokrytí** (`covers`) a nasycení se simulují v `tools/sim-matrix.mjs` pro různé velikosti i složení stran.
 
 **Pokrytí (`covers`, od v7):** účinek podpůrné role = plný účinek × min(1, počet role poblíž × covers / lidí poblíž).
 Každý další voják role přidá, dokud není pokrytí 100 %, a pár kulometčíků už nepotlačí celou frontu. Výsledky simulací v7: `docs/MECHANICS.md`.

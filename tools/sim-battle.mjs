@@ -146,12 +146,12 @@ if (!only) {
   const quiet = results[0];
   const barrage = [results[1][1], results[2][0]];
   const K = [
-    ['zásahy týdně (klid, na 50 vojáků)', mean(quiet.map((x) => x.taken * wk * per50(x))), 10, 16, false],
-    ['podíl palby hráčů na zásazích (klid)', mean(quiet.map((x) => x.takenFire / Math.max(0.01, x.taken))), 0.35, 0.45, true],
-    ['kritické zásahy týdně (klid, na 50)', mean(quiet.map((x) => x.crit * wk * per50(x))), 1, 2, false],
-    ['padlí týdně, jen obvaziště (klid, na 50)', mean(quiet.map((x) => x.dead * wk * per50(x))), 1.5, 3, false],
-    [`padlí za ${DAYS} dní u bombardované strany (na 50)`, mean(barrage.map((x) => x.dead * per50(x))), 12, 20, false],
-    [`nejlepší střelec strany za ${DAYS} dní (zásahů)`, mean(quiet.map((x) => x.top)), 1, 4, false],
+    ['zásahy týdně (klid, na 50 vojáků)', mean(quiet.map((x) => x.taken * wk * per50(x))), 30, 60, false],
+    ['podíl palby hráčů na zásazích (klid)', mean(quiet.map((x) => x.takenFire / Math.max(0.01, x.taken))), 0.7, 0.95, true],
+    ['kritické zásahy týdně (klid, na 50)', mean(quiet.map((x) => x.crit * wk * per50(x))), 1.5, 5, false],
+    ['padlí týdně, jen obvaziště (klid, na 50)', mean(quiet.map((x) => x.dead * wk * per50(x))), 2, 5, false],
+    [`padlí za ${DAYS} dní u bombardované strany (na 50)`, mean(barrage.map((x) => x.dead * per50(x))), 15, 35, false],
+    [`nejlepší střelec strany za ${DAYS} dní (zásahů)`, mean(quiet.map((x) => x.top)), 3, 12, false],
   ];
   console.log('Cílová čísla (docs/COMBAT_ROLES.md, kap. 6):');
   for (const [k, v, lo, hi, pct] of K) console.log(`  ${v >= lo && v <= hi ? '✓' : '⚠'} ${k}: ${pct ? `${Math.round(v * 100)} %` : v.toFixed(2)} (pásmo ${pct ? `${lo * 100}–${hi * 100} %` : `${lo}–${hi}`})`);
