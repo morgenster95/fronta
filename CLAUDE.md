@@ -42,6 +42,11 @@ Postup pro nový reel `<name>`:
    Smyčka ji publikuje v daný čas. Video delší než 60 s jde do IG Stories jen rozdělené (`type: "story"`).
 
 ## Stav a plán (aktualizuj při změnách)
+- **Větev `revize` (2026-11-11, čeká na vyzkoušení a sloučení uživatelem):** přehled v `docs/REVIZE.md`. Náhled s živými daty: workflow `preview`
+  (https://mudandiron--revize-40p4cwxt.web.app, obnoví se každým pushem do větve). Do main slučovat jen s výslovným souhlasem uživatele.
+  Co větev mění: role řízené tématem (`docs/ROLES.md`, schopnosti = klíče v `theme.battle.roles`, role za povýšení = `promotionOnly`), los nezvěstných všem stejně (`theme.fate`),
+  hlas a strana podle textu komentáře, dny včetně dneška, atlas spritů (`npm run sprites` po každé změně PNG vojáků), editor spritů (`web/public/editor/`),
+  průvodce do soukromých zpráv (`theme.dm`, `IG_SEND_DM=1`), nasazení jen při změně webu (`tools/site-sig.mjs`), upozornění na selhání tahu a publikace, testy na GitHubu.
 - Den 1 války = 2026-11-09; každé ranní vydání (denní tah, Gazette, výsledky) je ve 13:00 UTC, večerní reel nebo post ve 23:00 UTC.
 - **Závod o kóty:** kdo první naverbuje 100 vojáků, dobude kótu (teď Verdel Ridge, pak Hill 304…, `theme.race.objectives`). Výhra odemyká dělostřelectvo:
   3 dny bombardování poraženého. Do první dobyté kóty děla mlčí a texty o ostřelování se nepoužijí (`battle.gunsWords`).
