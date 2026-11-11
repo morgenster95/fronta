@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
-import { applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
+import { lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 import { deathReply } from '../engine/house.js';
 
@@ -162,10 +162,13 @@ async function main() {
   };
   for (const { id: mid, count } of posts) {
     const fullVote = voteMedia.has(mid) && !voices.scanned?.[mid]; // první průchod hlasováním: projít i už viděné komentáře
-    const changed = count === undefined || state.mediaCounts?.[mid] !== count || fullVote;
+    // běžící hlasování: jednou projít i už zpracované komentáře (hlasy napsané před otevřením nebo jiným tvarem hesla)
+    const recount = state.vote?.mediaId === mid && state.vote.perFaction && state.vote.recounted !== 1;
+    const changed = count === undefined || state.mediaCounts?.[mid] !== count || fullVote || recount;
     for await (const c of comments(mid, seen, changed)) {
       if (voteMedia.has(mid)) keepVoice(c, mid);
       if (letterMedia.includes(mid)) c.letter = true;
+      if (recount && seen.has(c.id)) { const lv = lateVote(state, c); if (lv) console.log(`☑ dodatečný hlas @${lv.handle}: ${lv.kw}`); }
       // náborový komentář starších vojáků (před uložením s.reply): pod něj bot odpoví při smrti
       if (seen.has(c.id) && c.userId) {
         const own = state.soldiers.find((s) => s.id === c.userId);
@@ -327,6 +330,7 @@ async function main() {
   for (const s of applyTransfers(state, theme, story)) console.log(`⇄ @${s.handle} převelen: ${s.archetype}`);
 
   for (const mid of voteMedia) if (posts.some((p) => p.id === mid)) { (voices.scanned ??= {})[mid] = true; voicesDirty = true; }
+  if (state.vote?.perFaction && posts.some((p) => p.id === state.vote.mediaId)) state.vote.recounted = 1;
   if (voicesDirty && !process.env.DRY_RUN) fs.writeFileSync(VOICES, JSON.stringify(voices, null, 1) + '\n');
   console.log(`hlasy fronty: ${Object.values(voices.posts).reduce((a, l) => a + l.length, 0)} delších komentářů pod hlasováním`);
   console.log(`hotovo: +${enlisted} rekrutů, ${claimed} převzetí, celkem ${state.soldiers.length}, followers ${state.followers}`);

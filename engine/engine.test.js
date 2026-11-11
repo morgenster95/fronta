@@ -841,3 +841,31 @@ test('dopis domů: zmínka role v komentáři pod dopisovým postem roli neměn�
   applyComment(state, { id: 'x1', text, username: s.handle, userId: s.id, mediaId: 'm', letter: true }, theme, story, map);
   assert.equal(s.archetype, before);
 });
+
+import { lateVote } from './roster.js';
+test('hlasování: běžící se nepřepíše (nové počká), jednotné číslo hesla platí, hlas napsaný před otevřením se dopočítá', () => {
+  const s = emptyState(theme);
+  applyComment(s, { id: 'e1', userId: 'u1', username: 'anna', text: 'CONCORD' }, theme, story, map);
+  applyComment(s, { id: 'e2', userId: 'u2', username: 'bert', text: 'HEGEMONY' }, theme, story, map);
+  const opts = [{ kw: 'HOSPITAL', label: 'h', build: 'dugout' }, { kw: 'SANDBAGS', label: 's', build: 'sandbags' }];
+  openVote(s, { mediaId: 'm1', perFaction: true, question: 'Build?', options: opts });
+  // „Sandbag“ (jednotné číslo) i „hospitals“ se počítá
+  assert.equal(applyComment(s, { id: 'v1', userId: 'u1', username: 'anna', text: 'Sandbag for us, prevention beats cure', mediaId: 'm1' }, theme, story, map)?.kw, 'SANDBAGS');
+  // post s vlastním hlasováním vyjde, když ještě běží jiné: nepřepíše ho, počká
+  const item = { id: 'win', published: { id: 'm2', at: '2026-11-11T10:00:00Z' }, vote: { question: 'After the ridge?', perFaction: true, options: [{ kw: 'FORTIFY', label: 'f' }, { kw: 'HOSPITAL', label: 'h' }] } };
+  assert.equal(openItemVote(s, item), 'pending');
+  assert.equal(s.vote.mediaId, 'm1');
+  assert.equal(Object.keys(s.vote.tallies).length, 1, 'hlasy běžícího hlasování zůstaly');
+  assert.ok(item.votePending);
+  // komentář pod čekajícím postem se zatím nepočítá, ale zpracuje se (seen)
+  assert.equal(applyComment(s, { id: 'v2', userId: 'u2', username: 'bert', text: 'fortify!', mediaId: 'm2' }, theme, story, map), null);
+  s.vote = null; // denní tah běžící hlasování vyhodnotil
+  assert.equal(openItemVote(s, item, '2026-11-11T13:05:00Z'), 'open');
+  assert.equal(s.vote.mediaId, 'm2');
+  assert.equal(s.vote.openedAt, '2026-11-11T13:05:00Z', 'lhůta běží od skutečného otevření');
+  assert.ok(!item.votePending);
+  // dříve napsaný hlas se dopočítá, ale jen jednou a nepřepíše novější
+  assert.equal(lateVote(s, { id: 'v2', userId: 'u2', username: 'bert', text: 'fortify!', mediaId: 'm2' })?.kw, 'FORTIFY');
+  assert.equal(lateVote(s, { id: 'v0', userId: 'u2', username: 'bert', text: 'hospital', mediaId: 'm2' }), null);
+  assert.equal(lateVote(s, { id: 'v3', userId: 'u9', username: 'nobody', text: 'hospital', mediaId: 'm2' }), null, 'bez vojáka se nepočítá');
+});

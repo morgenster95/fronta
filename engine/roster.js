@@ -236,7 +236,22 @@ function voteOption(state, comment) {
   const v = state.vote;
   if (!v || !comment.mediaId || comment.mediaId !== v.mediaId) return null;
   const t = (comment.text || '').toUpperCase();
-  return v.options.find((o) => new RegExp(`\\b${o.kw}\\b`).test(t)) || null;
+  // „Sandbag“, „hospitals“: jednotné i množné číslo hesla platí stejně
+  return v.options.find((o) => new RegExp(`\\b${o.kw.replace(/S$/, '')}S?\\b`).test(t)) || null;
+}
+
+// Dodatečný hlas z už zpracovaného komentáře: hlasování se otevřelo až po komentáři (odložené hlasování pod postem),
+// nebo heslo dřív neprošlo. Jen hlasování po frakcích a jen kdo ještě nehlasoval (novější hlas se nepřepisuje).
+export function lateVote(state, comment) {
+  const v = state.vote;
+  if (!v?.perFaction) return null;
+  const opt = voteOption(state, comment);
+  const handle = (comment.username || '').toLowerCase();
+  if (!opt || !handle) return null;
+  const s = findOwnSoldier(state, comment.userId, handle);
+  if (!s || s === TAKEN || v.tallies[s.id]) return null;
+  v.tallies[s.id] = { kw: opt.kw, f: s.faction };
+  return { type: 'vote', handle, kw: opt.kw, faction: s.faction, late: true };
 }
 
 function castVote(state, comment) {

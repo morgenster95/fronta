@@ -32,8 +32,13 @@ export function fireTriggers(queue, state, theme) {
 }
 
 // po zveřejnění: hlasování pod nově zveřejněným postem
-export function openItemVote(state, item) {
+// Hlasování je vždy jen jedno: když už nějaké běží, nové ho NEPŘEPÍŠE (hlasy by se ztratily), ale počká
+// (item.votePending) a otevře se, až denní tah to běžící vyhodnotí. Vrací 'open' | 'pending' | false.
+export function openItemVote(state, item, openedAt = item.published?.at) {
   if (!item.vote || !item.published?.id) return false;
-  openVote(state, { ...item.vote, mediaId: item.published.id, openedAt: item.published.at });
-  return true;
+  if (state.vote && state.vote.mediaId !== item.published.id) { item.votePending = true; return 'pending'; }
+  if (state.vote?.mediaId === item.published.id) { delete item.votePending; return 'open'; } // už běží
+  openVote(state, { ...item.vote, mediaId: item.published.id, openedAt });
+  delete item.votePending;
+  return 'open';
 }

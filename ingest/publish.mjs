@@ -102,6 +102,17 @@ async function main() {
   const fired = args[0] === '--due' ? fireTriggers(q, state, theme) : [];
   for (const i of fired) console.log(`★ ${i.id}: událost nastala (${theme.factions[i.fired.faction].name}, @${i.fired.hero})`);
   if (fired.length && !process.env.DRY_RUN) fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
+  // odložená hlasování (post vyšel, když ještě běželo jiné): otevřít, jakmile je volno; lhůta minHours běží od otevření
+  if (args[0] === '--due' && !process.env.DRY_RUN) {
+    for (const item of q.items.filter((i) => i.votePending && i.published?.id)) {
+      const st = loadState(theme);
+      if ((st.events || []).some((e) => e.mediaId === item.published.id)) { delete item.votePending; fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2)); continue; }
+      if (openItemVote(st, item, new Date().toISOString()) !== 'open') continue;
+      saveState(st);
+      fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
+      console.log(`☑ ${item.id}: odložené hlasování otevřeno`);
+    }
+  }
   const todo = args[0] === '--due'
     ? [...q.items.filter((i) => !i.published && !i.trigger && i.publishAt && Date.parse(i.publishAt) <= now), ...fired]
     : args.map((id) => q.items.find((i) => i.id === id)).filter(Boolean);
@@ -119,8 +130,8 @@ async function main() {
       // kolo se opakovalo (stav z origin/main): hlasování otevřít znovu, jen pokud ještě neběží
       const st = loadState(theme);
       if (item.vote && st.vote?.mediaId !== item.published.id && !(st.events || []).some((e) => e.mediaId === item.published.id)) {
-        openItemVote(st, item);
-        saveState(st);
+        if (openItemVote(st, item) === 'open') saveState(st);
+        fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
       }
       continue;
     }
@@ -136,10 +147,11 @@ async function main() {
     // hlasování pod tímto postem (stav se načte znovu: mezitím ho nic jiného neměnilo, ale ať se nepřepíše starší kopií)
     if (item.vote) {
       const st = loadState(theme);
-      if (st.vote) console.warn(`! ${item.id}: přepisuje otevřené hlasování „${st.vote.question}“`);
-      openItemVote(st, item);
-      saveState(st);
-      console.log(`☑ ${item.id}: hlasování otevřeno (${item.vote.options.map((o) => o.kw).join(' / ')}${item.vote.perFaction ? ', po frakcích' : ''})`);
+      if (openItemVote(st, item) === 'open') {
+        saveState(st);
+        console.log(`☑ ${item.id}: hlasování otevřeno (${item.vote.options.map((o) => o.kw).join(' / ')}${item.vote.perFaction ? ', po frakcích' : ''})`);
+      } else console.log(`… ${item.id}: běží hlasování „${st.vote.question}“, nové se otevře po jeho vyhodnocení`);
+      fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
     }
   }
 }
