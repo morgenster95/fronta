@@ -62,5 +62,13 @@ Postup pro nový reel `<name>`:
   Každý raněný potřebuje 2 mediky; těžce/kriticky ranění lůžko (obvaziště 2, nemocnice = jediný dugout se 4 lůžky, staví se jen hlasováním).
   Bombardování po výhře v závodě: 2 sektory poraženého denně, 3 dny. **Nasazeno 2026-11-10** (vyvážení v5, poprvé v tahu 13:00 UTC); podrobná pravidla `docs/COMBAT_ROLES.md`.
   Převzatí hráči nejsou chránění. Vyzkoušení nanečisto: `node tools/sim-battle.mjs 14` (nic neukládá).
+- **Hlasování je vždy jen jedno** (od 2026-11-11): post s `vote`, který vyjde při běžícím hlasování, ho nepřepíše; počká (`votePending` ve frontě)
+  a otevře se po vyhodnocení (`ingest/triggers.mjs`, `ingest/publish.mjs`). Hlasy napsané dřív se dopočítají (`lateVote`), heslo platí i v jednotném čísle.
+- **Hlasy fronty a dopisy** (od 2026-11-10): komentáře se 6+ slovy pod hlasováním a pod posty s `voices: true` se ukládají do `data/voices.json`
+  (výběr nejlepších do reelu, vždy ke schválení uživatelem). Post `letters-1` („Letters from the front“) čeká ve frontě bez termínu.
+  Pod dopisovým postem zmínka role ani strany v dlouhém textu nic nemění (nenarukuje, nepřevelí).
+- **Nemocnice na mapě** (od 2026-11-10): postavená nemocnice = velký dugout za zálohami (`dugoutArt` v `web/src/hospital.js`), jen když je ve stavu hry
+  (`state.battle.sides[f].built.dugout`, staví jen vyhodnocené hlasování). Bombardování poraženého je na webu vidět už v den dobytí kóty.
+- **Publikace hlídá verzi souboru** (od 2026-11-11): položka vyjde, až je na GitHub Pages soubor stejné velikosti jako v repu (po novém renderu).
 - **Další na řadě (domluvený návrh, zatím nepostavený):** změny terénu,
   hlášení se jmény skutečných hráčů. Výměna zajatců jako společná událost.
