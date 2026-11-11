@@ -52,14 +52,40 @@ Přínos rolí ověřen (`--roles`): medik, kuchař, kulomet a spojař výrazně
 
 ---
 
-## 2026-11-11 · Nemocnice: smrt i na lůžku (v8) · NÁVRH (čeká na rozhodnutí)
-**Zjištění:** obě strany mají od Dne 3 nemocnici (`built.dugout = 1`). S nemocnicí v7 padne jen ~0,3–0,6 vojáka na stranu týdně,
-protože 4 lůžka stačí pro všechny kritické a na lůžku umírá jen 3,6 % za noc. Nemocnice tak smrt skoro vypne, místo aby ji jen snížila.
-**Kdo co dělá:** lůžka (nemocnice) zachraňují kriticky raněné, medici drží lehce a těžce raněné, aby se nezhoršili do kritického stavu.
-Dvojnásobná práce mediků bez nemocnice: Hegemony ~1,2, Concord ~0,9 padlých týdně.
-**Návrh v8:** `care.crit.dieBase` 0,09 → 0,2, `buildings.dugout.critRisk` 0,4 → 0,8, `care.crit.stabilizeBed` 2 → 3.
-Simulace (30 × 21 dní, na stranu a týden): bez nemocnice Heg ~6,4 / Con ~2,9 padlých, **s nemocnicí Heg ~1,6 / Con ~1,3**
-(nemocnice pořád snižuje úmrtí asi 2–4×, ale neodstraní je).
+## 2026-11-11 · Vyvážení v8: válka, ve které se umírá (kapacita roste s hráči, smrt i na lůžku, přímé zásahy granátem) · NÁVRH (čeká na schválení)
+**Zjištění z v7:**
+1. Obě strany mají od Dne 3 nemocnici. 4 lůžka stačí pro všechny kritické a na lůžku se skoro neumírá, takže v7 dává jen ~0,1 padlého na stranu denně.
+2. Lůžka a nosítka **nerostou s počtem hráčů**, ale ranění od v7 ano. Při 10× hráčů je nemocnice bez účinku (4 lůžka na 900 vojáků)
+   a umírá 10–14 lidí denně na stranu i za klidu.
+3. Bombardování při 1× skoro nezabíjí (~3 padlí za týden), protože nemocnice zásahy pohltí.
+
+**Návrh v8 (varianta G30):**
+| | v7 | v8 |
+|---|---|---|
+| lůžka a nosítka (obvaziště i nemocnice) | pevně 2/6, nemocnice +4/+4 | **na 80 vojáků strany** (`battle.capacityPer: 80`), rostou s velikostí strany |
+| smrt kritického za noc (základ) | 9 % | **30 %** |
+| riziko na lůžku: obvaziště / nemocnice | 0,6 / 0,4 | 0,6 / **0,8** |
+| kritický na lůžku do zlepšení | 2 noci | **3 noci** |
+| bombardování: zásah v úseku | 40 % | **50 %** |
+| bombardování: lehce / těžce / kriticky | 45 / 35 / 20 % | **30 / 40 / 30 %** |
+| bombardování: mez raněných | 8 na 80 | **12 na 80** |
+| **přímý zásah granátem** (nový) | – | **50 % kritických zásahů granátem zabije na místě** (`shell.kill`), nepomůže lůžko ani medik |
+Pravidlo „zásah sám nezabíjí“ platí dál pro kulky. Granát po dobytí kóty zabíjet může.
+
+**Simulace padlých DENNĚ na stranu** (`node tools/sim-daily.mjs --scale 1|10`, 20 / 4 běhy × 21 dní):
+| Scénář | v7 ×1 | **v8 ×1** (Heg 86 / Con 90) | v7 ×10 | **v8 ×10** (Heg 860 / Con 900) |
+|---|---|---|---|---|
+| klid, obě s nemocnicí (stav hry) | 0,12 / 0,09 | **0,32 / 0,25** (≈ 2 týdně) | 14,4 / 10,3 | **2,1 / 2,3** |
+| klid, jen obvaziště | 0,84 / 0,38 | **0,87 / 0,50** | 14,9 / 12,1 | **9,0 / 2,0** |
+| Concord pod granáty: dny bombardování | 0,18 | **2,15 / den** (nejhorší 4) | 12,2 | **21,9 / den** (nejhorší 31) |
+| Concord: padlí za 7 dní od dobytí kóty | 3,0 | **14,1** (~16 % strany) | 152 | **146** (~16 % strany) |
+Per capita vychází 1× a 10× stejně, takže hra se chová stejně při jakémkoli počtu hráčů.
+Nemocnice snižuje úmrtí 2–4× (při 10× Hegemonie 9,0 → 2,1), medici rozhodují bez nemocnice (Hegemonie má polovinu mediků Concordu → víc padlých).
+Pojistka (nejvýš 5 % strany za den) zůstává.
+
+**Hotovo v kódu (vypnuté, dokud se nenastaví čísla):** `battle.capacityPer`, `battle.shell.kill`, texty `killedShell`, příčina smrti `shell`
+(„Killed outright by a shell“ v rodokmenu), nástroj `tools/sim-daily.mjs`.
+**Před nasazením ještě:** mapa nemocnice musí umět víc lůžek než 4 na budovu (při 10× by jich bylo ~40).
 
 ---
 

@@ -2440,6 +2440,12 @@
     "{name} did not last the night outside the full aid post. The bearers who carried {him} in carried {him} out again at dawn.",
     "Every bed was taken and every medic was busy. {name} died waiting. The men at {sector} have not stopped talking about it."
   ],
+  "killedShell": [
+    "A shell landed square in the bay at {sector}. {name} was killed outright. The bearers found nothing to carry.",
+    "{name} was killed outright by a direct hit at {sector}. The men dug for an hour and found only {his} identity disc.",
+    "The shell that hit {sector} took {name} with it. No stretcher, no surgeon, no last words. Just the crater.",
+    "{name} died at {his} post at {sector} when the dugout roof came down under a direct hit."
+  ],
   "diedInBed": [
     "{name} died in the hospital bed despite everything the surgeon tried. {item} was in {his} hand at the end.",
     "The surgeon worked on {name} until the lamp ran dry. It was not enough.",

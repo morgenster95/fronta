@@ -6,7 +6,7 @@ import { dailyEntry, eventEntry, soldierVars, fill, pickVaried, tplKey, makeBack
 
 export const STATUS = ['active', 'wounded', 'missing', 'captured', 'fallen'];
 
-// Smrt vojáka. cause: nobed (zemřel na nosítkách, lůžka plná) | wounds (zemřel na lůžku) | raid (na výpravě) | line (starý model)
+// Smrt vojáka. cause: nobed (zemřel na nosítkách, lůžka plná) | wounds (zemřel na lůžku) | raid (na výpravě) | shell (přímý zásah granátem) | line (starý model)
 // extra: { shell: true } = zasažen při bombardování, place = kde
 export function fallSoldier(s, day, cause, extra = {}) {
   s.status = 'fallen';

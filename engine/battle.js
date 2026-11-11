@@ -39,10 +39,13 @@ export function hospital(state, theme, f) {
   const side = ensureBattle(state, theme).sides[f];
   const n = count(side, 'dugout');
   const a = cfg.aidPost, d = cfg.buildings.dugout;
+  // battle.capacityPer: lůžka a nosítka jsou na tolik vojáků strany a rostou s její velikostí (bez klíče pevná čísla)
+  const k = cfg.capacityPer ? Math.max(1, state.soldiers.filter((s) => s.faction === f && s.status !== 'fallen').length / cfg.capacityPer) : 1;
+  const sc = (v) => Math.round(v * k);
   // care = násobek hojení těžce raněného proti nosítkům s plnou péčí (≥ 1), critRisk = násobek rizika smrti kritického za noc
   // proti nosítkům (≤ 1): lůžko je tak VŽDY lepší než nosítka, nemocnice lepší než obvaziště
-  if (!n) return { name: a.name, dugout: false, dugouts: 0, beds: a.beds, stretchers: a.stretchers, care: a.care, critRisk: a.critRisk };
-  return { name: d.name, dugout: true, dugouts: n, beds: n * d.beds, stretchers: a.stretchers + n * (d.stretchers || 0), care: d.care, critRisk: d.critRisk };
+  if (!n) return { name: a.name, dugout: false, dugouts: 0, beds: sc(a.beds), stretchers: sc(a.stretchers), care: a.care, critRisk: a.critRisk };
+  return { name: d.name, dugout: true, dugouts: n, beds: sc(n * d.beds), stretchers: sc(a.stretchers + n * (d.stretchers || 0)), care: d.care, critRisk: d.critRisk };
 }
 
 export function build(state, theme, f, id) {
@@ -136,7 +139,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   };
   const barrage = activeBarrage(state, day);
   const stats = theme.factions.map(() => ({
-    hits: { bg: 0, shell: 0, fire: {} }, sev: { light: 0, heavy: 0, crit: 0 }, deaths: { nobed: 0, nocare: 0, wounds: 0 },
+    hits: { bg: 0, shell: 0, fire: {} }, sev: { light: 0, heavy: 0, crit: 0 }, deaths: { nobed: 0, nocare: 0, wounds: 0, shell: 0 },
     beds: 0, stretchers: 0, trench: 0, cover: 1, capped: 0, shots: 0,
   }));
   const shelled = new Set();
@@ -262,6 +265,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       : cfg.hit * coverOf(s) * (ctx.dangerOf?.(s) ?? 1) * (barrage?.target === s.faction ? cfg.barrage : 1) * (1 - own); // spojař poblíž: telefon k vlastnímu dělostřelectvu, protipalba
     if (rand() >= p) continue;
     bgHit(s, severity(s, underShells ? cfg.shell.severity : cfg.severity, rand, underShells), underShells);
+    // přímý zásah granátem (battle.shell.kill): kritický zásah pod granáty může zabít na místě, lůžko ani medik nepomůže
+    if (underShells && s.wound?.sev === 'crit' && cfg.shell.kill && rand() < cfg.shell.kill) s.wound.outright = true;
   }
   // klidný den bez raněných nebývá: aspoň D.min zásahů z pozadí na stranu (vybráni podle vystavení, přední linie častěji)
   if (D?.min) theme.factions.forEach((_, f) => {
@@ -286,7 +291,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     deathsToday[f]++;
     stats[f].deaths[cause]++;
     ev(s, 'fallen', eventEntry(kind, s, day, theme, story, {}, today));
-    fallSoldier(s, day, cause === 'wounds' ? 'wounds' : 'nobed');
+    fallSoldier(s, day, cause === 'wounds' || cause === 'shell' ? cause : 'nobed');
     return true;
   };
 
@@ -295,6 +300,10 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const H = hospital(state, theme, f);
     const mine = () => state.soldiers.filter((s) => s.faction === f && isWounded(s));
     const pri = (s) => ({ crit: 0, heavy: 1, light: 2 })[s.wound.sev];
+    for (const s of state.soldiers.filter((x) => x.faction === f && x.wound?.outright)) {
+      delete s.wound.outright;
+      die(s, story.killedShell ? 'killedShell' : 'diedNoBed', 'shell');
+    }
     const place = () => {
       side.beds = side.beds.filter((id) => state.soldiers.some((s) => s.id === id && isWounded(s) && s.wound.place === 'bed'));
       const queue = mine().filter((s) => s.wound.sev !== 'light' && s.wound.place !== 'bed').sort((a, b) => pri(a) - pri(b) || a.wound.day - b.wound.day);

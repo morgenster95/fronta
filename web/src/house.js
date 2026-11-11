@@ -34,10 +34,11 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
       nobed: 'Died on a stretcher outside the aid post. Every bed was taken.',
       wounds: 'Died of wounds in the hospital dugout.',
       raid: `Fell on a night raid${c.place ? ` at ${c.place}` : ''}.`,
+      shell: 'Killed outright by a shell.',
       line: 'Fell at the front.',
     }[c.kind] || 'Fell at the front.');
   };
-  const causeShort = (c) => (c?.shell ? 'barrage, ' : '') + ({ nobed: 'no bed', wounds: 'of wounds', raid: 'night raid', line: 'at the front' }[c?.kind || 'line'] || 'at the front');
+  const causeShort = (c) => (c?.shell ? 'barrage, ' : '') + ({ nobed: 'no bed', wounds: 'of wounds', raid: 'night raid', line: 'at the front', shell: 'direct hit' }[c?.kind || 'line'] || 'at the front');
   const dayL = (d) => (d > 0 ? `Day ${d}` : 'Mobilization');
 
   async function family(handle) {
