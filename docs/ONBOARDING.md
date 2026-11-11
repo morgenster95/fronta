@@ -1,63 +1,57 @@
-# Odbavení rekrutů — jak to funguje
+# Odbavení rekrutů: jak to funguje
+
+_Stav k 11. 11. 2026: vše běží automaticky. Ruční postupy níže jsou jen záloha._
 
 ## Princip
-1. Člověk dá follow **@mudandiron** a pod **připnutý Reel** napíše slovo své strany: `CONCORD` nebo `HEGEMONY`
-   (stačí i v delším komentáři, velikost písmen nevadí).
-2. Systém z komentáře udělá vojáka: jméno = jeho @handle, vzhled a příjmení rodu se odvodí z účtu,
-   dostane **první volné stanoviště** své strany (od středu fronty, přední linie první). Místo je trvalé.
-3. Na webu **mudandiron.web.app** se najde vyhledáním svého @jména (odkaz v biu). Dokud je rekrutů málo,
-   drží linii „neobsazená stanoviště“ — první rekrut zabere první z nich.
-4. Každý den ráno (06:00 UTC) proběhne **denní tah**: nové zápisy do služebních záznamů, zranění, povýšení,
-   výsledek včerejšího hlasování. Každý komentuje jen jednou — druhý komentář s jinou stranou se ignoruje.
+1. Člověk napíše pod kterýkoli sledovaný příspěvek **@mudandiron** (připnutý náborový Reel + posledních 5 postů) slovo své strany:
+   `CONCORD` nebo `HEGEMONY`. Stačí i v delším komentáři nebo v odpovědi pod cizím komentářem, velikost písmen nevadí.
+2. Smyčka `front-loop` komentář do ~5 minut zpracuje: vznikne voják se jménem podle @handle (vzhled a příjmení rodu se odvodí z účtu),
+   dostane **první volné stanoviště** své strany (od středu fronty, přední linie první). Místo je trvalé. Bot pod komentář veřejně odpoví.
+3. **Jeden účet = jeden voják, strana se nemění.** Druhý komentář s jinou stranou se ignoruje.
+4. **Role:** komentář, který zmíní právě jednu roli („CONCORD medic“, „MG“), ji dá hned. Zdarma je jen první volba, další změny přes převelení
+   na kartě převzatého vojáka (1× za 7 dní). Lieutenant je jen za povýšení.
+5. Na webu **mudandiron.web.app** se hráč najde vyhledáním svého @jména (odkaz v biu) nebo přes `/?s=handle`.
+6. Každý den ve **13:00 UTC** vyjde ranní vydání (`docs/SCHEDULE.md`): denní boj, nové zápisy do služebních záznamů, povýšení,
+   výsledek hlasování, Trench Gazette.
 
-## Fáze A — teď: ruční odbavení (bez Instagram API)
-Dokud nemáme token z Meta aplikace, odbavuješ ty, ideálně 1–3× denně (stačí 2 minuty):
+## Převzetí vojáka (claim)
+Zapnuté (`claimEnabled = true` ve `web/src/firebase-config.js`). Na kartě vojáka tlačítko **This is me: claim** → přihlášení Googlem →
+web ukáže kód `ENLIST-XXXX` → hráč ho napíše jako komentář na IG → smyčka kód spáruje s jeho IG účtem (Firestore).
+Převzatý voják může žádat o převelení a (až budou výpravy zapnuté) hlásit se tlačítkem Volunteer.
+Diagnostika: workflow **claim-check** (kód nebo handle).
 
-1. Otevři komentáře pod připnutým Reelem, opiš nová jména a stranu.
-2. **Z mobilu:** GitHub app → repo `fronta` → Actions → **enlist** → Run workflow →
-   do pole napiš: `jan.novak CONCORD, petra_k HEGEMONY, …` → Run.
-   (Nebo napiš seznam mně a já ho odbavím.)
-3. Workflow vojáky přidá, uloží stav a — jakmile je v GitHub Secrets `FIREBASE_SERVICE_ACCOUNT` — sám nasadí web.
-   **Do té doby nasazení dělám já** (jinak se změna na webu neobjeví).
-4. Pod komentář odpověz (šablony v `marketing/CAPTIONS.md`), ať lidé vidí, že to funguje.
+## Hlasování
+- Otevírá se samo po zveřejnění postu, který má ve frontě `marketing/queue.json` pole `vote`. Ručně: Actions → **open-vote**.
+- Hlasuje se komentářem s heslem pod tím postem, platí poslední hlas na účet. U hlasování po frakcích (`perFaction`) hlasuje jen ten,
+  kdo má vojáka; strana se bere z vojáka. Kdo ještě nenarukoval, napíše stranu i heslo v jednom komentáři.
+- Běží vždy jen jedno hlasování. Vyhodnotí ho ranní vydání (nejdřív `minHours` po otevření), výsledek je v Gazette a ve **War Roomu** na webu.
 
-## Fáze B — automaticky (po napojení Instagramu)
-- GitHub Actions každých 30 minut stáhne komentáře pod posledními posty (Instagram API, Standard Access =
-  vlastní účet, bez schvalování Metou), narukuje nové vojáky, sečte hlasy a nasadí web.
-- Volitelně pošle rekrutovi soukromou zprávu s odkazem na jeho vojáka.
-- Potřeba: profesionální IG účet → developers.facebook.com → aplikace Business → *Instagram API with Instagram Login*
-  → token s oprávněními `instagram_business_basic`, `instagram_business_manage_comments`
-  (+ `instagram_business_manage_messages` pro DM) → GitHub Secrets `IG_ACCESS_TOKEN`, `IG_USER_ID`.
-  Pak v `.github/workflows/ingest.yml` a `daily.yml` odkomentovat `schedule`.
+## Provoz
+- **Smyčka** `front-loop` (`tools/loop.sh`): každých ~5 min komentáře, odpovědi, fronta příspěvků, 1× denně denní tah, commit stavu, nasazení webu.
+  Běží ~5,5 h a pak spustí sama sebe; plánovač ji každé 3 h oživí, kdyby spadla.
+- **Hlídač** `watchdog` každých 20 min: běží smyčka? Ukazuje web stejné vojáky jako data? Když ne, smyčku nebo nasazení spustí a založí issue (přijde e-mail).
+- Tři kola smyčky selžou po sobě nebo se nepodaří nasadit web → issue se štítkem `loop-trouble` / `deploy-failed`, samo se zavře po nápravě.
+- **Token IG:** workflow `refresh-token` každé pondělí (potřebuje secret `GH_PAT`).
 
-## Rozhodnutí (War Room)
-- Na webu je záložka **War Room**: aktuální otázka, odemykání (bombardování od 500 převzatých vojáků) a historie rozhodnutí.
-- Nové hlasování: GitHub app → Actions → **open-vote** → ID Reelu, otázka, dvě až tři možnosti ve tvaru
-  `SLOVO|popis|nebezpečí|výsledek` (např. `HOLD|Hold the line|0.7|The line held. The rain did not stop.`).
-- Lidé hlasují komentářem s tím slovem pod Reelem, platí poslední hlas na účet. Vyhodnotí to další denní tah,
-  výsledek se objeví na webu jako zpráva dne a v historii War Roomu.
-
-## Převzetí vojáka (claim) — zatím vypnuté
-Tlačítko „This is me: claim“ čeká na zapnutí přihlášení Googlem ve Firebase (viz `docs/STATUS.md`, bod 3).
-Do té doby stačí, že voják nese @jméno.
-
-## Denní rytmus (návrh)
-| Kdy | Co |
+## Ruční zálohy (když automatika nejede)
+| Workflow | K čemu |
 |---|---|
-| ráno | denní tah proběhne sám (06:00 UTC) → nové příběhy |
-| dopoledne | odbavit nové komentáře (fáze A) |
-| odpoledne | Reel dne: co se stalo na frontě + otázka k hlasování (open-vote) |
-| večer | odbavit, odpovědět v komentářích, story s výsledky |
+| **enlist** | ruční narukování: do pole `jan.novak CONCORD, petra_k HEGEMONY` |
+| **ingest** | jedno stažení komentářů |
+| **daily** | denní tah ručně |
+| **publish** | zveřejnění položek z fronty podle ID |
+| **deploy** | nasazení webu s plným výpisem |
+| **ig-check** | ověření napojení na Instagram (nic neukládá) |
 
-## Zapnutí automatiky — krok za krokem
-1. **Instagram:** @mudandiron přepnout na profesionální účet (Nastavení → Typ účtu → Creator nebo Business), účet veřejný.
-2. **Meta aplikace:** developers.facebook.com → My Apps → Create app → případ užití *Manage messaging & content on Instagram* → typ Business.
-   V aplikaci: *Instagram → API setup with Instagram login* → **Add account** (přihlásit @mudandiron) → **Generate token** → zkopírovat.
-   Aplikace může zůstat ve vývojovém režimu (Standard Access stačí pro vlastní účet).
-3. **GitHub** → repo `fronta` → Settings → Secrets and variables → Actions:
-   - Secrets: `IG_ACCESS_TOKEN` (token z kroku 2), `FIREBASE_SERVICE_ACCOUNT` (Firebase Console → Project settings → Service accounts → Generate new private key → celý obsah JSON),
-     volitelně `GH_PAT` (fine-grained token s právem *Secrets: read & write* pro repo → token se bude sám obnovovat).
-4. **Kontrola:** Actions → **ig-check** → Run. V logu bude `IG_USER_ID` a ID postů → `IG_USER_ID` ulož jako secret,
-   ID připnutého náborového Reelu jako variable `IG_MEDIA_IDS`.
-5. **Zapnout:** Variables → `IG_ENABLED = true` (a `IG_REPLY = 1` pro automatické odpovědi pod komentáře).
-   Od té chvíle: komentáře každých 30 min, denní tah v 06:00 UTC, obnova tokenu každé pondělí, web se nasazuje sám.
+## Zapojení od nuly (už hotové, jen pro případ obnovy)
+1. **Instagram:** @mudandiron jako profesionální účet (Creator nebo Business), veřejný.
+2. **Meta aplikace:** developers.facebook.com → aplikace typu Business, systémový token z firemního portfolia s oprávněními pro komentáře,
+   publikování obsahu a (volitelně) zprávy. Seznam je v hlavičce `ingest/poll-comments.mjs`.
+3. **GitHub** → Settings → Secrets and variables → Actions:
+   - Secrets: `IG_ACCESS_TOKEN`, `IG_USER_ID`, `FIREBASE_SERVICE_ACCOUNT` (Firebase Console → Project settings → Service accounts → nový klíč, celý JSON), volitelně `GH_PAT`.
+   - Variables: `IG_ENABLED = true`, `IG_REPLY = 1` (odpovědi pod komentáře), `IG_MEDIA_IDS` (ID připnutého náborového Reelu), `SITE_URL`, volitelně `IG_SEND_DM = 1`, `FIRESTORE`.
+4. **Firebase:** Authentication → Google zapnout; Firestore (Native); `authDomain` = `mudandiron.web.app` a v Google Cloud Console u OAuth klienta
+   redirect URI `https://mudandiron.web.app/__/auth/handler`.
+5. **Kontrola:** Actions → **ig-check** → Run; pak Actions → **front-loop** → Run workflow (stačí jednou).
+
+Tokeny a klíče patří jen do GitHub Secrets. Repo je veřejné.

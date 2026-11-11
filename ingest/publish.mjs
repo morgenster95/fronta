@@ -93,6 +93,18 @@ async function publish(item) {
   return { id: media.id, permalink: info.permalink, at: new Date().toISOString() };
 }
 
+// Zveřejněná videa v repu nezůstávají (repo by rostlo o desítky MB denně): hodinu po zveřejnění se soubor smaže,
+// smyčka smazání commitne. Instagram už má vlastní kopii; kdo chce video mít, stáhne si ho před publikací z GitHub Pages.
+function dropPublishedVideos(q) {
+  for (const item of q.items) {
+    if (!item.published?.at || Date.now() - Date.parse(item.published.at) < 3600e3) continue;
+    for (const f of item.files || []) {
+      const local = path.join(ROOT, 'marketing', 'promo', f);
+      if (/\.mp4$/i.test(f) && fs.existsSync(local)) { fs.unlinkSync(local); console.log(`🧹 ${f}: zveřejněno, smazáno z repa`); }
+    }
+  }
+}
+
 function publishedLog() {
   const f = process.env.PUBLISHED_LOG;
   if (!f || !fs.existsSync(f)) return [];
@@ -123,6 +135,7 @@ async function main() {
   const todo = args[0] === '--due'
     ? [...q.items.filter((i) => !i.published && !i.trigger && i.publishAt && Date.parse(i.publishAt) <= now), ...fired]
     : args.map((id) => q.items.find((i) => i.id === id)).filter(Boolean);
+  if (args[0] === '--due' && !process.env.DRY_RUN) dropPublishedVideos(q);
   if (!todo.length) return console.log('nic ke zveřejnění');
   for (const item of todo) {
     if (item.published) { console.log(`= ${item.id}: už zveřejněno ${item.published.permalink || ''}`); continue; }

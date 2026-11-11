@@ -1,6 +1,18 @@
 # Stav projektu a co je potřeba od tebe
 
-_Aktualizováno 9. 11. 2026._
+_Aktualizováno 11. 11. 2026 (Den 3 války)._
+
+## Teď ve hře
+- Hra běží naostro: https://mudandiron.web.app, IG @mudandiron. Den 1 = 9. 11. 2026. K 11. 11. dopoledne 157 vojáků (Hegemony 76, Concord 81), 61 převzatých.
+- **Závod o Verdel Ridge:** kdo první naverbuje 100 vojáků, dobude kótu. Výhra = 3 dny dělostřelectva na poraženého, bezpečnější týden pro vítěze,
+  stuha všem vítězům a titul hrdiny pro rozhodujícího rekruta. Do první dobyté kóty děla mlčí. Další kóty: `theme.race.objectives` (Hill 304, Blackwater Canal…).
+- **Denní boj** (v6): `docs/BATTLE.md`, role a čísla `docs/COMBAT_ROLES.md`.
+- **Hlasování o stavbách** po frakcích na IG (HOSPITAL / SANDBAGS, vyhodnocení ve vydání Dne 3). Hlasování běží vždy jen jedno.
+- **Výpravy do údolí jsou vypnuté** (`theme.valley.enabled = false`); zapnout jen s výslovným souhlasem. Dokud jsou vypnuté, příběhy o nich nemluví.
+- **Automatika:** smyčka `front-loop` každých ~5 min (komentáře, odpovědi, fronta příspěvků, denní tah ve 13:00 UTC, nasazení webu),
+  hlídač `watchdog` každých 20 min. Rytmus dne: `docs/SCHEDULE.md`. Odbavení rekrutů: `docs/ONBOARDING.md`.
+- **Média:** obrázky a videa pro IG leží v `marketing/promo/` a jdou přes GitHub Pages. Zveřejněná videa se hodinu po publikaci z repa mažou.
+- Aktuální pravidla a úkoly pro Claude: `CLAUDE.md`.
 
 ## Hotovo
 - **Prototyp prohlížeče fronty** (PixiJS): procedurální zákopy (3 linie na stranu + spojovací zákopy, pytle, dráty, krátery, mrtvé stromy),
@@ -8,12 +20,13 @@ _Aktualizováno 9. 11. 2026._
   hledání `@handle`, karta vojáka se služebním záznamem, odkaz `/?s=handle`, sdílení, déšť, mlha, záblesky.
 - **Jádro** (`engine/`): deterministická mapa 32 sektorů (~18 600 míst, otevřeno 8), narukování z komentáře, převzetí kódem, generátor příběhů
   ze šablon (zdarma, bez AI), denní tah se zraněními, povýšením, smrtí a **nástupcem z rodu**. Testy: `npm test`.
-- **Ingest** (`ingest/poll-comments.mjs`): Instagram API (Standard Access, vlastní účet), stahování každých 30 min přes GitHub Actions,
-  volitelná soukromá odpověď (Private Reply), párování převzetí přes Firestore.
+- **Ingest** (`ingest/poll-comments.mjs`): Instagram API (systémový token, vlastní účet), stahování každých ~5 min ve smyčce `front-loop`,
+  veřejná odpověď pod komentář, volitelná soukromá odpověď (Private Reply), párování převzetí přes Firestore.
 - **Firebase projekt `fronta-ig`** (Spark, zdarma), náhled: https://mudandiron.web.app (živý web, Firebase Hosting zdarma; jediná používaná adresa. Výchozí web projektu fronta-ig.web.app nejde smazat, už se na něj nenasazuje; zůstává na něm poslední přesměrování).
 - **Grafika:** všech 10 typů vojáků × 2 frakce (střelec, důstojník, zdravotník, kulometčík, ženista, spojka, ostřelovač, spojař, kuchař, kaplan),
   8 směrů, chodidla na jednom řádku, výška 30 ±1 px. Rekvizity: hrob s přilbou, mrtvý strom. Nástroje: `tools/sprite_qa.py` (kontrola), `tools/sprite_fix.py` (plovoucí pixely, pata).
-- **Hlasování:** komentář s klíčovým slovem pod Reelem, 1 hlas na účet, vyhodnotí denní tah → denní zpráva na webu. Otevření: workflow `open-vote` (jde i z mobilu přes GitHub app).
+- **Hlasování:** komentář s klíčovým slovem pod postem, 1 hlas na účet (platí poslední, heslo i v jednotném čísle), vyhodnotí ranní vydání → Gazette a War Room.
+  Otevírá se samo po zveřejnění postu s `vote` ve frontě `marketing/queue.json`; ručně workflow `open-vote`. Po frakcích (`perFaction`) hlasuje jen ten, kdo má vojáka.
 - **Růst fronty:** mapa má 32 sektorů, otevřeno 8; při 90% zaplnění se otevřou další 2. Voják má uloženou trvalou pozici, nikdy se nepřesune.
 
 - **Hloubka zákopů:** vzdálená stěna s obložením a stínem, bližší okraj a jižní pytle ve vrstvě NAD vojáky (stojí v zákopu, Hegemonie vykukuje přes pytle).
@@ -22,8 +35,8 @@ _Aktualizováno 9. 11. 2026._
   při ranním a večerním stand-to („morning hate“, 5:30–6:15 a 18:30–19:15 místního času) palba ×3; granát 1× za 20–50 s, světlice;
   zdravotník jde ke skutečně zraněnému po trase zákopu (i cikcakem), chodí pod okrajem zákopu, ošetří ho a vrátí se.
   Skutečná zranění dál jen v denním tahu (pomalu).
-- **Bombardování:** odemkne se při 500 převzatých vojácích (ukazatel na webu), pak jde dát do hlasování (`open-vote` s efektem `barrage`);
-  vítězství = hustá palba na cílovou frakci po celý další den + vyšší nebezpečí v denním tahu. Náhled: `/?fx=barrage`.
+- **Bombardování:** přijde po dobytí kóty v závodě (3 dny, 4 úseky poraženého denně, `docs/BATTLE.md`); na webu je palba vidět už v den dobytí.
+  Náhled: `/?fx=barrage`. Původní odemčení při 500 převzatých vojácích je zrušené (`theme.unlocks` je prázdné).
 
 - **Deník fronty (Front Diary)** – tlačítko *Diary* na webu, odkaz `/?diary`. Dva druhy zápisů:
   1. **ruční** (píšeme my): `data/diary.json` → `entries: [{ day, title, text, by?, draft? }]`, odstavce `
@@ -36,9 +49,9 @@ _Aktualizováno 9. 11. 2026._
   píseň přes dráty, fotka z území nikoho, karty; podle povolání tunel, souboj ostřelovačů, chlapec, ukradená šunka, odposlech, deník),
   společné příhody dvou skutečných hráčů (spolubojovník / nepřítel přes dráty, zápis dostanou oba), nový stav **nezvěstný** (vrátí se do 4 dnů).
 
-- **Údolí a výpravy** (`docs/MAP_MISSIONS.md`): tlačítko *Valley* / `/?valley` = mapa 8 míst, kdo je drží, kronika míst se jmény. Každé 3 dny ranní noviny
+- **Údolí a výpravy (postaveno, teď VYPNUTO)** (`docs/MAP_MISSIONS.md`): tlačítko *Valley* / `/?valley` = mapa 8 míst, kdo je drží, kronika míst se jmény. Každé 3 dny ranní noviny
   vyhlásí noční výpravu, hráči se hlásí heslem místa v komentáři (CHURCH…) nebo převzatí tlačítkem Volunteer, 5 na frakci; další vydání otiskne
-  souboj 5 na 5 podle rolí a počasí, zápisy účastníkům, zranění/nezvěstní/zajatí, Raider's Cross po 3 výpravách. První výprava: Day 2.
+  souboj 5 na 5 podle rolí a počasí, zápisy účastníkům, zranění/nezvěstní/zajatí, Raider's Cross po 3 výpravách. Výzva CHURCH z Dne 2 byla zrušena, žádná výprava zatím neproběhla.
 
 ### Doplněno večer 9. 11. 2026
 - **Přání rolí z komentářů:** hráči si v komentářích píšou, čím chtějí být. Komentář, který zmíní **právě jednu roli**, ji dá hned,
@@ -61,18 +74,23 @@ _Aktualizováno 9. 11. 2026._
   `{"name": "<name>"}` nebo Actions → reel → Run workflow. Ověřeno na day1 (64 s, ~14 min). Postup je v `CLAUDE.md`.
 - **`CLAUDE.md` v repu:** pravidla projektu, postup pro reely a aktuální TODO pro Claude v cloudu (aplikace v mobilu), kde není paměť z PC.
 
-## Potřebuju od tebe (až se vrátíš)
-1. ~~Název hry + IG účet~~ → **Mud & Iron, @mudandiron** (hotovo). Promo balíček: `marketing/` (texty v `marketing/CAPTIONS.md`), odbavení: `docs/ONBOARDING.md`.
-2. **Instagram:** profesionální (Creator/Business) účet → developers.facebook.com → aplikace typu *Business* → produkt
-   *Instagram API with Instagram Login* → přidat svůj IG účet → vygenerovat token s oprávněními
-   `instagram_business_basic`, `instagram_business_manage_comments` (+ `instagram_business_manage_messages` pro DM).
-   Token a IG user ID vložit do GitHub Secrets (`IG_ACCESS_TOKEN`, `IG_USER_ID`). **První test:** spustit workflow `ingest` ručně.
-3. **Firebase Auth (Google):** Console → Authentication → Get started → Google → Enable. Pak vytvořit Firestore (Native, eur3)
-   a webovou aplikaci → konfiguraci dát do `web/src/firebase-config.js`.
-   ⚠️ `authDomain` = doména, na které web běží (`mudandiron.web.app`), a v Google Cloud Console → Credentials → OAuth klient
-   „Web client (auto created…)“ přidat `https://<doména>/__/auth/handler` do Authorized redirect URIs **před nasazením**.
-4. **Service account pro nasazování z GitHubu:** Firebase Console → Project settings → Service accounts → Generate new private key
-   → obsah JSON do secretu `FIREBASE_SERVICE_ACCOUNT`.
+### Doplněno 10.–11. 11. 2026
+- **Denní boj** s palbou hráčů, mediky, lůžky, nosítky a drátem (v6), bombardování po dobytí kóty, nemocnice na mapě.
+- **Post při dobytí kóty** (`victory-ridge`, `ingest/triggers.mjs`): vyjde sám do ~5 min od dobytí a otevře hlasování frakcí.
+- **Hlasy fronty:** delší komentáře pod hlasováním se ukládají do `data/voices.json` (výběr do reelu vždy schvaluje uživatel). Dopisový post se dělat nebude.
+- **Publikace hlídá verzi souboru:** položka vyjde, až je na GitHub Pages stejný soubor jako v repu.
+- **Texty hlídají stav hry:** žádné ostřelování před první dobytou kótou, žádné výpravy, dokud jsou vypnuté, žádná místa budoucích kót (`storyFor` v `engine/roster.js`).
+
+## Nastavení, které už je hotové
+Instagram API (secrets `IG_ACCESS_TOKEN`, `IG_USER_ID`), Firebase Auth přes Google a převzetí vojáka (`claimEnabled = true`),
+service account pro nasazování (`FIREBASE_SERVICE_ACCOUNT`). Postup zapojení je v `docs/ONBOARDING.md`.
+
+## Známá slabá místa
+- **Limit Firebase Hosting (Spark): 360 MB přenosu denně, 10 GB úložiště.** Úložiště je bez problému (web má ~5 MB). První návštěva stáhne
+  nejvýš ~1,8 MB (z toho ~1 MB obrázky PNG, ~0,4 MB JavaScript), takže limit stačí zhruba na 200–300 nových návštěvníků denně.
+- Testy se na GitHubu nespouštějí samy (jen `npm test` před commitem).
+- Historie gitu obsahuje stará videa (~110 MB). Smazání souborů repo nezmenší, to by šlo jen přepsáním historie.
+- Už zveřejněný příběhový reel a `marketing/CAPTIONS.md` zmiňují „every midnight“ a „500 claimed soldiers unlock the artillery“; obojí už neplatí.
 
 ## PixelLab
 Zbývá ~90 generací, propadnou **13. 11.** Nechal jsem je na tvoje rozhodnutí (např. tank, dlaždice, další varianty).
@@ -80,6 +98,5 @@ Zbývá ~90 generací, propadnou **13. 11.** Nechal jsem je na tvoje rozhodnutí
 ## Další kroky (můj návrh pořadí)
 1. Terén: zem a stěny jsou zatím kreslené kódem (krátery, stromy, hroby už z PixelLabu). Další krok: textura stěny a ostnatý drát z PixelLabu.
 2. Tank: 8 směrů z PixelLabu vyšlo moc vysoké a ne-kosočtverečné → zkusit čelní snímek přes `create_image_pro_flash` v měřítku (výška ~40 px) a teprve pak rotaci. Animace idle hromadně nepouštěny (malý přínos).
-3. Posun linie podle výsledků hlasování (zatím hlasování mění jen nebezpečnost dne).
-4. Renderer Reelů (headless prohlížeč nahraje průlet kamerou).
-5. Výkon na mobilu: zatím ověřeno jen na desktopu (Chrome).
+3. Posun linie podle výsledků hlasování (zatím hlasování staví stavby nebo vydává dočasné rozkazy).
+4. Výkon na mobilu: zatím ověřeno jen na desktopu (Chrome).

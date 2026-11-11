@@ -1,5 +1,7 @@
 # Mud & Iron — texty pro Instagram (@mudandiron)
 
+_**Startovní balíček z 8. 11. 2026.** Platné popisky a časy jsou ve frontě `marketing/queue.json`. Dvě věty odsud už neplatí a v nových textech se nepoužívají: „Every midnight the front turns“ (vydání je ve 13:00 UTC) a „500 claimed soldiers unlock the artillery“ (dělostřelectvo přijde po dobytí kóty v závodě)._
+
 Všechny soubory: `marketing/posts/` (obrázky 1080×1350, profilovka 1080×1080), `marketing/reels/` (videa 1080×1920, 30 fps).
 **Nahrávej verze se zvukem `reels/*_sound.mp4`** (vlastní syntetizovaná hudba: temný podklad, bubny, déšť, dunění děl a výstřely v synchronu, bez autorských práv). Verze bez `_sound` jsou němé, kdybys chtěl dát hudbu z knihovny Instagramu.
 

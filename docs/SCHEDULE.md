@@ -10,7 +10,7 @@ Nastavení: `themes/front-ww1/theme.json` → `schedule`.
 
 - **Den války se řídí Amerikou:** den N = kalendářní den v USA; jeho noviny vycházejí ráno v 8:00 New York (13:00 UTC).
   Den 1 = 9. 11. 2026, den 2 začíná 10. 11. ve 13:00 UTC.
-- Hlasování otevřené večerním reelem se uzavře s ranními novinami (okno ~14 h: americký večer, noc a britské dopoledne).
+- Hlasování se otevře po zveřejnění postu s `vote` a uzavře ho ranní vydání, nejdřív `minHours` (teď 8 h) po otevření. Běží vždy jen jedno.
 - Reel připravujeme spolu, kdy se hodí (např. 17–18 h pražského času), a naplánujeme ho do fronty na 23:00 UTC.
   Smyčka ho zveřejní sama, nikdo nemusí být vzhůru.
 - Noviny jmenují jen nejzajímavější hráče dne (max. 5 příhod + nováčci); všichni hráči mají svůj zápis na kartě vojáka.

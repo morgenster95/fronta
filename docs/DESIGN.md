@@ -1,5 +1,7 @@
 # FRONTA — návrh hry a řešení (pracovní název, v1, 8. 11. 2026)
 
+_**Historický dokument:** původní návrh z 8. 11. 2026, neaktualizuje se. Co ve hře opravdu je: `docs/STATUS.md`, `docs/BATTLE.md`, `docs/COMBAT_ROLES.md`, `docs/SCHEDULE.md`._
+
 Instagramová „živá hra“: kdo komentuje pod naším postem, narukuje a jeho vojáček se objeví na obří mapě zákopů
 v ponurém (grimdark) světě inspirovaném 1. světovou válkou. Každý den se posune příběh, sledující hlasují v komentářích.
 Jádro se navrhuje tak, aby šlo stejně udělat i v dalších tématech (viz kap. 7).

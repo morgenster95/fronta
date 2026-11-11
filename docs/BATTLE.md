@@ -1,87 +1,114 @@
-# Denní boj, medici, nemocnice a ostnatý drát
+# Denní boj: zásahy, ranění, medici, nemocnice, drát
 
-_Stav: **nasazeno 10. 11. 2026; aktuální pravidla a čísla jsou v `docs/COMBAT_ROLES.md`, tabulky níže jsou starší.** Čísla v tabulce níže jsou z doby před úpravou mediků (10. 11.): úmrtnost je teď asi o 40–50 % nižší, aktuální čísla dá `node tools/sim-battle.mjs`. Kód: `engine/battle.js`, nastavení `themes/front-ww1/theme.json` → `battle`,
-texty `themes/front-ww1/story.json` (`hitLight`, `hitHeavy`, `hitCrit`, `shellLight`, `shellHeavy`, `shellCrit`, `worsened`, `patched`, `stretcher`, `admitted`, `stabilized`, `diedNoBed`, `diedInBed`)._
+_Stav k 11. 11. 2026: **nasazeno, vyvážení v6** (`theme.battle.balance`). Tenhle soubor popisuje pravidla, jak je hra počítá teď._
+_Role, zkušenosti, simulace a ladění: `docs/COMBAT_ROLES.md`. Kód: `engine/battle.js`. Všechna čísla: `themes/front-ww1/theme.json` → `battle`._
+_Texty: `themes/front-ww1/story.json` (`hitLight/Heavy/Crit`, `bullet…`, `shell…`, `shotHit`, `worsened`, `patched`, `patchedStretcher`, `stretcher`, `admitted`, `stabilized`, `diedNoBed`, `diedInBed`)._
 
-## Inspirace
-- **Darkest Dungeon (Death's Door):** na nule se neumírá hned, voják je „na prahu“ a smrt přijde až potom. Smrt je vzácná a dramatická.
-- **XCOM (bleeding out, ošetřovna):** těžce raněný vykrvácí, když k němu včas nedojde pomoc; zranění = dny na ošetřovně.
-- **Frostpunk:** nemocnice má omezenou kapacitu, kdo se nevejde, tomu se stav horší a může zemřít.
-- **RimWorld:** výsledek ošetření ovlivňuje lékař, lůžko a péče.
-- **Battle Brothers:** přežitá zranění zanechávají jizvy; veteráni mají historii.
+Základní pravidlo: **zásah sám nikdy nezabíjí. Zabije to, že pro raněného není lůžko, nosítka nebo medik.**
+Každou smrt tak komunita může ovlivnit: hlasováním o stavbách a volbou rolí (medici).
+**Převzatí hráči nemají žádnou ochranu.**
 
-Základní pravidlo: **zásah sám nikdy nezabíjí. Zabije to, že pro raněného není lůžko nebo medik.** Každá smrt má příčinu, kterou komunita
-může ovlivnit hlasováním (stavby) a volbou role (medici).
+## Kdy
+Jednou denně v ranním vydání (**13:00 UTC**, `theme.schedule.editionUtc`), před běžnými zápisy do deníků.
+Kostky jsou deterministické (ID vojáka + den): opakovaný tah dá stejný výsledek.
 
-## Denní tah (13:00 UTC, před zápisy do deníků)
-1. **Zásahy.** Každý aktivní voják v linii (kromě účastníků výpravy):
-   `hit 2,5 % × linie (přední 1, zálohy 0,35) × nebezpečí (závod, údolí, rozkazy) × dělostřelectvo (×1,3 na poraženého) × pytle (−12 % za stupeň) × drát (−15 % × výdrž sektoru) × zkušenost (až −40 % po 60 dnech)`.
-   **Převzatí hráči nemají žádnou ochranu.**
-2. **Závažnost:** lehké ~60 %, těžké ~25 %, kritické ~15 %, posunuté **výdrží** (1–5; +1 za každé přežité těžké zranění = jizva).
-   Kritický zásah ne v prvních 5 dnech služby a ne dvakrát za 7 dní; nováček se na nosítkách na kritický stav nezhorší.
-3. **Medici:** každý raněný **mimo lůžko** (lehce ranění v poli a ti na nosítkách) spotřebuje práci **2 mediků**. Kdo leží v nemocnici, léčí se sám a medika nepotřebuje. Pokrytí = práce mediků ÷ (2 × raněných).
-   Medik s 10+ ošetřenými odvede 1,5 práce, lehce raněný medik polovinu, těžce raněný nic.
-4. **Lehce raněný** zůstává v linii, ošetřují ho medici: při nedostatku mediků se může zhoršit na těžké (až 15 %/den), jinak se zahojí (30–80 %/den).
-5. **Lůžka:** těžce a kriticky ranění potřebují lůžko, kritičtí mají přednost. Kdo se nevejde, čeká **na nosítkách**:
-   těžký se může zhoršit na kritický, nebo ho medici zahojí přímo na nosítkách (od 2. dne, až 30 %/den podle mediků);
-   kritický přečká nejvýš jednu noc (bez medika jen 30 %, s mediky až 80 %), druhou noc bez lůžka umírá.
-6. **Na lůžku:** kritický první den umírá s pravděpodobností úmrtnosti nemocnice (medici na to nemají vliv), po 3 dnech je stabilizovaný;
-   těžký se uzdraví nejdřív za 2 dny (rychleji s mediky, Calvary Farm a rozkazy). Uzdravený má jizvu a +1 výdrž.
-7. **Drát** v každém sektoru: výdrž 0–100 % (start 60 %), opotřebení −0,5 %/den, dělostřelectvo −12 %/den, každý ženista v sektoru +8 %/den.
+## 1. Palba hráčů
+Každý voják v **přední linii** má každý den malou šanci trefit nepřítele naproti (do 160 px podle pozice).
+Šance podle role, úrovně, velitele nebo spojky poblíž a nepřátelských kulometů (tabulka v `docs/COMBAT_ROLES.md`).
+- Každý cíl nejvýš jeden zásah palbou za den. Prázdný úsek naproti = není na koho střílet.
+- Zapíše se, kdo koho trefil: zasažený má v deníku „Shot by X of the Concord (@x)“, střelec svůj zápis, Gazette blok *Across the wire*.
 
-8. **Bombardování po výhře v závodě** (3 dny, `theme.battle.shell`): každý den granáty dopadnou na **2 sektory poražené strany**
-   (~8 vojáků). Tam má každý **35 %** šanci na zásah, střepiny zraňují tíž (lehce 45 %, těžce 35 %, kriticky 20 %),
-   **granát nešetří nováčky** a drát v sektoru přijde o 40 %. Gazette jmenuje sektory a těžce raněné.
-   Řetěz: granáty → roztrhaný drát (víc zásahů i potom) → medici nestačí → lůžka plná → nosítka → padlí.
+## 2. Zásahy z pozadí
+Šance na vojáka a den:
 
-Padlého nahradí nástupce z rodu za 2 dny (beze změny).
+`3 % × linie (přední 1 · zálohy 0,35 · týl 0) × pytle (−12 % za stupeň) × drát (až −15 % podle výdrže úseku) × zkušenost (až −40 % po 60 dnech služby) × nebezpečí × spojař poblíž (−20 %)`
+
+- **Nebezpečí:** po dobytí kóty má vítěz 7 dní ×0,6 a poražený ×1,25; k tomu rozkazy z hlasování a (až budou zapnuté) území v údolí.
+  Poražený má během bombardování navíc ×1,3.
+- **Denní mez** (`battle.daily`): za klidu má každá strana denně **1 až 3** nově raněné (palba hráčů se počítá; prázdný den se doplní
+  jedním zásahem z pozadí), pod granáty nejvýš **8**.
+- **Děla mlčí do první dobyté kóty** (`gunsAfterVictory`): do té doby jsou zásahy z pozadí kulky, granáty a drát a texty o ostřelování se nepoužijí.
+
+### Závažnost
+Lehce 60 %, těžce 25 %, kriticky 15 %, posunuto **výdrží** vojáka (1–5; +1 za každé přežité těžké zranění).
+Kritický zásah nepřijde v prvních 5 dnech služby a ne dvakrát za 7 dní (stane se z něj těžký).
+
+### Bombardování po dobytí kóty
+Tři dny (`theme.race.barrageDays`), začíná den po dobytí; na webu je palba vidět už v den dobytí.
+- Každý den granáty dopadnou na **4 úseky poražené strany** (`battle.shell.sectors`).
+- Každý voják v zasaženém úseku má **50 %** šanci na zásah (× linie × pytle). Střepiny zraňují tíž: lehce 45 %, těžce 35 %, kriticky 20 %.
+  **Granát nešetří nováčky.**
+- Drát v zasaženém úseku přijde o 40 %, ve všech úsecích poraženého o dalších 12 % denně.
+- Gazette jmenuje úseky a těžce raněné.
+
+## 3. Kam s raněným
+| Zranění | Kde leží |
+|---|---|
+| lehce | v zákopu, zůstává ve svém úseku |
+| těžce | lůžko → nosítka → zákop (horší) |
+| kriticky | lůžko → nosítka. **Bez lůžka i nosítek noc nepřežije.** |
+
+Lůžka dostávají nejdřív kritičtí, pak těžce ranění (kdo je raněný déle, jde dřív). Po každém uzdravení nebo úmrtí se místa hned doplní.
+
+| Místo | Lůžka | Nosítka | Hojení těžkého na lůžku | Riziko smrti kritického na lůžku |
+|---|---|---|---|---|
+| **Obvaziště** (má každá strana od začátku) | 2 | 6 | ×1,15 | ×0,6 |
+| **Nemocnice** (dugout, jen hlasováním) | 4 za každou nemocnici | 6 + 4 za každou | ×1,5 | ×0,4 |
+
+První nemocnice lůžka obvaziště **nahrazuje** (4 místo 2, ne 6). Každá další přidá 4 lůžka a 4 nosítka (nejvýš 6 nemocnic).
+
+## 4. Medici a hojení
+Medik (Stretcher Bearer) má za den **práci 1**, násobenou úrovní (Elite ×1,8). Lehce raněný medik odvede polovinu, těžce raněný nic.
+Potřeba za den: **lehce 1, těžce 2, kriticky 2, na lůžku 0** (tam léčí nemocnice). Práce se rozděluje od nejvážnějších.
+„Péče“ níže = podíl potřeby, který raněný dostal (0–1).
+
+| Stav | Co se děje každou noc |
+|---|---|
+| **lehce** | První den nic. Pak: zhoršení na těžce `25 % × chybějící péče` (kuchař poblíž ×0,5; ne v prvních 5 dnech služby), jinak zahojení `péče + 15 %` (kuchař poblíž přidá až 30 %). S plnou péčí je druhý den v pořádku. |
+| **těžce na lůžku** | Od 2. dne se uzdraví s `35 % × hojení místa` za den (obvaziště ~40 %, nemocnice ~53 %). |
+| **těžce na nosítkách** | Zhoršení na kriticky `30 % × chybějící péče`; od 2. dne uzdravení `35 % × péče`. |
+| **těžce v zákopu** | Totéž, ale zhoršení ×1,5 a uzdravení ×0,5. |
+| **kriticky na lůžku** | Smrt `8 % × riziko místa` za noc (obvaziště 4,8 %, nemocnice 3,2 %). Po 2 nocích je z něj těžce raněný. |
+| **kriticky na nosítkách** | Smrt `8 % + 70 % × chybějící péče` za noc (kaplan na straně ×0,8). Po 3 nocích s plnou péčí je z něj těžce raněný. |
+| **kriticky bez nosítek** | Noc nepřežije. |
+
+Kdo se uzdraví z těžkého zranění, má jizvu, +1 výdrž a 10 XP.
+**Pojistka** (`battle.maxDeaths`): za den padne nejvýš 5 % strany (aspoň 2); kdo by padl navíc, přežije do zítřka.
+Padlého nahradí **nástupce z rodu hned ve stejném vydání** (`theme.heirDelay`, výchozí 0) a pokračuje v deníku rodu.
+
+## 5. Drát
+Každý úsek má výdrž 0–100 % (start 60 %). Kryje až −15 % zásahů z pozadí.
+Opotřebení −0,5 % denně, bombardování −12 % denně (zasažený úsek dalších −40 %), každý ženista v úseku +8 % denně (× úroveň).
 
 ## Stavby (jen hlasováním frakce)
-Možnost hlasování s `build: "<id>"`. Bez staveb má strana jen **obvaziště**: 2 lůžka, horší péče (×0,6), kritičtí na lůžku umírají častěji (35 %).
+Možnost hlasování s `build: "<id>"` (`theme.battle.buildings`). Každá strana hlasuje sama za sebe, hlas se páruje s vojákem podle IG účtu.
+**Strana, která nepošle žádný hlas, nepostaví nic.** Při remíze vyhrává možnost uvedená dřív.
 
-| Stavba | id | Co dá |
-|---|---|---|
-| **Nemocnice (nemocniční dugout)** | `dugout` | 4 lůžka místo obvaziště, normální péče, úmrtnost kritických na lůžku 25 %. Další nemocnici (dalších 4 lůžek) si strana může odhlasovat (max 6). |
-| Pytle s pískem | `sandbags` | −12 % zásahů za stupeň (max 2) |
-| Nový drát | `wire` | +50 % výdrže drátu ve všech sektorech |
+| Stavba | id | Co dá | Nejvýš |
+|---|---|---|---|
+| Nemocnice (hospital dugout) | `dugout` | viz tabulka míst výše | 6 |
+| Pytle s pískem | `sandbags` | −12 % zásahů za stupeň, natrvalo | 2 |
+| Nový drát | `wire` | +50 % výdrže drátu ve všech úsecích (jednorázově) | bez omezení |
 
-Hlasování po výhře o Verdel Ridge (`victory-ridge` ve frontě): FORTIFY = `sandbags`, HOSPITAL = `dugout`.
+Co která strana má, je ve stavu hry (`state.battle.sides[frakce].built`) a na webu.
+První hlasování o stavbách (`vote-build-d2`, HOSPITAL / SANDBAGS) se vyhodnocuje ve vydání Dne 3 (11. 11. 2026).
 
-## Čísla (simulace na skutečné soupisce 9. 11.: Hegemony 49 vojáků / 5 mediků / 0 ženistů, Concord 47 / 6 / 6)
-`node tools/sim-battle.mjs`, 14 dní, každý scénář 60× s jinými kostkami, průměr na stranu za 14 dní:
+Možnost může místo stavby (nebo k ní) vydat **dočasný rozkaz** (`engine/orders.js`): `danger` (násobek nebezpečí) nebo `recover`
+(rychlejší uzdravení na lůžku) na `days` dní od dalšího dne.
 
-| Scénář | Strana | Zásahů | Těžce / kriticky | **Padlých** | Aspoň 1 padlý |
-|---|---|---|---|---|---|
-| 1) klidná fronta, nic nepostaveno | každá | ~12,5 | 3,8 / 0,7 | **~1,3** | 60–67 % |
-| 2) klidná fronta, obě mají nemocnici | každá | ~12,7 | 3,8 / 0,8 | **~0,46** | 32–38 % |
-| 3) Hegemony vyhraje, Concord pod granáty **bez** nemocnice | Concord | 20,7 | 7,0 / 1,3 | **5,9** | 100 % |
-| 4) totéž, Concord **s** nemocnicí | Concord | 21,3 | 7,1 / 1,5 | **2,3** | 87 % |
-| 3/4) vítěz (bezpečnější týden) | Hegemony | 10,5 | 3,2 / 0,6 | **~1,0** | 52 % |
-| 5) Concord vyhraje, Hegemony pod granáty bez nemocnice | Hegemony | 21,6 | 7,4 / 1,3 | **5,9** | 98 % |
-| 6) totéž s nemocnicí | Hegemony | 22,3 | 7,6 / 1,6 | **2,3** | 85 % |
+**Hlasování běží vždy jen jedno.** Post s `vote`, který vyjde při běžícím hlasování, ho nepřepíše: počká (`votePending`) a otevře se po vyhodnocení.
+Vyhodnocuje ranní vydání, nejdřív `minHours` po otevření.
 
-Ladí se v `theme.battle`: `severity` (podíl těžkých a kritických), `buildings.dugout.critDie` a `aidPost.critDie` (úmrtnost na lůžku),
-`hit` (zásahy za klidu), `shell` (síla bombardování: `sectors`, `hit`, `severity`, `wire`). Hlídací testy v `npm test`.
+## V Gazette a na mapě
+- Gazette: *Across the wire* (kdo koho trefil), zpráva o bombardování, blok o obvazištích (*The aid posts* / *Hospitals and aid posts* / *The hospitals*
+  podle toho, kdo už nemocnici má) s obsazením lůžek, nosítek a pokrytím mediky.
+- Mapa (`web/src/hospital.js`): obvaziště je stan mezi podpůrnou linií a zálohami; postavená nemocnice je velký dugout za zálohami
+  (`dugoutArt`, náhled `/?hospital=dugout`), každá další stojí vedle. Na lůžkách leží skuteční ranění hráči, jejich místo v zákopu je prázdné.
+  Kdo se nevešel, leží na nosítkách před vchodem. Data: `roster.json` → `battle` (`battlePublic`).
 
-## Vyzkoušení nanečisto (kopie skutečného stavu, nic se neuloží)
+## Vyzkoušení nanečisto (nic se neuloží)
 ```
-node tools/sim-battle.mjs                  # všech 6 scénářů, každý 40× po 14 dnech, průměry
-node tools/sim-battle.mjs 4 --story        # scénář 4 jednou, den po dni: lůžka, nosítka, medici, drát, zápisy z deníků
-node tools/sim-battle.mjs --days 21 --runs 100
+node tools/preview-tick.mjs --md nahled.md   # příští vydání na skutečném stavu: Gazette, kdo koho trefil, obvaziště
+node tools/sim-battle.mjs --kpi              # scénáře na skutečné soupisce + cílová čísla
+node tools/sim-battle.mjs 2 --story          # jeden scénář den po dni
 ```
-
-## Na mapě (web/src/hospital.js)
-Každá strana má za podpůrnou linií nemocnici (bez stavby menší obvaziště), na volném místě mimo zákopy blízko svých vojáků.
-Zdálky je zakrytá plachtou s červeným křížem (Hegemony šedá, Concord olivová), při přiblížení (zoom 2,4 → 3,2) se plachta odkryje
-a uvnitř leží na lůžkách skuteční těžce ranění hráči (ležící sprite). Jejich místo v zákopu je prázdné, dokud se nevrátí.
-Kdo se nevešel, leží na nosítkách před vchodem. Každá další odhlasovaná nemocnice stojí vedle. Snímek: `docs/mockups/family/5_nemocnice_na_mape.png`.
-
-Úmrtnost s pevnými 4 lůžky roste s velikostí strany (klidná fronta, 4 týdny): 100 vojáků ~4 %, 250 vojáků ~10 % strany.
-Na hráčích je, jestli si odhlasují další nemocnici.
-
-## Další fáze
-2. **Web a mapa:** obvaziště = stan mezi podpůrnou linií a zálohami; postavená nemocnice = větší hluboký dugout (168×104 px, `dugoutArt` v `web/src/hospital.js`) dál v týlu za zálohami, napojený spojovacím zákopem, střecha z vlnitého plechu s křížem (náhled `/?hospital=dugout`). Nemocniční dugout(y) za zákopem každé strany, na lůžkách ležící sprite raněných hráčů (poslední snímek `@fall_south`),
-   nosítka před vchodem, medici u raněných, řídnoucí drát podle výdrže, staty na kartě vojáka (výdrž, jizvy, ošetření u mediků).
-   Data už jsou v `roster.json` → `battle` (`battlePublic`).
-3. **Grafika:** interiér dugoutu se 4 lůžky (PixelLab), nosítka.
-4. **Hlasování o stavbách** i mimo výhru v závodě (pravidelně s večerním reelem).

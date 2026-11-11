@@ -1,6 +1,8 @@
 # Návrh: mapa údolí a výpravy (mise)
 
-_Stav: **postaveno 9. 11. 2026** (fáze 2 + 3 a výhody z území, viz „Jak je to postavené“ na konci). Grafika všech 8 míst hotová (originály `art/pixellab/locations/`, zmenšené na 256 px ve `web/public/assets/locations/`)._
+_Stav k 11. 11. 2026: **postaveno, ale VYPNUTO** (`theme.valley.enabled = false`, od 10. 11. na pokyn uživatele). Výzva CHURCH z Dne 2 byla zrušena, žádná výprava zatím neproběhla; zapnout jen s výslovným souhlasem. Dokud jsou výpravy vypnuté, příběhy s `theme.valley.words` („raid“) se nepoužijí. Text níže popisuje, jak výpravy fungují po zapnutí._
+
+_Původní stav: **postaveno 9. 11. 2026** (fáze 2 + 3 a výhody z území, viz „Jak je to postavené“ na konci). Grafika všech 8 míst hotová (originály `art/pixellab/locations/`, zmenšené na 256 px ve `web/public/assets/locations/`)._
 
 ## Inspirace
 

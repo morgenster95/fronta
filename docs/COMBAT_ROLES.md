@@ -1,21 +1,16 @@
-# Střelba, role, zkušenosti a péče o raněné
+# Role, zkušenosti, simulace a ladění boje
 
-_Stav: **nasazeno 10. 11. 2026 (vyvážení v5), první ostrý tah 10. 11. 13:00 UTC.** Kód `engine/battle.js`, čísla `themes/front-ww1/theme.json` → `battle`._
-_Nikdo zatím nemá nemocnici: obě strany mají jen obvaziště (2 lůžka, 6 nosítek), které jim dáváme my._
+_Stav k 11. 11. 2026: **nasazeno, vyvážení v6.** Pravidla jednoho dne (zásahy, lůžka, medici, stavby) jsou v `docs/BATTLE.md`;_
+_tady je, co která role dělá, zkušenosti, výsledky simulací a jak se boj ladí. Kód `engine/battle.js`, čísla `themes/front-ww1/theme.json` → `battle`._
 
-## 1. Pravidla jednoho dne (ranní tah, 13:00 UTC)
-1. **Palba hráčů.** Každý voják v přední linii má každý den malou šanci trefit nepřítele **naproti** (do 160 px podle pozice).
-   Zapíše se **kdo koho trefil**: zasažený má v deníku „Shot by X of the Concord (@x)“, střelec svůj zápis, Gazette blok *Across the wire*.
-   Každý cíl nejvýš jeden zásah palbou za den. Prázdný úsek naproti = není na koho střílet (ochrana proti „válcování“ větší strany).
-2. **Pozadí** (dělostřelectvo, granáty, miny): jako ve skutečné válce ~60 % zásahů. Po výhře v závodě bombardování 4 úseků poražené strany 3 dny.
-   **Denní mez (v6, `battle.daily`):** za klidu má každá strana denně 1–3 nově raněné (prázdný den se doplní zásahem z pozadí, nad 3 pozadí už nezasahuje),
-   pod granáty nejvýš 8 (na skutečné soupisce průměr 6,7, padlí ~0,5 za den bombardování).
-3. **Kam s raněným:** lůžko (kritičtí první, pak těžce), pak nosítka. **Lehce raněný leží v zákopu.**
-   **Kritický bez nosítek i lůžka noc nepřežije. Těžce raněný bez nosítek leží v zákopu (vyšší riziko).**
-4. **Medici (Stretcher Bearer):** každý má za den **1 práci** (víc se zkušenostmi). Potřeba za den: **lehký 1, těžký 2, kritický 2, na lůžku 0.**
-   Práce se rozdělí od nejvážnějších. **Plná péče: lehký je druhý den v pořádku, těžký se hojí, kritický přežije noc.**
-   Chybějící péče = riziko zhoršení / smrti úměrně tomu, kolik péče chybí.
-5. Drát (ženisté), XP za den, denní metriky, pojistka proti masakru.
+## 1. Pořadí kroků v ranním tahu (13:00 UTC)
+1. Palba hráčů z přední linie (tabulka rolí níže).
+2. Zásahy z pozadí a bombardování, s denní mezí 1–3 nově raněných na stranu za klidu, nejvýš 8 pod granáty.
+3. Rozmístění raněných: lůžka (kritičtí první), nosítka, zákop.
+4. Práce mediků a hojení.
+5. Drát, XP za den, denní metriky, pojistka proti masakru.
+
+Podrobně v `docs/BATTLE.md`.
 
 ## 2. Role: co dělá a kolik to je
 Šance „fire“ je na vojáka v přední linii a den. Skutečný zásah je o něco nižší (krytí cíle, potlačení kulomety).
@@ -44,48 +39,54 @@ Výpočet střelce: `zásahů za 28 dní ≈ fire × 28 × krytí cíle (~0,8)` 
 | oprava drátu / přežité těžké zranění | 3 / 10 | | Elite | 400 | ×1,8 |
 Násobek zvyšuje hlavní schopnost: palbu, práci medika, opravy ženisty. Za 30 dní na frontě ~60 XP = Seasoned. Nástupce začíná od nuly.
 
-## 4. Výsledky simulace na skutečné soupisce
-`node tools/sim-battle.mjs --state <stav z main> --runs 40 --days 21` (den 1, 103 vojáků: Hegemony 50, Concord 53). Na stranu a týden:
+## 4. Výsledky simulace na skutečné soupisce (v6)
+`node tools/sim-battle.mjs --kpi --runs 60 --days 21`, stav z 11. 11. 2026 (den 2, 157 vojáků: Hegemony 76, Concord 81). Na stranu a týden:
 
 | Scénář | Strana | Zásahy (palba) | lehce / těžce / krit. | Padlí | Aspoň 1 padlý za 21 dní |
 |---|---|---|---|---|---|
-| Klidná fronta, jen obvaziště | Heg | 11,6 (38 %) | 7,3 / 3,4 / 0,94 | **0,57** | 50 % |
-| | Con | 11,3 (36 %) | 6,8 / 3,4 / 1,01 | **0,52** | 65 % |
-| Hegemony vyhraje, Concord pod granáty | Heg | 10,3 (38 %) | 6,5 / 3,0 / 0,89 | **0,47** | 48 % |
-| | Con | 14,7 (31 %) | 8,5 / 4,7 / 1,49 | **1,82** | 98 % |
-| Concord vyhraje, Hegemony pod granáty | Heg | 15,2 (32 %) | 9,2 / 4,6 / 1,41 | **2,02** | 90 % |
-| | Con | 10,1 (37 %) | 6,0 / 3,1 / 1,01 | **0,34** | 60 % |
-| (srovnání: obě s nemocnicí) | Heg / Con | 11,9 / 11,6 | | **0,20 / 0,23** | |
+| Klidná fronta, jen obvaziště | Heg | 14,9 (40 %) | 9,3 / 4,3 / 1,32 | **0,70** | 75 % |
+| | Con | 15,1 (40 %) | 9,2 / 4,4 / 1,52 | **0,24** | 47 % |
+| Hegemony vyhraje, Concord pod granáty | Heg | 14,0 (39 %) | 8,8 / 4,0 / 1,23 | **0,39** | 60 % |
+| | Con | 21,1 (32 %) | 12,3 / 6,3 / 2,44 | **3,07** | 98 % |
+| Concord vyhraje, Hegemony pod granáty | Heg | 20,8 (32 %) | 12,1 / 6,5 / 2,17 | **5,59** | 100 % |
+| | Con | 13,8 (38 %) | 8,4 / 3,9 / 1,46 | **0,21** | 43 % |
+| Klidná fronta, obě s nemocnicí | Heg | 15,0 (40 %) | 9,4 / 4,3 / 1,34 | **0,10** | 18 % |
+| | Con | 15,2 (41 %) | 9,3 / 4,4 / 1,55 | **0,13** | 30 % |
 
-Dlouhodobě (9 týdnů, klid): od 2. týdne stabilně 1–1,5 padlých na stranu týdně (≈ 2–3 % strany, historicky „wastage“ až ~10 % za měsíc),
-první týden méně (ochrana nováčků). Úmrtnost s časem neroste.
+Hegemony vychází hůř, protože má na stejný počet raněných méně mediků (pokrytí v nejhorší den 41 %, pod granáty 15 %; Concord 81 % a 27 %).
+Nemocnice snižuje počet padlých za klidu zhruba 2–7×.
 
 ### Přínos rolí (simulace s rolí a bez jejího účinku)
-Scénář Concord pod granáty, 30 běhů × 21 dní, rozdíl za celé období na stranu (záporné = role pomáhá; útočné role se projeví u **druhé** strany):
+`node tools/sim-battle.mjs --roles --runs 30 --days 21`, scénář Concord pod granáty, rozdíl za 21 dní na stranu
+(záporné = role pomáhá; kulomet a ostřelovač působí hlavně na **druhou** stranu):
 
 | Role | utržené zásahy Heg / Con | padlí Heg / Con | dny lehce raněných Heg / Con |
 |---|---|---|---|
-| Stretcher Bearer | +0,37 / +0,73 | **−4,20 / −8,60** | **−13,5 / −11,9** |
-| Signaller | **−1,77 / −3,10** | −0,07 / **−1,87** | −1,9 / −6,6 |
-| Field Cook | +0,8 / +0,8 | −0,67 / **−2,67** | −2,3 / **−8,2** |
-| Machine Gunner (potlačení) | **−1,23 / −2,67** | −0,10 / −1,10 | −1,0 / −5,5 |
-| Runner | **+1,00** / +0,53 (víc zásahů nepříteli) | | |
-| Lieutenant | −0,17 / +0,47 | | (Hegemony má 1, Concord 0) |
-| Sapper | −0,03 / −0,83 | | −1,2 (Concord, 6 ženistů) |
-| Sniper (výběr cíle) | ~0 | −0,23 (Concord) | |
-| Chaplain | ~0 | −0,10 | (Concord nemá kaplana; Hegemony nebyla pod granáty) |
-Slabé role pro ladění: **kaplan** (jen 2 % vojáků, působí jen na kritické na nosítkách) a **ženista** (drát kryje málo).
+| Stretcher Bearer | +0,70 / +0,20 | **−8,50 / −16,40** | **−31,8 / −18,4** |
+| Field Cook | +0,20 / +0,30 | −0,45 / **−7,45** | −3,9 / **−26,9** |
+| Machine Gunner (potlačení) | **−2,40 / −2,75** | −0,45 / −3,05 | −4,5 / −7,2 |
+| Signaller | **−1,30 / −1,25** | −0,15 / −0,55 | −2,9 / −7,9 |
+| Sapper | −0,05 / −0,70 | −0,20 / −0,10 | −1,1 / −0,4 |
+| Runner | +0,95 / +0,15 | 0 / +0,90 | +0,6 / +1,0 |
+| Lieutenant | 0 / +0,40 | 0 / +0,35 | ~0 |
+| Sniper (výběr cíle) | −0,30 / +0,10 | −0,20 / +1,00 | ~0 |
+| Chaplain | ~0 | ~0 | ~0 |
+
+Slabé role pro ladění: **kaplan** (působí jen na kritické na nosítkách) a **ženista** (drát kryje málo).
 Posílit jde jedním číslem: `roles.chaplain.faith`, `wire.cover`, `roles.sapper.repair`.
 
-## 5. Cílová čísla (KPI) — stav v4
-| Ukazatel (klid, na 50 vojáků, týdně) | pásmo | v4 |
+## 5. Cílová čísla (KPI), stav v6 na soupisce z 11. 11.
+| Ukazatel (klid, na 50 vojáků, týdně) | pásmo | v6 |
 |---|---|---|
-| zásahy | 10–16 | ✓ 11,2 |
-| podíl palby hráčů | 35–45 % | ✓ 37 % |
-| kritické zásahy | 1–2 | ⚠ 0,95 |
-| padlí (jen obvaziště) | 0,5–1,5 | ✓ 0,53 |
-| padlí bombardované strany za 21 dní | 3–6 | ✓ 5,6 |
-| nejlepší střelec strany za 21 dní | 1–4 | ✓ 2,2 |
+| zásahy | 10–16 | ⚠ 9,6 |
+| podíl palby hráčů | 35–45 % | ✓ 40 % |
+| kritické zásahy | 1–2 | ⚠ 0,9 |
+| padlí (jen obvaziště) | 0,5–1,5 | ⚠ 0,3 |
+| padlí bombardované strany za 21 dní | 3–6 | ⚠ 8,4 |
+| nejlepší střelec strany za 21 dní | 1–4 | ✓ 2,3 |
+
+Čtyři ukazatele jsou mimo pásmo: klidná fronta je o něco mírnější, než bylo v plánu (nejspíš proto, že denní mez 3 raněných na stranu neroste s velikostí strany),
+a bombardování tvrdší (4 úseky × 50 %). Pásma vznikla pro 50 vojáků na stranu; při dalším ladění je přepočítat na současnou velikost.
 
 ## 6. Ladění
 - Všechna čísla v `theme.json` → `battle` (u každé skupiny `_` s popisem). Při změně zvýšit `battle.balance`.
@@ -98,7 +99,7 @@ Posílit jde jedním číslem: `roles.chaplain.faith`, `wire.cover`, `roles.sapp
 - Denní metriky `state.battle.stats` (60 dní): zásahy podle zdroje a role, závažnost, padlí podle příčiny, lůžka, nosítka, pokrytí mediky, pojistka.
 - Deterministické kostky (ID vojáka + den): opakovaný tah dá stejný výsledek.
 - Starší ranění se při prvním tahu převedou (status, místo). Žádná zpětná změna deníků.
-- Zbývá (další krok): stínový režim a upozornění (issue) při metrikách mimo pásmo 3 dny po sobě.
+- Zbývá: upozornění (issue) při metrikách mimo pásmo 3 dny po sobě.
 
 ## 8. Zdroje
 - [British Medical Casualties on the Western Front (WFA)](https://www.westernfrontassociation.com/world-war-i-articles/british-medical-casualties-on-the-western-front-wound-induced-trauma-related-to-technological-advances-in-war) · [Foreign Policy: artillery as the top killer](https://foreignpolicy.com/2012/05/03/other-sad-facts-i-learned-from-six-weeks-artillery-as-the-top-killer-the-hordes-of-shellshock-cases-decades-later/) · [Save My Exams: wounds](https://www.savemyexams.co.uk/gcse/history/edexcel/18/revision-notes/medicine-in-britain-c-1250-present/the-british-sector-of-the-western-front-injuries/wounds-from-injuries-on-the-western-front)

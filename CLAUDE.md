@@ -1,16 +1,20 @@
 # MUD & IRON (repo `fronta`): pokyny pro Claude
 
 Tenhle soubor čte Claude Code i v cloudu (aplikace Claude v mobilu, claude.ai/code), kde není paměť z domácího PC.
-Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md`, `docs/ONBOARDING.md`, `docs/SCHEDULE.md`, `docs/MAP_MISSIONS.md`.
+Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co je teď ve hře), `docs/BATTLE.md` a `docs/COMBAT_ROLES.md` (boj), `docs/ONBOARDING.md` (rekruti a provoz),
+`docs/SCHEDULE.md` (rytmus dne), `docs/MAP_MISSIONS.md` (výpravy, vypnuté). `docs/DESIGN.md` je původní návrh, neaktualizuje se.
 
 ## Pravidla
 - **Odpovídej česky.** Texty ve hře a na Instagramu jsou anglicky (publikum USA/UK, ne Praha).
 - **Jen zdarma:** žádné placené služby, Firebase Blaze, Cloud Functions ani placená API. Firebase je na Spark, média na GitHub Pages.
 - **Nic nepublikuj na Instagram bez výslovného souhlasu uživatele** (reel, story, post). Tokeny nikdy nezadávej ani nevypisuj.
 - **Statické posty vždy 1080×1350 (4:5)**, víc místa a pro IG nejlepší: kreslí se v mřížce 216×270 a zvětší ×5 (`marketing/make_posts.py` W, H, K; `make_day.py`, `make_victory.py`).
-- **V popiscích na IG hráče neoznačovat** (žádné @jméno, jen role a strana); jména hráčů jen ve videu a ve hře.
+- **V popiscích na IG hráče neoznačovat** (žádné @jméno; hromadné označování může IG vyhodnotit jako spam). Platí i pro hrdinu kóty: v popisku je jeho jméno
+  bez zavináče. Označení a jména hráčů patří do hry (web, Gazette) a do videa.
 - **Denní reel i jeho popisek vždy uvádí, kolik hráčů je teď na frontě** (celkem, pak přejezd kamery po první linii Hegemonie a Concordu s počtem každé strany; `tools/day-reel.mjs` věty `army`, `armyH`, `armyC`, `data.army`).
 - Repo je **veřejné**: žádné tajné údaje, e-maily ani tokeny do commitů.
+- **Zveřejněná videa v repu nezůstávají:** `ingest/publish.mjs` je hodinu po publikaci smaže z `marketing/promo/` (smyčka smazání commitne).
+  Uživatel chce videa mít u sebe: každé hotové video mu pošli ke stažení (nebo odkaz na GitHub Pages) ještě před publikací.
 - Hra běží naostro: https://mudandiron.web.app, IG @mudandiron. Automatika = smyčka `.github/workflows/front-loop.yml` (`tools/loop.sh`)
   každých ~5 min: stáhne komentáře, odpoví, publikuje frontu `marketing/queue.json`, denní tah v 13:00 UTC, nasadí web.
   Smyčka commituje do main → **před pushem vždy `git pull --rebase`**; `data/state.json` ručně neupravuj.
@@ -39,34 +43,33 @@ Postup pro nový reel `<name>`:
 
 ## Stav a plán (aktualizuj při změnách)
 - Den 1 války = 2026-11-09; každé ranní vydání (denní tah, Gazette, výsledky) je ve 13:00 UTC, večerní reel nebo post ve 23:00 UTC.
-- **Výpravy jsou VYPNUTÉ** (`theme.valley.enabled = false`, od 2026-11-10 na pokyn uživatele): výzva CHURCH z Dne 2 zrušena. Teď se hlasuje jen na IG o stavbách
-  (HOSPITAL / WIRE / SANDBAGS, post `vote-build-d2` 2026-11-10 15:00 UTC). Zapnout až s výslovným souhlasem uživatele.
-- **TODO 2026-11-10:**
-  - Raid reel AŽ PO vyhlášení ve 13:00 UTC: mapa údolí s obrázky míst, detail kostela Saint-Ash, výhoda za dobytí, heslo CHURCH,
-    5 na stranu, jak bitva funguje (role kulometčík, zdravotník, kuchař). Publikovat co nejdřív odpoledne, uživatel publikaci schvaluje.
-    Zvážit posunutí `reel-sides` (ve frontě na 10. 11. 23:00 UTC) na později.
-  - Ověřit tlačítko Volunteer na webu: po testu uživatele hledat v logu smyčky `⚑ výprava (web) @hodnepijumaloctu: ok`.
-  - Uživatel ověří kartu přihlášeného hráče (tlačítko „Request a transfer“ jen u vlastního vojáka).
+- **Závod o kóty:** kdo první naverbuje 100 vojáků, dobude kótu (teď Verdel Ridge, pak Hill 304…, `theme.race.objectives`). Výhra odemyká dělostřelectvo:
+  3 dny bombardování poraženého. Do první dobyté kóty děla mlčí a texty o ostřelování se nepoužijí (`battle.gunsWords`).
+- **Výpravy jsou VYPNUTÉ** (`theme.valley.enabled = false`, od 2026-11-10 na pokyn uživatele): výzva CHURCH z Dne 2 zrušena. Zapnout až s výslovným souhlasem uživatele.
+  Dokud jsou vypnuté, příběhy se slovy `theme.valley.words` („raid“) se nepoužijí; stejně tak místa kót, o které se ještě nebojuje (`storyFor` v `engine/roster.js`).
+- **Hlasování o stavbách** (post `vote-build-d2`, zveřejněn 2026-11-10 12:46 UTC, HOSPITAL / SANDBAGS po frakcích): vyhodnocení ve vydání Dne 3 (2026-11-11 13:00 UTC).
+- **Čeká na uživatele:** nová nabídka hlasování po dobytí kóty (místo FORTIFY / HOSPITAL, návrhy z 2026-11-11 ke schválení); čas pro `reel-sides` (ve frontě bez termínu).
+  Z dřívějška: uživatel ověří kartu přihlášeného hráče (tlačítko „Request a transfer“ jen u vlastního vojáka).
 - **Přání rolí z komentářů** (od 2026-11-09): komentář, který zmíní právě jednu roli („CONCORD medic“, „MG“), dá roli hned. Zdarma je jen první volba,
   další změny přes převelení na kartě. Lieutenant jen povýšením. Aliasy rolí: `theme.archetypes[].aliases`.
 - **Odpovědi pod komentáři** (od 2026-11-09): ingest čte i odpovědi (HEGEMONY v odpovědi pod cizím komentářem narukuje). Komentáře našeho účtu
   se přeskakují, jinak by bot narukoval sám sebe. Bot odpovídá do vlákna nadřazeného komentáře. Podrobnosti: `docs/STATUS.md`, „Doplněno večer 9. 11.“.
 - **Post při výhře závodu + hlasování frakcí** (od 2026-11-09): položka `victory-ridge` ve frontě má `trigger: {race: "ridge"}` a dvě varianty
   (karusel `marketing/promo/victory_ridge_<frakce>_1/2.jpg`, kreslí `marketing/make_victory.py`). Smyčka ji zveřejní do ~5 min od dobytí kóty
-  (`ingest/triggers.mjs`, doplní @hrdinu, počty, další kótu) a pod postem otevře hlasování `perFaction`: každá strana volí vlastní rozkaz
-  FORTIFY (nebezpečí ×0,7 na 3 dny) / HOSPITAL (uzdravení 0,6 na 3 dny), hlas se páruje s vojákem podle IG ID (frakci psát netřeba),
-  bez vojáka se nepočítá (bot poradí narukovat). Vyhodnotí ranní vydání, nejdřív 8 h po otevření (`minHours`). Rozkazy: `engine/orders.js`, `state.orders`.
+  (`ingest/triggers.mjs`, doplní jméno hrdiny bez zavináče, počty, další kótu) a pod postem otevře hlasování `perFaction`: každá strana volí sama za sebe,
+  hlas se páruje s vojákem podle IG ID (frakci psát netřeba), bez vojáka se nepočítá (bot poradí narukovat). Teď je v položce FORTIFY (`build: sandbags`) /
+  HOSPITAL (`build: dugout`); nabídka se má změnit. Možnost může stavět (`build`) nebo vydat dočasný rozkaz (`danger`, `recover`, `days`; `engine/orders.js`).
+  Vyhodnotí ranní vydání, nejdřív 8 h po otevření (`minHours`).
   Pro další kóty: nová položka s `trigger.race` = id kóty (`theme.race.objectives`) a grafika `python marketing/make_victory.py <id> "<Název>" "<Další>"`.
   1. snímek kreslí `marketing/victory_scene.py` (kopec s praporem, v popředí sprity ze zákopů ve hře, pytle stejného vzoru jako ve hře).
-- **Denní boj, medici, nemocnice, drát** (`docs/BATTLE.md`, `engine/battle.js`): zásah sám nezabíjí, zabije chybějící lůžko nebo medik.
-  Každý raněný potřebuje 2 mediky; těžce/kriticky ranění lůžko (obvaziště 2, nemocnice = jediný dugout se 4 lůžky, staví se jen hlasováním).
-  Bombardování po výhře v závodě: 2 sektory poraženého denně, 3 dny. **Nasazeno 2026-11-10** (vyvážení v5, poprvé v tahu 13:00 UTC); podrobná pravidla `docs/COMBAT_ROLES.md`.
-  Převzatí hráči nejsou chránění. Vyzkoušení nanečisto: `node tools/sim-battle.mjs 14` (nic neukládá).
+- **Denní boj, medici, nemocnice, drát** (`docs/BATTLE.md`, `engine/battle.js`, vyvážení v6): zásah sám nezabíjí, zabije chybějící lůžko, nosítka nebo medik.
+  Potřeba práce mediků: lehce raněný 1, těžce a kriticky raněný 2, na lůžku 0. Obvaziště má 2 lůžka a 6 nosítek; nemocnice (dugout, jen hlasováním) 4 lůžka
+  a dalších 4 nosítka za každou. Bombardování po výhře v závodě: 4 úseky poraženého denně, 3 dny. Denní mez: 1–3 nově ranění na stranu za klidu, nejvýš 8 pod granáty.
+  Role a čísla `docs/COMBAT_ROLES.md`. Převzatí hráči nejsou chránění. Nanečisto: `node tools/sim-battle.mjs --kpi`, náhled vydání `node tools/preview-tick.mjs`.
 - **Hlasování je vždy jen jedno** (od 2026-11-11): post s `vote`, který vyjde při běžícím hlasování, ho nepřepíše; počká (`votePending` ve frontě)
   a otevře se po vyhodnocení (`ingest/triggers.mjs`, `ingest/publish.mjs`). Hlasy napsané dřív se dopočítají (`lateVote`), heslo platí i v jednotném čísle.
-- **Hlasy fronty a dopisy** (od 2026-11-10): komentáře se 6+ slovy pod hlasováním a pod posty s `voices: true` se ukládají do `data/voices.json`
-  (výběr nejlepších do reelu, vždy ke schválení uživatelem). Post `letters-1` („Letters from the front“) čeká ve frontě bez termínu.
-  Pod dopisovým postem zmínka role ani strany v dlouhém textu nic nemění (nenarukuje, nepřevelí).
+- **Hlasy fronty** (od 2026-11-10): komentáře se 6+ slovy pod hlasováním a pod posty s `voices: true` se ukládají do `data/voices.json`
+  (výběr nejlepších do reelu, vždy ke schválení uživatelem). **Dopisový post se dělat nebude** (zrušeno 2026-11-11, položka `letters-1` odstraněna).
 - **Nemocnice na mapě** (od 2026-11-10): postavená nemocnice = velký dugout za zálohami (`dugoutArt` v `web/src/hospital.js`), jen když je ve stavu hry
   (`state.battle.sides[f].built.dugout`, staví jen vyhodnocené hlasování). Bombardování poraženého je na webu vidět už v den dobytí kóty.
 - **Publikace hlídá verzi souboru** (od 2026-11-11): položka vyjde, až je na GitHub Pages soubor stejné velikosti jako v repu (po novém renderu).

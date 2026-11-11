@@ -5,7 +5,7 @@
 //     Šance podle role (roles.fire), úrovně (xp), velitele a spojky poblíž, potlačení nepřátelskými kulomety a krytí cíle.
 //     Zapíše se, kdo koho trefil (deník obou, žebříček zásahů, XP).
 //  2) pozadí: dělostřelectvo, granáty, miny (battle.hit) – ~60 % zásahů jako ve skutečné válce; spojař poblíž snižuje.
-//     Po výhře v závodě bombardování 2 úseků poražené strany (battle.shell).
+//     Po výhře v závodě bombardování úseků poražené strany (battle.shell.sectors, 3 dny).
 //  3) kam s raněným: lůžko (kritičtí první, pak těžce ranění), pak nosítka (stejné pořadí); lehce ranění leží v zákopu.
 //     Kritický bez nosítek ani lůžka noc nepřežije. Těžký bez nosítek leží v zákopu (horší).
 //  4) medici: každý má za den práci 1 (víc s úrovní). Potřeba: kritický 2, těžký 2, lehký 1 (na lůžku 0 – léčí nemocnice).
