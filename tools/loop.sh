@@ -32,8 +32,11 @@ sync() {
 round() {
   sync || { echo "sync selhal"; return 1; }
   node ingest/poll-comments.mjs || echo "ingest selhal"
-  node ingest/publish.mjs --due || echo "publish selhal"
-  node ingest/daily-tick.mjs || echo "tick selhal" # sám pozná, jestli už dnes (pražský čas) proběhl
+  if node ingest/publish.mjs --due; then resolve publish-failed "Publikace zase funguje."
+  else echo "publish selhal"; alert publish-failed "Publikace na Instagram selhala" "Smyčka nedokázala zveřejnit položku z fronty marketing/queue.json (zkusí to znovu v dalším kole). Podrobnosti v logu běhu front-loop."; fi
+  # denní tah sám pozná, jestli už dnešní vydání (theme.schedule.editionUtc) proběhlo
+  if node ingest/daily-tick.mjs; then resolve tick-failed "Denní tah zase proběhl."
+  else echo "tick selhal"; alert tick-failed "Denní tah selhal: Gazette nevyšla" "Denní tah (ingest/daily-tick.mjs) skončil chybou, dnešní vydání nevyšlo. Smyčka to zkusí znovu v dalším kole. Podrobnosti v logu běhu front-loop."; fi
   npm run -s data:build || { echo "data:build selhal"; return 1; }
   git add data/state.json data/voices.json marketing/queue.json
   git add -u marketing/promo # zveřejněná videa, která publish.mjs smazal
@@ -41,12 +44,14 @@ round() {
     git commit -qm "loop: $(date -u +%FT%TZ)" || return 1
     git push -q origin HEAD:main || { echo "push kolize, kolo se zopakuje"; return 2; }
   fi
-  # nasadit, kdykoli se změnil obsah (stav, deník, kód)
-  if [ "$(git rev-parse HEAD)" != "$DEPLOYED" ]; then
+  # nasadit jen když se změnilo to, co návštěvník uvidí (kód nebo veřejná data bez časových razítek; tools/site-sig.mjs).
+  # Samotná změna stavu (zpracované komentáře, počty) web nemění a nasazovat se kvůli ní nemusí.
+  SIG=$(node tools/site-sig.mjs) || SIG="$(git rev-parse HEAD)-$(date +%s)"
+  if [ "$SIG" != "$DEPLOYED" ]; then
     npm run -s build > /dev/null || { echo "build selhal"; return 1; }
     if firebase deploy --only hosting --non-interactive --project fronta-ig > "${RUNNER_TEMP:-/tmp}/deploy.log" 2>&1; then
       echo "nasazeno $(git rev-parse --short HEAD)"
-      DEPLOYED=$(git rev-parse HEAD)
+      DEPLOYED=$SIG
       resolve deploy-failed "Nasazeno, web je zase aktuální."
     else
       echo "NASAZENÍ SELHALO:"

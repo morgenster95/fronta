@@ -47,3 +47,12 @@ jobs:
           elif [ "$want" = "$live" ]; then
             resolve web-stale "Web je zase aktuální."
           fi
+
+          # 3) vyšlo dnešní vydání? (denní tah v theme.schedule.editionUtc; 30 min rezerva)
+          tick=$(node -e "const t=require('./themes/front-ww1/theme.json'),s=require('./data/state.json');const H=t.schedule?.editionUtc??0;const due=new Date(Date.now()-H*3600e3-30*60e3).toISOString().slice(0,10);console.log(!s.lastTickKey||s.lastTickKey>=due?'ok':'late '+s.lastTickKey+' < '+due)")
+          echo "denní tah: $tick"
+          if [ "$tick" != "ok" ]; then
+            alert tick-late "Dnešní vydání nevyšlo" "Denní tah měl proběhnout před víc než 30 minutami a ve stavu není ($tick). Podívej se do logu smyčky front-loop; ručně jde spustit workflow daily."
+          else
+            resolve tick-late "Vydání vyšlo."
+          fi
