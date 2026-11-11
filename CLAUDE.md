@@ -4,6 +4,16 @@ Tenhle soubor čte Claude Code i v cloudu (aplikace Claude v mobilu, claude.ai/c
 Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co je teď ve hře), `docs/BATTLE.md` a `docs/COMBAT_ROLES.md` (boj), `docs/ONBOARDING.md` (rekruti a provoz),
 `docs/SCHEDULE.md` (rytmus dne), `docs/MAP_MISSIONS.md` (výpravy, vypnuté), **`docs/MECHANICS.md` (deník domluvených mechanik)**. `docs/DESIGN.md` je původní návrh, neaktualizuje se.
 
+## ČEKÁ NA OVĚŘENÍ A ROZHODNUTÍ (stav 2026-11-11 večer; na začátku relace to uživateli stručně připomeň)
+1. **Převod stavu po částech** (`data/state-records/`, `SPLIT_STATE=1` v `front-loop.yml`): proběhne při příštím restartu smyčky (nejpozději ~21:00 UTC 11. 11.; čekající starší běh jsem zrušil).
+   **Ověřit:** v `main` je složka `data/state-records` (128 souborů), `data/state.json` je menší, počty zápisů sedí (`recN`), smyčka běží dál, web se nasazuje a karta ukazuje 3 zápisy + „Show more“.
+   Když ne: `node --input-type=module -e` načti stav (`loadState`), případně smyčku restartuj (`gh workflow run front-loop`). Chybí-li zápisy, načtení spadne (pojistka), nic se neztratí.
+2. **Zápis každému každý den:** nasazeno až po vydání Dne 3, proto mají vojáci (např. Edmund „Hollow“ Biwott, ~60 dalších) mezery ve Dni 2–3. **Ověřit po vydání Dne 4 (12. 11. 13:00 UTC),** že každý živý voják má zápis ze Dne 4 a právě jeden.
+   **Uživatel se ptal, jestli mezery ze Dne 2–3 doplnit zpětně** (krátký denní zápis z běžných šablon vložit na správné místo; starší zápisy se nepřepisují). Čeká na odpověď, bez souhlasu nedělat (deníky „se negenerují znovu“).
+3. **Hlavička „Dispatch · Day 2“** v horním panelu: starý zápis hlasování z Dne 3 je uložený pod dnem 2; oprava platí pro nová hlasování, po dalším výsledku se číslo srovná.
+4. **Doména** (Cloudflare) a škálování: viz sekce níže. **`letters-1`** a **`reel-sides`** čekají na čas od uživatele.
+5. **Boj v12** (od vydání Dne 4): zeptat se, jak se chová (padlí, raněni, bombardování).
+
 ## ROZPRACOVÁNO: doména a škálování na tisíce hráčů (domluveno 2026-11-11, řešit příště)
 **Na začátku relace uživateli napiš, že tohle čeká, a zeptej se, jak postupovat.** Detaily čísel: `docs/SCALING.md`.
 - **Doménu uživatel koupil u Cloudflare** (název zatím neznám, zeptat se). Doporučení: **krok 1** = doménu připojit k **Firebase Hostingu** (Cloudflare jen jako DNS, záznamy v režimu „DNS only“, šedý obláček), změnit `authDomain` ve `web/src/firebase-config.js`,
