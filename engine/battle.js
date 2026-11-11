@@ -39,13 +39,13 @@ export function hospital(state, theme, f) {
   const side = ensureBattle(state, theme).sides[f];
   const n = count(side, 'dugout');
   const a = cfg.aidPost, d = cfg.buildings.dugout;
-  // battle.capacityPer: lůžka a nosítka jsou na tolik vojáků strany a rostou s její velikostí (bez klíče pevná čísla)
-  const k = cfg.capacityPer ? Math.max(1, state.soldiers.filter((s) => s.faction === f && s.status !== 'fallen').length / cfg.capacityPer) : 1;
-  const sc = (v) => Math.round(v * k);
+  // aidPost.stretchersPerMedic: každý medik schopný služby nese nosítka navíc (kapacita roste s volbou hráčů, ne s velikostí strany)
+  const medics = a.stretchersPerMedic ? state.soldiers.filter((s) => s.faction === f && s.archetype === 'medic' && s.status !== 'fallen' && !(s.wound && s.wound.sev !== 'light')).length : 0;
+  const sc = (v) => v + Math.floor(medics * (a.stretchersPerMedic || 0));
   // care = násobek hojení těžce raněného proti nosítkům s plnou péčí (≥ 1), critRisk = násobek rizika smrti kritického za noc
   // proti nosítkům (≤ 1): lůžko je tak VŽDY lepší než nosítka, nemocnice lepší než obvaziště
-  if (!n) return { name: a.name, dugout: false, dugouts: 0, beds: sc(a.beds), stretchers: sc(a.stretchers), care: a.care, critRisk: a.critRisk };
-  return { name: d.name, dugout: true, dugouts: n, beds: sc(n * d.beds), stretchers: sc(a.stretchers + n * (d.stretchers || 0)), care: d.care, critRisk: d.critRisk };
+  if (!n) return { name: a.name, dugout: false, dugouts: 0, beds: a.beds, stretchers: sc(a.stretchers), care: a.care, critRisk: a.critRisk };
+  return { name: d.name, dugout: true, dugouts: n, beds: n * d.beds, stretchers: sc(a.stretchers + n * (d.stretchers || 0)), care: d.care, critRisk: d.critRisk };
 }
 
 export function build(state, theme, f, id) {

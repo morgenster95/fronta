@@ -1,0 +1,9 @@
+Matice simulací, vyvážení v7 + aidPost.stretchersPerMedic=1 care.crit.stabilizeBed=3 shell.kill=0.5 shell.severity.light=0.7 shell.severity.heavy=0.3 daily.shellMax=12 shell.hit=0.5 roles.medic.work=2 aidPost.critRisk=0.8 buildings.dugout.critRisk=0.4 care.crit.dieBase=0.3 severity.heavy=0.18; 60 dní, padlí na stranu DENNĚ (v závorce na 100 vojáků)
+
+=== Klidná fronta ===
+×1/1 │ Heg   86 (REAL, medici 6, nemocnic 1): 0.12 (0.14)/den · medici 98 % · nosítka ø 0.8 │ Con   90 (REAL, medici 12, nemocnic 1): 0.16 (0.18)/den · medici 100 % · nosítka ø 0.8
+×10/10 │ Heg  860 (REAL, medici 60, nemocnic 1): 5.47 (0.64)/den · medici 69 % · nosítka ø 50.1 │ Con  900 (REAL, medici 120, nemocnic 1): 2.27 (0.25)/den · medici 100 % · nosítka ø 42.1
+
+=== Hegemony dobude kótu → Concord 3 dny pod granáty ===
+×1/1 │ Heg   86 (REAL, medici 6, nemocnic 1): 0.13 (0.15)/den · medici 98 % · nosítka ø 0.7 │ Con   90 (REAL, medici 12, nemocnic 1): granáty 2.17 (2.41)/den, 7 dní 12.2 (13.5 %) · medici 84 % · nosítka ø 4.2
+×10/10 │ Heg  860 (REAL, medici 60, nemocnic 1): 2.45 (0.28)/den · medici 80 % · nosítka ø 46.6 │ Con  900 (REAL, medici 120, nemocnic 1): granáty 26.33 (2.93)/den, 7 dní 165.5 (18.4 %) · medici 84 % · nosítka ø 62.1

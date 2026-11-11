@@ -1,0 +1,41 @@
+Matice simulací, vyvážení v7 + aidPost.stretchersPerMedic=1 care.crit.stabilizeBed=3 shell.kill=0.5 shell.severity.light=0.7 shell.severity.heavy=0.3 daily.shellMax=12 shell.hit=0.5 roles.medic.work=2 aidPost.critRisk=0.8 buildings.dugout.critRisk=0.4 care.crit.dieBase=0.3 severity.heavy=0.18; 14 dní, padlí na stranu DENNĚ (v závorce na 100 vojáků)
+
+=== Klidná fronta ===
+×1/1 │ Heg   86 (REAL, medici 6, nemocnic 1): 0.14 (0.17)/den · medici 97 % · nosítka ø 0.8 │ Con   90 (REAL, medici 12, nemocnic 1): 0.20 (0.22)/den · medici 100 % · nosítka ø 1.1
+×1/1 │ Heg   86 (REAL, medici 6, nemocnic 3): 0.11 (0.12)/den · medici 100 % · nosítka ø 0.0 │ Con   90 (REAL, medici 12, nemocnic 0): 0.26 (0.29)/den · medici 99 % · nosítka ø 3.0
+×1/1 │ Heg   86 (MÁLO MEDIKŮ 3 %, medici 4, nemocnic 1): 0.48 (0.56)/den · medici 38 % · nosítka ø 3.0 │ Con   90 (HODNĚ MEDIKŮ 15 %, medici 12, nemocnic 1): 0.24 (0.27)/den · medici 100 % · nosítka ø 0.8
+×1/1 │ Heg   86 (MÁLO MEDIKŮ 3 %, medici 4, nemocnic 3): 0.10 (0.11)/den · medici 69 % · nosítka ø 0.0 │ Con   90 (HODNĚ MEDIKŮ 15 %, medici 12, nemocnic 0): 0.31 (0.35)/den · medici 97 % · nosítka ø 2.5
+×1/1 │ Heg   86 (KULOMETY 35 %, medici 5, nemocnic 1): 0.34 (0.39)/den · medici 67 % · nosítka ø 2.4 │ Con   90 (ODSTŘELOVAČI 30 %, medici 6, nemocnic 1): 0.30 (0.34)/den · medici 68 % · nosítka ø 1.8
+×1/1 │ Heg   86 (KULOMETY 35 %, medici 5, nemocnic 3): 0.11 (0.12)/den · medici 86 % · nosítka ø 0.0 │ Con   90 (ODSTŘELOVAČI 30 %, medici 6, nemocnic 0): 0.71 (0.79)/den · medici 52 % · nosítka ø 4.5
+×10/10 │ Heg  860 (REAL, medici 60, nemocnic 1): 4.02 (0.47)/den · medici 65 % · nosítka ø 46.7 │ Con  900 (REAL, medici 120, nemocnic 1): 2.79 (0.31)/den · medici 100 % · nosítka ø 44.6
+×10/10 │ Heg  860 (REAL, medici 60, nemocnic 3): 2.48 (0.29)/den · medici 77 % · nosítka ø 39.4 │ Con  900 (REAL, medici 120, nemocnic 0): 3.05 (0.34)/den · medici 100 % · nosítka ø 46.6
+×10/10 │ Heg  860 (MÁLO MEDIKŮ 3 %, medici 30, nemocnic 1): 8.64 (1.00)/den · medici 36 % · nosítka ø 34.5 │ Con  900 (HODNĚ MEDIKŮ 15 %, medici 135, nemocnic 1): 2.90 (0.32)/den · medici 100 % · nosítka ø 46.3
+×10/10 │ Heg  860 (MÁLO MEDIKŮ 3 %, medici 30, nemocnic 3): 5.00 (0.58)/den · medici 43 % · nosítka ø 34.8 │ Con  900 (HODNĚ MEDIKŮ 15 %, medici 135, nemocnic 0): 3.10 (0.34)/den · medici 100 % · nosítka ø 48.3
+×10/10 │ Heg  860 (KULOMETY 35 %, medici 46, nemocnic 1): 4.29 (0.50)/den · medici 59 % · nosítka ø 46.2 │ Con  900 (ODSTŘELOVAČI 30 %, medici 44, nemocnic 1): 8.36 (0.93)/den · medici 47 % · nosítka ø 51.4
+×10/10 │ Heg  860 (KULOMETY 35 %, medici 46, nemocnic 3): 2.38 (0.28)/den · medici 67 % · nosítka ø 38.0 │ Con  900 (ODSTŘELOVAČI 30 %, medici 44, nemocnic 0): 8.36 (0.93)/den · medici 47 % · nosítka ø 49.7
+×10/3 │ Heg  860 (REAL, medici 60, nemocnic 1): 1.81 (0.21)/den · medici 93 % · nosítka ø 29.9 │ Con  270 (REAL, medici 36, nemocnic 1): 2.52 (0.93)/den · medici 65 % · nosítka ø 26.9
+×10/3 │ Heg  860 (REAL, medici 60, nemocnic 3): 1.50 (0.17)/den · medici 97 % · nosítka ø 21.8 │ Con  270 (REAL, medici 36, nemocnic 0): 3.71 (1.38)/den · medici 58 % · nosítka ø 28.3
+×10/3 │ Heg  860 (MÁLO MEDIKŮ 3 %, medici 30, nemocnic 1): 3.98 (0.46)/den · medici 51 % · nosítka ø 30.2 │ Con  270 (HODNĚ MEDIKŮ 15 %, medici 36, nemocnic 1): 2.00 (0.74)/den · medici 80 % · nosítka ø 24.1
+×10/3 │ Heg  860 (MÁLO MEDIKŮ 3 %, medici 30, nemocnic 3): 2.17 (0.25)/den · medici 62 % · nosítka ø 24.9 │ Con  270 (HODNĚ MEDIKŮ 15 %, medici 36, nemocnic 0): 1.98 (0.73)/den · medici 75 % · nosítka ø 26.6
+×10/3 │ Heg  860 (KULOMETY 35 %, medici 46, nemocnic 1): 1.83 (0.21)/den · medici 83 % · nosítka ø 30.9 │ Con  270 (ODSTŘELOVAČI 30 %, medici 13, nemocnic 1): 7.24 (2.68)/den · medici 21 % · nosítka ø 19.3
+×10/3 │ Heg  860 (KULOMETY 35 %, medici 46, nemocnic 3): 1.45 (0.17)/den · medici 95 % · nosítka ø 21.4 │ Con  270 (ODSTŘELOVAČI 30 %, medici 13, nemocnic 0): 8.07 (2.99)/den · medici 19 % · nosítka ø 15.6
+
+=== Hegemony dobude kótu → Concord 3 dny pod granáty ===
+×1/1 │ Heg   86 (REAL, medici 6, nemocnic 1): 0.12 (0.13)/den · medici 96 % · nosítka ø 0.7 │ Con   90 (REAL, medici 12, nemocnic 1): granáty 2.04 (2.27)/den, 7 dní 12.1 (13.5 %) · medici 50 % · nosítka ø 12.1
+×1/1 │ Heg   86 (REAL, medici 6, nemocnic 3): 0.09 (0.10)/den · medici 100 % · nosítka ø 0.0 │ Con   90 (REAL, medici 12, nemocnic 0): granáty 2.25 (2.50)/den, 7 dní 15.9 (17.6 %) · medici 41 % · nosítka ø 12.0
+×1/1 │ Heg   86 (MÁLO MEDIKŮ 3 %, medici 4, nemocnic 1): 0.25 (0.29)/den · medici 56 % · nosítka ø 1.5 │ Con   90 (HODNĚ MEDIKŮ 15 %, medici 12, nemocnic 1): granáty 2.17 (2.41)/den, 7 dní 11.9 (13.2 %) · medici 53 % · nosítka ø 10.5
+×1/1 │ Heg   86 (MÁLO MEDIKŮ 3 %, medici 4, nemocnic 3): 0.08 (0.09)/den · medici 75 % · nosítka ø 0.0 │ Con   90 (HODNĚ MEDIKŮ 15 %, medici 12, nemocnic 0): granáty 2.38 (2.64)/den, 7 dní 15.8 (17.5 %) · medici 46 % · nosítka ø 11.2
+×1/1 │ Heg   86 (KULOMETY 35 %, medici 5, nemocnic 1): 0.14 (0.17)/den · medici 77 % · nosítka ø 1.3 │ Con   90 (ODSTŘELOVAČI 30 %, medici 6, nemocnic 1): granáty 2.33 (2.59)/den, 7 dní 16.5 (18.3 %) · medici 20 % · nosítka ø 11.2
+×1/1 │ Heg   86 (KULOMETY 35 %, medici 5, nemocnic 3): 0.10 (0.11)/den · medici 87 % · nosítka ø 0.0 │ Con   90 (ODSTŘELOVAČI 30 %, medici 6, nemocnic 0): granáty 2.58 (2.87)/den, 7 dní 20.9 (23.2 %) · medici 19 % · nosítka ø 9.3
+×10/10 │ Heg  860 (REAL, medici 60, nemocnic 1): 2.31 (0.27)/den · medici 86 % · nosítka ø 35.4 │ Con  900 (REAL, medici 120, nemocnic 1): granáty 25.89 (2.88)/den, 7 dní 180.3 (20.0 %) · medici 44 % · nosítka ø 94.3
+×10/10 │ Heg  860 (REAL, medici 60, nemocnic 3): 1.74 (0.20)/den · medici 91 % · nosítka ø 26.6 │ Con  900 (REAL, medici 120, nemocnic 0): granáty 26.56 (2.95)/den, 7 dní 188.7 (21.0 %) · medici 44 % · nosítka ø 90.4
+×10/10 │ Heg  860 (MÁLO MEDIKŮ 3 %, medici 30, nemocnic 1): 4.52 (0.53)/den · medici 50 % · nosítka ø 31.4 │ Con  900 (HODNĚ MEDIKŮ 15 %, medici 135, nemocnic 1): granáty 25.56 (2.84)/den, 7 dní 147.0 (16.3 %) · medici 65 % · nosítka ø 97.3
+×10/10 │ Heg  860 (MÁLO MEDIKŮ 3 %, medici 30, nemocnic 3): 2.38 (0.28)/den · medici 60 % · nosítka ø 25.9 │ Con  900 (HODNĚ MEDIKŮ 15 %, medici 135, nemocnic 0): granáty 26.11 (2.90)/den, 7 dní 155.0 (17.2 %) · medici 63 % · nosítka ø 97.3
+×10/10 │ Heg  860 (KULOMETY 35 %, medici 46, nemocnic 1): 2.36 (0.27)/den · medici 74 % · nosítka ø 37.4 │ Con  900 (ODSTŘELOVAČI 30 %, medici 44, nemocnic 1): granáty 30.11 (3.35)/den, 7 dní 246.7 (27.4 %) · medici 24 % · nosítka ø 53.4
+×10/10 │ Heg  860 (KULOMETY 35 %, medici 46, nemocnic 3): 1.60 (0.19)/den · medici 86 % · nosítka ø 25.7 │ Con  900 (ODSTŘELOVAČI 30 %, medici 44, nemocnic 0): granáty 31.56 (3.51)/den, 7 dní 252.0 (28.0 %) · medici 24 % · nosítka ø 50.2
+×10/3 │ Heg  860 (REAL, medici 60, nemocnic 1): 1.67 (0.19)/den · medici 99 % · nosítka ø 24.9 │ Con  270 (REAL, medici 36, nemocnic 1): granáty 4.56 (1.69)/den, 7 dní 44.7 (16.5 %) · medici 30 % · nosítka ø 30.9
+×10/3 │ Heg  860 (REAL, medici 60, nemocnic 3): 1.33 (0.16)/den · medici 100 % · nosítka ø 17.3 │ Con  270 (REAL, medici 36, nemocnic 0): granáty 5.00 (1.85)/den, 7 dní 47.3 (17.5 %) · medici 30 % · nosítka ø 28.2
+×10/3 │ Heg  860 (MÁLO MEDIKŮ 3 %, medici 30, nemocnic 1): 2.93 (0.34)/den · medici 62 % · nosítka ø 27.0 │ Con  270 (HODNĚ MEDIKŮ 15 %, medici 36, nemocnic 1): granáty 4.33 (1.60)/den, 7 dní 40.0 (14.8 %) · medici 35 % · nosítka ø 34.5
+×10/3 │ Heg  860 (MÁLO MEDIKŮ 3 %, medici 30, nemocnic 3): 1.26 (0.15)/den · medici 70 % · nosítka ø 19.4 │ Con  270 (HODNĚ MEDIKŮ 15 %, medici 36, nemocnic 0): granáty 4.78 (1.77)/den, 7 dní 45.0 (16.7 %) · medici 35 % · nosítka ø 32.7
+×10/3 │ Heg  860 (KULOMETY 35 %, medici 46, nemocnic 1): 1.52 (0.18)/den · medici 92 % · nosítka ø 25.4 │ Con  270 (ODSTŘELOVAČI 30 %, medici 13, nemocnic 1): granáty 4.44 (1.65)/den, 7 dní 61.0 (22.6 %) · medici 11 % · nosítka ø 19.2
+×10/3 │ Heg  860 (KULOMETY 35 %, medici 46, nemocnic 3): 1.24 (0.14)/den · medici 99 % · nosítka ø 16.5 │ Con  270 (ODSTŘELOVAČI 30 %, medici 13, nemocnic 0): granáty 5.22 (1.93)/den, 7 dní 65.3 (24.2 %) · medici 11 % · nosítka ø 15.8
