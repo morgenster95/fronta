@@ -1,1 +1,5 @@
-{ "since": "2026-11-11T09:00:00Z", "_note": "čas posledního zveřejněného reelu; ridge-reel.mjs z něj počítá, kolik vojáků přibylo od minulého videa (z historie data/state.json v gitu). Po zveřejnění dalšího videa přepsat." }
+{
+ "since": "2026-11-11T09:00:00Z",
+ "_note": "čas a počet vojáků při posledním zveřejněném reelu; ridge-reel.mjs z toho počítá nově příchozí (v GitHub Actions je klon mělký, historie gitu není). Po zveřejnění dalšího videa přepsat.",
+ "soldiers": 157
+}

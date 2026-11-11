@@ -24,9 +24,11 @@ const loser = 1 - winner;
 const objective = v?.name || theme.race.objectives[state.race?.idx ?? 0]?.name || 'Verdel Ridge';
 const hero = v ? state.soldiers.find((s) => s.handle === v.hero) : state.soldiers.filter((s) => s.faction === winner).sort((a, b) => b.order - a.order)[0];
 // kolik vojáků přibylo od minulého zveřejněného reelu (stav z gitu k tomu času; bez historie aspoň ti z dnešního dne)
-const since = opt('--since') || JSON.parse(fs.readFileSync(path.join(ROOT, 'marketing', 'reels', 'last-reel.json'), 'utf8')).since;
+const last = JSON.parse(fs.readFileSync(path.join(ROOT, 'marketing', 'reels', 'last-reel.json'), 'utf8'));
+const since = opt('--since') || last.since;
 let newToday = state.soldiers.filter((s) => s.enlisted === state.day).length;
-try {
+if (last.soldiers != null && !opt('--since')) newToday = state.soldiers.length - last.soldiers; // počet uložený při posledním reelu (klon v Actions je mělký)
+else try {
   const sha = execFileSync('git', ['log', `--before=${since}`, '-1', '--format=%H', '--', 'data/state.json'], { cwd: ROOT, encoding: 'utf8' }).trim();
   const old = JSON.parse(execFileSync('git', ['show', `${sha}:data/state.json`], { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 28 }));
   newToday = state.soldiers.length - old.soldiers.length;
