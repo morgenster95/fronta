@@ -1,6 +1,6 @@
 # Denní boj: zásahy, ranění, medici, nemocnice, drát
 
-_Stav k 11. 11. 2026: **nasazeno, vyvážení v6** (`theme.battle.balance`). Tenhle soubor popisuje pravidla, jak je hra počítá teď._
+_Stav k 11. 11. 2026: **nasazeno, vyvážení v7** (`theme.battle.balance`; změny a důvody v `docs/MECHANICS.md`). Tenhle soubor popisuje pravidla, jak je hra počítá teď._
 _Role, zkušenosti, simulace a ladění: `docs/COMBAT_ROLES.md`. Kód: `engine/battle.js`. Všechna čísla: `themes/front-ww1/theme.json` → `battle`._
 _Texty: `themes/front-ww1/story.json` (`hitLight/Heavy/Crit`, `bullet…`, `shell…`, `shotHit`, `worsened`, `patched`, `patchedStretcher`, `stretcher`, `admitted`, `stabilized`, `diedNoBed`, `diedInBed`)._
 
@@ -21,22 +21,22 @@ Každý voják v **přední linii** má každý den malou šanci trefit nepřít
 ## 2. Zásahy z pozadí
 Šance na vojáka a den:
 
-`3 % × linie (přední 1 · zálohy 0,35 · týl 0) × pytle (−12 % za stupeň) × drát (až −15 % podle výdrže úseku) × zkušenost (až −40 % po 60 dnech služby) × nebezpečí × spojař poblíž (−20 %)`
+`4 % × linie (přední 1 · zálohy 0,35 · týl 0) × pytle (−12 % za stupeň) × drát (až −15 % podle výdrže úseku) × zkušenost (až −40 % po 60 dnech služby) × nebezpečí × spojař poblíž (−20 % × pokrytí: jeden spojař pokryje 10 vojáků)`
 
 - **Nebezpečí:** po dobytí kóty má vítěz 7 dní ×0,6 a poražený ×1,25; k tomu rozkazy z hlasování a (až budou zapnuté) území v údolí.
   Poražený má během bombardování navíc ×1,3.
-- **Denní mez** (`battle.daily`): za klidu má každá strana denně **1 až 3** nově raněné (palba hráčů se počítá; prázdný den se doplní
-  jedním zásahem z pozadí), pod granáty nejvýš **8**.
+- **Denní mez** (`battle.daily`): za klidu má každá strana denně **2 až 5** nově raněných na každých 80 vojáků (`per`; mez roste s velikostí strany,
+  palba hráčů se počítá, prázdný den se doplní zásahy z pozadí), pod granáty nejvýš **8 na 80 vojáků**.
 - **Děla mlčí do první dobyté kóty** (`gunsAfterVictory`): do té doby jsou zásahy z pozadí kulky, granáty a drát a texty o ostřelování se nepoužijí.
 
 ### Závažnost
-Lehce 60 %, těžce 25 %, kriticky 15 %, posunuto **výdrží** vojáka (1–5; +1 za každé přežité těžké zranění).
-Kritický zásah nepřijde v prvních 5 dnech služby a ne dvakrát za 7 dní (stane se z něj těžký).
+Lehce 55 %, těžce 30 %, kriticky 15 %, posunuto **výdrží** vojáka (1–5; +1 za každé přežité těžké zranění).
+Kritický zásah nepřijde v prvních 3 dnech služby a ne dvakrát za 7 dní (stane se z něj těžký).
 
 ### Bombardování po dobytí kóty
 Tři dny (`theme.race.barrageDays`), začíná den po dobytí; na webu je palba vidět už v den dobytí.
-- Každý den granáty dopadnou na **4 úseky poražené strany** (`battle.shell.sectors`).
-- Každý voják v zasaženém úseku má **50 %** šanci na zásah (× linie × pytle). Střepiny zraňují tíž: lehce 45 %, těžce 35 %, kriticky 20 %.
+- Každý den granáty dopadnou na **30 % úseků poražené strany, aspoň 4** (`battle.shell.share`, `sectors`); při 23 úsecích je to 7.
+- Každý voják v zasaženém úseku má **40 %** šanci na zásah (× linie × pytle). Střepiny zraňují tíž: lehce 45 %, těžce 35 %, kriticky 20 %.
   **Granát nešetří nováčky.**
 - Drát v zasaženém úseku přijde o 40 %, ve všech úsecích poraženého o dalších 12 % denně.
 - Gazette jmenuje úseky a těžce raněné.
@@ -64,12 +64,12 @@ Potřeba za den: **lehce 1, těžce 2, kriticky 2, na lůžku 0** (tam léčí n
 
 | Stav | Co se děje každou noc |
 |---|---|
-| **lehce** | První den nic. Pak: zhoršení na těžce `25 % × chybějící péče` (kuchař poblíž ×0,5; ne v prvních 5 dnech služby), jinak zahojení `péče + 15 %` (kuchař poblíž přidá až 30 %). S plnou péčí je druhý den v pořádku. |
+| **lehce** | První den nic. Pak: zhoršení na těžce `25 % × chybějící péče` (kuchař poblíž až ×0,5; ne v prvních 3 dnech služby), jinak zahojení `péče + 15 %` (kuchař poblíž přidá až 30 %; jeden kuchař pokryje 4 lehce raněné). S plnou péčí je druhý den v pořádku. |
 | **těžce na lůžku** | Od 2. dne se uzdraví s `35 % × hojení místa` za den (obvaziště ~40 %, nemocnice ~53 %). |
 | **těžce na nosítkách** | Zhoršení na kriticky `30 % × chybějící péče`; od 2. dne uzdravení `35 % × péče`. |
 | **těžce v zákopu** | Totéž, ale zhoršení ×1,5 a uzdravení ×0,5. |
-| **kriticky na lůžku** | Smrt `8 % × riziko místa` za noc (obvaziště 4,8 %, nemocnice 3,2 %). Po 2 nocích je z něj těžce raněný. |
-| **kriticky na nosítkách** | Smrt `8 % + 70 % × chybějící péče` za noc (kaplan na straně ×0,8). Po 3 nocích s plnou péčí je z něj těžce raněný. |
+| **kriticky na lůžku** | Smrt `9 % × riziko místa` za noc (obvaziště 5,4 %, nemocnice 3,6 %). Po 2 nocích je z něj těžce raněný. |
+| **kriticky na nosítkách** | Smrt `9 % + 70 % × chybějící péče` za noc (kaplan ×(1 − 0,2 × pokrytí); jeden kaplan pokryje 3 umírající). Po 3 nocích s plnou péčí je z něj těžce raněný. |
 | **kriticky bez nosítek** | Noc nepřežije. |
 
 Kdo se uzdraví z těžkého zranění, má jizvu, +1 výdrž a 10 XP.

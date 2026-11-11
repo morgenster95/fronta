@@ -2,7 +2,7 @@
 
 Tenhle soubor čte Claude Code i v cloudu (aplikace Claude v mobilu, claude.ai/code), kde není paměť z domácího PC.
 Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co je teď ve hře), `docs/BATTLE.md` a `docs/COMBAT_ROLES.md` (boj), `docs/ONBOARDING.md` (rekruti a provoz),
-`docs/SCHEDULE.md` (rytmus dne), `docs/MAP_MISSIONS.md` (výpravy, vypnuté). `docs/DESIGN.md` je původní návrh, neaktualizuje se.
+`docs/SCHEDULE.md` (rytmus dne), `docs/MAP_MISSIONS.md` (výpravy, vypnuté), **`docs/MECHANICS.md` (deník domluvených mechanik)**. `docs/DESIGN.md` je původní návrh, neaktualizuje se.
 
 ## Pravidla
 - **Odpovídej česky.** Texty ve hře a na Instagramu jsou anglicky (publikum USA/UK, ne Praha).
@@ -20,6 +20,7 @@ Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co
   Smyčka commituje do main → **před pushem vždy `git pull --rebase`**; `data/state.json` ručně neupravuj.
 - **Deníky jsou nedotknutelné:** zápisy vojáků (`s.record`), kronika (`state.chronicle`) a deník fronty se jen přidávají, nikdy se neořezávají,
   nepřepisují ani negenerují znovu. Nástupce pokračuje v deníku rodu. Web ukazuje posledních 40 zápisů, starší jsou v `records-old` (tlačítko na kartě).
+- **Každou domluvenou změnu mechaniky** (boj, role, ztráty, bombardování, útoky) i návrh zapiš do `docs/MECHANICS.md` (datum, stav NASAZENO/SCHVÁLENO/NÁVRH, čísla, proč).
 - Před commitem `npm test` (musí projít). Commity do `main`, smyčka změny sama nasadí.
 - Engine (`engine/`) je obecný, téma (`themes/front-ww1/`) je konkrétní hra. Ten rozdíl drž (stejný engine půjde použít pro jiná témata).
 - Příběhové texty: proměnné jen tam, kde je kód doplní; žádná zájmena u dvojic spolubojovník/nepřítel; slova o počasí jen v šablonách počasí;
@@ -62,9 +63,10 @@ Postup pro nový reel `<name>`:
   Vyhodnotí ranní vydání, nejdřív 8 h po otevření (`minHours`).
   Pro další kóty: nová položka s `trigger.race` = id kóty (`theme.race.objectives`) a grafika `python marketing/make_victory.py <id> "<Název>" "<Další>"`.
   1. snímek kreslí `marketing/victory_scene.py` (kopec s praporem, v popředí sprity ze zákopů ve hře, pytle stejného vzoru jako ve hře).
-- **Denní boj, medici, nemocnice, drát** (`docs/BATTLE.md`, `engine/battle.js`, vyvážení v6): zásah sám nezabíjí, zabije chybějící lůžko, nosítka nebo medik.
+- **Denní boj, medici, nemocnice, drát** (`docs/BATTLE.md`, `engine/battle.js`, vyvážení v7 od 11. 11., `docs/MECHANICS.md`): zásah sám nezabíjí, zabije chybějící lůžko, nosítka nebo medik.
   Potřeba práce mediků: lehce raněný 1, těžce a kriticky raněný 2, na lůžku 0. Obvaziště má 2 lůžka a 6 nosítek; nemocnice (dugout, jen hlasováním) 4 lůžka
-  a dalších 4 nosítka za každou. Bombardování po výhře v závodě: 4 úseky poraženého denně, 3 dny. Denní mez: 1–3 nově ranění na stranu za klidu, nejvýš 8 pod granáty.
+  a dalších 4 nosítka za každou. Bombardování po výhře v závodě: 30 % úseků poraženého (aspoň 4) denně, 3 dny. Denní mez na 80 vojáků strany (roste s velikostí): 2–5 nově ranění za klidu, nejvýš 8 pod granáty.
+  Podpůrné role působí podle poměru (`roles.*.covers`), každý voják role má smysl a nikdo není nezranitelný.
   Role a čísla `docs/COMBAT_ROLES.md`. Převzatí hráči nejsou chránění. Nanečisto: `node tools/sim-battle.mjs --kpi`, náhled vydání `node tools/preview-tick.mjs`.
 - **Hlasování je vždy jen jedno** (od 2026-11-11): post s `vote`, který vyjde při běžícím hlasování, ho nepřepíše; počká (`votePending` ve frontě)
   a otevře se po vyhodnocení (`ingest/triggers.mjs`, `ingest/publish.mjs`). Hlasy napsané dřív se dopočítají (`lateVote`), heslo platí i v jednotném čísle.
@@ -73,5 +75,6 @@ Postup pro nový reel `<name>`:
 - **Nemocnice na mapě** (od 2026-11-10): postavená nemocnice = velký dugout za zálohami (`dugoutArt` v `web/src/hospital.js`), jen když je ve stavu hry
   (`state.battle.sides[f].built.dugout`, staví jen vyhodnocené hlasování). Bombardování poraženého je na webu vidět už v den dobytí kóty.
 - **Publikace hlídá verzi souboru** (od 2026-11-11): položka vyjde, až je na GitHub Pages soubor stejné velikosti jako v repu (po novém renderu).
+- **Návrh čeká na uživatele:** útok OVER THE TOP (`docs/MECHANICS.md`).
 - **Další na řadě (domluvený návrh, zatím nepostavený):** změny terénu,
   hlášení se jmény skutečných hráčů. Výměna zajatců jako společná událost.

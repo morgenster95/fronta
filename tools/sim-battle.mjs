@@ -149,8 +149,8 @@ if (!only) {
     ['zásahy týdně (klid, na 50 vojáků)', mean(quiet.map((x) => x.taken * wk * per50(x))), 10, 16, false],
     ['podíl palby hráčů na zásazích (klid)', mean(quiet.map((x) => x.takenFire / Math.max(0.01, x.taken))), 0.35, 0.45, true],
     ['kritické zásahy týdně (klid, na 50)', mean(quiet.map((x) => x.crit * wk * per50(x))), 1, 2, false],
-    ['padlí týdně, jen obvaziště (klid, na 50)', mean(quiet.map((x) => x.dead * wk * per50(x))), 0.5, 1.5, false],
-    [`padlí za ${DAYS} dní u bombardované strany (na 50)`, mean(barrage.map((x) => x.dead * per50(x))), 3, 6, false],
+    ['padlí týdně, jen obvaziště (klid, na 50)', mean(quiet.map((x) => x.dead * wk * per50(x))), 1.5, 3, false],
+    [`padlí za ${DAYS} dní u bombardované strany (na 50)`, mean(barrage.map((x) => x.dead * per50(x))), 12, 20, false],
     [`nejlepší střelec strany za ${DAYS} dní (zásahů)`, mean(quiet.map((x) => x.top)), 1, 4, false],
   ];
   console.log('Cílová čísla (docs/COMBAT_ROLES.md, kap. 6):');
@@ -162,7 +162,7 @@ if (args.includes('--roles')) {
   const off = {
     'medic (nosič)': ['roles.medic.work=0'], 'officer (velení)': ['roles.officer.lead=0', 'roles.officer.xp=0'], 'runner (spojka)': ['roles.runner.relay=0'],
     'signaller (protipalba)': ['roles.signaller.counter=0'], 'cook (morálka)': ['roles.cook.heal=0', 'roles.cook.worsen=0'], 'chaplain (útěcha)': ['roles.chaplain.faith=0'],
-    'mg (potlačení)': ['roles.machinegunner.suppress=0'], 'sniper (výběr cíle)': ['roles.sniper.pick=0'], 'sapper (drát)': ['roles.sapper.repair=0'],
+    'mg (potlačení)': ['roles.machinegunner.suppress=0', 'roles.machinegunner.suppressMax=0'], 'sniper (výběr cíle)': ['roles.sniper.pick=0'], 'sapper (drát)': ['roles.sapper.repair=0'],
   };
   const runs = Math.max(20, Math.round(RUNS / 2));
   const sc = SCENARIOS[1];

@@ -499,17 +499,18 @@
   "battle": {
     "_note": "Denní boj (engine/battle.js, docs/COMBAT_ROLES.md). Všechna čísla se dají ladit; dopad ukáže node tools/sim-battle.mjs --kpi (a --set klíč=hodnota). Pravděpodobnosti jsou na vojáka a den.",
     "enabled": true,
-    "balance": 6,
+    "balance": 7,
     "_balance": "verze vyvážení: zvyš při každé změně čísel, zapisuje se do denních metrik (state.battle.stats)",
-    "hit": 0.03,
+    "hit": 0.04,
     "gunsAfterVictory": true,
     "gunsWords": "\\bshell(?!\\s*holes?\\b)|shrapnel|bombard|barrage|artillery|near miss|splinter|mortar|howitzer|whizz",
     "_guns": "Dělostřelectvo střílí až po první výhře v závodě o kótu (pak 3 dny bombardování). Do té doby se texty se slovy gunsWords nepoužijí a zásahy z pozadí jsou kulky, granáty, drát.",
     "daily": {
-      "_": "Nových raněných na stranu za den: za klidu aspoň min a nejvýš max (z pozadí; palba hráčů se do max počítá), pod granáty nejvýš shellMax",
-      "min": 1,
-      "max": 3,
-      "shellMax": 8
+      "_": "Nových raněných na stranu za den: za klidu aspoň min a nejvýš max (z pozadí; palba hráčů se do max počítá), pod granáty nejvýš shellMax. Meze jsou na per vojáků strany a rostou s její velikostí (strana 160 vojáků = 2×).",
+      "min": 2,
+      "max": 5,
+      "shellMax": 8,
+      "per": 80
     },
     "_hit": "pozadí: dělostřelectvo, granáty, miny (~60 % zásahů). Pásmo 0.008–0.03",
     "line": {
@@ -522,11 +523,11 @@
     "experienceDays": 60,
     "toughShift": 0.05,
     "severity": {
-      "light": 0.4,
+      "light": 0.45,
       "heavy": 0.15
     },
     "_severity": "závažnost u pozadí: náhoda > light = lehce (60 %), > heavy = těžce (25 %), jinak kriticky (15 %)",
-    "newbieDays": 5,
+    "newbieDays": 3,
     "critCooldown": 7,
     "care": {
       "_note": "need = práce mediků na raněného za den (medik má 1). Na lůžku need 0 (léčí nemocnice).",
@@ -547,7 +548,7 @@
       },
       "crit": {
         "need": 2,
-        "dieBase": 0.08,
+        "dieBase": 0.09,
         "dieNoCare": 0.7,
         "stabilize": 3,
         "_": "kriticky: musí mít nosítka nebo lůžko, jinak noc nepřežije. Smrt za noc = dieBase × critRisk místa (nosítka 1) + dieNoCare × chybějící péče (na lůžku 0). Zlepší se na těžce po stabilize nocích na nosítkách s plnou péčí, po stabilizeBed na lůžku",
@@ -555,6 +556,7 @@
       }
     },
     "roles": {
+      "_covers": "covers = kolik lidí poblíž jeden voják role pokryje (kulomet: nepřátelské střelce, spojař: vojáky, důstojník/spojka: střelce, kuchař: lehce raněné, kaplan: kriticky raněné na nosítkách). Účinek = plný účinek × min(1, počet role × covers / lidí poblíž): roste s poměrem, nikdy přes plný účinek.",
       "_note": "fire = šance za den, že voják v přední linii trefí nepřítele naproti (do roles.range px). severity = závažnost zásahu (jako u pozadí).",
       "range": 160,
       "default": {
@@ -562,24 +564,25 @@
         "_": "podpůrné role (nosič, kuchař, kaplan, spojař, runner, ženista): občas vystřelí"
       },
       "rifleman": {
-        "fire": 0.017,
+        "fire": 0.028,
         "severity": {
           "light": 0.4,
           "heavy": 0.12
         }
       },
       "machinegunner": {
-        "fire": 0.03,
+        "fire": 0.045,
         "severity": {
           "light": 0.3,
           "heavy": 0.05
         },
         "suppress": 0.15,
         "suppressMax": 0.45,
+        "covers": 4,
         "_": "potlačení: každý kulomet naproti sníží palbu nepřítele o suppress (nejvýš suppressMax)"
       },
       "sniper": {
-        "fire": 0.045,
+        "fire": 0.06,
         "severity": {
           "light": 0.65,
           "heavy": 0.25
@@ -590,15 +593,18 @@
       "officer": {
         "fire": 0.008,
         "lead": 0.2,
+        "covers": 12,
         "xp": 0.25,
         "_": "velení: +lead palby a +xp zkušeností vojákům poblíž"
       },
       "runner": {
         "relay": 0.25,
+        "covers": 8,
         "_": "spojka: rozkazy dojdou; bez důstojníka poblíž +relay palby vojákům poblíž"
       },
       "signaller": {
         "counter": 0.2,
+        "covers": 10,
         "_": "telefon k dělostřelectvu: vojáci poblíž −counter zásahů z pozadí"
       },
       "sapper": {
@@ -608,11 +614,13 @@
       "cook": {
         "heal": 0.3,
         "worsen": 0.5,
+        "covers": 4,
         "_": "lehce ranění poblíž: +heal šance zahojit se i bez mediků, zhoršení ×(1 − worsen)"
       },
       "chaplain": {
         "faith": 0.2,
-        "_": "má-li strana kaplana: smrt kritických na nosítkách ×(1 − faith)"
+        "covers": 3,
+        "_": "kaplan: smrt kritických na nosítkách ×(1 − faith × pokrytí); jeden kaplan pokryje covers umírajících"
       },
       "medic": {
         "work": 1,
@@ -670,7 +678,8 @@
     },
     "shell": {
       "sectors": 4,
-      "hit": 0.5,
+      "share": 0.3,
+      "hit": 0.4,
       "severity": {
         "light": 0.55,
         "heavy": 0.2

@@ -108,6 +108,13 @@ function near(list, x, r) {
   // binární hledání by stačilo, ale listy jsou malé (stovky)
   return list.filter((s) => Math.abs(X(s) - x) <= r);
 }
+// podíl pokrytí podpůrnou rolí: každý z n vojáků role pokryje nejvýš `covers` lidí, o účinek se dělí `crowd` lidí poblíž.
+// Účinek tak roste s poměrem role k počtu vojáků (každý panáček má smysl) a nikdy nepřekročí 100 % účinku role.
+// Bez `covers` v theme (starší témata): stačí jeden poblíž.
+export function share(n, covers, crowd) {
+  if (!n) return 0;
+  return covers ? Math.min(1, (n * covers) / Math.max(1, crowd)) : 1;
+}
 
 // ctx: { dangerOf(s), careOf(s), busy: Set (výprava) }
 // dělostřelectvo střílí až po první výhře v závodě (theme.battle.gunsAfterVictory); do té doby zásahy z pozadí = kulky, granáty, drát
@@ -136,7 +143,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   if (barrage && cfg.shell) {
     const secs = sectorsOf(state, barrage.target).sort();
     const r = rngFor(theme.id, 'shell', day);
-    while (shelled.size < Math.min(cfg.shell.sectors, secs.length)) shelled.add(secs[Math.floor(r() * secs.length)]);
+    const want = Math.max(cfg.shell.sectors || 0, Math.round(secs.length * (cfg.shell.share || 0))); // podíl úseků roste s frontou
+    while (shelled.size < Math.min(want, secs.length)) shelled.add(secs[Math.floor(r() * secs.length)]);
   }
   const shellHits = [];
 
@@ -183,9 +191,13 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const fire = role(cfg, s, 'fire');
     if (!fire) continue;
     const mates = near(front[f], X(s), range);
-    const lead = mates.some((m) => m.archetype === 'officer') ? R.officer.lead : mates.some((m) => m.archetype === 'runner') ? R.runner.relay : 0;
+    const officers = mates.filter((m) => m.archetype === 'officer').length;
+    const runners = mates.filter((m) => m.archetype === 'runner').length;
+    const lead = officers ? R.officer.lead * share(officers, R.officer.covers, mates.length)
+      : runners ? R.runner.relay * share(runners, R.runner.covers, mates.length) : 0;
     const mgs = near(front[e], X(s), range).filter((m) => m.archetype === 'machinegunner').length;
-    const suppress = Math.min(R.machinegunner.suppressMax, mgs * R.machinegunner.suppress);
+    const MG = R.machinegunner;
+    const suppress = MG.covers ? MG.suppressMax * share(mgs, MG.covers, mates.length) : Math.min(MG.suppressMax, mgs * MG.suppress);
     const p = fire * mult(theme, s) * (1 + lead) * (1 - suppress) * (ctx.fireOf?.(s) ?? 1);
     stats[f].shots++;
     const rand = rngFor(s.id, 'fire', day);
@@ -223,7 +235,11 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   const D = cfg.daily;
   const silent = gunsSilent(state, theme);
   const newToday = (f) => { const v = stats[f].sev; return v.light + v.heavy + v.crit; };
-  const maxOf = (f) => (!D ? Infinity : barrage?.target === f && shelled.size ? D.shellMax ?? Infinity : D.max ?? Infinity);
+  // meze rostou s velikostí strany (D.per vojáků = 1×; menší strana má meze jako D.per)
+  const size = theme.factions.map((_, f) => state.soldiers.filter((s) => s.faction === f && s.status !== 'fallen').length);
+  const scale = (f) => (D?.per ? Math.max(1, size[f] / D.per) : 1);
+  const maxOf = (f) => (!D ? Infinity : Math.round((barrage?.target === f && shelled.size ? D.shellMax ?? Infinity : D.max ?? Infinity) * scale(f)));
+  const minOf = (f) => Math.round((D?.min || 0) * scale(f));
   const bgHit = (s, sev, underShells) => {
     wound(s, sev, underShells ? { shell: true } : {});
     if (underShells) { shellHits.push(s); stats[s.faction].hits.shell++; } else stats[s.faction].hits.bg++;
@@ -240,7 +256,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const side = state.battle.sides[s.faction];
     const rand = rngFor(s.id, 'battle', day);
     const underShells = barrage?.target === s.faction && shelled.has(s.sector);
-    const own = near(signallers[s.faction], X(s), range).length ? R.signaller.counter : 0;
+    const own = R.signaller.counter * share(near(signallers[s.faction], X(s), range).length, R.signaller.covers, near(targetsOf[s.faction], X(s), range).length);
     const p = underShells
       ? cfg.shell.hit * (cfg.line[s.line] ?? 1) * (1 - cfg.buildings.sandbags.cover * count(side, 'sandbags'))
       : cfg.hit * coverOf(s) * (ctx.dangerOf?.(s) ?? 1) * (barrage?.target === s.faction ? cfg.barrage : 1) * (1 - own); // spojař poblíž: telefon k vlastnímu dělostřelectvu, protipalba
@@ -251,7 +267,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   if (D?.min) theme.factions.forEach((_, f) => {
     const pool = lineup(state, f, (s) => able(s) && (cfg.line[s.line] ?? 0) > 0);
     const r = rngFor(theme.id, `floor${f}`, day);
-    while (newToday(f) < D.min && pool.length) {
+    while (newToday(f) < minOf(f) && pool.length) {
       const w = pool.map(coverOf);
       let k = r() * w.reduce((a, b) => a + b, 0), i = 0;
       while (i < pool.length - 1 && (k -= w[i]) > 0) i++;
@@ -304,7 +320,10 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     // práce mediků podle závažnosti: kritičtí, těžce, lehce (stejná skupina: kdo je raněný déle)
     let supply = medicWork(state, theme, f, busy);
     const cooks = lineup(state, f, (s) => s.archetype === 'cook' && s.status !== 'fallen' && !(s.wound && s.wound.sev !== 'light'));
-    const chaplain = state.soldiers.some((s) => s.faction === f && s.archetype === 'chaplain' && s.status !== 'fallen' && !(s.wound && s.wound.sev !== 'light'));
+    const chaplains = state.soldiers.filter((s) => s.faction === f && s.archetype === 'chaplain' && s.status !== 'fallen' && !(s.wound && s.wound.sev !== 'light')).length;
+    const dying = mine().filter((s) => s.wound.sev === 'crit' && s.wound.place !== 'bed').length;
+    const faith = R.chaplain.faith * share(chaplains, R.chaplain.covers, dying);
+    const lights = mine().filter((s) => s.wound.sev === 'light').sort((a, b) => X(a) - X(b));
     const patients = mine().filter((s) => s.wound.place !== 'bed').sort((a, b) => pri(a) - pri(b) || a.wound.day - b.wound.day);
     const need = patients.reduce((a, s) => a + needOf(cfg, s), 0);
     stats[f].cover = need ? Math.min(1, supply / need) : 1;
@@ -329,7 +348,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       const fresh = w.day === day;
       if (w.sev === 'light') {
         if (fresh) continue; // ošetří se a druhý den je v pořádku
-        const cook = near(cooks, X(s), range).length ? R.cook : null;
+        const k = share(near(cooks, X(s), range).length, R.cook.covers, near(lights, X(s), range).length);
+        const cook = k ? { heal: R.cook.heal * k, worsen: R.cook.worsen * k } : null;
         const worsen = C.worsen * (1 - g) * (cook ? 1 - cook.worsen : 1);
         if (!(day - (s.enlisted ?? day) < cfg.newbieDays) && rand() < worsen) {
           w.sev = 'heavy';
@@ -364,7 +384,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         if (w.place === 'trench') {
           if (die(s, 'diedNoBed', 'nobed')) continue;
         } else {
-          const pDie = (C.dieBase + C.dieNoCare * (1 - g)) * (chaplain ? 1 - R.chaplain.faith : 1);
+          const pDie = (C.dieBase + C.dieNoCare * (1 - g)) * (1 - faith);
           if (rand() < pDie) { if (die(s, 'diedNoBed', 'nocare')) continue; }
           w.critDays = (w.critDays || 0) + 1;
           if (w.critDays >= C.stabilize && g >= 1) { w.sev = 'heavy'; ev(s, 'stabilized', eventEntry('stabilized', s, day, theme, story, {}, today)); }

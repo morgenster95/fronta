@@ -1,11 +1,11 @@
 # Role, zkušenosti, simulace a ladění boje
 
-_Stav k 11. 11. 2026: **nasazeno, vyvážení v6.** Pravidla jednoho dne (zásahy, lůžka, medici, stavby) jsou v `docs/BATTLE.md`;_
+_Stav k 11. 11. 2026: **nasazeno, vyvážení v7** (změny a důvody: `docs/MECHANICS.md`). Pravidla jednoho dne (zásahy, lůžka, medici, stavby) jsou v `docs/BATTLE.md`;_
 _tady je, co která role dělá, zkušenosti, výsledky simulací a jak se boj ladí. Kód `engine/battle.js`, čísla `themes/front-ww1/theme.json` → `battle`._
 
 ## 1. Pořadí kroků v ranním tahu (13:00 UTC)
 1. Palba hráčů z přední linie (tabulka rolí níže).
-2. Zásahy z pozadí a bombardování, s denní mezí 1–3 nově raněných na stranu za klidu, nejvýš 8 pod granáty.
+2. Zásahy z pozadí a bombardování, s denní mezí 2–5 nově raněných na 80 vojáků strany za klidu, nejvýš 8 na 80 pod granáty.
 3. Rozmístění raněných: lůžka (kritičtí první), nosítka, zákop.
 4. Práce mediků a hojení.
 5. Drát, XP za den, denní metriky, pojistka proti masakru.
@@ -17,18 +17,21 @@ Podrobně v `docs/BATTLE.md`.
 
 | Role | Funkce | Čísla (výchozí) | Očekávaně za 4 týdny (1 voják, Recruit) |
 |---|---|---|---|
-| Rifleman | běžná palba | fire 1,7 %; zásah 60 % lehce / 28 % těžce / 12 % kriticky | ~0,4 zásahu |
-| Machine Gunner | **potlačení**: každý kulomet naproti −15 % palby nepřítele (max −45 %); hodně ran, spíš lehká zranění | fire 3 %; 70/25/5 % | ~0,7 zásahu |
-| Sniper | **přesnost**: často kriticky, 50 % šance vybrat si kulometčíka/důstojníka | fire 4,5 %; 35/40/25 % | ~1 zásah |
-| Lieutenant | **velení**: vojákům poblíž +20 % palby a +25 % XP | fire 0,8 % | — (násobí ostatní) |
-| Runner | **spojka**: bez důstojníka poblíž +25 % palby vojákům poblíž (rozkazy dojdou) | fire 0,4 % | — |
+| Rifleman | běžná palba | fire 2,8 %; zásah 60 % lehce / 28 % těžce / 12 % kriticky | ~0,4 zásahu |
+| Machine Gunner | **potlačení**: nepřátelští střelci poblíž −45 % palby × pokrytí (jeden kulomet pokryje 4 střelce); hodně ran, spíš lehká zranění | fire 4,5 %; 70/25/5 % | ~0,7 zásahu |
+| Sniper | **přesnost**: často kriticky, 50 % šance vybrat si kulometčíka/důstojníka | fire 6 %; 35/40/25 % | ~1 zásah |
+| Lieutenant | **velení**: střelcům poblíž +20 % palby × pokrytí (pokryje 12) a +25 % XP | fire 0,8 % | — (násobí ostatní) |
+| Runner | **spojka**: bez důstojníka poblíž +25 % palby × pokrytí (pokryje 8; rozkazy dojdou) | fire 0,4 % | — |
 | Stretcher Bearer | **péče** (krok 4) | práce 1/den (Elite 1,8) | 1 lehce raněný nebo ½ těžce raněného denně |
-| Signaller | **protipalba**: vojáci poblíž −20 % zásahů z dělostřelectva | fire 0,4 % | — |
+| Signaller | **protipalba**: vojáci poblíž −20 % zásahů z pozadí × pokrytí (pokryje 10) | fire 0,4 % | — |
 | Sapper | **drát**: +8 % výdrže drátu v úseku za den (drát kryje až −15 % zásahů) | fire 0,4 % | — |
-| Field Cook | **morálka**: lehce ranění poblíž se i bez medika častěji zahojí (+30 %), méně se zhoršují (×0,5) | fire 0,4 % | — |
-| Chaplain | **útěcha**: má-li strana kaplana, kritičtí na nosítkách umírají o 20 % méně | fire 0,4 % | — |
+| Field Cook | **morálka**: lehce ranění poblíž se i bez medika častěji zahojí (+30 %), méně se zhoršují (×0,5); pokryje 4 | fire 0,4 % | — |
+| Chaplain | **útěcha**: kritičtí na nosítkách umírají o 20 % méně × pokrytí (pokryje 3) | fire 0,4 % | — |
 
-Výpočet střelce: `zásahů za 28 dní ≈ fire × 28 × krytí cíle (~0,8)` → rifleman 0,017 × 28 × 0,8 ≈ 0,38.
+Výpočet střelce: `zásahů za 28 dní ≈ fire × 28 × krytí cíle (~0,8)` → rifleman 0,028 × 28 × 0,8 ≈ 0,63.
+
+**Pokrytí (`covers`, od v7):** účinek podpůrné role = plný účinek × min(1, počet role poblíž × covers / lidí poblíž).
+Každý další voják role přidá, dokud není pokrytí 100 %, a pár kulometčíků už nepotlačí celou frontu. Výsledky simulací v7: `docs/MECHANICS.md`.
 
 ## 3. Zkušenosti (XP) a úrovně
 | Za co | XP | | Úroveň | XP | násobek role |
@@ -39,7 +42,7 @@ Výpočet střelce: `zásahů za 28 dní ≈ fire × 28 × krytí cíle (~0,8)` 
 | oprava drátu / přežité těžké zranění | 3 / 10 | | Elite | 400 | ×1,8 |
 Násobek zvyšuje hlavní schopnost: palbu, práci medika, opravy ženisty. Za 30 dní na frontě ~60 XP = Seasoned. Nástupce začíná od nuly.
 
-## 4. Výsledky simulace na skutečné soupisce (v6)
+## 4. Výsledky simulace na skutečné soupisce (v6, historické; v7 viz `docs/MECHANICS.md`)
 `node tools/sim-battle.mjs --kpi --runs 60 --days 21`, stav z 11. 11. 2026 (den 2, 157 vojáků: Hegemony 76, Concord 81). Na stranu a týden:
 
 | Scénář | Strana | Zásahy (palba) | lehce / těžce / krit. | Padlí | Aspoň 1 padlý za 21 dní |
@@ -75,7 +78,7 @@ Nemocnice snižuje počet padlých za klidu zhruba 2–7×.
 Slabé role pro ladění: **kaplan** (působí jen na kritické na nosítkách) a **ženista** (drát kryje málo).
 Posílit jde jedním číslem: `roles.chaplain.faith`, `wire.cover`, `roles.sapper.repair`.
 
-## 5. Cílová čísla (KPI), stav v6 na soupisce z 11. 11.
+## 5. Cílová čísla (KPI), stav v6 na soupisce z 11. 11. (od v7 pásma padlých: klid 1,5–3, bombardovaná strana 12–20; v7 všechna v pásmu)
 | Ukazatel (klid, na 50 vojáků, týdně) | pásmo | v6 |
 |---|---|---|
 | zásahy | 10–16 | ⚠ 9,6 |

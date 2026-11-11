@@ -365,7 +365,7 @@ test('příspěvek s triggerem vyjde při dobytí kóty ve variantě vítěze a 
   assert.equal(fireTriggers(q, s, theme).length, 0);
 });
 
-import { battleTick, build, hospital, medicCover, battlePublic, levelOf } from './battle.js';
+import { battleTick, build, hospital, medicCover, battlePublic, levelOf, share } from './battle.js';
 const enlist = (s, n, tag = 'b') => {
   for (let i = 0; i < n; i++) applyComment(s, { id: `${tag}${i}`, userId: `${tag}${i}`, username: `${tag}${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
 };
@@ -394,7 +394,8 @@ test('boj: bombardování po výhře udělá paseku v několika sektorech poraž
   const news = out.news.find((n) => n.kind === 'barrage');
   assert.ok(news, 'Gazette hlásí bombardování');
   const secs = news.h.replace(/.* fell on /, '').split(' and ');
-  assert.equal(secs.length, theme.battle.shell.sectors);
+  const SH = theme.battle.shell, nSecs = new Set(s.soldiers.filter((x) => x.faction === 1 && x.sector).map((x) => x.sector)).size;
+  assert.equal(secs.length, Math.min(nSecs, Math.max(SH.sectors || 0, Math.round(nSecs * (SH.share || 0)))), 'počet úseků roste s frontou');
   const there = s.soldiers.filter((x) => x.faction === 1 && secs.includes(x.sector));
   const elsewhere = s.soldiers.filter((x) => x.faction === 1 && !secs.includes(x.sector));
   const rate = (l) => l.filter((x) => x.wound).length / l.length;
@@ -413,7 +414,7 @@ test('boj: bombardování po výhře udělá paseku v několika sektorech poraž
   assert.ok(crit > 0 && dead > 0, `kritických ${crit}, padlých ${dead} v 10 bězích`);
 });
 
-test('boj: převzatí hráči nejsou chránění, nováčci prvních 5 dní nedostanou kritický zásah', () => {
+test('boj: převzatí hráči nejsou chránění, nováčci prvních newbieDays dní nedostanou kritický zásah', () => {
   const s = emptyState(theme);
   enlist(s, 200);
   s.soldiers.forEach((x, i) => { if (i % 2) x.claimed = true; });
@@ -424,7 +425,7 @@ test('boj: převzatí hráči nejsou chránění, nováčci prvních 5 dní nedo
   assert.ok(!hit.some((x) => x.wound.sev === 'crit'), 'nováček nemá kritický zásah');
 });
 
-test('boj: hlídací simulace – 100 vojáků, 9 týdnů: horní mez úmrtí (obvaziště < 3, nemocnice < 2 na stranu týdně), nemocnice pomáhá, texty doplněné', () => {
+test('boj: hlídací simulace – 100 vojáků, 9 týdnů: horní mez úmrtí (obvaziště < 9, nemocnice < 3 na stranu týdně), nemocnice pomáhá, texty doplněné', () => {
   const run = (builds, seed) => {
     const s = emptyState(theme);
     enlist(s, 100, `g${seed}_`);
@@ -440,8 +441,8 @@ test('boj: hlídací simulace – 100 vojáků, 9 týdnů: horní mez úmrtí (o
   };
   const dug = [0, 1, 2].map((i) => run(['dugout'], i)).reduce((a, b) => a + b) / 3;
   const aid = [0, 1, 2].map((i) => run([], i)).reduce((a, b) => a + b) / 3;
-  assert.ok(dug < 2, `s dugoutem ${dug.toFixed(2)} mrtvých na stranu týdně`);
-  assert.ok(aid < 3, `jen obvaziště ${aid.toFixed(2)} mrtvých na stranu týdně`);
+  assert.ok(dug < 3, `s dugoutem ${dug.toFixed(2)} mrtvých na stranu týdně`);
+  assert.ok(aid < 9, `jen obvaziště ${aid.toFixed(2)} mrtvých na stranu týdně`);
   assert.ok(aid > dug, 'nemocnice zachraňuje životy');
 });
 
@@ -901,4 +902,35 @@ test('titulek novin není každodenní rubrika (Across the wire, obvaziště)', 
   for (let d = 0; d < 12; d++) { dailyTick(s, theme, story); titles.push(s.chronicle.at(-1).title); }
   for (const t of titles) assert.ok(!/^(Across the wire|The aid posts|The hospitals|Hospitals and aid posts)$/.test(t), `titulek je rubrika: ${t}`);
   for (let i = 1; i < titles.length; i++) assert.notEqual(titles[i], titles[i - 1], `dva dny po sobě stejný titulek: ${titles[i]}`);
+});
+
+test('role škálují s počtem hráčů: účinek podle poměru (kulomet, spojař, kuchař, kaplan, velení), nikdy přes plný účinek', () => {
+  const R = theme.battle.roles;
+  for (const k of ['machinegunner', 'signaller', 'officer', 'runner', 'cook', 'chaplain']) assert.ok(R[k].covers > 0, `${k}.covers`);
+  // 4 kulomety naproti 100 střelcům: jen část potlačení; další kulomet vždy přidá
+  const mg = (n, crowd) => R.machinegunner.suppressMax * share(n, R.machinegunner.covers, crowd);
+  assert.ok(mg(4, 100) < 0.1, `4 kulomety na 100 střelců: ${mg(4, 100)}`);
+  assert.ok(mg(5, 100) > mg(4, 100), 'každý kulometčík navíc pomůže');
+  assert.ok(mg(50, 10) <= R.machinegunner.suppressMax, 'nikdy víc než suppressMax');
+  assert.equal(share(0, 4, 10), 0);
+  assert.equal(share(3, 4, 6), 1);
+});
+
+test('denní meze rostou s velikostí strany (battle.daily.per)', () => {
+  const D = theme.battle.daily;
+  const s = emptyState(theme);
+  enlist(s, D.per * 4, 'big_'); // 2× per na stranu
+  s.soldiers.forEach((x) => { x.enlisted = 0; });
+  let most = 0;
+  for (let day = 30; day < 40; day++) {
+    s.day = day;
+    battleTick(s, theme, story, day);
+    for (const f of [0, 1]) {
+      const v = s.battle.stats.at(-1).sides[f].sev;
+      const n = v.light + v.heavy + v.crit;
+      assert.ok(n >= D.min * 2 && n <= D.max * 2, `den ${day}: ${n} raněných (mez ${D.min * 2}–${D.max * 2})`);
+      most = Math.max(most, n);
+    }
+  }
+  assert.ok(most > D.max, 'větší strana může mít víc raněných než malá');
 });
