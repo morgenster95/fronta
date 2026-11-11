@@ -513,3 +513,6 @@ export function makeScenes(tex, anims = {}) {
 }
 
 export const CINEMA_CSS = `#rd-cine2 { inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }`;
+
+// pro další moduly záběrů (cinema-race.js)
+export { sky, glow, silhouette, lit, blast, stakeWire, crow, shakeOf, easeOut, off, hex, rgb, by, clamp01, W as CW, H as CH };
