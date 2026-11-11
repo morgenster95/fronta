@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="robots" content="noindex" />
+<link rel="icon" href="/favicon.svg" />
+<title>Mud & Iron: editor spritů</title>
+<style>
+  :root { --bg:#1c1a17; --panel:#2b2722; --line:#524a3f; --ink:#e3d9c3; --muted:#a39782; --accent:#d98f3f; --ok:#9fa640; --bad:#a85a36; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.4 ui-monospace, Menlo, Consolas, monospace; }
+  header { padding:10px 14px; border-bottom:1px solid var(--line); display:flex; gap:12px; align-items:baseline; flex-wrap:wrap; }
+  header h1 { font-size:16px; margin:0; letter-spacing:1px; }
+  header span { color:var(--muted); }
+  main { display:grid; grid-template-columns: 250px minmax(0,1fr) 290px; gap:10px; padding:10px; }
+  @media (max-width: 980px) { main { grid-template-columns: 1fr; } }
+  section { background:var(--panel); border:1px solid var(--line); padding:10px; margin-bottom:10px; }
+  h2 { font-size:12px; margin:0 0 8px; color:var(--accent); letter-spacing:1px; text-transform:uppercase; }
+  label { display:block; color:var(--muted); font-size:12px; margin:6px 0 2px; }
+  select, input[type=text], input[type=number] { width:100%; background:var(--bg); color:var(--ink); border:1px solid var(--line); padding:6px; font:inherit; }
+  button { background:var(--bg); color:var(--ink); border:1px solid var(--line); padding:6px 9px; font:inherit; cursor:pointer; }
+  button:hover { border-color:var(--accent); }
+  button.on { background:var(--accent); color:#1c1a17; border-color:var(--accent); }
+  .row { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+  .row > * { flex:1 1 auto; }
+  #stage { overflow:auto; max-height:72vh; border:1px solid var(--line); background:#0e0d0c; display:flex; justify-content:center; padding:10px; }
+  #cv { image-rendering:pixelated; touch-action:none; cursor:crosshair; }
+  #pal { display:grid; grid-template-columns: repeat(8, 1fr); gap:3px; }
+  #pal button { padding:0; height:24px; border:2px solid transparent; }
+  #pal button.on { border-color:#fff; }
+  #frames { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; }
+  #frames canvas { image-rendering:pixelated; border:2px solid var(--line); background:#3d3730; height:64px; cursor:pointer; flex:0 0 auto; }
+  #frames canvas.on { border-color:var(--accent); }
+  #preview, #scale { image-rendering:pixelated; background:#3d3730; border:1px solid var(--line); max-width:100%; }
+  #qa div { padding:2px 0; } #qa .ok::before { content:'✓ '; color:var(--ok); } #qa .bad::before { content:'✗ '; color:var(--bad); } #qa .info::before { content:'· '; color:var(--muted); }
+  small, .muted { color:var(--muted); }
+  input[type=range] { width:100%; }
+  details summary { cursor:pointer; color:var(--muted); }
+</style>
+</head>
+<body>
+<header><h1>MUD &amp; IRON · EDITOR SPRITŮ</h1><span>kreslení v přesných rozměrech hry, s předlohou, paletou Trench 24 a náhledem animace</span></header>
+<main>
+  <div>
+    <section>
+      <h2>1 · Co kreslím</h2>
+      <label>Typ (rozměr plátna)</label>
+      <select id="preset"></select>
+      <div class="row" style="margin-top:6px"><input id="cw" type="number" min="4" max="512" title="šířka" /><input id="ch" type="number" min="4" max="512" title="výška" /><button id="resize">Změnit rozměr</button></div>
+      <small id="presetNote"></small>
+    </section>
+    <section>
+      <h2>2 · Předloha ze hry</h2>
+      <label>Sada</label><select id="refKey"></select>
+      <label>Snímek</label><select id="refFrame"></select>
+      <div class="row" style="margin-top:6px"><button id="refUnder">Podložit</button><button id="refCopy">Zkopírovat do snímku</button></div>
+      <div class="row" style="margin-top:6px"><button id="refAll">Načíst celou animaci jako snímky</button></div>
+      <label>Průhlednost předlohy <span id="refOpV"></span></label><input id="refOp" type="range" min="0" max="100" value="35" />
+      <div class="row"><button id="refOff">Skrýt předlohu</button><button id="refFileBtn">Vlastní PNG…</button><input id="refFile" type="file" accept="image/png" hidden /></div>
+    </section>
+    <section>
+      <h2>Paleta</h2>
+      <div id="pal"></div>
+      <div class="row" style="margin-top:6px"><input id="custom" type="color" value="#d98f3f" style="flex:0 0 44px;height:32px;padding:0" /><button id="addColor">Přidat barvu</button><button id="refColors">+ barvy předlohy</button></div>
+      <div class="row" style="margin-top:6px"><button id="snap">Převést snímek na paletu</button></div>
+    </section>
+  </div>
+  <div>
+    <section>
+      <div class="row" id="tools">
+        <button data-tool="pen" class="on" title="B">✏ Tužka</button><button data-tool="erase" title="E">⌫ Guma</button><button data-tool="fill" title="G">▧ Výplň</button><button data-tool="pick" title="I">◉ Kapátko</button>
+        <button id="mirror" title="M">⇋ Zrcadlit tah</button><button id="undo" title="Ctrl+Z">↶ Zpět</button><button id="redo" title="Ctrl+Y">↷ Znovu</button>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <button id="zo">−</button><span id="zv" style="flex:0 0 60px;text-align:center"></span><button id="zi">+</button>
+        <button id="grid" class="on">Mřížka</button><button id="guides" class="on">Vodítka</button><button id="onion">Předchozí snímek</button>
+        <button data-shift="-1,0">←</button><button data-shift="1,0">→</button><button data-shift="0,-1">↑</button><button data-shift="0,1">↓</button><button id="flip">Převrátit ↔</button><button id="clear">Smazat</button>
+      </div>
+    </section>
+    <div id="stage"><canvas id="cv"></canvas></div>
+    <section style="margin-top:10px">
+      <h2>Snímky animace</h2>
+      <div id="frames"></div>
+      <div class="row" style="margin-top:6px"><button id="fAdd">+ Prázdný</button><button id="fDup">+ Kopie</button><button id="fDel">Smazat</button><button id="fL">◀ Posunout</button><button id="fR">Posunout ▶</button></div>
+    </section>
+  </div>
+  <div>
+    <section>
+      <h2>Náhled ve hře</h2>
+      <canvas id="preview" width="270" height="150"></canvas>
+      <label>Rychlost animace: <span id="fpsV"></span> snímků/s</label><input id="fps" type="range" min="1" max="16" value="8" />
+      <canvas id="scale" width="270" height="90" title="vlevo voják ze hry, vpravo tvůj snímek ve stejném měřítku"></canvas>
+      <small>Dole: voják ze hry a tvůj snímek ve stejném měřítku (1× a 2×). Měřítko hry: voják je 30 px vysoký, tedy asi 17 px na metr.</small>
+    </section>
+    <section>
+      <h2>Kontrola</h2>
+      <div id="qa"></div>
+    </section>
+    <section>
+      <h2>3 · Uložit</h2>
+      <div id="naming">
+        <label>Strana</label><select id="nFaction"><option>concord</option><option>hegemony</option></select>
+        <label>Role (id z theme.json; prázdné = střelec)</label><input id="nRole" type="text" placeholder="např. medic, sniper, nová role…" />
+        <label>Druh</label><select id="nKind"><option value="rot">postoj (rotace)</option><option value="anim">animace</option></select>
+        <label>Animace</label><select id="nAnim"><option>idle</option><option>walk</option><option>fire</option><option>fall</option><option>crouch</option></select>
+        <label>Směr</label><select id="nDir"></select>
+      </div>
+      <label>Jméno souboru</label><input id="fname" type="text" />
+      <div class="row" style="margin-top:6px"><button id="savePng">⬇ PNG snímku</button><button id="saveAll">⬇ Všechny snímky</button></div>
+      <div class="row" style="margin-top:6px"><button id="saveSheet">⬇ Pás snímků (PNG)</button></div>
+      <div class="row" style="margin-top:6px"><button id="saveProj">⬇ Projekt</button><button id="loadProjBtn">Otevřít projekt…</button><input id="loadProj" type="file" accept="application/json" hidden /></div>
+      <details style="margin-top:8px"><summary>Jak dostat sprite do hry</summary>
+        <small>1. Ulož PNG se jménem, které editor navrhne. 2. Soubory patří do <b>web/public/assets/soldiers/</b> (vojáci), <b>assets/props/</b> (rekvizity) nebo <b>assets/locations/</b> (budovy). 3. Po přidání vojáků spustit <b>npm run sprites</b> (manifest + atlas). Stačí je poslat Claudovi, zařadí je. Chybějící směry hra zrcadlí (east ↔ west), role bez spritu se kreslí jako střelec.</small>
+      </details>
+    </section>
+  </div>
+</main>
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+const TRENCH24 = '0e0d0c 1c1a17 2b2722 3d3730 524a3f 6b6152 857a68 a39782 c4b8a0 e3d9c3 3a3b2c 545639 6f7148 8c8a5c 4a4f52 666d70 8a9295 2a3138 5c2a22 7e3b2a a85a36 9fa640 c9c26a d98f3f'.split(' ').map((h) => '#' + h);
+const DIRS = ['south', 'south-east', 'east', 'north-east', 'north', 'north-west', 'west', 'south-west'];
+// Rozměry podle hry. feet = řádek paty (poslední neprůhledný řádek), height = cílová výška postavy, kind určuje pojmenování.
+const PRESETS = [
+  { id: 'soldier', name: 'Voják 32×32 (postoj, chůze, pád)', w: 32, h: 32, feet: 30, height: [29, 31], kind: 'soldier', note: 'Pata na řádku 30, výška postavy 29–31 px, střed ve sloupci 16. Kotva ve hře: (0,5 · 30/32).' },
+  { id: 'soldier44', name: 'Voják 44×44 (střelba, široké animace)', w: 44, h: 44, feet: 36, height: [29, 31], kind: 'soldier', note: 'Stejná postava jako 32×32, jen s okrajem 6 px na zbraň. Pata na řádku 36.' },
+  { id: 'mg', name: 'Kulomet 32×20 (rekvizita)', w: 32, h: 20, kind: 'prop', file: 'mg_south-east.png', note: 'Ústí hlavně si hra najde sama (nejvzdálenější pixel ve směru). Směry: south-east, south-west, north-east, north-west.' },
+  { id: 'gun', name: 'Dělo 72×32 (nové)', w: 72, h: 32, feet: 30, kind: 'prop', file: 'gun_east.png', note: 'Polní dělo ~4 m dlouhé a ~1,6 m vysoké = asi 68×28 px v měřítku vojáka. Kola na řádku 30.' },
+  { id: 'vehicle', name: 'Vozidlo / tank 144×56 (nové)', w: 144, h: 56, feet: 54, kind: 'prop', file: 'tank_east.png', note: 'Tank Mark IV ~8 m × 2,5 m = asi 136×43 px. Nákladní vůz ~6 m × 2,2 m = 100×38 px. Pásy na řádku 54.' },
+  { id: 'tree', name: 'Strom 32×48', w: 32, h: 48, kind: 'prop', file: 'tree.png' },
+  { id: 'grave', name: 'Hrob 24×32', w: 24, h: 32, kind: 'prop', file: 'grave.png' },
+  { id: 'crater', name: 'Kráter 48×32', w: 48, h: 32, kind: 'prop', file: 'crater_m.png' },
+  { id: 'building', name: 'Budova / místo 256×256', w: 256, h: 256, kind: 'location', file: 'new_place.png', note: 'Místa v údolí. Ve hře se zmenšují podle velikosti v buňkách mapy.' },
+  { id: 'dugout', name: 'Dugout / stavba 168×104', w: 168, h: 104, kind: 'prop', file: 'dugout.png', note: 'Velikost nemocničního dugoutu na mapě.' },
+  { id: 'custom', name: 'Vlastní rozměr', w: 64, h: 64, kind: 'prop', file: 'sprite.png' },
+];
+const CATALOG = { // předlohy mimo vojáky
+  'rekvizity': ['props/tree.png', 'props/grave.png', 'props/crater_s.png', 'props/crater_m.png', 'props/crater_water.png', 'props/crater_huge.png', 'props/mg_south-east.png', 'props/mg_south-west.png', 'props/mg_north-east.png', 'props/mg_north-west.png'],
+  'místa': ['brickworks', 'cemetery', 'church', 'hospital', 'mill', 'outpost', 'quarry', 'town'].map((n) => `locations/${n}.png`),
+};
+const S = { w: 32, h: 32, preset: PRESETS[0], frames: [], cur: 0, color: TRENCH24[7], tool: 'pen', zoom: 14, grid: true, guides: true, onion: false, mirror: false, palette: [...TRENCH24], ref: null, refOp: 0.35, undo: [], redo: [] };
+const cv = $('cv'), cx = cv.getContext('2d');
+const blank = () => new Uint8ClampedArray(S.w * S.h * 4);
+const F = () => S.frames[S.cur];
+const hex = (r, g, b) => '#' + [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
+const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const toCanvas = (data, w = S.w, h = S.h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(data), w, h), 0, 0); return c; };
+const loadImg = (src) => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => no(new Error('nejde načíst ' + src)); i.src = src; });
+// obrázek → data plátna; menší obrázek se vystředí vodorovně a zarovná patou (voják 32 → plátno 44)
+function imgToData(img) {
+  const c = document.createElement('canvas'); c.width = S.w; c.height = S.h; const g = c.getContext('2d');
+  const dx = Math.round((S.w - img.width) / 2);
+  const dy = S.preset.feet != null && img.height === 32 && S.h === 44 ? 6 : Math.round((S.h - img.height) / 2);
+  g.drawImage(img, dx, dy);
+  return g.getImageData(0, 0, S.w, S.h).data;
+}
+
+// ---------- kreslení plátna ----------
+function draw() {
+  const z = S.zoom; cv.width = S.w * z; cv.height = S.h * z; cx.imageSmoothingEnabled = false;
+  for (let y = 0; y < S.h; y++) for (let x = 0; x < S.w; x++) { cx.fillStyle = (x + y) % 2 ? '#34302a' : '#3d3730'; cx.fillRect(x * z, y * z, z, z); }
+  if (S.ref) { cx.globalAlpha = S.refOp; cx.drawImage(S.ref, 0, 0, S.w * z, S.h * z); cx.globalAlpha = 1; }
+  if (S.onion && S.cur > 0) { cx.globalAlpha = 0.3; cx.drawImage(toCanvas(S.frames[S.cur - 1]), 0, 0, S.w * z, S.h * z); cx.globalAlpha = 1; }
+  cx.drawImage(toCanvas(F()), 0, 0, S.w * z, S.h * z);
+  if (S.grid && z >= 6) { cx.strokeStyle = 'rgba(0,0,0,.25)'; cx.lineWidth = 1; cx.beginPath(); for (let x = 0; x <= S.w; x++) { cx.moveTo(x * z + .5, 0); cx.lineTo(x * z + .5, S.h * z); } for (let y = 0; y <= S.h; y++) { cx.moveTo(0, y * z + .5); cx.lineTo(S.w * z, y * z + .5); } cx.stroke(); }
+  if (S.guides) {
+    const p = S.preset; cx.lineWidth = 2;
+    cx.strokeStyle = 'rgba(217,143,63,.8)'; cx.beginPath(); cx.moveTo(S.w / 2 * z, 0); cx.lineTo(S.w / 2 * z, S.h * z); cx.stroke(); // střed
+    if (p.feet != null && p.feet < S.h) { cx.strokeStyle = 'rgba(159,166,64,.9)'; cx.beginPath(); cx.moveTo(0, (p.feet + 1) * z); cx.lineTo(S.w * z, (p.feet + 1) * z); cx.stroke(); // pata
+      if (p.height) { cx.strokeStyle = 'rgba(138,146,149,.8)'; cx.setLineDash([6, 4]); cx.beginPath(); const top = (p.feet + 1 - p.height[1]) * z, top2 = (p.feet + 1 - p.height[0]) * z; cx.moveTo(0, top); cx.lineTo(S.w * z, top); cx.moveTo(0, top2); cx.lineTo(S.w * z, top2); cx.stroke(); cx.setLineDash([]); } }
+  }
+  $('zv').textContent = z + '×';
+}
+function thumbs() {
+  const box = $('frames'); box.innerHTML = '';
+  S.frames.forEach((f, i) => { const c = toCanvas(f); c.style.width = Math.round(64 * S.w / S.h) + 'px'; if (i === S.cur) c.className = 'on'; c.title = 'snímek ' + i; c.onclick = () => { S.cur = i; refresh(); }; box.appendChild(c); });
+}
+function palette() {
+  const box = $('pal'); box.innerHTML = '';
+  S.palette.forEach((h) => { const b = document.createElement('button'); b.style.background = h; b.title = h; if (h === S.color) b.className = 'on'; b.onclick = () => { S.color = h; if (S.tool === 'erase' || S.tool === 'pick') setTool('pen'); palette(); }; box.appendChild(b); });
+}
+
+// ---------- kontrola (stejná pravidla jako tools/sprite_qa.py) ----------
+function qa() {
+  const d = F(), w = S.w, h = S.h, p = S.preset; const out = [];
+  let minX = w, maxX = -1, minY = h, maxY = -1, semi = 0, n = 0; const cols = new Set();
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const a = d[(y * w + x) * 4 + 3]; if (!a) continue; if (a < 255) semi++; n++; cols.add(hex(d[(y * w + x) * 4], d[(y * w + x) * 4 + 1], d[(y * w + x) * 4 + 2])); minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y); }
+  if (!n) { $('qa').innerHTML = '<div class="info">Snímek je prázdný.</div>'; return; }
+  const bh = maxY - minY + 1, bw = maxX - minX + 1;
+  out.push(['info', `Kresba ${bw}×${bh} px, ${cols.size} barev, ${n} pixelů`]);
+  if (p.feet != null) out.push(maxY === p.feet ? ['ok', `Pata sedí na řádku ${p.feet}`]
+    : maxY === p.feet + 1 && p.kind === 'soldier' ? ['info', `Pata je na řádku ${maxY}: v pořádku jen u došlápnuté nohy při chůzi (stojící postava má patu na ${p.feet})`]
+    : ['bad', `Pata je na řádku ${maxY}, má být na ${p.feet} (posuň o ${p.feet - maxY > 0 ? '+' : ''}${p.feet - maxY}); ležící a padající postava to mít nemusí`]);
+  if (p.height) out.push([bh >= p.height[0] && bh <= p.height[1] ? 'ok' : 'info', `Výška ${bh} px (stojící postava má mít ${p.height[0]}–${p.height[1]}; ležící a padající může být nižší)`]);
+  if (p.kind === 'soldier') { const mid = (minX + maxX + 1) / 2; out.push([Math.abs(mid - w / 2) <= 3 ? 'ok' : 'info', `Střed kresby ve sloupci ${mid} (plátno má střed ${w / 2})`]); }
+  out.push([semi ? 'bad' : 'ok', semi ? `${semi} poloprůhledných pixelů (pixel art má mít jen plné)` : 'Žádné poloprůhledné pixely']);
+  const off = [...cols].filter((c) => !TRENCH24.includes(c));
+  out.push([off.length ? 'info' : 'ok', off.length ? `${off.length} barev mimo Trench 24 (${off.slice(0, 4).join(' ')}${off.length > 4 ? '…' : ''}). Sprity vojáků z PixelLabu je mají taky; pro nové kresby drž paletu.` : 'Všechny barvy z palety Trench 24']);
+  // odtržené kousky (4-sousedství)
+  const seen = new Uint8Array(w * h); let islands = 0, small = 0;
+  for (let i = 0; i < w * h; i++) { if (seen[i] || d[i * 4 + 3] < 128) continue; islands++; let size = 0; const q = [i]; seen[i] = 1; while (q.length) { const k = q.pop(); size++; const x = k % w, y = (k / w) | 0; for (const [nx, ny] of [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]) { const j = ny * w + nx; if (nx >= 0 && ny >= 0 && nx < w && ny < h && !seen[j] && d[j * 4 + 3] >= 128) { seen[j] = 1; q.push(j); } } } if (size < 6) small++; }
+  out.push([islands === 1 ? 'ok' : small ? 'bad' : 'info', islands === 1 ? 'Kresba je v jednom kuse' : `${islands} oddělené části${small ? `, z toho ${small} drobných (zapomenuté pixely nebo přerušená zbraň)` : ''}`]);
+  $('qa').innerHTML = out.map(([k, t]) => `<div class="${k}">${t}</div>`).join('');
+}
+
+// ---------- náhledy ----------
+let gameSoldier = null, tick = 0;
+function previews() {
+  const pv = $('preview'), g = pv.getContext('2d'); g.imageSmoothingEnabled = false; g.fillStyle = '#3d3730'; g.fillRect(0, 0, pv.width, pv.height);
+  g.fillStyle = '#2b2722'; g.fillRect(0, 118, pv.width, 32);
+  const f = S.frames[tick % S.frames.length], k = Math.max(1, Math.min(4, Math.floor(110 / S.h), Math.floor(260 / S.w)));
+  g.drawImage(toCanvas(f), Math.round((pv.width - S.w * k) / 2), 118 - (S.preset.feet != null ? (S.preset.feet + 1) * k : S.h * k) + 4, S.w * k, S.h * k);
+  const sc = $('scale'), s = sc.getContext('2d'); s.imageSmoothingEnabled = false; s.fillStyle = '#3d3730'; s.fillRect(0, 0, sc.width, sc.height);
+  let x = 4; const base = 84;
+  for (const m of [1, 2]) {
+    if (gameSoldier) { s.drawImage(gameSoldier, x, base - 31 * m, 32 * m, 32 * m); x += 32 * m + 2; }
+    const fy = S.preset.feet != null ? S.preset.feet + 1 : S.h;
+    if (x + S.w * m < sc.width) { s.drawImage(toCanvas(F()), x, base - fy * m, S.w * m, S.h * m); x += S.w * m + 10; }
+  }
+}
+setInterval(() => { tick++; previews(); }, 125);
+let timer = null;
+function setFps(v) { $('fpsV').textContent = v; clearInterval(timer); timer = setInterval(() => { tick++; previews(); }, 1000 / v); }
+
+// ---------- úpravy ----------
+function snapshot() { S.undo.push({ cur: S.cur, frames: S.frames.map((f) => new Uint8ClampedArray(f)) }); if (S.undo.length > 60) S.undo.shift(); S.redo.length = 0; }
+function restore(from, to) { const s = from.pop(); if (!s) return; to.push({ cur: S.cur, frames: S.frames.map((f) => new Uint8ClampedArray(f)) }); S.frames = s.frames; S.cur = Math.min(s.cur, S.frames.length - 1); refresh(); }
+function setPx(x, y, col) { if (x < 0 || y < 0 || x >= S.w || y >= S.h) return; const i = (y * S.w + x) * 4, d = F(); if (col) { const [r, g, b] = rgb(col); d[i] = r; d[i + 1] = g; d[i + 2] = b; d[i + 3] = 255; } else d[i + 3] = d[i] = d[i + 1] = d[i + 2] = 0; }
+function getPx(x, y) { const i = (y * S.w + x) * 4, d = F(); return d[i + 3] ? hex(d[i], d[i + 1], d[i + 2]) : null; }
+function fill(x, y, col) { const target = getPx(x, y); if (target === col) return; const q = [[x, y]]; while (q.length) { const [a, b] = q.pop(); if (a < 0 || b < 0 || a >= S.w || b >= S.h || getPx(a, b) !== target) continue; setPx(a, b, col); q.push([a + 1, b], [a - 1, b], [a, b + 1], [a, b - 1]); } }
+function apply(x, y) {
+  const col = S.tool === 'erase' ? null : S.color;
+  if (S.tool === 'pick') { const c = getPx(x, y); if (c) { S.color = c; if (!S.palette.includes(c)) S.palette.push(c); setTool('pen'); palette(); } return; }
+  if (S.tool === 'fill') { fill(x, y, S.color); return; }
+  setPx(x, y, col); if (S.mirror) setPx(S.w - 1 - x, y, col);
+}
+let down = false, last = null;
+const at = (e) => { const r = cv.getBoundingClientRect(); return [Math.floor((e.clientX - r.left) / r.width * S.w), Math.floor((e.clientY - r.top) / r.height * S.h)]; };
+cv.addEventListener('pointerdown', (e) => { e.preventDefault(); cv.setPointerCapture(e.pointerId); snapshot(); down = true; last = at(e); apply(...last); refresh(true); });
+cv.addEventListener('pointermove', (e) => { if (!down || S.tool === 'fill' || S.tool === 'pick') return; const [x, y] = at(e); let [a, b] = last; const n = Math.max(Math.abs(x - a), Math.abs(y - b)); for (let i = 1; i <= n; i++) apply(Math.round(a + (x - a) * i / n), Math.round(b + (y - b) * i / n)); last = [x, y]; refresh(true); });
+const up = () => { if (down) { down = false; refresh(); } }; cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+function shift(dx, dy) { snapshot(); const src = F(), out = blank(); for (let y = 0; y < S.h; y++) for (let x = 0; x < S.w; x++) { const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= S.w || ny >= S.h) continue; out.set(src.subarray((y * S.w + x) * 4, (y * S.w + x) * 4 + 4), (ny * S.w + nx) * 4); } S.frames[S.cur] = out; refresh(); }
+function setTool(t) { S.tool = t; document.querySelectorAll('[data-tool]').forEach((b) => b.classList.toggle('on', b.dataset.tool === t)); }
+function refresh(light) { draw(); qa(); if (!light) { thumbs(); save(); name(); } }
+
+// ---------- předloha ----------
+let manifest = null;
+async function initRefs() {
+  const sel = $('refKey');
+  try { manifest = await fetch('/assets/soldiers/manifest.json', { cache: 'no-cache' }).then((r) => r.json()); delete manifest._v; } catch { manifest = {}; }
+  sel.innerHTML = Object.keys(manifest).map((k) => `<option value="s:${k}">voják · ${k}</option>`).join('') + Object.keys(CATALOG).map((k) => `<option value="c:${k}">${k}</option>`).join('');
+  sel.onchange = refFrames; refFrames();
+  try { gameSoldier = await loadImg('/assets/soldiers/concord_south.png'); } catch {}
+}
+function refFrames() {
+  const v = $('refKey').value, out = [];
+  if (v.startsWith('s:')) { const m = manifest[v.slice(2)] || {}; for (const d of DIRS) if (m[d]) out.push([`soldiers/${m[d]}`, `postoj · ${d}`]); for (const [a, by] of Object.entries(m.anims || {})) for (const [d, files] of Object.entries(by)) files.forEach((f, i) => out.push([`soldiers/${f}`, `${a} · ${d} · ${i}`, `${a}|${d}`])); }
+  else for (const f of CATALOG[v.slice(2)]) out.push([f, f.split('/')[1]]);
+  $('refFrame').innerHTML = out.map(([f, t, grp]) => `<option value="${f}" data-grp="${grp || ''}">${t}</option>`).join('');
+}
+const refSrc = () => '/assets/' + $('refFrame').value;
+async function useRef(mode) {
+  try {
+    const img = await loadImg(refSrc());
+    if (mode === 'under') { S.ref = toCanvas(imgToData(img)); }
+    else { snapshot(); S.frames[S.cur] = imgToData(img); guessName(); }
+    refresh();
+  } catch (e) { alertBox(e.message); }
+}
+function guessName() { // jméno a pole podle předlohy
+  const f = $('refFrame').value.split('/')[1] || ''; const m = f.match(/^(concord|hegemony)(?:_([a-z]+))?(?:@([a-z]+))?_([a-z-]+?)(?:_(\d+))?\.png$/);
+  if (!m) return; $('nFaction').value = m[1]; if (m[2] && !DIRS.includes(m[2])) $('nRole').value = m[2]; $('nKind').value = m[3] ? 'anim' : 'rot'; if (m[3]) $('nAnim').value = m[3]; if (DIRS.includes(m[4])) $('nDir').value = m[4];
+}
+function alertBox(t) { $('qa').innerHTML = `<div class="bad">${t}</div>`; }
+
+// ---------- jména a ukládání ----------
+function name(i = S.cur) {
+  const p = S.preset; let n;
+  if (p.kind === 'soldier') { const key = $('nFaction').value + ($('nRole').value.trim() ? '_' + $('nRole').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '') : ''); n = $('nKind').value === 'anim' ? `${key}@${$('nAnim').value}_${$('nDir').value}_${i}.png` : `${key}_${$('nDir').value}.png`; }
+  else n = S.frames.length > 1 ? (p.file || 'sprite.png').replace('.png', `_${i}.png`) : (p.file || 'sprite.png');
+  if (i === S.cur && document.activeElement !== $('fname')) $('fname').value = n;
+  $('naming').style.display = p.kind === 'soldier' ? '' : 'none';
+  return n;
+}
+function download(canvas, filename) { canvas.toBlob((b) => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = filename; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }, 'image/png'); }
+function save() { try { localStorage.setItem('mi-editor', JSON.stringify(project())); } catch {} }
+function project() { return { v: 1, preset: S.preset.id, w: S.w, h: S.h, palette: S.palette, frames: S.frames.map((f) => toCanvas(f).toDataURL()), naming: { f: $('nFaction').value, r: $('nRole').value, k: $('nKind').value, a: $('nAnim').value, d: $('nDir').value } }; }
+async function openProject(p) {
+  S.preset = PRESETS.find((x) => x.id === p.preset) || PRESETS.at(-1); S.w = p.w; S.h = p.h; S.palette = p.palette || [...TRENCH24]; $('preset').value = S.preset.id;
+  S.frames = []; for (const u of p.frames) { const img = await loadImg(u); const c = document.createElement('canvas'); c.width = S.w; c.height = S.h; c.getContext('2d').drawImage(img, 0, 0); S.frames.push(c.getContext('2d').getImageData(0, 0, S.w, S.h).data); }
+  if (!S.frames.length) S.frames = [blank()]; S.cur = 0; S.undo = []; S.redo = [];
+  if (p.naming) { $('nFaction').value = p.naming.f; $('nRole').value = p.naming.r; $('nKind').value = p.naming.k; $('nAnim').value = p.naming.a; $('nDir').value = p.naming.d; }
+  sizeUi(); palette(); refresh();
+}
+function sizeUi() { $('cw').value = S.w; $('ch').value = S.h; $('presetNote').textContent = S.preset.note || ''; S.zoom = Math.max(2, Math.min(18, Math.floor(Math.min(560 / S.w, 520 / S.h)))); }
+function setPreset(id, keep) {
+  S.preset = PRESETS.find((p) => p.id === id); const old = S.frames, ow = S.w, oh = S.h; S.w = S.preset.w; S.h = S.preset.h; S.ref = null;
+  S.frames = keep && old.length ? old.map((f) => { const c = document.createElement('canvas'); c.width = S.w; c.height = S.h; const g = c.getContext('2d'); const src = toCanvas(f, ow, oh); g.drawImage(src, Math.round((S.w - ow) / 2), S.h === 44 && oh === 32 ? 6 : Math.round((S.h - oh) / 2)); return g.getImageData(0, 0, S.w, S.h).data; }) : [blank()];
+  S.cur = Math.min(S.cur, S.frames.length - 1); S.undo = []; S.redo = []; sizeUi(); refresh();
+}
+
+// ---------- ovládání ----------
+$('preset').innerHTML = PRESETS.map((p) => `<option value="${p.id}">${p.name}</option>`).join('');
+$('preset').onchange = (e) => setPreset(e.target.value, confirmKeep());
+function confirmKeep() { return F() && F().some((v) => v) ? confirm('Zachovat rozkreslené snímky a přenést je na nové plátno?\n(Zrušit = začít s prázdným plátnem)') : false; }
+$('resize').onclick = () => { const w = Math.max(4, Math.min(512, +$('cw').value | 0)), h = Math.max(4, Math.min(512, +$('ch').value | 0)); const keep = confirmKeep(); const c = PRESETS.find((p) => p.id === 'custom'); c.w = w; c.h = h; $('preset').value = 'custom'; setPreset('custom', keep); };
+$('nDir').innerHTML = DIRS.map((d) => `<option>${d}</option>`).join('');
+['nFaction', 'nRole', 'nKind', 'nAnim', 'nDir'].forEach((id) => $(id).addEventListener('input', () => { name(); save(); }));
+document.querySelectorAll('[data-tool]').forEach((b) => (b.onclick = () => setTool(b.dataset.tool)));
+document.querySelectorAll('[data-shift]').forEach((b) => (b.onclick = () => shift(...b.dataset.shift.split(',').map(Number))));
+const toggle = (id, key) => ($(id).onclick = () => { S[key] = !S[key]; $(id).classList.toggle('on', S[key]); draw(); });
+toggle('grid', 'grid'); toggle('guides', 'guides'); toggle('onion', 'onion'); toggle('mirror', 'mirror');
+$('zi').onclick = () => { S.zoom = Math.min(40, S.zoom + (S.zoom < 8 ? 1 : 2)); draw(); }; $('zo').onclick = () => { S.zoom = Math.max(1, S.zoom - (S.zoom <= 8 ? 1 : 2)); draw(); };
+$('undo').onclick = () => restore(S.undo, S.redo); $('redo').onclick = () => restore(S.redo, S.undo);
+$('clear').onclick = () => { snapshot(); S.frames[S.cur] = blank(); refresh(); };
+$('flip').onclick = () => { snapshot(); const src = F(), out = blank(); for (let y = 0; y < S.h; y++) for (let x = 0; x < S.w; x++) out.set(src.subarray((y * S.w + x) * 4, (y * S.w + x) * 4 + 4), (y * S.w + (S.w - 1 - x)) * 4); S.frames[S.cur] = out; refresh(); };
+$('fAdd').onclick = () => { snapshot(); S.frames.splice(S.cur + 1, 0, blank()); S.cur++; refresh(); };
+$('fDup').onclick = () => { snapshot(); S.frames.splice(S.cur + 1, 0, new Uint8ClampedArray(F())); S.cur++; refresh(); };
+$('fDel').onclick = () => { if (S.frames.length < 2) return; snapshot(); S.frames.splice(S.cur, 1); S.cur = Math.max(0, S.cur - 1); refresh(); };
+const move = (d) => { const j = S.cur + d; if (j < 0 || j >= S.frames.length) return; snapshot(); [S.frames[S.cur], S.frames[j]] = [S.frames[j], S.frames[S.cur]]; S.cur = j; refresh(); };
+$('fL').onclick = () => move(-1); $('fR').onclick = () => move(1);
+$('refUnder').onclick = () => useRef('under'); $('refCopy').onclick = () => useRef('copy'); $('refOff').onclick = () => { S.ref = null; draw(); };
+$('refOp').oninput = (e) => { S.refOp = e.target.value / 100; $('refOpV').textContent = e.target.value + ' %'; draw(); };
+$('refAll').onclick = async () => {
+  const opt = $('refFrame').selectedOptions[0]; const grp = opt?.dataset.grp; if (!grp) return alertBox('Vyber snímek animace (chůze, střelba…), ne postoj.');
+  const files = [...$('refFrame').options].filter((o) => o.dataset.grp === grp).map((o) => o.value);
+  try { const imgs = await Promise.all(files.map((f) => loadImg('/assets/' + f))); if (imgs[0].width !== S.w && !(imgs[0].width === 32 && S.w === 44)) { const id = imgs[0].width === 44 ? 'soldier44' : 'soldier'; $('preset').value = id; setPreset(id, false); } snapshot(); S.frames = imgs.map(imgToData); S.cur = 0; guessName(); refresh(); } catch (e) { alertBox(e.message); }
+};
+$('refFileBtn').onclick = () => $('refFile').click();
+$('refFile').onchange = async (e) => { const f = e.target.files[0]; if (!f) return; const img = await loadImg(URL.createObjectURL(f)); if (confirm('OK = zkopírovat do snímku, Zrušit = jen podložit jako předlohu')) { snapshot(); S.frames[S.cur] = imgToData(img); } else S.ref = toCanvas(imgToData(img)); refresh(); e.target.value = ''; };
+$('addColor').onclick = () => { const c = $('custom').value.toLowerCase(); if (!S.palette.includes(c)) S.palette.push(c); S.color = c; palette(); };
+$('refColors').onclick = () => { const src = S.ref ? S.ref.getContext('2d').getImageData(0, 0, S.w, S.h).data : F(); const seen = new Set(S.palette); for (let i = 0; i < src.length; i += 4) if (src[i + 3] === 255) seen.add(hex(src[i], src[i + 1], src[i + 2])); S.palette = [...seen].slice(0, 96); palette(); };
+$('snap').onclick = () => { snapshot(); const d = F(), pal = TRENCH24.map(rgb); for (let i = 0; i < d.length; i += 4) { if (d[i + 3] < 128) { d[i + 3] = 0; continue; } let best = 0, bd = 1e9; pal.forEach((p, k) => { const dist = (p[0] - d[i]) ** 2 + (p[1] - d[i + 1]) ** 2 + (p[2] - d[i + 2]) ** 2; if (dist < bd) { bd = dist; best = k; } }); [d[i], d[i + 1], d[i + 2]] = pal[best]; d[i + 3] = 255; } refresh(); };
+$('fps').oninput = (e) => setFps(+e.target.value);
+$('savePng').onclick = () => download(toCanvas(F()), $('fname').value || name());
+$('saveAll').onclick = () => S.frames.forEach((f, i) => setTimeout(() => download(toCanvas(f), S.frames.length === 1 ? ($('fname').value || name()) : name(i)), i * 350));
+$('saveSheet').onclick = () => { const c = document.createElement('canvas'); c.width = S.w * S.frames.length; c.height = S.h; const g = c.getContext('2d'); S.frames.forEach((f, i) => g.drawImage(toCanvas(f), i * S.w, 0)); download(c, (($('fname').value || 'sprite.png').replace(/(_\d+)?\.png$/, '')) + '_sheet.png'); };
+$('saveProj').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(project())], { type: 'application/json' })); a.download = ($('fname').value || 'sprite').replace(/\.png$/, '') + '.project.json'; a.click(); };
+$('loadProjBtn').onclick = () => $('loadProj').click();
+$('loadProj').onchange = async (e) => { const f = e.target.files[0]; if (f) await openProject(JSON.parse(await f.text())).catch((err) => alertBox('Projekt nejde otevřít: ' + err.message)); e.target.value = ''; };
+addEventListener('keydown', (e) => {
+  if (['INPUT', 'SELECT'].includes(document.activeElement.tagName)) return;
+  const k = e.key.toLowerCase();
+  if ((e.ctrlKey || e.metaKey) && k === 'z') { e.preventDefault(); restore(S.undo, S.redo); } else if ((e.ctrlKey || e.metaKey) && k === 'y') { e.preventDefault(); restore(S.redo, S.undo); }
+  else if (k === 'b') setTool('pen'); else if (k === 'e') setTool('erase'); else if (k === 'g') setTool('fill'); else if (k === 'i') setTool('pick'); else if (k === 'm') $('mirror').click();
+  else if (k === 'arrowleft') { e.preventDefault(); shift(-1, 0); } else if (k === 'arrowright') { e.preventDefault(); shift(1, 0); } else if (k === 'arrowup') { e.preventDefault(); shift(0, -1); } else if (k === 'arrowdown') { e.preventDefault(); shift(0, 1); }
+  else if (k === ',') { S.cur = Math.max(0, S.cur - 1); refresh(); } else if (k === '.') { S.cur = Math.min(S.frames.length - 1, S.cur + 1); refresh(); }
+});
+
+// ---------- start ----------
+(async () => {
+  S.frames = [blank()]; sizeUi(); palette(); setFps(8); $('refOpV').textContent = '35 %';
+  await initRefs();
+  let saved = null; try { saved = JSON.parse(localStorage.getItem('mi-editor') || 'null'); } catch {}
+  if (saved?.frames?.length) await openProject(saved).catch(() => refresh()); else refresh();
+  window.__editorReady = true;
+})();
+</script>
+</body>
+</html>

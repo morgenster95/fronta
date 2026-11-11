@@ -13,7 +13,8 @@
     "assets": "node tools/copy-assets.mjs && python tools/sprite_fix.py web/public/assets/soldiers/*.png --out web/public/assets/soldiers --baseline && python tools/palette_lock.py",
     "ingest": "node ingest/poll-comments.mjs",
     "tick": "node ingest/daily-tick.mjs",
-    "test": "node --test engine/engine.test.js"
+    "test": "node --test engine/engine.test.js",
+    "sprites": "node tools/sprites-manifest.mjs && python3 tools/pack_sprites.py"
   },
   "devDependencies": {
     "firebase-admin": "^13.10.0",
