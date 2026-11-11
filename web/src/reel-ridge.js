@@ -112,7 +112,7 @@ export function startRidgeReel({ cam, life, map, theme, soldiers, tex, anims }) 
     <div id="rd-medal"><div class="plate"><div class="t">MEDAL OF VALOR</div><div class="n">${(data.hero?.name || '').replace(/"[^"]*"\s*/, '').toUpperCase()}</div><div class="h">@${data.hero?.handle || ''} · ${role(data.hero?.role)}</div></div></div>
     ${[0, 1].map((i) => `<div class="rd-say" id="rd-say${i}"><span class="w">${(pair[i].name || '').replace(/"[^"]*"\s*/, '').toUpperCase()} <i>@${pair[i].handle}</i></span><span class="x"></span></div>`).join('')}
     <div id="rd-guns"><span>TONIGHT</span><br><span>TOMORROW</span><br><span>THE NIGHT AFTER</span></div>
-    <div id="rd-quote"><div class="paper"><div class="hd">HOSPITAL OR SANDBAGS? SOMEONE CALLED IT.</div><span class="x"></span><div class="by">@${q?.handle || ''} · ${q ? `${theme.factions[q.faction].name.replace(/^The /, '')} ${role(q.role).toLowerCase()}` : ''}</div></div></div>
+    <div id="rd-quote"><div class="paper"><div class="hd">ONE SOLDIER SAW THE SHELLS COMING.</div><span class="x"></span><div class="by">@${q?.handle || ''} · ${q ? `${theme.factions[q.faction].name.replace(/^The /, '')} ${role(q.role).toLowerCase()}` : ''}</div></div></div>
     <div id="rd-army" class="panel"><div class="k">ON THE LINE TODAY</div><div class="n">0</div></div>
     <div id="rd-side"><span><b></b><em style="font-style:normal"></em></span></div>
     <div id="rd-sub"></div>
