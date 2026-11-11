@@ -1,0 +1,37 @@
+# Testovací náhled větve `revize`: kód z větve + živá data hry z main, na samostatné adrese (Firebase Hosting preview channel).
+# Ostrý web mudandiron.web.app se NEMĚNÍ a na Instagram se nic neposílá. Adresa náhledu je ve shrnutí běhu (Actions → preview).
+# Spouští se po každém pushi do větve revize, nebo ručně. Náhled vyprší za 30 dní (každý push ho obnoví).
+name: preview
+on:
+  push:
+    branches: [revize]
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency: { group: preview, cancel-in-progress: true }
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci --no-audit --no-fund
+      - run: npm test
+      - name: Živá data z main
+        run: |
+          git fetch -q --depth=1 origin main
+          git show origin/main:data/state.json > data/state.json
+          git show origin/main:data/diary.json > data/diary.json || true
+      - run: npm run -s data:build && npm run -s build
+      - name: Nasadit náhled
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          npm i -g firebase-tools@14 > /dev/null
+          echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
+          firebase hosting:channel:deploy revize --expires 30d --project fronta-ig --non-interactive --json > "$RUNNER_TEMP/out.json"
+          url=$(node -e "const r=require(process.argv[1]);const s=Object.values(r.result||{})[0]||{};console.log(s.url||'')" "$RUNNER_TEMP/out.json")
+          echo "Náhled: $url" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "Editor spritů: $url/editor/" | tee -a "$GITHUB_STEP_SUMMARY"

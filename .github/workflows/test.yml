@@ -1,0 +1,20 @@
+# Testy jádra při každé změně kódu (ne při commitech stavu ze smyčky: ty mění jen data/ a frontu).
+# Když testy neprojdou, GitHub pošle e-mail a u commitu svítí červený křížek.
+name: test
+on:
+  push:
+    paths-ignore: ['data/**', 'marketing/queue.json', 'marketing/promo/**', 'docs/**', '**.md']
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency: { group: 'test-${{ github.ref }}', cancel-in-progress: true }
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci --no-audit --no-fund
+      - run: npm test
+      - run: node tools/sprites-manifest.mjs --check
