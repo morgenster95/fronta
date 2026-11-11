@@ -4,7 +4,7 @@
 // t = sekundy od začátku záběru; volby: side (0 Hegemonie, 1 Concord), n (číslo na počítadle; bez něj se ukáže „XXX“).
 import { sky, glow, lit, blast, stakeWire, shakeOf, easeOut, off, hex, rgb, by, clamp01, CW as W, CH as H } from './cinema.js';
 
-export const RACE_SCENES = { march: 7, guns: 7, shelter: 7, ribbon: 7, counter: 6 };
+export const RACE_SCENES = { march: 7, guns: 8, shelter: 7, ribbon: 7, counter: 6 };
 
 // pixelové písmo 3×5 (písmena, číslice, +), ať záběr nezávisí na fontech
 const FONT = {
@@ -150,13 +150,60 @@ export function makeRaceScenes(tex, anims = {}) {
     for (const [base, col, amp, ph] of [[158, '#4a4f52', 13, 0.8], [168, '#3a4048', 9, 2.1]]) {
       for (let x = 0; x < W; x++) { cg.fillStyle = col; cg.fillRect(x, Math.round(base - amp * (0.5 + 0.5 * Math.sin(x * 0.045 + ph)) - amp * 0.4 * Math.sin(x * 0.13)), 1, 40); }
     }
-    hill(cg, 96, 116, 178, 46, P.olive, P.olive3, 5);
     const r = rng(9);
-    for (let i = 0; i < 46; i++) { const x = 96 + (r() - 0.5) * 110, u = (x - 96) / 46, y = 178 - 62 * Math.exp(-u * u) + 4 + r() * 12; fir(cg, Math.round(x), Math.round(y), 5 + Math.round(r() * 6)); }
-    // bunker na vrcholu
-    cg.fillStyle = P.mud2; cg.fillRect(88, 108, 17, 8); cg.fillStyle = P.mud3; cg.fillRect(88, 108, 17, 1);
-    cg.fillStyle = P.ink; cg.fillRect(91, 111, 5, 2); cg.fillRect(98, 111, 4, 2);
-    cg.fillStyle = P.mud1; cg.fillRect(87, 107, 19, 2);
+    // --- kopec: plochý vrchol, terasy se zákopy, krátery, rozstřílené stromy, ruina bunkru ---
+    const ridge = (x) => { const u = Math.abs(x - 98) / 64; return 180 - 78 * Math.exp(-Math.pow(u, 2.3)) + Math.sin(x * 0.23) * 1.5 + Math.sin(x * 0.071 + 1) * 3.2 * Math.exp(-u * u); };
+    const ramp = [P.olive3, P.olive2, P.olive, P.khaki];
+    for (let x = 14; x < 184; x++) {
+      const y0 = Math.round(ridge(x)), sl = (ridge(x + 3) - ridge(x - 3)) / 6;
+      for (let y = y0; y < 184; y++) {
+        const dd = y - y0;
+        let v = 1.45 - sl * 0.5 + (by(x, y) - 0.5) * 0.95 - dd * 0.003 + (Math.sin(x * 0.7 + y * 1.1) > 0.82 ? -0.35 : 0);
+        if (dd < 2) v += 0.9; // světlo na hraně hřebene
+        cg.fillStyle = ramp[Math.max(0, Math.min(3, Math.floor(v)))];
+        cg.fillRect(x, y, 1, 1);
+      }
+    }
+    const rr = r;
+    // zákopy: tři terasy podél vrstevnic (tmavá rýha, násyp nahoře, pytle), s přestupy
+    for (const [k, sx0, sx1] of [[13, 56, 140], [27, 40, 156], [43, 28, 168]]) {
+      for (let x = sx0; x < sx1; x++) {
+        const y = Math.round(ridge(x) + k + ((Math.floor(x / 17) % 2) ? 2 : 0));
+        if (y > 176) continue;
+        cg.fillStyle = P.ink; cg.fillRect(x, y, 1, 2);
+        cg.fillStyle = P.mud3; cg.fillRect(x, y - 1, 1, 1);
+        if (x % 3 === 0) { cg.fillStyle = P.bone; cg.fillRect(x, y - 2, 2, 1); }
+      }
+    }
+    // spojovací zákop klikatě nahoru
+    let zx = 88, zy = 178;
+    for (const [tx, ty] of [[110, 156], [96, 138], [112, 122], [100, 112]]) {
+      const n = Math.max(Math.abs(tx - zx), Math.abs(ty - zy));
+      for (let i = 0; i <= n; i++) { const x = Math.round(zx + (tx - zx) * i / n), y = Math.round(zy + (ty - zy) * i / n); cg.fillStyle = P.ink; cg.fillRect(x, y, 2, 2); cg.fillStyle = P.mud3; cg.fillRect(x + 2, y, 1, 1); }
+      zx = tx; zy = ty;
+    }
+    // krátery na svazích
+    for (const [x, y, w] of [[62, 150, 7], [128, 146, 6], [44, 164, 8], [150, 160, 7], [82, 168, 5], [116, 172, 6], [100, 130, 4], [74, 134, 4]]) {
+      cg.fillStyle = P.ink; cg.beginPath(); cg.ellipse(x, y, w / 2, w / 4 + 0.6, 0, 0, Math.PI * 2); cg.fill();
+      cg.fillStyle = P.mud3; cg.fillRect(Math.round(x - w / 2), Math.round(y - w / 4 - 1), Math.round(w * 0.6), 1);
+      cg.fillStyle = P.mud2; cg.fillRect(Math.round(x + 1), Math.round(y + w / 4), Math.round(w * 0.5), 1);
+    }
+    // rozstřílené stromy bez korun
+    for (const [x, h] of [[54, 14], [70, 10], [136, 12], [150, 9], [34, 11], [166, 8], [118, 10], [84, 8]]) {
+      const y = Math.round(ridge(x)) + 3; cg.fillStyle = P.mud1; cg.fillRect(x, y - h, 2, h);
+      cg.fillStyle = P.ink; cg.fillRect(x + 2, y - h, 1, h); cg.fillStyle = P.mud2; cg.fillRect(x - 2, y - h + 3, 2, 1); cg.fillRect(x + 2, y - h + 5, 2, 1); cg.fillRect(x, y - h - 2, 1, 2);
+    }
+    // smrky u paty, kameny
+    for (let i = 0; i < 18; i++) { const x = 18 + rr() * 160; fir(cg, Math.round(x), Math.round(ridge(x) + 52 + rr() * 8), 5 + Math.round(rr() * 5)); }
+    for (let i = 0; i < 34; i++) { const x = 40 + rr() * 120, y = ridge(x) + 6 + rr() * 50; if (y < 178) { cg.fillStyle = rr() < 0.5 ? P.grey : P.steel; cg.fillRect(Math.round(x), Math.round(y), 2, 1); cg.fillStyle = P.ink; cg.fillRect(Math.round(x), Math.round(y) + 1, 2, 1); } }
+    // ruina bunkru na vrcholu: rozbitá střecha z pytlů, střílna, nosník
+    const tx0 = 86, ty0 = Math.round(ridge(98)) - 1;
+    cg.fillStyle = P.ink; cg.fillRect(tx0 - 1, ty0 - 12, 24, 13);
+    cg.fillStyle = P.mud2; cg.fillRect(tx0, ty0 - 11, 22, 11); cg.fillStyle = P.mud3; cg.fillRect(tx0, ty0 - 11, 22, 1); cg.fillRect(tx0, ty0 - 11, 1, 11);
+    cg.fillStyle = P.mud1; for (let i = 0; i < 6; i++) cg.fillRect(tx0 + 2 + ((i * 7) % 18), ty0 - 9 + ((i * 5) % 8), 3, 1); // praskliny
+    cg.fillStyle = P.ink; cg.fillRect(tx0 + 4, ty0 - 8, 7, 3); cg.fillRect(tx0 + 14, ty0 - 8, 5, 3); // střílny
+    cg.fillStyle = P.bone; for (let i = 0; i < 5; i++) { cg.fillRect(tx0 - 1 + i * 5, ty0 - 14, 5, 3); cg.fillStyle = i % 2 ? P.bone : P.sand; } // pytle na střeše
+    cg.fillStyle = P.ink; cg.fillRect(tx0 + 19, ty0 - 17, 2, 6); cg.fillRect(tx0 + 16, ty0 - 15, 3, 1); // zlomený trám
     // louka
     for (let y = 176; y < H; y++) for (let x = 0; x < W; x++) {
       const dd = (y - 176) / 144;
@@ -194,8 +241,17 @@ export function makeRaceScenes(tex, anims = {}) {
     const side = o.side ?? 1, k = key(side), sw = Math.sin(t * 0.5) * 2;
     g.drawImage(L.march, Math.round(sw * 0.3), 0);
     // vlajka na bunkru
-    flag(96 + Math.round(sw * 0.3), 96, 9, 6, t, SIDE[side].band === P.gold ? P.olive : P.steel, SIDE[side].band === P.gold ? P.olive3 : P.mud2, null, 0.6);
-    g.fillStyle = P.ink; g.fillRect(96 + Math.round(sw * 0.3), 94, 1, 14);
+    const fx0 = 105 + Math.round(sw * 0.3);
+    g.fillStyle = P.ink; g.fillRect(fx0, 66, 1, 24);
+    flag(fx0 + 1, 67, 11, 7, t, SIDE[side].band === P.gold ? P.olive : P.steel, SIDE[side].band === P.gold ? P.olive3 : P.mud2, null, 0.7);
+    // drobní obránci na terasách a záblesky střelby / výbuchy na svazích
+    for (const [x, y, ph] of [[60, 128, 0], [78, 134, 1.3], [128, 124, 2.1], [140, 154, 0.7], [52, 156, 1.9], [112, 112, 2.8], [96, 118, 0.4]]) {
+      const kk = key(side, ph > 2 ? 'machinegunner' : null);
+      put(pose(kk, 'idle', 'north', t + ph, 3) || tex[kk]?.north, x + Math.round(sw * 0.3), y, 0.2 + (y - 112) * 0.002);
+    }
+    for (const [ph, x, y] of [[0.4, 150, 152], [1.7, 48, 160], [2.6, 124, 132], [3.9, 66, 146], [5.2, 140, 164]]) {
+      const u = t - ph; if (u > 0 && u < 0.45) { glow(g, x, y, 10 * (1 - u / 0.45) + 3, '#d98f3f', 1.2 * (1 - u / 0.45)); g.fillStyle = 'rgba(86,76,70,0.5)'; g.fillRect(x - 2, Math.round(y - 4 - u * 18), 4, 3); }
+    }
     // kolona (hloubka d: 0 u paty kopce … 1 u kamery); jdou zády k nám
     const N = 20, list = [];
     for (let i = 0; i < N; i++) {
@@ -242,95 +298,153 @@ export function makeRaceScenes(tex, anims = {}) {
     const c = off(W, H), cg = c.getContext('2d');
     cloudy(cg, 0, 215, ['#1f2430', '#3a3b44', '#5a4b4a', '#8a5a4c', '#c4784a', '#d98f3f']);
     for (let k = 0; k < 6; k++) { cg.fillStyle = k % 2 ? 'rgba(31,36,48,0.7)' : 'rgba(58,59,68,0.6)'; cg.fillRect(Math.round(k * 37 - 20), 20 + k * 22, 84, 7); }
-    // údolí: hřbety v mlze a nepřátelské linie (vpravo dole)
+    // údolí: hřbety v mlze, zničená ves s věží kostela, nepřátelské zákopy
     for (const [base, col, amp, ph] of [[170, '#4a3f3a', 16, 1.4], [188, '#3a302d', 12, 0.2], [206, '#2b2420', 8, 2.7]]) {
       for (let x = 0; x < W; x++) { cg.fillStyle = col; cg.fillRect(x, Math.round(base - amp * (0.5 + 0.5 * Math.sin(x * 0.04 + ph)) - amp * 0.3 * Math.sin(x * 0.17)), 1, 90); }
     }
-    cg.fillStyle = '#1c1a17'; // nepřátelské zákopy
+    cg.fillStyle = '#3a302d'; cg.fillRect(112, 156, 5, 34); cg.fillRect(111, 168, 7, 2); cg.fillRect(113, 152, 3, 4); cg.fillRect(114, 148, 1, 4); // věž kostela
+    cg.fillStyle = '#4a3f3a'; cg.fillRect(112, 156, 1, 34);
+    cg.fillStyle = '#1c1a17'; for (const [x, w] of [[96, 14], [122, 12], [138, 16], [158, 12]]) { cg.fillRect(x, 190, w, 10); cg.beginPath(); cg.moveTo(x - 1, 190); cg.lineTo(x + w / 2, 183); cg.lineTo(x + w + 1, 190); cg.fill(); }
+    cg.fillStyle = '#2b2420'; for (const [x, w] of [[100, 3], [128, 4], [160, 3]]) cg.fillRect(x, 186, w, 6); // trosky komínů
+    cg.fillStyle = '#1c1a17';
     for (const [y, x0, x1] of [[214, 70, 180], [224, 56, 180], [236, 92, 180]]) { for (let x = x0; x < x1; x++) cg.fillRect(x, y + Math.round(Math.sin(x * 0.4)), 1, 3); }
     for (const [x, y] of [[150, 208], [118, 214], [168, 220]]) { cg.fillStyle = P.mud1; cg.fillRect(x, y - 7, 14, 7); cg.fillStyle = P.mud2; cg.beginPath(); cg.moveTo(x - 1, y - 7); cg.lineTo(x + 7, y - 12); cg.lineTo(x + 15, y - 7); cg.fill(); }
-    // výšina vlevo dole: skála a tráva
+    // výšina: svah dolů, kameny, tráva, krátery, koleje
     for (let x = 0; x < W; x++) {
-      const top = Math.round(252 - Math.max(0, 70 - x * 0.55) + Math.sin(x * 0.2) * 1.5);
+      const top = Math.round(250 - Math.max(0, 70 - x * 0.55) + Math.sin(x * 0.2) * 1.5);
       for (let y = top; y < H; y++) {
         const rocky = by(x, y) < 0.35 + (y - top) / 120;
-        cg.fillStyle = y < top + 4 ? P.olive : rocky ? P.mud3 : P.mud2;
+        cg.fillStyle = y < top + 2 ? P.khaki : y < top + 5 ? P.olive : rocky ? P.mud3 : P.mud2;
         cg.fillRect(x, y, 1, 1);
       }
     }
     const r = rng(17);
-    for (let i = 0; i < 90; i++) { cg.fillStyle = r() < 0.5 ? P.sand : P.mud1; cg.fillRect(Math.floor(r() * 120), 258 + Math.floor(r() * 60), 2, 1); }
+    for (let i = 0; i < 170; i++) { const x = Math.floor(r() * W), y = 256 + Math.floor(r() * 64); cg.fillStyle = r() < 0.5 ? P.sand : P.mud1; cg.fillRect(x, y, 2, 1); }
+    for (let i = 0; i < 80; i++) { const x = Math.floor(r() * W), y = 254 + Math.floor(r() * 62); cg.fillStyle = r() < 0.5 ? P.olive : P.khaki; cg.fillRect(x, y, 1, 2 + Math.floor(r() * 2)); } // trsy trávy
+    for (const [x, y, w] of [[150, 300, 24], [122, 314, 20], [8, 276, 12]]) { cg.fillStyle = P.ink; cg.beginPath(); cg.ellipse(x, y, w / 2, w / 5, 0, 0, Math.PI * 2); cg.fill(); cg.fillStyle = P.mud3; cg.fillRect(Math.round(x - w / 2), Math.round(y - w / 5 - 1), Math.round(w * 0.55), 1); } // krátery
+    cg.fillStyle = P.mud1; for (let x = 0; x < W; x += 2) { cg.fillRect(x, 304 + Math.round(Math.sin(x * 0.05) * 2), 1, 1); cg.fillRect(x, 311 + Math.round(Math.sin(x * 0.05 + 1) * 2), 1, 1); } // koleje
     L.guns = c;
+    const f = off(W, H), fg = f.getContext('2d'); // popředí: pytlový val vpravo a zásoba munice vlevo
+    sandbags(fg, 108, 290, W, H, P.bone, P.sand, P.mud2);
+    for (const [x, y, w, h] of [[2, 288, 22, 14], [6, 275, 15, 14]]) { // bedny
+      fg.fillStyle = P.ink; fg.fillRect(x - 1, y - 1, w + 2, h + 2); fg.fillStyle = P.mud2; fg.fillRect(x, y, w, h); fg.fillStyle = P.mud3; fg.fillRect(x, y, w, 2);
+      fg.fillStyle = P.mud1; fg.fillRect(x, y + Math.floor(h / 2), w, 1); fg.fillRect(x + 2, y, 1, h); fg.fillRect(x + w - 3, y, 1, h);
+      fg.fillStyle = P.rust; fg.fillRect(x + 6, y + 4, 5, 3);
+    }
+    for (let i = 0; i < 4; i++) { // náboje: mosazná hlaveň, rezavá špice
+      const sx = 28 + i * 5; fg.fillStyle = P.ink; fg.fillRect(sx - 1, 286, 5, 20);
+      fg.fillStyle = P.gold; fg.fillRect(sx, 292, 3, 13); fg.fillStyle = P.yellow; fg.fillRect(sx, 292, 1, 13);
+      fg.fillStyle = P.olive2; fg.fillRect(sx, 287, 3, 5); fg.fillStyle = P.rust; fg.fillRect(sx, 287, 3, 2);
+    }
+    L.gunsFront = f;
   }
-  const howitzer = (x, y, s, rec, ang = -0.5) => {
-    g.save();
-    // lafetové nohy a kolo
-    g.strokeStyle = P.ink; g.lineWidth = Math.max(2, 3 * s);
-    g.beginPath(); g.moveTo(x - 4 * s, y - 10 * s); g.lineTo(x - 26 * s, y + 1 * s); g.stroke();
-    g.strokeStyle = P.mud2; g.lineWidth = Math.max(1, 1.5 * s);
-    g.beginPath(); g.moveTo(x - 4 * s, y - 10 * s); g.lineTo(x - 26 * s, y + 1 * s); g.stroke();
-    g.fillStyle = P.ink; g.beginPath(); g.arc(x, y - 9 * s, 10 * s, 0, Math.PI * 2); g.fill();
-    g.fillStyle = P.mud1; g.beginPath(); g.arc(x, y - 9 * s, 8.4 * s, 0, Math.PI * 2); g.fill();
-    g.strokeStyle = P.mud3; g.lineWidth = 1;
-    for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; g.beginPath(); g.moveTo(x, y - 9 * s); g.lineTo(x + Math.cos(a) * 8 * s, y - 9 * s + Math.sin(a) * 8 * s); g.stroke(); }
-    g.fillStyle = P.mud2; g.beginPath(); g.arc(x, y - 9 * s, 2.2 * s, 0, Math.PI * 2); g.fill();
-    // hlaveň (odskok při výstřelu)
-    g.translate(x + 2 * s, y - 17 * s); g.rotate(ang);
-    g.fillStyle = P.ink; g.fillRect(-9 * s - rec, -3.6 * s, 42 * s, 7.2 * s);
-    g.fillStyle = P.olive2; g.fillRect(-8 * s - rec, -2.8 * s, 40 * s, 5.6 * s);
-    g.fillStyle = P.olive; g.fillRect(-8 * s - rec, -2.8 * s, 40 * s, 1.6 * s);
-    g.fillStyle = P.ink; g.fillRect(30 * s - rec, -4.4 * s, 4 * s, 8.8 * s); // úsťová brzda
-    g.fillStyle = P.mud1; g.fillRect(-5 * s - rec * 0.4, 2.4 * s, 18 * s, 3 * s); // recoil válec
-    g.restore();
-    g.fillStyle = P.ink; g.fillRect(Math.round(x - 6 * s), Math.round(y - 27 * s), Math.round(12 * s), Math.round(16 * s)); // štít
-    g.fillStyle = P.olive2; g.fillRect(Math.round(x - 5 * s), Math.round(y - 26 * s), Math.round(10 * s), Math.round(14 * s));
-    g.fillStyle = P.olive; g.fillRect(Math.round(x - 5 * s), Math.round(y - 26 * s), Math.round(10 * s), Math.round(2 * s));
+  // --- pixelové pomůcky bez antialiasingu ---
+  const px = (c, x, y, col, w = 1, h = 1) => { c.fillStyle = col; c.fillRect(Math.round(x), Math.round(y), w, h); };
+  const disc = (c, cx, cy, r, colFn) => { for (let y = Math.floor(cy - r); y <= Math.ceil(cy + r); y++) for (let x = Math.floor(cx - r); x <= Math.ceil(cx + r); x++) { const dx = x + 0.5 - cx, dy = y + 0.5 - cy, d = Math.hypot(dx, dy); if (d <= r) { const col = colFn(d, dx, dy); if (col) px(c, x, y, col); } } };
+  const beam = (c, x0, y0, x1, y1, w, colFn) => { // tlustá úsečka; colFn(q podél, v příčně: +1 = horní okraj)
+    const n = Math.ceil(Math.hypot(x1 - x0, y1 - y0) * 1.6) + 1; let nx = -(y1 - y0), ny = x1 - x0; const nl = Math.hypot(nx, ny) || 1; nx /= nl; ny /= nl; if (ny > 0) { nx = -nx; ny = -ny; }
+    for (let i = 0; i <= n; i++) { const q = i / n; for (let v = -w / 2; v <= w / 2 + 0.01; v += 0.5) { const col = colFn(q, v / (w / 2)); if (col) px(c, x0 + (x1 - x0) * q + nx * v, y0 + (y1 - y0) * q + ny * v, col); } }
   };
-  const SHOTS = [[0.7, 0], [1.7, 1], [2.7, 0], [3.5, 1], [4.4, 0], [5.3, 1]];
+  const howitzer = (x, y, s, rec, ang = -0.5) => {
+    const ca = Math.cos(ang), sa = Math.sin(ang), wy = y - 10 * s, ppx = x + 2 * s, ppy = y - 17 * s;
+    const at = (ox, oy, u, v) => [ox + ca * u + sa * v, oy + sa * u - ca * v]; // u podél hlavně, v nahoru kolmo
+    // ocas lafety s rýčem zaraženým do země
+    const tx = x - 31 * s, ty = y + 0.5 * s;
+    beam(g, x - 2 * s, wy + 1 * s, tx, ty, 3.6 * s, (q, v) => (Math.abs(v) > 0.86 ? P.ink : v > 0.3 ? P.mud3 : v > -0.3 ? P.mud2 : P.mud1));
+    px(g, tx - 3 * s, ty - 3.5 * s, P.ink, Math.round(3 * s), Math.round(6 * s)); px(g, tx - 2 * s, ty - 2.5 * s, P.mud2, Math.round(1.2 * s), Math.round(4 * s));
+    px(g, tx - 6 * s, ty + 1.5 * s, P.mud3, Math.round(7 * s), Math.round(1.6 * s)); px(g, tx - 5 * s, ty + 1.5 * s, P.mud2, Math.round(3 * s), 1);
+    // kolo: pneumatika s hřeby, ráfek, loukoťové paprsky, náboj; sluneční světlo shora zleva
+    const R = 10 * s;
+    disc(g, x, wy, R, (d, dx, dy) => {
+      const a = Math.atan2(dy, dx), lit_ = dx + dy < -R * 0.55;
+      if (d > R - 1) return P.ink;
+      if (d > R - 2.4 * s) return Math.floor((a + Math.PI) * 14 / Math.PI) % 2 ? (lit_ ? P.mud3 : P.mud2) : (lit_ ? P.sand : P.mud3);
+      if (d > R - 3.1 * s) return P.ink;
+      if (d < 2.6 * s) return d < 1.1 * s ? P.ink : lit_ ? P.sand : P.mud3;
+      return Math.floor(((a + Math.PI) * 16) / (Math.PI * 2) % 1 * 100) < 32 ? (lit_ ? P.mud3 : P.mud2) : P.mud0;
+    });
+    // osa, kolébka a lícnice
+    beam(g, x - 1 * s, wy, ppx, ppy, 5.4 * s, (q, v) => (Math.abs(v) > 0.8 ? P.ink : v > 0.2 ? P.olive : P.olive3));
+    px(g, x - 5 * s, wy - 4 * s, P.ink, Math.round(11 * s), Math.round(6 * s)); px(g, x - 4 * s, wy - 3 * s, P.olive3, Math.round(9 * s), Math.round(4 * s)); px(g, x - 4 * s, wy - 3 * s, P.olive2, Math.round(9 * s), 1);
+    // zdvihový oblouk s ozubením pod závěrem
+    for (let a = 1.9; a < 2.9; a += 0.03) { const ex = ppx + Math.cos(a) * 11 * s, ey = ppy + Math.sin(a) * 11 * s; px(g, ex, ey, P.ink); if (Math.round(a * 33) % 2) px(g, ex - 1, ey, P.mud3); }
+    // hlaveň (v odskoku) s kroužky, mosazným pásem a úsťovou brzdou; teplé světlo západu na horní hraně
+    const bx = ppx - ca * rec, by_ = ppy - sa * rec, uA = -9 * s, uB = 31 * s;
+    const [a0x, a0y] = at(bx, by_, uA, 0), [a1x, a1y] = at(bx, by_, uB, 0);
+    beam(g, ...at(ppx, ppy, -2 * s, -4.4 * s), ...at(ppx, ppy, 18 * s, -4.4 * s), 3.2 * s, (q, v) => (Math.abs(v) > 0.8 ? P.ink : v > 0.1 ? P.mud3 : P.mud1)); // brzdový válec
+    beam(g, a0x, a0y, a1x, a1y, 5.2 * s, (q, v) => {
+      const u = q * (uB - uA) / s;
+      if (Math.abs(v) > 0.9) return P.ink;
+      if (u > 26 && u < 27.6) return P.gold;
+      if (v > 0.68) return P.gold;
+      if (u % 9 < 1.1) return P.olive3;
+      return v > 0.15 ? P.olive : v > -0.45 ? P.olive2 : P.olive3;
+    });
+    beam(g, ...at(bx, by_, 29 * s, 0), ...at(bx, by_, 34.5 * s, 0), 6.8 * s, (q, v) => (Math.abs(v) > 0.82 ? P.ink : v > 0.3 ? P.olive2 : P.olive3)); // úsťová brzda
+    beam(g, ...at(bx, by_, -10 * s, 0), ...at(bx, by_, -3 * s, 0), 6.4 * s, (q, v) => (Math.abs(v) > 0.84 ? P.ink : v > 0.3 ? P.olive : P.olive3)); // závěr
+    px(g, ...at(bx, by_, -11 * s, -3 * s), P.ink, Math.round(2 * s), Math.round(2 * s)); // klika závěru
+    // štít jako úzká deska před kolébkou s průlezem pro hlaveň
+    beam(g, ppx + 3.2 * s, ppy - 8 * s, ppx + 3.2 * s, ppy + 3.5 * s, 2.4 * s, (q, v) => (Math.abs(v) > 0.8 ? P.ink : v > 0 ? P.olive : P.olive3));
+    px(g, ppx + 2.4 * s, ppy - 10 * s, P.mud3, 1, 1); px(g, ppx + 2.4 * s, ppy - 6 * s, P.mud3, 1, 1); px(g, ppx + 2.4 * s, ppy + 1 * s, P.mud3, 1, 1); // nýty
+  };
+  const SHOTS = [[1.7, 0], [2.65, 1], [3.6, 0], [4.55, 1], [5.5, 0], [6.4, 1]];
   const TGT = [[150, 206], [122, 214], [166, 220], [138, 230], [100, 224], [172, 208]];
+  const FLASH = [[0.5, 60, 190], [1.3, 22, 194], [2.1, 84, 186], [3.0, 40, 196], [3.9, 72, 190], [5.0, 18, 192], [6.2, 54, 188]]; // vzdálené baterie
+  const GUN = [{ x: 86, y: 304, s: 1.9 }, { x: 160, y: 262, s: 0.78 }];
+  const muzzle = (gi) => { const G = GUN[gi]; return [G.x + 2 * G.s + Math.cos(-0.5) * 33 * G.s, G.y - 17 * G.s + Math.sin(-0.5) * 33 * G.s]; };
   scene.guns = (t, o) => {
     const side = o.side ?? 1, k = key(side);
     let sh = 0;
-    for (const [t0] of SHOTS) { const v = shakeOf(t - t0, 0.7); if (Math.abs(v) > Math.abs(sh)) sh = v; }
+    for (const [t0, who] of SHOTS) { const v = shakeOf(t - t0, 0.7) * (who ? 0.5 : 1); if (Math.abs(v) > Math.abs(sh)) sh = v; }
     TGT.forEach((_, i) => { const v = shakeOf(t - (SHOTS[i][0] + 1.25), 0.35); if (Math.abs(v) > Math.abs(sh)) sh = v; });
-    g.setTransform(1, 0, 0, 1, sh, Math.round(sh * 0.5));
+    g.setTransform(1, 0, 0, 1, Math.round(sh), Math.round(sh * 0.5));
     g.drawImage(L.guns, -4, -4, W + 8, H + 8);
-    // výbuchy v údolí (kouř se drží)
+    // světlice nad údolím + záblesky vzdálených baterií
+    { const fy = 44 + t * 6; glow(g, 132, fy, 20, '#e3d9c3', 0.4 + 0.1 * Math.sin(t * 13)); g.fillStyle = P.white; g.fillRect(131, Math.round(fy) - 1, 3, 3); for (let i = 1; i < 9; i++) { g.fillStyle = `rgba(227,217,195,${(0.5 - i * 0.055).toFixed(2)})`; g.fillRect(132 + (i % 2), Math.round(fy) + 2 + i * 2, 1, 1); } }
+    for (const [t0, x, y] of FLASH) { const u = t - t0; if (u > 0 && u < 0.35) glow(g, x, y, 12 * (1 - u / 0.35) + 4, '#d98f3f', 1.4 * (1 - u / 0.35)); }
+    // výbuchy v údolí (kouř se drží) a hořící ves
     TGT.forEach(([x, y], i) => blast(g, x, y, t - (SHOTS[i][0] + 1.25), 0.62 + (i % 3) * 0.12, ['#7e3b2a', '#3a2a26', '#2b2420', '#3a3b44'], 6));
-    // dvě děla: dál menší, blíž velké
-    const rec = (i) => { const u = t - SHOTS[i][0]; return u > 0 && u < 0.6 ? 7 * Math.exp(-u * 7) : 0; };
-    const gun = (gi, gx, gy, gs) => {
-      const rcl = SHOTS.reduce((m, [t0, who], idx) => (who === gi ? Math.max(m, rec(idx)) : m), 0);
-      howitzer(gx, gy, gs, rcl * gs * 0.5);
-      for (const [t0, who] of SHOTS) if (who === gi) {
-        const u = t - t0;
-        const mx = gx + 2 * gs + Math.cos(-0.5) * 32 * gs, my = gy - 17 * gs + Math.sin(-0.5) * 32 * gs;
-        if (u > 0 && u < 0.5) { glow(g, mx, my, 26 * gs, '#d98f3f', 1.4 * (1 - u / 0.5)); glow(g, mx, my, 12 * gs, '#fff6dc', 1.5 * clamp01(1 - u / 0.2)); }
-        if (u > 0.05 && u < 2.6) for (let i = 0; i < 7; i++) { const a = u - 0.05 - i * 0.06; if (a > 0) { g.fillStyle = `rgba(${i % 2 ? '120,108,98' : '86,76,70'},${(0.5 * (1 - u / 2.6)).toFixed(2)})`; g.beginPath(); g.ellipse(mx + a * 18 * gs + i * 2.2 * gs, my - a * 9 * gs - i * 1.6 * gs, (1.2 + a * 3.2) * gs, (1.2 + a * 2.6) * gs, 0, 0, Math.PI * 2); g.fill(); } }
-      }
-    };
-    gun(1, 126, 252, 0.85);
-    // poslední beztvará zeď před velkým dělem (bedny s municí a pytle)
-    g.fillStyle = P.ink; g.fillRect(66, 282, 28, 24); g.fillStyle = P.mud2; g.fillRect(67, 283, 26, 22); g.fillStyle = P.mud3; g.fillRect(67, 283, 26, 2);
-    g.fillStyle = P.ink; g.fillRect(67, 292, 26, 1); g.fillRect(78, 283, 1, 22);
-    gun(0, 50, 296, 1.7);
-    // obsluha: nabíječ s granátem a velitel s dalekohledem (skutečné sprity)
-    const bobL = Math.sin(t * 5) * 1.2;
-    const cyc = frac(t * 0.8);
-    put(pose(k, 'walk', 'east', t, 7), 86 + Math.sin(cyc * Math.PI * 2) * 5, 306 + bobL * 0.2, 1.9);
-    g.fillStyle = P.ink; g.fillRect(Math.round(88 + Math.sin(cyc * Math.PI * 2) * 5), 279 + Math.round(bobL), 12, 5); g.fillStyle = P.gold; g.fillRect(Math.round(89 + Math.sin(cyc * Math.PI * 2) * 5), 280 + Math.round(bobL), 10, 3); g.fillStyle = P.white; g.fillRect(Math.round(89 + Math.sin(cyc * Math.PI * 2) * 5), 280 + Math.round(bobL), 10, 1);
-    put(tex[key(side, 'officer')]?.east ?? tex[k]?.east, 20, 292, 1.5, 'rgba(14,13,12,0.18)');
-    g.fillStyle = P.ink; g.fillRect(34, 268, 5, 3); // dalekohled
-    // vzdálená obsluha druhého děla
-    put(pose(k, 'idle', 'north', t, 4), 106, 254, 0.8);
-    // zábleskové světlo na popředí
-    for (const [t0] of SHOTS) { const u = t - t0; if (u > 0 && u < 0.12) { g.fillStyle = 'rgba(255,214,150,0.18)'; g.fillRect(-6, -6, W + 12, H + 12); } }
+    smoke(104, 190, t, 6, 'rgba(26,22,20,0.8)', 12); smoke(160, 192, t + 1.1, 6, 'rgba(26,22,20,0.8)', 12);
+    glow(g, 104, 190, 14, '#d98f3f', 0.45 + 0.15 * Math.sin(t * 9)); glow(g, 160, 192, 12, '#d98f3f', 0.4 + 0.15 * Math.sin(t * 11 + 1));
+    // dálka: druhé dělo a jeho obsluha
+    const recOf = (gi) => SHOTS.reduce((m, [t0, who]) => { const u = t - t0; return who === gi && u > 0 && u < 0.6 ? Math.max(m, 7 * Math.exp(-u * 7)) : m; }, 0);
+    howitzer(GUN[1].x, GUN[1].y, GUN[1].s, recOf(1) * GUN[1].s * 0.5);
+    put(pose(k, 'idle', 'north', t, 4), 140, 264, 0.7);
+    g.drawImage(L.gunsFront, -4, -4, W + 8, H + 8);
+    // hlavní dělo
+    howitzer(GUN[0].x, GUN[0].y, GUN[0].s, recOf(0) * GUN[0].s * 0.5);
+    // nabíječ: pro každý náboj jedna cesta ze zásoby k závěru (nese ho), na místě ho zasune, vrátí se a čeká; jinak stojí
+    const HOME = 28, BREECH = 56;
+    let lx = HOME, mode = 'idle', carry = false, shellX = 0, shellY = 0;
+    for (const [t0, who] of SHOTS) if (!who) {
+      const a = t0 - 1.45, b = t0 - 0.5, c = t0 - 0.12, d = t0 + 0.25, e = t0 + 1.0;
+      if (t >= a && t < b) { lx = HOME + (BREECH - HOME) * ((t - a) / (b - a)); mode = 'east'; carry = true; }
+      else if (t >= b && t < c) { lx = BREECH; mode = 'load'; carry = true; }
+      else if (t >= d && t < e) { lx = BREECH - (BREECH - HOME) * ((t - d) / (e - d)); mode = 'west'; }
+      else if (t >= e - 0.01 && t < t0 + 1.0) lx = HOME;
+      else if (t >= c && t < d) { lx = BREECH; mode = 'load'; }
+    }
+    const lfoot = 314;
+    if (mode === 'east' || mode === 'west') put(pose(k, 'walk', mode, t, 5), lx, lfoot, 1.9);
+    else put(tex[k]?.[mode === 'load' ? 'east' : 'east'] ?? tex[k]?.south, lx, lfoot, 1.9);
+    if (carry) { const sx = Math.round(lx + 6), sy = lfoot - 34 - (mode === 'load' ? 5 : 0); g.fillStyle = P.ink; g.fillRect(sx - 1, sy - 1, 14, 6); g.fillStyle = P.gold; g.fillRect(sx, sy, 10, 4); g.fillStyle = P.yellow; g.fillRect(sx, sy, 10, 1); g.fillStyle = P.olive2; g.fillRect(sx + 9, sy, 4, 4); g.fillStyle = P.rust; g.fillRect(sx + 12, sy, 2, 4); }
+    // velitel baterie s dalekohledem u valu: při výstřelu sebou trhne
+    const kick = SHOTS.some(([t0, who]) => !who && t - t0 > 0 && t - t0 < 0.16) ? -1 : 0;
+    put(tex[key(side, 'officer')]?.east ?? tex[k]?.east, 126 + kick, 310, 1.6, 'rgba(14,13,12,0.12)');
+    g.fillStyle = P.ink; g.fillRect(136 + kick, 281, 6, 3); g.fillStyle = P.mud3; g.fillRect(136 + kick, 281, 6, 1); // dalekohled
+    // výstřely: záblesk, kouř z hlavně, prach od země kolem lafety
+    SHOTS.forEach(([t0, who]) => {
+      const u = t - t0, G = GUN[who], [mx, my] = muzzle(who);
+      if (u > 0 && u < 0.5) { glow(g, mx, my, 28 * G.s, '#d98f3f', 1.4 * (1 - u / 0.5)); glow(g, mx, my, 13 * G.s, '#fff6dc', 1.5 * clamp01(1 - u / 0.2)); }
+      if (u > 0.05 && u < 2.6) for (let i = 0; i < 8; i++) { const a = u - 0.05 - i * 0.06; if (a > 0) { g.fillStyle = `rgba(${i % 2 ? '120,108,98' : '86,76,70'},${(0.5 * (1 - u / 2.6)).toFixed(2)})`; g.beginPath(); g.ellipse(mx + a * 18 * G.s + i * 2.2 * G.s, my - a * 9 * G.s - i * 1.6 * G.s, (1.2 + a * 3.2) * G.s, (1.2 + a * 2.6) * G.s, 0, 0, Math.PI * 2); g.fill(); } }
+      if (u > 0 && u < 1.1) { const q = u / 1.1; g.fillStyle = `rgba(196,184,160,${(0.35 * (1 - q)).toFixed(2)})`; g.beginPath(); g.ellipse(G.x + 6 * G.s, G.y + 1 * G.s, (10 + q * 30) * G.s, (2 + q * 3) * G.s, 0, 0, Math.PI * 2); g.fill(); }
+      if (u > 0 && u < 0.12) { g.fillStyle = 'rgba(255,214,150,0.16)'; g.fillRect(-6, -6, W + 12, H + 12); }
+    });
     // dráhy granátů s dithered stopou
     SHOTS.forEach(([t0, who], i) => {
       const p = (t - t0 - 0.12) / 1.13;
       if (p <= 0 || p >= 1) return;
-      const gx = who ? 126 : 50, gy = who ? 252 : 296, gs = who ? 0.85 : 1.7;
-      const x0 = gx + 2 * gs + Math.cos(-0.5) * 32 * gs, y0 = gy - 17 * gs + Math.sin(-0.5) * 32 * gs, [xt, yt] = TGT[i];
+      const [x0, y0] = muzzle(who), [xt, yt] = TGT[i];
       for (let s = 0; s < 14; s++) {
         const q = Math.max(0, p - s * 0.012);
         const sx = x0 + (xt - x0) * q, sy = y0 + (yt - y0) * q - 120 * Math.sin(Math.PI * q) * (who ? 0.8 : 1);
