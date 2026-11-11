@@ -217,7 +217,8 @@ async function main() {
           const extra = rw?.reason === 'granted' || rw?.reason === 'same' ? ` Role: ${role}, as you asked.` : rw?.reason === 'officer' ? ` Lieutenants are made by promotion only, so you start as ${role}.` : '';
           text += extra;
           if (res.vote) text += ` Your vote for ${res.vote.kw} is counted.`;
-          await replyOnce(c, text).catch((e) => console.warn(e.message));
+          // selže-li odeslání (limit IG, výpadek), komentář je už „viděný“ a voják narukoval: odpověď se zkusí znovu v dalších kolech
+          await replyOnce(c, text).catch((e) => { console.warn(e.message); s.replyPending = { to: c.replyTo || c.id, text, tries: 1, day: state.day }; });
         }
         if (process.env.IG_SEND_DM === '1' && !process.env.DRY_RUN) {
           const s = res.soldier;
@@ -261,6 +262,20 @@ async function main() {
     }
     // post zpracován: zapamatovat počet komentářů (příště se stáhne jen při změně)
     if (count !== undefined) state.mediaCounts[mid] = count;
+  }
+
+  // opakování odpovědí novým rekrutům, které se napoprvé nepodařilo odeslat (max. 12 pokusů, jen 2 dny)
+  if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) {
+    for (const s of state.soldiers) {
+      const p = s.replyPending;
+      if (!p) continue;
+      if (p.tries >= 12 || state.day - p.day > 2) { delete s.replyPending; continue; }
+      try {
+        await replyOnce({ id: p.to, replyTo: p.to }, p.text, `pending:${s.id}`);
+        console.log(`↻ odpověď odeslána dodatečně @${s.handle}`);
+        delete s.replyPending;
+      } catch (e) { console.warn(e.message); p.tries++; }
+    }
   }
 
   // oznámení o smrti: odpověď pod náborový komentář hráče („tvůj voják padl, nastoupil …“). Jen s IG_DEATH_NOTICE=1.
