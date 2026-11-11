@@ -364,6 +364,16 @@
         "permalink": "https://www.instagram.com/p/DfniZGbFPG1/",
         "at": "2026-11-11T22:19:01.014Z"
       }
+    },
+    {
+      "id": "story-council",
+      "type": "story",
+      "files": [
+        "story_council.jpg"
+      ],
+      "caption": "",
+      "publishAt": "2026-11-11T22:29:00Z",
+      "_note": "Story k postu Rada fronty (IG API neumí odkaz ani hlasovací nálepku, proto text: otevři poslední post)."
     }
   ]
 }

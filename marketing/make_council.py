@@ -31,7 +31,7 @@ def lamp(im, x, y):
     d.rectangle((x - 5, y + 4, x + 5, y + 5), fill=P["ink"])
 
 
-def make():
+def make_raw():
     im = canvas()
     d = ImageDraw.Draw(im)
     rnd = random.Random(21)
@@ -81,10 +81,36 @@ def make():
     text_c(d, W // 2, 232, "WRITE YOUR IDEA IN THE COMMENTS.", font(8), P["pale"])
     text_c(d, W // 2, 244, "MOST LIKED IDEA BECOMES AN ORDER.", font(8), P["gold"])
     footer(d, H - 11)
+    return im
+
+
+def make():
     out = os.path.join(PROMO, "council_1.jpg")
-    up(im, K).convert("RGB").save(out, quality=95, subsampling=0)
+    up(make_raw(), K).convert("RGB").save(out, quality=95, subsampling=0)
     print(out)
+
+
+def make_story():
+    """Story 1080×1350→1080×1920 (mřížka 216×384 ×5): scéna z postu uprostřed, texty mimo horní a spodní lištu Instagramu (~14 % a ~20 %)."""
+    raw = make_raw()
+    sc = raw.crop((0, 0, W, 214))
+    im = Image.new("RGBA", (W, 384), P["dark"] + (255,))
+    d = ImageDraw.Draw(im)
+    for y in range(0, 384, 2):  # jemná textura pozadí
+        if (y // 2) % 3 == 0:
+            d.line((0, y, W, y), fill=P["ink"])
+    im.alpha_composite(sc, (0, 58))
+    d = ImageDraw.Draw(im)
+    d.line((0, 58, W, 58), fill=P["gold"])
+    d.line((0, 271, W, 271), fill=P["gold"])
+    text_c(d, W // 2, 276, "OPEN THE LATEST POST.", font(8, True), P["white"])
+    text_c(d, W // 2, 288, "COMMENT YOUR IDEA FOR THE FRONT.", font(8), P["pale"])
+    text_c(d, W // 2, 300, "LIKE THE ONES YOU WANT TO SEE.", font(8), P["gold"])
+    out = os.path.join(PROMO, "story_council.jpg")
+    up(im, K).convert("RGB").save(out, quality=95, subsampling=0)
+    print(out, up(im, K).size)
 
 
 if __name__ == "__main__":
     make()
+    make_story()
