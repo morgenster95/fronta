@@ -3,6 +3,7 @@
 // zápis do záznamu všem vojákům a zpráva do deníku. Pak začíná nový závod o další kótu (počítají se jen noví rekruti).
 
 import { eventEntry } from './story.js';
+import { addEntry } from './soldier.js';
 
 const short = (theme, f) => theme.factions[f].name.replace(/^The /, '');
 
@@ -49,7 +50,7 @@ export function checkRace(state, theme, story, recruit) {
       s.medals.push(`obj:${st.id}`);
     }
     const kind = s === recruit ? 'raceHero' : won ? 'raceWin' : 'raceLose';
-    s.record.push([day, eventEntry(kind, s, day, theme, story, vars(s))]);
+    addEntry(s, day, eventEntry(kind, s, day, theme, story, vars(s)));
   }
   recruit.titles = [...(recruit.titles || []), `Hero of ${st.name}`];
   state.news = [...(state.news || []), {

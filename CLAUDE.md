@@ -26,6 +26,8 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
 - Hra běží naostro: https://mudandiron.web.app, IG @mudandiron. Automatika = smyčka `.github/workflows/front-loop.yml` (`tools/loop.sh`)
   každých ~5 min: stáhne komentáře, odpoví, publikuje frontu `marketing/queue.json`, denní tah v 13:00 UTC, nasadí web.
   Smyčka commituje do main → **před pushem vždy `git pull --rebase`**; `data/state.json` ručně neupravuj.
+- **Jeden zápis za den** (od 2026-11-11): každý živý voják má každý den právě jeden zápis do deníku (`theme.storyShare = 1`; dřív dostával zápis jen ~1× za 4 dny, proto byly v deníku mezery). Zápisy téhož dne se spojují (`addEntry` v `engine/soldier.js`), raněný a nezvěstný má krátký denní zápis (`wardBed/wardStretcher/wardTrench/wardLight/wardMissing`). Starší zápisy se nepřepisovaly (mezery z Dne 2–3 zůstanou).
+  Pozor na růst: ~220 B na vojáka a den ve `state.json`; při tisících hráčů a týdnech provozu je potřeba zápisy přesunout mimo `state.json` (hlídat velikost souboru, ~15 MB je hranice pro smyčku).
 - **Deníky jsou nedotknutelné:** zápisy vojáků (`s.record`), kronika (`state.chronicle`) a deník fronty se jen přidávají, nikdy se neořezávají,
   nepřepisují ani negenerují znovu. Nástupce pokračuje v deníku rodu. Web ukazuje posledních 40 zápisů, starší jsou v `records-old` (tlačítko na kartě).
 - **Každou domluvenou změnu mechaniky** (boj, role, ztráty, bombardování, útoky) i návrh zapiš do `docs/MECHANICS.md` (datum, stav NASAZENO/SCHVÁLENO/NÁVRH, čísla, proč).

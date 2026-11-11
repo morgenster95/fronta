@@ -1,6 +1,6 @@
 // Stav světa (soupiska) a jeho změny: komentář → narukování, kód → převzetí, denní tah, export statických dat pro web.
 
-import { createSoldier, tickSoldier, heir, selectForStory } from './soldier.js';
+import { createSoldier, tickSoldier, heir, selectForStory, addEntry } from './soldier.js';
 import { enlistEntry, weatherFor, eventEntry, tplKey, makeBackground, backgroundLine, silenceGuns } from './story.js';
 import { writeChronicle } from './chronicle.js';
 import { checkRace, raceStatus, raceDanger, activeBarrage, awardHonors } from './race.js';
@@ -70,7 +70,7 @@ export function wishRole(state, s, role, theme, story) {
   s.arc = null;
   // nováček (narukoval dnes) nedostane zápis o převelení, rovnou začíná v nové roli
   if (!fresh) {
-    s.record.push([state.day, eventEntry('transfer', s, state.day, theme, story, { role: nameOf(role), oldRole })]);
+    addEntry(s, state.day, eventEntry('transfer', s, state.day, theme, story, { role: nameOf(role), oldRole }));
   }
   return 'granted';
 }
@@ -165,7 +165,7 @@ export function awardFirstWave(state, theme = null, story = null) {
       const text = story?.firstWave
         ? eventEntry('firstWave', s, state.day, theme, story, { n: String(i + 1) }, recentKeys(state, 6, s))
         : `${s.name} is one of the first hundred to answer the call. ${s.pronoun === 'she' ? 'She wears' : s.pronoun === 'they' ? 'They wear' : 'He wears'} the ribbon of the First Wave.`;
-      s.record.push([state.day, text]);
+      addEntry(s, state.day, text); // první den: úvod a First Wave v jednom zápisu
     }
   });
 }
@@ -360,7 +360,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
   const today = new Set(); // šablony použité dnes (rozmanitost mezi vojáky)
   for (const s of state.soldiers) s.bg ??= makeBackground(s, story);
   const active = new Set(ctx.activeIds || []);
-  const chosen = new Set(selectForStory(state.soldiers, day, active).map((s) => s.id));
+  const chosen = new Set(selectForStory(state.soldiers, day, active, theme.storyShare ?? 0.25).map((s) => s.id));
   // kdo je dnes k dispozici pro společné příhody (stav na začátku dne)
   // účastníci výpravy mají dnes svůj zápis z výpravy, do společných historek je nebrat
   const onLine = theme.factions.map((_, f) => state.soldiers.filter((s) => s.faction === f && s.status === 'active' && !raid.ids.has(s.id)));
@@ -386,13 +386,12 @@ export function dailyTick(state, theme, story, ctx = {}) {
       continue;
     }
     if (raid.ids.has(s.id) || fight.ids.has(s.id)) continue; // dnes už má zápis z výpravy nebo z boje
+    if (s.record.at(-1)?.[0] === day) continue; // dnes už má zápis (např. společná příhoda): jeden zápis za den
     if (!chosen.has(s.id) && s.status === 'active') continue;
     const danger = dangerOf(s);
     const recover = orderRecover(state, s.faction, day, valleyRecover(state, theme, s));
     const sctx = { active: active.has(s.id), danger, weather, events, comrade, foe, today, recover, battle: !!theme.battle };
-    for (const text of tickSoldier(s, day, theme, story, sctx)) {
-      s.record.push([day, text]);
-    }
+    for (const text of tickSoldier(s, day, theme, story, sctx)) addEntry(s, day, text);
   }
   awardHouseBadges(state, theme); // odznaky rodu (zůstávají v rodu)
   const news = [...raid.news, ...fight.news, ...(state.news || []).filter((n) => n.day >= day - 1)];
@@ -463,7 +462,7 @@ export function applyTransfers(state, theme, story) {
     s.pendingRole = null;
     s.transferDay = state.day;
     s.arc = null; // nová práce, nový příběh
-    s.record.push([state.day, eventEntry('transfer', s, state.day, theme, story, { role: nameOf(s.archetype), oldRole })]);
+    addEntry(s, state.day, eventEntry('transfer', s, state.day, theme, story, { role: nameOf(s.archetype), oldRole }));
     done.push(s);
   }
   return done;

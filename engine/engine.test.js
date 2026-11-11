@@ -976,3 +976,21 @@ test('v12: přímý zásah granátem (shell.kill) zabije na místě, lůžko ani
   assert.ok(s.soldiers.some((x) => x.faction === 1 && x.status === 'fallen' && x.cause?.kind === 'shell'), 'příčina smrti shell');
   assert.ok(!s.soldiers.some((x) => x.faction === 0 && x.status === 'fallen'), 'vítěz granáty nedostává');
 });
+
+test('deník: každý voják má každý den právě jeden zápis, bez mezer (theme.storyShare = 1)', () => {
+  const s = emptyState(theme);
+  enlist(s, 80, 'dj');
+  const born = new Map(s.soldiers.map((x) => [x.id, x.record.length]));
+  for (let d = 0; d < 15; d++) dailyTick(s, theme, story);
+  let checked = 0;
+  for (const x of s.soldiers) {
+    if (!born.has(x.id) || (x.generation || 1) > 1) continue; // nástupce padlého: smrt předchůdce a jeho příchod jsou dva různí lidé téhož rodu
+    const days = x.record.map((r) => r[0]);
+    assert.equal(new Set(days).size, days.length, `${x.handle}: víc zápisů za jeden den (${days.join(',')})`);
+    for (let d = x.enlisted + 1; d <= s.day; d++) {
+      assert.ok(days.includes(d), `${x.handle} (${x.status}) nemá zápis ze dne ${d}; má ${days.join(',')}`);
+    }
+    checked++;
+  }
+  assert.ok(checked > 40);
+});

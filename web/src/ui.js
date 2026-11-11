@@ -322,7 +322,16 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     }
     for (const title of rec.titles || []) fam.unshift(`<span class="title">★ ${esc(title)}</span>`);
     $('card-family').innerHTML = fam.join('<br>');
-    const li = (list) => list.slice().reverse().map(([d, t]) => `<li><span class="d">${dayLabel(d)}</span>${esc(t)}</li>`).join('');
+    // zápisy téhož dne (starší záznamy z úvodu, smrt a příchod nástupce) se ukážou pod jedním nadpisem dne
+    const li = (list) => {
+      const days = [];
+      for (const [d, t] of list) {
+        const g = days.at(-1);
+        if (g && g.d === d) g.t.push(t);
+        else days.push({ d, t: [t] });
+      }
+      return days.reverse().map(({ d, t }) => `<li><span class="d">${dayLabel(d)}</span>${t.map((x) => esc(x)).join('<br>')}</li>`).join('');
+    };
     $('card-record').innerHTML = li(rec.record) + (rec.older ? `<li class="older"><button type="button" id="card-older">Show ${rec.older} older entries</button></li>` : '');
     if (rec.older) $('card-older').onclick = async (e) => {
       e.target.disabled = true;

@@ -2502,5 +2502,38 @@
     "A sniper's bullet hit {name} at {sector}. The medics worked on {him} in the bottom of the trench and shouted for a stretcher.",
     "{name} was hit through the chest at {sector}. {He} is breathing. That is all the medic would say.",
     "A burst of machine-gun fire caught {name} in the open at {sector}. The tourniquet held. Whether {he} holds is another matter."
+  ],
+  "wardBed": [
+    "{name} spent the day in bed with {his} leg propped up. The orderly changed the dressing and said it was healing the way it should.",
+    "Another quiet day in the ward for {name}. {He} counted the cracks in the ceiling and got to forty-one.",
+    "{name} slept most of the day. When {he} woke, someone had left a cup of tea on the crate beside the bed.",
+    "A surgeon stopped at {name}'s bed, checked the dressing and moved on without a word. {He} decided that was good news.",
+    "{name} wrote half a letter home from bed, then tore it up. It said {he} was fine. It was not a convincing lie.",
+    "The man in the next bed snored all day. {name} did not mind. It meant someone was still breathing."
+  ],
+  "wardStretcher": [
+    "{name} spent the day on a stretcher outside the aid post, waiting for a bed to come free. The bearers brought water twice.",
+    "{name} lay on a stretcher under a canvas sheet and watched the orderlies carry men in and out. Nobody had time to talk.",
+    "No bed for {name} yet. A medic checked the bandage and promised {him} a place as soon as one opened up.",
+    "{name} drifted in and out on the stretcher. Every time {he} woke, the line for the beds seemed longer.",
+    "The bearers moved {name}'s stretcher against the wall at midday and back again at dusk. That was the whole schedule."
+  ],
+  "wardTrench": [
+    "{name} lay in a dugout at {sector} with a rolled coat under {his} head. There was no stretcher and no bed. A medic looked in when {he} could.",
+    "Nobody had a stretcher to spare, so {name} stayed put at {sector}, wrapped in a blanket. The men nearby took turns checking on {him}.",
+    "{name} waited in the trench at {sector} for a place at the aid post. {He} kept the bandage clean and said nothing about the pain.",
+    "{name} was propped against the trench wall at {sector}. {He} drank what water the others could spare and stared at the sandbags overhead."
+  ],
+  "wardLight": [
+    "{name} wore a fresh bandage at {sector} and was told to rest. {He} rested for about an hour.",
+    "{name} sat out the day with a bandaged arm, cleaning every rifle within reach. It was the only job the medic would allow.",
+    "A medic checked {name}'s dressing at {sector} and said {he} would be back on {his} feet soon. {He} was already trying to stand.",
+    "{name} was on light duty: bandaged, bored and in charge of the kettle."
+  ],
+  "wardMissing": [
+    "Nobody at {sector} has seen {name} since the last patrol. {His} bunk is still made.",
+    "{name} is still missing. The sergeant keeps {his} name on the roll and calls it out every morning anyway.",
+    "No word on {name}. A runner went to ask in the next sector and came back with nothing.",
+    "Someone at {sector} saved {name}'s share of the rations. Nobody said why."
   ]
 }

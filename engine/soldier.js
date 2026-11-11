@@ -72,13 +72,22 @@ export function displayName(s) {
   return s.nick ? `${s.first} "${s.nick}" ${s.family}` : `${s.first} ${s.family}`;
 }
 
-// Kdo dnes dostane zápis: noví, převzatí a aktivní mají přednost, ostatní na střídačku (~1× za 4 dny).
-export function selectForStory(soldiers, day, activeIds = new Set()) {
+// Jeden zápis za den: další text téhož dne se připojí za poslední zápis (voják má v deníku každý den jeden odstavec).
+export function addEntry(s, day, text) {
+  if (!text) return;
+  const last = s.record.at(-1);
+  if (last && last[0] === day) last[1] = `${last[1]} ${text}`;
+  else s.record.push([day, text]);
+}
+
+// Kdo dnes dostane zápis: podle `share` (theme.storyShare; 1 = každý voják každý den, dřív ~0,25 = jednou za 4 dny).
+// Noví, převzatí a aktivní hráči ho dostanou vždy.
+export function selectForStory(soldiers, day, activeIds = new Set(), share = 0.25) {
   return soldiers.filter((s) => {
     if (s.status === 'fallen') return false;
     if (s.enlisted === day) return false; // má zápis z narukování
     if (s.claimed || activeIds.has(s.id)) return true;
-    return rngFor(s.id, 'pick', day)() < 0.25;
+    return share >= 1 || rngFor(s.id, 'pick', day)() < share;
   });
 }
 
@@ -92,7 +101,11 @@ export function tickSoldier(s, day, theme, story, ctx = {}) {
     return text;
   };
   if (s.status === 'wounded') {
-    if (ctx.battle) return out; // zranění vede engine/battle.js (lůžka, medici)
+    if (ctx.battle) {
+      // zranění vede engine/battle.js (lůžka, medici); ležící voják dostane každý den krátký zápis o tom, jak mu je (jeden zápis za den)
+      const kind = s.wound?.sev === 'light' ? 'wardLight' : ({ bed: 'wardBed', stretcher: 'wardStretcher' }[s.wound?.place] || 'wardTrench');
+      return story[kind] ? [eventEntry(kind, s, day, theme, story, {}, ctx.today)] : out;
+    }
     if (rand() < (ctx.recover ?? 0.35)) {
       s.status = 'active';
       out.push(ev('recovered', eventEntry('recovered', s, day, theme, story, {}, ctx.today)));
@@ -105,6 +118,8 @@ export function tickSoldier(s, day, theme, story, ctx = {}) {
       s.status = 'active';
       delete s.missingDay;
       out.push(ev('returned', eventEntry('returned', s, day, theme, story, {}, ctx.today)));
+    } else if (story.wardMissing) {
+      out.push(eventEntry('wardMissing', s, day, theme, story, {}, ctx.today)); // deník nemá mezery ani u nezvěstného
     }
     return out;
   }
@@ -220,7 +235,8 @@ function pairEntry(kind, s, o, day, theme, story, rand, ev, today = null) {
   o.seen = [...(o.seen || []), tplKey(raw)].slice(-200);
   const tpl = story[kind].indexOf(raw);
   const text = fill(raw, vars, rand);
-  o.record.push([day, text]);
+  // druhý z dvojice dostane stejný text jen když dnes ještě nemá zápis (jinak by měl dva příběhy za den)
+  if (o.record.at(-1)?.[0] !== day) o.record.push([day, text]);
   ev(kind, text, { other: o.handle, tpl: `${kind}${tpl}` });
   return text;
 }

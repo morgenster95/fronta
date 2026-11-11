@@ -19,7 +19,7 @@
 import { rngFor } from './rng.js';
 import { eventEntry } from './story.js';
 import { activeBarrage } from './race.js';
-import { fallSoldier } from './soldier.js';
+import { fallSoldier, addEntry } from './soldier.js';
 
 const B = (theme) => theme.battle;
 const short = (theme, f) => theme.factions[f].name.replace(/^The /, '');
@@ -134,7 +134,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   const ev = (s, type, text) => {
     out.events.push({ type, handle: s.handle, faction: s.faction, text });
     out.ids.add(s.id);
-    s.record.push([day, text]);
+    addEntry(s, day, text);
     return text;
   };
   const barrage = activeBarrage(state, day);

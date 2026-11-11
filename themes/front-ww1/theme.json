@@ -803,5 +803,7 @@
         "fallen": 3
       }
     ]
-  }
+  },
+  "storyShare": 1,
+  "_storyShare": "Podíl vojáků, kteří dostanou každý den zápis do deníku (1 = každý, jeden zápis za den; dřív 0,25). Při velkém počtu hráčů roste stav (data/state.json) o ~220 B na vojáka a den."
 }

@@ -54,6 +54,8 @@ export function hospitalNav({ world, cam, sites, theme, soldiers, hidden = false
     return s ? s.faction : null;
   };
   let myFaction = mine(), checked = 0;
+  // horní okraj bezpečné oblasti = spodek panelu s novinami/hlasováním (rozbalený je vyšší než pevných 78 px; směrovka ho nesmí zakrýt)
+  let edgeTop = EDGE.top, panelChecked = 0;
 
   return {
     update(now) {
@@ -63,17 +65,23 @@ export function hospitalNav({ world, cam, sites, theme, soldiers, hidden = false
       layer.visible = a > 0;
       if (a > 0) for (const b of badges) { b.alpha = a; b.scale.set(1 / z); }
       if (now - checked > 3000) { myFaction = mine(); checked = now; } // po přihlášení se přepne bez obnovení stránky
+      if (now - panelChecked > 250) {
+        panelChecked = now;
+        const panel = document.getElementById('dispatch');
+        const r = panel && !panel.hidden && getComputedStyle(panel).display !== 'none' ? panel.getBoundingClientRect() : null;
+        edgeTop = Math.max(EDGE.top, r ? Math.ceil(r.bottom) + 10 : 0);
+      }
       const w = cam.w, h = cam.h;
       for (const p of ptrs) {
         const sx = (p.s.x - cam.x) * z + w / 2, sy = (p.s.y - cam.y) * z + h / 2;
-        const inside = sx > EDGE.left && sx < w - EDGE.right && sy > EDGE.top && sy < h - EDGE.bottom;
+        const inside = sx > EDGE.left && sx < w - EDGE.right && sy > edgeTop && sy < h - EDGE.bottom;
         const show = !hidden && z >= BADGE_TO && !inside && (myFaction == null || myFaction === p.s.faction);
         if (show !== p.shown) { p.el.hidden = !show; p.shown = show; }
         if (!show) continue;
         // průsečík paprsku ze středu obrazovky s okrajem bezpečné oblasti
-        const cx = (EDGE.left + w - EDGE.right) / 2, cy = (EDGE.top + h - EDGE.bottom) / 2;
+        const cx = (EDGE.left + w - EDGE.right) / 2, cy = (edgeTop + h - EDGE.bottom) / 2;
         const dx = sx - cx, dy = sy - cy;
-        const hw = (w - EDGE.left - EDGE.right) / 2 - 26, hh = (h - EDGE.top - EDGE.bottom) / 2 - 26;
+        const hw = (w - EDGE.left - EDGE.right) / 2 - 26, hh = Math.max(10, (h - edgeTop - EDGE.bottom) / 2 - 26);
         const k = Math.min(hw / Math.abs(dx || 1e-6), hh / Math.abs(dy || 1e-6));
         const x = Math.round(cx + dx * k), y = Math.round(cy + dy * k);
         const ang = Math.round((Math.atan2(dy, dx) * 180) / Math.PI);
