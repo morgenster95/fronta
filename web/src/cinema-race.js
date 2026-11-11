@@ -4,7 +4,7 @@
 // t = sekundy od začátku záběru; volby: side (0 Hegemonie, 1 Concord), n (číslo na počítadle; bez něj se ukáže „XXX“).
 import { sky, glow, lit, blast, stakeWire, shakeOf, easeOut, off, hex, rgb, by, clamp01, CW as W, CH as H } from './cinema.js';
 
-export const RACE_SCENES = { march: 7, guns: 8, shelter: 7, ribbon: 7, counter: 6 };
+export const RACE_SCENES = { march: 7, guns: 9, shelter: 7, ribbon: 7, counter: 6 };
 
 // pixelové písmo 3×5 (písmena, číslice, +), ať záběr nezávisí na fontech
 const FONT = {
@@ -211,6 +211,15 @@ export function makeRaceScenes(tex, anims = {}) {
       cg.fillRect(x, y, 1, 1);
     }
     for (let i = 0; i < 160; i++) { cg.fillStyle = r() < 0.5 ? P.khaki : P.olive3; cg.fillRect(Math.floor(r() * W), 180 + Math.floor(r() * 140), 1 + (r() < 0.3 ? 1 : 0), 1); }
+    // tráva s perspektivou: větší chomáče blíž, tmavé skvrny, polní květy
+    for (let i = 0; i < 70; i++) { const y = 184 + Math.floor(r() * 136), d = (y - 178) / 142, x = Math.floor(r() * W), w = 7 + d * 16, col = r() < 0.5 ? P.olive3 : P.olive2; cg.fillStyle = col; cg.beginPath(); cg.ellipse(x, y, w, 1 + d * 3, 0, 0, Math.PI * 2); cg.fill(); }
+    for (let i = 0; i < 520; i++) {
+      const y = 182 + Math.floor(r() * 138), d = (y - 178) / 142, x = Math.floor(r() * W), h = 1 + Math.round(d * 4 * r() + r()), q = r();
+      cg.fillStyle = q < 0.4 ? P.khaki : q < 0.7 ? P.olive3 : q < 0.9 ? P.olive : P.sand;
+      cg.fillRect(x, y - h, 1, h + 1); if (d > 0.35 && r() < 0.6) { cg.fillRect(x - 1, y - h + 1, 1, h); cg.fillRect(x + 1, y - h + 2, 1, h - 1); }
+    }
+    for (let i = 0; i < 26; i++) { const y = 200 + Math.floor(r() * 118), x = Math.floor(r() * W); cg.fillStyle = r() < 0.5 ? P.pale : P.gold; cg.fillRect(x, y, 1, 1); if (y > 250) { cg.fillRect(x + 1, y, 1, 1); } }
+    for (let i = 0; i < 14; i++) { const y = 220 + Math.floor(r() * 96), x = Math.floor(r() * W), w = 2 + Math.floor((y - 178) / 40); cg.fillStyle = P.mud2; cg.fillRect(x, y, w, 1); cg.fillStyle = P.mud3; cg.fillRect(x, y - 1, w - 1, 1); }
     // cesta: lichoběžník k patě kopce, kolejnice, okraje
     for (let y = 178; y < H; y++) {
       const d = (y - 178) / 142, half = 3 + d * 64, cx = 96 - d * 6;
@@ -281,14 +290,14 @@ export function makeRaceScenes(tex, anims = {}) {
     });
     // počítadlo
     const n = Math.round(100 * easeOut(clamp01((t - 0.4) / 4.2)));
-    const bx = 104, by_ = 266;
-    g.fillStyle = P.ink; g.fillRect(bx - 2, by_ - 2, 76, 40);
-    g.fillStyle = P.sand; g.fillRect(bx - 1, by_ - 1, 74, 38);
-    g.fillStyle = P.dark; g.fillRect(bx, by_, 72, 36);
+    const bx = 104, by_ = 258;
+    g.fillStyle = P.ink; g.fillRect(bx - 2, by_ - 2, 76, 50);
+    g.fillStyle = P.sand; g.fillRect(bx - 1, by_ - 1, 74, 48);
+    g.fillStyle = P.dark; g.fillRect(bx, by_, 72, 46);
     const num = String(n).padStart(3, '0'), pulse = n >= 100 && Math.floor(t * 4) % 2 === 0;
     txt(g, num, bx + 10, by_ + 5, 5, pulse ? P.yellow : P.white, P.ink);
-    txt(g, 'NEW SOLDIERS', bx + 7, by_ + 28, 1, P.bone);
-    if (n >= 100) glow(g, bx + 36, by_ + 18, 50, P.gold, 0.45 + 0.2 * Math.sin(t * 8));
+    txt(g, 'NEW SOLDIERS', bx + 12, by_ + 35, 1, P.bone);
+    if (n >= 100) glow(g, bx + 36, by_ + 23, 50, P.gold, 0.45 + 0.2 * Math.sin(t * 8));
   };
 
   // ====================================================================================================
@@ -387,7 +396,7 @@ export function makeRaceScenes(tex, anims = {}) {
     beam(g, ppx + 3.2 * s, ppy - 8 * s, ppx + 3.2 * s, ppy + 3.5 * s, 2.4 * s, (q, v) => (Math.abs(v) > 0.8 ? P.ink : v > 0 ? P.olive : P.olive3));
     px(g, ppx + 2.4 * s, ppy - 10 * s, P.mud3, 1, 1); px(g, ppx + 2.4 * s, ppy - 6 * s, P.mud3, 1, 1); px(g, ppx + 2.4 * s, ppy + 1 * s, P.mud3, 1, 1); // nýty
   };
-  const SHOTS = [[1.7, 0], [2.65, 1], [3.6, 0], [4.55, 1], [5.5, 0], [6.4, 1]];
+  const SHOTS = [[1.7, 0], [2.8, 1], [3.9, 0], [5.0, 1], [6.1, 0], [7.2, 1]];
   const TGT = [[150, 206], [122, 214], [166, 220], [138, 230], [100, 224], [172, 208]];
   const FLASH = [[0.5, 60, 190], [1.3, 22, 194], [2.1, 84, 186], [3.0, 40, 196], [3.9, 72, 190], [5.0, 18, 192], [6.2, 54, 188]]; // vzdálené baterie
   const GUN = [{ x: 86, y: 304, s: 1.9 }, { x: 160, y: 262, s: 0.78 }];
@@ -399,6 +408,7 @@ export function makeRaceScenes(tex, anims = {}) {
     TGT.forEach((_, i) => { const v = shakeOf(t - (SHOTS[i][0] + 1.25), 0.35); if (Math.abs(v) > Math.abs(sh)) sh = v; });
     g.setTransform(1, 0, 0, 1, Math.round(sh), Math.round(sh * 0.5));
     g.drawImage(L.guns, -4, -4, W + 8, H + 8);
+    g.fillStyle = 'rgba(10,9,14,0.24)'; g.fillRect(-6, -6, W + 12, H + 12); // lehce potemnělá scéna
     // světlice nad údolím + záblesky vzdálených baterií
     { const fy = 44 + t * 6; glow(g, 132, fy, 20, '#e3d9c3', 0.4 + 0.1 * Math.sin(t * 13)); g.fillStyle = P.white; g.fillRect(131, Math.round(fy) - 1, 3, 3); for (let i = 1; i < 9; i++) { g.fillStyle = `rgba(227,217,195,${(0.5 - i * 0.055).toFixed(2)})`; g.fillRect(132 + (i % 2), Math.round(fy) + 2 + i * 2, 1, 1); } }
     for (const [t0, x, y] of FLASH) { const u = t - t0; if (u > 0 && u < 0.35) glow(g, x, y, 12 * (1 - u / 0.35) + 4, '#d98f3f', 1.4 * (1 - u / 0.35)); }
@@ -417,7 +427,7 @@ export function makeRaceScenes(tex, anims = {}) {
     const HOME = 28, BREECH = 56;
     let lx = HOME, mode = 'idle', carry = false, shellX = 0, shellY = 0;
     for (const [t0, who] of SHOTS) if (!who) {
-      const a = t0 - 1.45, b = t0 - 0.5, c = t0 - 0.12, d = t0 + 0.25, e = t0 + 1.0;
+      const a = t0 - 1.1, b = t0 - 0.3, c = t0 + 0.05, d = t0 + 0.15, e = t0 + 0.95;
       if (t >= a && t < b) { lx = HOME + (BREECH - HOME) * ((t - a) / (b - a)); mode = 'east'; carry = true; }
       else if (t >= b && t < c) { lx = BREECH; mode = 'load'; carry = true; }
       else if (t >= d && t < e) { lx = BREECH - (BREECH - HOME) * ((t - d) / (e - d)); mode = 'west'; }
@@ -427,7 +437,6 @@ export function makeRaceScenes(tex, anims = {}) {
     const lfoot = 314;
     if (mode === 'east' || mode === 'west') put(pose(k, 'walk', mode, t, 5), lx, lfoot, 1.9);
     else put(tex[k]?.[mode === 'load' ? 'east' : 'east'] ?? tex[k]?.south, lx, lfoot, 1.9);
-    if (carry) { const sx = Math.round(lx + 6), sy = lfoot - 34 - (mode === 'load' ? 5 : 0); g.fillStyle = P.ink; g.fillRect(sx - 1, sy - 1, 14, 6); g.fillStyle = P.gold; g.fillRect(sx, sy, 10, 4); g.fillStyle = P.yellow; g.fillRect(sx, sy, 10, 1); g.fillStyle = P.olive2; g.fillRect(sx + 9, sy, 4, 4); g.fillStyle = P.rust; g.fillRect(sx + 12, sy, 2, 4); }
     // velitel baterie s dalekohledem u valu: při výstřelu sebou trhne
     const kick = SHOTS.some(([t0, who]) => !who && t - t0 > 0 && t - t0 < 0.16) ? -1 : 0;
     put(tex[key(side, 'officer')]?.east ?? tex[k]?.east, 126 + kick, 310, 1.6, 'rgba(14,13,12,0.12)');
