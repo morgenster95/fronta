@@ -318,6 +318,7 @@ body.reel #card { bottom: 18%; width: 86%; }
 .gc-title .nm { font-family: 'Silkscreen', monospace; font-size: 15px; line-height: 1.15; }
 .status { font-family: 'Silkscreen', monospace; font-size: 10px; padding: 3px 6px; border: 1px solid; white-space: nowrap; align-self: flex-start; }
 .status.alive { color: var(--accent); border-color: var(--accent); }
+.status.hurt { color: #d9a441; border-color: #d9a441; }
 .status.fell { border-color: #6b6152; background: #2b2722; }
 .gc-body { padding: 0 10px 10px; }
 .cause { background: #2a1a16; border-left: 3px solid var(--blood); padding: 6px 10px; margin-bottom: 8px; font-size: 19px; }

@@ -40,12 +40,14 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
   const causeShort = (c) => (c?.shell ? 'barrage, ' : '') + ({ nobed: 'no bed', wounds: 'of wounds', raid: 'night raid', line: 'at the front' }[c?.kind || 'line'] || 'at the front');
   const dayL = (d) => (d > 0 ? `Day ${d}` : 'Mobilization');
 
+  // stav právě žijícího člena rodu (pořadí jako engine/soldier.js STATUS): ne každý živý je „na linii“
+  const STATE_LABEL = ['ON THE LINE', 'WOUNDED', 'MISSING IN ACTION', 'PRISONER OF WAR'];
   async function family(handle) {
     const rec = await loadRecord(handle);
     if (!rec) return null;
     const s = soldiers.find((x) => x.handle === handle);
     const cur = {
-      alive: s?.status !== 4, name: rec.name, first: rec.name.split(' ')[0], archetype: rec.archetype, rank: s?.rank ?? 0,
+      alive: s?.status !== 4, state: s?.status ?? 0, name: rec.name, first: rec.name.split(' ')[0], archetype: rec.archetype, rank: s?.rank ?? 0,
       enlisted: rec.enlisted, gen: rec.generation || 1, days: rec.days ?? Math.max(0, roster.day - rec.enlisted), medals: rec.medals || [],
       titles: rec.titles || [], scars: rec.scars || 0, wounds: rec.wounds || 0, treated: rec.treated || 0, raids: rec.raids || 0,
       relation: rec.relation, rec: [rec.recFrom || 0, (rec.older || 0) + rec.record.length],
@@ -101,7 +103,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
             <div class="nm">${esc(g.name)}</div>
             <div class="muted sub">${ORD(g.gen)} of the House · ${g.prev ? `${esc(g.prev.first)}'s ${esc(INV[g.relation] || 'kin')}` : 'founder'}</div>
           </div>
-          <span class="status ${g.alive ? 'alive' : 'fell'}">${g.alive ? 'ON THE LINE' : `✝ DAY ${g.day}`}</span>
+          <span class="status ${!g.alive ? 'fell' : g.state ? 'hurt' : 'alive'}">${g.alive ? (STATE_LABEL[g.state] || 'ON THE LINE') : `✝ DAY ${g.day}`}</span>
         </div>
         <div class="gc-body">
           ${g.alive ? '' : `<div class="cause"><span class="sil">CAUSE OF DEATH</span>${esc(causeText(g.cause))}</div>`}
