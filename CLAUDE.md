@@ -4,6 +4,18 @@ Tenhle soubor čte Claude Code i v cloudu (aplikace Claude v mobilu, claude.ai/c
 Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co je teď ve hře), `docs/BATTLE.md` a `docs/COMBAT_ROLES.md` (boj), `docs/ONBOARDING.md` (rekruti a provoz),
 `docs/SCHEDULE.md` (rytmus dne), `docs/MAP_MISSIONS.md` (výpravy, vypnuté), **`docs/MECHANICS.md` (deník domluvených mechanik)**. `docs/DESIGN.md` je původní návrh, neaktualizuje se.
 
+## ROZPRACOVÁNO: doména a škálování na tisíce hráčů (domluveno 2026-11-11, řešit příště)
+**Na začátku relace uživateli napiš, že tohle čeká, a zeptej se, jak postupovat.** Detaily čísel: `docs/SCALING.md`.
+- **Doménu uživatel koupil u Cloudflare** (název zatím neznám, zeptat se). Doporučení: **krok 1** = doménu připojit k **Firebase Hostingu** (Cloudflare jen jako DNS, záznamy v režimu „DNS only“, šedý obláček), změnit `authDomain` ve `web/src/firebase-config.js`,
+  uživatel v Firebase Auth přidá doménu a v Google Cloud OAuth `https://<doména>/__/auth/handler`, přepsat GitHub proměnnou `SITE_URL` (odkazy v odpovědích bota) a odkaz v biu, stará `mudandiron.web.app` přesměrovat na novou (skript v `index.html`, `firebase.json` neumí host).
+  Komentáře a tvorba vojáků na doméně nezávisí (IG API + GitHub Actions + git); závisí na ní jen Google přihlášení („This is me“).
+- **Krok 2 (před ~1 000 hráči)**: kód hry na Cloudflare Pages (jen při změně kódu, limit zdarma 500 sestavení měsíčně), veřejná data v Cloudflare R2 (zdarma 10 GB, bez poplatku za přenos), přihlášení buď přes Supabase Auth (funguje na jakékoli doméně),
+  nebo Firebase s proxy `/__/auth/` (nepodporováno, nejistý). Nejdřív **testovací nasazení** vedle ostrého webu (např. `test.<doména>`), přepnout až po ověření přihlášení. Uživatel musí v Cloudflare vytvořit projekt Pages a vložit klíč do GitHubu jako Secret.
+- **Krok 3 (před ~4 000 hráči)**: zápisy a stav mimo git (`state.json` roste ~0,3–0,9 KB na vojáka a den; GitHub odmítne soubor nad 100 MB), případně Supabase Postgres. Přidat **omezení rychlosti odpovědí na komentáře** (IG limity neznámé, kód žádné nemá).
+- **Kdy začne zlobit** (odhad z měření): Firebase limit 360 MB/den při ~1 500–3 000 hráčích, `state.json` > 15 MB při ~4 000 (za ~10 dní), > 100 MB při ~10 000 (za ~12 dní). Hra samotná zvládá 10 000 (načtení ~2 s).
+- Hotovo dnes: zrcadlo obrázků na GitHub Pages (`web/src/assets.js`, `tools/asset-base.sh`, `media.yml`), nasazování jen při změně obsahu (`dist_hash` v `tools/loop.sh`), hlídání dostupnosti v `watchdog.yml`.
+- Pravidlo „jen zdarma“ platí; placené věci (Cloudflare Pages Pro ~20 USD/měs., Supabase Pro) jen s výslovným souhlasem. Uživatel zvažoval i Vercel + Supabase (jako thaloriaworld.com); závěr: Vercel Hobby je jen nekomerční a Supabase zdarma má 5 GB přenosu měsíčně, takže na servírování dat se nehodí.
+
 ## Boj v12 nasazen (2026-11-11, první vydání 12. 11. 13:00 UTC)
 Přepracování boje na **v12** (palba hráčů jako hlavní zdroj ztrát, škrábnutí + kritické, nasycení palby, smrt hlavně z nedostatku lůžek, nosítek a mediků,
 silné bombardování se smrtí přímým zásahem, spojař proti granátům) je **nasazeno**. Důvody, čísla, simulace a zamítnuté varianty: `docs/MECHANICS.md`, `docs/sim/`.
