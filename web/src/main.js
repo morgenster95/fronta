@@ -300,7 +300,8 @@ async function boot() {
     sp.y = s.y;
     sp.tint = TINT[s.variant % TINT.length];
     // neobsazené stanoviště: šedé a poloprůhledné, aby bylo jasné, kdo je skutečný hráč
-    if (s.vacant) {
+    // Ve videích (?reel=) žádní „duchové“: neobsazená stanoviště mají plnou barvu a krytí jako skuteční vojáci (pravidlo v CLAUDE.md).
+    if (s.vacant && !new URLSearchParams(location.search).has('reel')) {
       sp.tint = 0x8f8a82;
       sp.alpha = 0.55;
     }

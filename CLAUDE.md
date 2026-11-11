@@ -42,6 +42,8 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
 - **V popiscích na IG hráče neoznačovat** (žádné @jméno; hromadné označování může IG vyhodnotit jako spam). Platí i pro hrdinu kóty: v popisku je jeho jméno
   bez zavináče. Označení a jména hráčů patří do hry (web, Gazette) a do videa.
 - **Denní reel i jeho popisek vždy uvádí, kolik hráčů je teď na frontě** (celkem, pak přejezd kamery po první linii Hegemonie a Concordu s počtem každé strany; `tools/day-reel.mjs` věty `army`, `armyH`, `armyC`, `data.army`).
+- **Ve videích žádní „duchové“** (průsvitní vojáci; uživatel na to upozorňoval opakovaně): každý voják ve videu má plné krytí a barvu. Ve hře jsou neobsazená stanoviště záměrně šedá a poloprůhledná, ale v režimu natáčení (`?reel=`) to `web/src/main.js` vypíná.
+  Nový reel nebo filmový záběr nesmí nikde kreslit vojáky s `alpha < 1` (mlha a stín jen jako barevný tint, ne průhlednost) a po vyrenderování se snímky vždy zkontrolují, jestli tam žádný duch není.
 - Repo je **veřejné**: žádné tajné údaje, e-maily ani tokeny do commitů.
 - **Zveřejněná videa v repu nezůstávají:** `ingest/publish.mjs` je hodinu po publikaci smaže z `marketing/promo/` (smyčka smazání commitne).
   Uživatel chce videa mít u sebe: každé hotové video mu pošli ke stažení (nebo odkaz na GitHub Pages) ještě před publikací.
