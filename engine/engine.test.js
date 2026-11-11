@@ -1004,6 +1004,12 @@ test('stav se ukládá po částech: state.json bez zápisů, zápisy po dávká
   enlist(s, 30, 'sp');
   for (let d = 0; d < 4; d++) dailyTick(s, theme, story);
   const ref = JSON.parse(JSON.stringify(s)); // stav tak, jak ho vrátí JSON (bez undefined)
+  // bez SPLIT_STATE a bez složky dávek se ukládá po staru (zápisy ve state.json): starší smyčka dávky nepřidává do gitu
+  delete process.env.SPLIT_STATE;
+  saveState(s, f);
+  assert.ok(JSON.parse(fs.readFileSync(f, 'utf8')).soldiers.every((x) => Array.isArray(x.record)), 'výchozí = starý formát');
+  assert.ok(!fs.existsSync(recordsDir(f)), 'složka dávek nevznikla');
+  process.env.SPLIT_STATE = '1';
   saveState(s, f);
   const slim = JSON.parse(fs.readFileSync(f, 'utf8'));
   assert.ok(slim.soldiers.every((x) => x.record === undefined && x.recN > 0), 'state.json nemá zápisy, jen jejich počet');
@@ -1018,6 +1024,7 @@ test('stav se ukládá po částech: state.json bez zápisů, zápisy po dávká
   const shards = fs.readdirSync(recordsDir(f)).filter((n) => fs.readFileSync(path.join(recordsDir(f), n), 'utf8') !== '{}');
   fs.writeFileSync(path.join(recordsDir(f), shards[0]), '{}');
   assert.throws(() => loadState(theme, f), /nenačetly celé/);
+  delete process.env.SPLIT_STATE;
 });
 
 test('web: počet dávek se zápisy roste s vojáky (~25 na dávku), roster ho udává a karta má v dávce jen posledních 10 zápisů', async () => {
