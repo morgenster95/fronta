@@ -73,6 +73,20 @@ async function boot() {
   const [openFrom, openTo] = openRange(map, roster.openSectors ?? 8);
   const sectorPx = map.sectorW * map.tile;
   const openX0 = openFrom * sectorPx, openX1 = openTo * sectorPx;
+  // bombardování: na straně poraženého přibývají krátery s každou nocí (pseudonáhoda podle kóty, takže je vidí všichni stejně)
+  if (roster.barrage) {
+    const v = (roster.victories || []).find((x) => x.name === roster.barrage.name);
+    const nights = Math.max(0, Math.min(3, roster.day - (v?.day ?? roster.day)));
+    const tiles = (openX1 - openX0) / map.tile, tgt = roster.barrage.target, dir = tgt === 0 ? -1 : 1;
+    let seed = 2166136261;
+    for (const ch of `${v?.id || 'x'}:${tgt}`) seed = Math.imul(seed ^ ch.charCodeAt(0), 16777619) >>> 0;
+    const rr = () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
+    const total = Math.round(tiles * 3.2), shown = Math.round(total * (0.45 + 0.18 * nights)); // první den hned hustě, pak přibývá
+    for (let i = 0; i < total; i++) {
+      const x = Math.floor(openX0 / map.tile + rr() * tiles), y = Math.round(map.front[tgt] + dir * (rr() * rr() * 34 - 14)), q = rr();
+      if (i < shown) map.craters.push({ x, y, r: q < 0.3 ? 1 : q < 0.6 ? 2 : q < 0.82 ? 3 : 4 });
+    }
+  }
 
   const app = new Application();
   await app.init({

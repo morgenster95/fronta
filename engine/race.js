@@ -53,6 +53,8 @@ export function checkRace(state, theme, story, recruit) {
     addEntry(s, day, eventEntry(kind, s, day, theme, story, vars(s)));
   }
   recruit.titles = [...(recruit.titles || []), `Hero of ${st.name}`];
+  recruit.medals ??= [];
+  recruit.medals.push(`hero:${st.id}`); // medaile za statečnost: jen pro hráče, který kótu rozhodl (ostatní vítězové dostanou stuhu obj:)
   state.news = [...(state.news || []), {
     day,
     h: `${short(theme, f)} took ${st.name}`,

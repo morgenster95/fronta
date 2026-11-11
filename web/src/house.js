@@ -21,6 +21,10 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
   const medalName = (m) => {
     if (m === 'first-wave') return ['🎖', 'First Wave', 'One of the first 100 to enlist'];
     if (m === 'raiders-cross') return ['✠', "Raider's Cross", 'Three night raids'];
+    if (m.startsWith('hero:')) {
+      const v = (roster.victories || []).find((x) => x.id === m.slice(5));
+      return ['🏅', 'Medal of Valor', `Decided the battle for ${v?.name ?? 'the ridge'}`];
+    }
     if (m.startsWith('obj:')) {
       const v = (roster.victories || []).find((x) => x.id === m.slice(4));
       return ['🎖', v?.name ?? 'Battle honour', 'Fought on the winning side'];

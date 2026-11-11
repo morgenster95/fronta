@@ -12,7 +12,7 @@ const RATE = {
   burst: [7000, 16000], // kulometná dávka (jen kulometčík s animací)
   shell: [20000, 50000],
   flare: [25000, 60000],
-  barrageShell: [90, 320], // dělostřelectvo z dobyté kóty: hustá palba, ať je to na první pohled vidět
+  barrageShell: [40, 150], // dělostřelectvo z dobyté kóty: hustá palba, ať je to na první pohled vidět
 };
 const rnd = (a, b) => a + Math.random() * (b - a);
 
@@ -53,10 +53,11 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
   const particles = [];
   const actors = []; // dočasní chodící zdravotníci (ve vrstvě pod okrajem zákopu)
   const events = []; // naplánované výstřely kulometné dávky
-  const t = { shot: rnd(...RATE.shot), distant: 0, burst: rnd(...RATE.burst), shell: rnd(...RATE.shell), flare: rnd(4000, 12000), barrage: 0 };
+  const t = { shot: rnd(...RATE.shot), distant: 0, burst: rnd(...RATE.burst), shell: rnd(...RATE.shell), flare: rnd(4000, 12000), barrage: 0, fire: 0 };
   const g = new Graphics();
   layer.addChild(g);
   let barrage = null; // { faction: cílová frakce }
+  const fires = []; // požáry po dopadech dělostřelectva: { x, y, until }
   let shake = 0;
   const T = map.tile;
   const cellPos = ([cx, cy]) => ({ x: cx * T + 16, y: cy * T + 27 }); // stejně jako sloty vojáků
@@ -300,11 +301,25 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
         const fy = map.front[barrage.faction] * T + 16;
         const toRear = barrage.faction === 0 ? -1 : 1;
         const sx = rnd(view.x0 - 100, view.x1 + 100), sy = fy + toRear * rnd(-60, 220);
-        shell(sx, sy, Math.random() < 0.5);
-        // občas salva: 2–4 dopady těsně u sebe
-        if (Math.random() < 0.18) for (let k = 1 + Math.floor(Math.random() * 3); k > 0; k--)
+        shell(sx, sy, Math.random() < 0.6);
+        if (fires.length < 26 && Math.random() < 0.3) fires.push({ x: sx, y: sy, until: now + rnd(25000, 70000) }); // dopad zažehne požár, který kouří dál
+        // salvy: 2–5 dopadů těsně u sebe
+        if (Math.random() < 0.3) for (let k = 1 + Math.floor(Math.random() * 4); k > 0; k--)
           events.push({ at: now + k * rnd(90, 220), run: () => shell(sx + rnd(-50, 50), sy + rnd(-30, 30), Math.random() < 0.4) });
         if (Math.random() < 0.04) flare(view);
+      }
+    }
+    if (barrage) { // hořící trosky z dopadů: sloupy černého kouře a mihotavý žár
+      t.fire -= dt;
+      if (t.fire < 0) {
+        t.fire = 110;
+        for (let i = fires.length - 1; i >= 0; i--) {
+          const f = fires[i];
+          if (now > f.until) { fires.splice(i, 1); continue; }
+          if (f.x < view.x0 - 40 || f.x > view.x1 + 40 || f.y < view.y0 - 40 || f.y > view.y1 + 40) continue;
+          particles.push({ kind: 'smoke', x: f.x + rnd(-2, 2), y: f.y - 4, vx: rnd(-0.004, 0.012), vy: -rnd(0.012, 0.022), life: 2600, max: 2600 });
+          if (Math.random() < 0.5) particles.push({ kind: 'glow', x: f.x + rnd(-3, 3), y: f.y - rnd(0, 4), life: 160, max: 160 });
+        }
       }
     }
     // zdravotníci k viditelným raněným (max 3 najednou)
@@ -335,6 +350,9 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
         }
         case 'puff':
           g.rect(Math.round(p.x), Math.round(p.y), k > 0.5 ? 2 : 1, k > 0.5 ? 2 : 1).fill({ color: 0xa39782, alpha: 0.35 * k });
+          break;
+        case 'smoke':
+          g.circle(Math.round(p.x), Math.round(p.y), 2 + (1 - k) * 6).fill({ color: 0x2a3138, alpha: 0.34 * k });
           break;
         case 'glow':
           g.circle(p.x, p.y, 4).fill({ color: 0xd98f3f, alpha: 0.18 * k });

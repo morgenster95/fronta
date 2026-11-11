@@ -316,6 +316,11 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     if (s.medals?.includes('raiders-cross')) fam.unshift(`<span class="medal">✠ Raider's Cross</span> ${rec.raids || 3} night raids`);
     else if (rec.raids) fam.push(`Night raids: ${rec.raids}`);
     for (const m of s.medals || []) {
+      if (m.startsWith('hero:')) {
+        const v = (roster.victories || []).find((x) => x.id === m.slice(5));
+        fam.unshift(`<span class="medal">🏅 Medal of Valor</span> decided the battle for ${esc(v?.name ?? 'the ridge')}${v ? `, Day ${v.day}` : ''}`);
+        continue;
+      }
       if (!m.startsWith('obj:')) continue;
       const v = (roster.victories || []).find((x) => x.id === m.slice(4));
       fam.unshift(`<span class="medal">🎖 ${esc(v?.name ?? 'Battle')}</span> fought on the winning side${v ? `, Day ${v.day}` : ''}`);
