@@ -1,0 +1,96 @@
+{
+ "seconds": 59.2,
+ "voice": "en-US-GuyNeural",
+ "lines": [
+  [
+   0.6,
+   0.64,
+   "Day three.",
+   "day"
+  ],
+  [
+   1.49,
+   1.8,
+   "New soldiers keep marching to the front.",
+   "new"
+  ],
+  [
+   3.54,
+   1.7,
+   "And the race for Verdel Ridge is over.",
+   "race"
+  ],
+  [
+   5.49,
+   1.68,
+   "The Concord reached one hundred first.",
+   "won"
+  ],
+  [
+   7.42,
+   4.85,
+   "The deciding soldier was Lucien Jro, a field cook. The Medal of Valor is theirs.",
+   "hero"
+  ],
+  [
+   12.52,
+   4.14,
+   "The Concord hold the high ground now. A safer week for every one of them.",
+   "safe"
+  ],
+  [
+   16.91,
+   6.5,
+   "~6.5",
+   "talk"
+  ],
+  [
+   23.66,
+   4.79,
+   "But the guns of the ridge have turned on the Hegemony. Three nights of shelling begin tonight.",
+   "guns"
+  ],
+  [
+   28.7,
+   5.0,
+   "~5",
+   "bomb"
+  ],
+  [
+   33.95,
+   5.73,
+   "Both sides dug hospitals. Will they pay off? One soldier saw the shells coming.",
+   "voice"
+  ],
+  [
+   39.93,
+   6.5,
+   "~6.5",
+   "quote"
+  ],
+  [
+   46.68,
+   2.18,
+   "194 soldiers hold the line now.",
+   "army"
+  ],
+  [
+   49.11,
+   1.41,
+   "94 for the Hegemony.",
+   "armyH"
+  ],
+  [
+   50.77,
+   1.32,
+   "100 for the Concord.",
+   "armyC"
+  ],
+  [
+   52.34,
+   3.38,
+   "Comment Concord... or Hegemony. Link in bio.",
+   "cta"
+  ]
+ ]
+}
