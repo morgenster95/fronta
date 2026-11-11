@@ -1,0 +1,1073 @@
+[
+ {
+  "section": "daily",
+  "idx": 28,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "Sun on {sector}. {name} took off {his} boots for the first time in nine days and the whole bay applauded.",
+  "new": "Sun on {sector}. {name} took off {his} boots for the first time in nine days and the whole squad applauded."
+ },
+ {
+  "section": "daily",
+  "idx": 31,
+  "why": "nedává smysl",
+  "old": "Thunder all night. {name} kept flinching. The old hands said that is how you tell the new ones: they flinch at God.",
+  "new": "Thunder all night. {name} flinched at every crack. The old hands said that is how you spot the new ones. By morning, they were flinching too."
+ },
+ {
+  "section": "daily",
+  "idx": 57,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{name} splinted a broken leg with a rifle and two puttees. The patient asked if {he} was a real doctor. {He} said yes. {He} was lying.",
+  "new": "{name} splinted a broken leg with a rifle and two belts. The patient asked if {he} was a real doctor. {He} said yes. {He} was lying."
+ },
+ {
+  "section": "daily",
+  "idx": 68,
+  "why": "zmínka o počasí v textu, který není o počasí",
+  "old": "The cook's fire went out in the rain. {name} relit it under {his} own greatcoat and served stew that tasted of wool.",
+  "new": "The cook's fire went out. {name} relit it under {his} own coat and served stew that tasted of wool."
+ },
+ {
+  "section": "daily",
+  "idx": 80,
+  "why": "zmínka o počasí v textu, který není o počasí",
+  "old": "{name} dreamt {he} was back in {home}, working as a {trade}. {He} woke to rain and said nothing all morning.",
+  "new": "{name} dreamt {he} was back in {home}, working as a {trade}. {He} woke up and said nothing all morning."
+ },
+ {
+  "section": "daily",
+  "idx": 84,
+  "why": "zmínka o počasí v textu, který není o počasí",
+  "old": "{name} thought about {waiting} on sentry tonight, and the cold felt a little further away.",
+  "new": "{name} thought about {waiting} on sentry tonight, and the night felt a little shorter."
+ },
+ {
+  "section": "daily",
+  "idx": 94,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The shelling stopped while {name} was counting between impacts. {He} reached the next number anyway, then waited a long time before moving.",
+  "new": "The shelling stopped while {name} was counting the seconds between hits. {He} kept counting anyway, and waited a long time before moving."
+ },
+ {
+  "section": "daily",
+  "idx": 95,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "A newspaper reached {name} with the corner torn off. The war was going well, according to half a sentence.",
+  "new": "A newspaper reached {name} with the corner torn off. According to the half a sentence that survived, the war was going well."
+ },
+ {
+  "section": "daily",
+  "idx": 96,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} dreamt of missing a train. Waking up here seemed an unreasonable punishment for it.",
+  "new": "{name} dreamt about missing a train. Waking up here felt like a harsh punishment for it."
+ },
+ {
+  "section": "daily",
+  "idx": 97,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The blanket exchange left {name} with a better blanket and a reputation for sharp dealing. The previous owner wants a rematch.",
+  "new": "{name} traded for a better blanket and got a reputation as a sharp dealer. The man who lost it wants a rematch."
+ },
+ {
+  "section": "daily",
+  "idx": 98,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} tried writing with gloves on. The address is readable. Everything else will require imagination.",
+  "new": "{name} tried to write home with gloves on. The address is readable. Everything else will need some imagination."
+ },
+ {
+  "section": "daily",
+  "idx": 99,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} found a clean patch on the table and put {his} bread on it. Someone immediately asked to borrow the patch.",
+  "new": "{name} found a clean spot on the table and set {his} bread on it. Within a minute, someone asked to borrow the spot."
+ },
+ {
+  "section": "daily",
+  "idx": 100,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The next dugout has acquired a doorbell. {name} went to inspect it. It is a spoon tied to an empty tin.",
+  "new": "Somebody hung a doorbell on the next dugout. {name} went to look. It was a spoon tied to an empty tin."
+ },
+ {
+  "section": "daily",
+  "idx": 101,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} was asked what {he} wanted after the war. A chair, {he} said. After some thought: a chair nobody else was using.",
+  "new": "Asked what {he} wanted after the war, {name} said a chair. After some thought: a chair nobody else was sitting on."
+ },
+ {
+  "section": "daily",
+  "idx": 102,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} heard wire rattle beyond the parapet. At relief, the next sentry was told exactly where and asked not to dismiss it.",
+  "new": "{name} heard wire rattling beyond the parapet. At the change of watch, {he} said exactly where and asked for it to be taken seriously."
+ },
+ {
+  "section": "daily",
+  "idx": 103,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} drew the street leading into {home}. There was no room for the last house, so {he} used the back of the page.",
+  "new": "{name} drew the street leading to {home}. There was no room left for the last house, so {he} turned the page over."
+ },
+ {
+  "section": "daily",
+  "idx": 104,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The men argued about whether fish sleep. {name} said yes, and was made to explain how anyone could tell.",
+  "new": "The men argued about whether fish sleep. {name} said yes, and was told to explain how anyone could know."
+ },
+ {
+  "section": "daily",
+  "idx": 105,
+  "why": "nedává smysl",
+  "old": "A shot struck the sandbag beside {name}. {He} crouched down and discovered that the hands could shake while still doing everything required.",
+  "new": "A bullet hit the sandbag beside {name}. {He} ducked, and noticed {his} hands were shaking. {He} kept working anyway."
+ },
+ {
+  "section": "daily",
+  "idx": 106,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} saved half a biscuit for later. Later turned out to be six minutes away.",
+  "new": "{name} saved half a biscuit for later. Later came six minutes afterwards."
+ },
+ {
+  "section": "daily",
+  "idx": 107,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The cook asked for an honest opinion. {name} asked whether second helpings depended on the answer.",
+  "new": "The cook asked for an honest opinion of the stew. {name} asked if second helpings depended on the answer."
+ },
+ {
+  "section": "daily",
+  "idx": 108,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} brushed dried mud from a letter and uncovered one more word: 'soon'. {He} wished the sentence around it had survived.",
+  "new": "{name} brushed dried mud off a letter and found one more word under it: 'soon'. {He} wished the rest of the sentence had survived."
+ },
+ {
+  "section": "daily",
+  "idx": 109,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The patrol returned one at a time. {name} held the entrance clear and counted until the corporal said that was everyone.",
+  "new": "The patrol came back one man at a time. {name} held the gap open and counted until the corporal said that was everyone."
+ },
+ {
+  "section": "daily",
+  "idx": 110,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} wrote a list of things to buy on leave. It began with socks and ended with a meal nobody could call a ration.",
+  "new": "{name} made a list of things to buy on leave. It started with socks and ended with a meal nobody could call a ration."
+ },
+ {
+  "section": "daily",
+  "idx": 111,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "A new pair of laces made {name}'s boots look briefly respectable. The effect lasted until {he} stood up.",
+  "new": "New laces made {name}'s boots look almost respectable, until {he} stood up."
+ },
+ {
+  "section": "daily",
+  "idx": 112,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} waited at the fire step while a flare burned out. The pale shape beyond the wire resolved into a sack, exactly where the sack had always been.",
+  "new": "{name} watched a pale shape beyond the wire while a flare burned out. It turned out to be a sack, right where the sack had always been."
+ },
+ {
+  "section": "daily",
+  "idx": 113,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The parcel contained a comb. {name} has hardly any hair left after the last haircut, but accepted the encouragement.",
+  "new": "A parcel from home held a comb. {name} has hardly any hair left after the last haircut, but {he} appreciated the thought."
+ },
+ {
+  "section": "daily",
+  "idx": 114,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "An unexploded shell lay beside the approach trench. {name} helped divert the carrying party and was glad to leave its inspection to someone else.",
+  "new": "An unexploded shell lay beside the approach trench. {name} helped steer the carrying party around it and was glad to leave the problem to somebody else."
+ },
+ {
+  "section": "daily",
+  "idx": 115,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "An empty jam tin became {name}'s cup. The first drink tasted faintly of strawberries. {He} took smaller sips than usual.",
+  "new": "An empty jam tin became {name}'s cup. The first drink still tasted of strawberries. {He} took small sips."
+ },
+ {
+  "section": "daily",
+  "idx": 116,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} remembered the tune but not the words. Six volunteers supplied six different songs, none of them an improvement.",
+  "new": "{name} remembered the tune but not the words. Six men offered six different songs, and none of them helped."
+ },
+ {
+  "section": "daily",
+  "idx": 117,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The warning to check masks reached {name} during supper. {He} put the bread down carefully and did not finish it until the all-clear.",
+  "new": "The gas alarm sounded during supper. {name} put the bread down carefully and did not finish it until the all-clear."
+ },
+ {
+  "section": "daily",
+  "idx": 118,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} washed {his} face and was asked whether headquarters was visiting. Apparently cleanliness requires an explanation.",
+  "new": "{name} washed {his} face and someone asked if headquarters was visiting. Apparently being clean needs an explanation."
+ },
+ {
+  "section": "daily",
+  "idx": 119,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} borrowed a book with three readers already waiting. For once, everyone was impatient about something other than relief.",
+  "new": "{name} borrowed a book with three readers already waiting in line. For once, everyone was impatient about something harmless."
+ },
+ {
+  "section": "daily",
+  "idx": 120,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The lice inspection interrupted a fierce argument about politics. {name} observed that at least one enemy had been positively identified.",
+  "new": "A lice inspection interrupted a heated argument about politics. {name} pointed out that at least one enemy had been positively identified."
+ },
+ {
+  "section": "daily",
+  "idx": 121,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} heard a man laugh beyond the enemy parapet. The sound was ordinary enough to be more unsettling than a shot.",
+  "new": "{name} heard a man laugh on the other side of the enemy parapet. It sounded so ordinary that it was more unsettling than a shot."
+ },
+ {
+  "section": "daily",
+  "idx": 122,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} tried to remember the sound of the bell in {home}. Every version came out sounding like the ration bell.",
+  "new": "{name} tried to remember the sound of the church bell in {home}. Every version sounded like the ration bell."
+ },
+ {
+  "section": "daily",
+  "idx": 123,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "A section of parapet collapsed near {name}. The repairs began as soon as the dust settled, with one man watching while the others worked.",
+  "new": "Part of the parapet collapsed near {name}. Repairs started as soon as the dust settled, with one man on watch while the rest worked."
+ },
+ {
+  "section": "daily",
+  "idx": 124,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} received a photograph taken outside the family home. {He} studied the unfamiliar curtains longer than the faces.",
+  "new": "{name} got a photo of the family house. {He} spent longer looking at the strange curtains than at the faces."
+ },
+ {
+  "section": "daily",
+  "idx": 125,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} was halfway through a story when the listener fell asleep. {He} took it as a useful service rendered.",
+  "new": "{name} was halfway through a story when {his} listener fell asleep. {He} counted that as a success."
+ },
+ {
+  "section": "daily",
+  "idx": 126,
+  "why": "nedává smysl",
+  "old": "Someone asked {name} to wake them in ten minutes. {He} spent all ten worrying about how to measure them.",
+  "new": "Someone asked {name} to wake them in ten minutes. {He} had no watch, so {he} counted slowly and woke them at what felt like ten."
+ },
+ {
+  "section": "daily",
+  "idx": 127,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} came off watch unable to remember whether the last hour had been long or short. {He} remembered every movement in one patch of wire.",
+  "new": "{name} came off watch and could not say whether the last hour had felt long or short. {He} remembered every move in one patch of wire."
+ },
+ {
+  "section": "daily",
+  "idx": 128,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The company barber offered a choice of styles. {name} asked to see the second one. The barber laughed.",
+  "new": "The company barber offered a choice of haircuts. {name} asked to see the second one. The barber laughed."
+ },
+ {
+  "section": "daily",
+  "idx": 130,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The trench wall shook against {name}'s shoulder during the bombardment. {He} pressed both feet into the boards and waited for the next impact.",
+  "new": "The trench wall shook against {name}'s shoulder during the bombardment. {He} pressed both feet into the boards and waited for the next hit."
+ },
+ {
+  "section": "daily",
+  "idx": 131,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "A story about a goat travelled through three dugouts and reached {name} as a story about a general. The ending was unchanged.",
+  "new": "A story about a goat passed through three dugouts and reached {name} as a story about a general. The ending was the same."
+ },
+ {
+  "section": "daily",
+  "idx": 132,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} checked the safety catch three times before handing over the post. The replacement noticed and checked it once more.",
+  "new": "{name} checked the safety catch three times before handing over the post. The man taking over noticed, and checked it once more."
+ },
+ {
+  "section": "daily",
+  "idx": 134,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "Shellfire stopped the carrying party at a trench junction. {name} waited beneath a load that grew heavier with every minute.",
+  "new": "Shellfire stopped the carrying party at a trench junction. {name} waited under a load that got heavier by the minute."
+ },
+ {
+  "section": "daily",
+  "idx": 135,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} sharpened a pencil with great care and then could not think what to write. {He} put the date at the top anyway.",
+  "new": "{name} sharpened a pencil carefully and then could not think what to write. {He} put the date at the top anyway."
+ },
+ {
+  "section": "daily",
+  "idx": 136,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} opened a parcel addressed in an unfamiliar hand. Inside was a note explaining that the usual letter writer had hurt a wrist. {He} read that note first.",
+  "new": "{name} opened a parcel addressed in unfamiliar handwriting. A note inside said the usual writer had hurt a wrist. {He} read that note first."
+ },
+ {
+  "section": "daily",
+  "idx": 137,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} traded a cigarette for a pinch of salt. Supper was better; the discussion of the exchange rate was worse.",
+  "new": "{name} traded a cigarette for a pinch of salt. Supper improved. The argument about the exchange rate did not."
+ },
+ {
+  "section": "daily",
+  "idx": 138,
+  "why": "nedává smysl",
+  "old": "A pocket watch passed along the bench so everyone could set the time. {name} has no watch, but looked carefully all the same.",
+  "new": "A pocket watch went along the bench so everyone could set the time. {name} has no watch, but checked it anyway, just to feel included."
+ },
+ {
+  "section": "daily",
+  "idx": 139,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "A stretcher party needed the passage. {name} backed into a recess with an ammunition box and held it there until the last bearer passed.",
+  "new": "A stretcher party needed the passage. {name} backed into a recess with an ammunition box and stayed there until the last bearer passed."
+ },
+ {
+  "section": "daily",
+  "idx": 140,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} tried to sketch a horse from memory. The result has been accepted by the dugout as a very good dog.",
+  "new": "{name} tried to sketch a horse from memory. The dugout agreed it was a very good dog."
+ },
+ {
+  "section": "daily",
+  "idx": 141,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} brought replacement sandbags forward and found the damage worse than the message had said. The party sent back for another load.",
+  "new": "{name} brought sandbags forward and found the damage worse than the message had said. The party went back for another load."
+ },
+ {
+  "section": "daily",
+  "idx": 142,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} finished a letter with 'nothing to report', then added half a page about the missing soap.",
+  "new": "{name} ended a letter with 'nothing to report', then added half a page about the missing soap."
+ },
+ {
+  "section": "daily",
+  "idx": 143,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The telephone failed during the shelling. {name} watched the runner leave with the written orders, then listened for the telephone to ring again.",
+  "new": "The telephone went dead during the shelling. {name} watched the runner leave with the written orders, then listened for the phone to ring again."
+ },
+ {
+  "section": "daily",
+  "idx": 144,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} kept a seat for someone fetching supper. Holding it against three hungry men proved harder than expected.",
+  "new": "{name} saved a seat for someone fetching supper. Holding it against three hungry men turned out to be hard work."
+ },
+ {
+  "section": "daily",
+  "idx": 145,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} counted the stitches in a darned sock while waiting for orders. Whoever repaired it had used three colours of wool.",
+  "new": "{name} counted the stitches in a darned sock while waiting for orders. Whoever fixed it had used three colors of wool."
+ },
+ {
+  "section": "daily",
+  "idx": 151,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "Fog hid the far end of {sector}. {name} kept counting the bays to avoid walking past the dugout.",
+  "new": "Fog hid the far end of {sector}. {name} kept counting the turns so as not to walk past the dugout."
+ },
+ {
+  "section": "daily",
+  "idx": 162,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "A gust blew rain under the dugout door. {name} moved the boots indoors, then remembered they were already indoors.",
+  "new": "Rain blew in under the dugout door. {name} moved {his} boots out of the wet, then realized they were already inside."
+ },
+ {
+  "section": "daily",
+  "idx": 163,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} braced a loose roof board while the storm passed. Every conversation had to wait until {he} could lower both arms.",
+  "new": "{name} held a loose roof board in place while the storm passed. Every conversation had to wait until {he} could lower both arms."
+ },
+ {
+  "section": "daily",
+  "idx": 164,
+  "why": "nedává smysl",
+  "old": "Thunder shook dust from the beams over {name}. The man beside {him} asked whether the sky had the correct range.",
+  "new": "Thunder shook dust from the beams over {name}. For once, nobody blamed the enemy."
+ },
+ {
+  "section": "daily",
+  "idx": 167,
+  "why": "nedává smysl",
+  "old": "{name} spent the afternoon chasing a cap that stopped moving whenever {he} stopped chasing it.",
+  "new": "{name} spent the afternoon chasing {his} cap across the trench. It stopped every time {he} did, and jumped away again when {he} reached for it."
+ },
+ {
+  "section": "daily",
+  "idx": 172,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} checked each belt by lamplight. A cartridge seated badly was enough to start the whole inspection again.",
+  "new": "{name} checked every ammunition belt by lamplight. One bad cartridge was enough to make {him} start the whole inspection again."
+ },
+ {
+  "section": "daily",
+  "idx": 173,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The gun team argued about who had carried the heaviest load. {name} suggested exchanging loads. The argument ended immediately.",
+  "new": "The gun team argued about who carried the heaviest load. {name} offered to swap loads. The argument ended at once."
+ },
+ {
+  "section": "daily",
+  "idx": 174,
+  "why": "nedává smysl",
+  "old": "{name} measured a replacement beam three times. The passage was narrow enough to punish optimism.",
+  "new": "{name} measured a replacement beam three times in the narrow passage. Nobody wanted to be the one who got it wrong."
+ },
+ {
+  "section": "daily",
+  "idx": 175,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "A pump handle came off in {name}'s hands. {He} repaired it while the water rose around {his} ankles.",
+  "new": "A pump handle snapped off in {name}'s hands. {He} fixed it while the water rose around {his} ankles."
+ },
+ {
+  "section": "daily",
+  "idx": 176,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "A patient apologised for bleeding on {name}'s sleeve. {He} asked the patient to concentrate on staying awake instead.",
+  "new": "A patient apologized for bleeding on {name}'s sleeve. {He} told the patient to concentrate on staying awake."
+ },
+ {
+  "section": "daily",
+  "idx": 177,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} labelled the dressings by lamplight. When the next stretcher arrived, {he} could find everything without looking.",
+  "new": "{name} sorted the dressings by lamplight. When the next stretcher arrived, {he} could find everything without looking."
+ },
+ {
+  "section": "daily",
+  "idx": 178,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} delivered an urgent message and waited while the recipient searched every pocket for a pencil to acknowledge it.",
+  "new": "{name} delivered an urgent message and waited while the officer searched every pocket for a pencil to sign for it."
+ },
+ {
+  "section": "daily",
+  "idx": 179,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "A new trench junction cost {name} ten minutes. {He} marked the correct turn with a broken spoon on the return journey.",
+  "new": "A new trench junction cost {name} ten minutes. On the way back, {he} marked the right turn with a broken spoon."
+ },
+ {
+  "section": "daily",
+  "idx": 180,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} noticed a loophole that had been dark for days. {He} watched it until dusk and wrote down the change.",
+  "new": "{name} noticed a loophole that had been dark for days. {He} watched it until dusk and wrote down what changed."
+ },
+ {
+  "section": "daily",
+  "idx": 182,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} tested the telephone and heard someone at headquarters chewing. The line was pronounced perfectly clear.",
+  "new": "{name} tested the telephone and heard someone at headquarters chewing. The line was declared perfectly clear."
+ },
+ {
+  "section": "daily",
+  "idx": 183,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} taught a replacement to recognise letters by sound. By supper, the table had become an unofficial Morse key.",
+  "new": "{name} taught a recruit to recognize letters by sound. By supper, the whole table was tapping out Morse on the planks."
+ },
+ {
+  "section": "daily",
+  "idx": 184,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} counted the ladles in the pot against the men in the queue. The final serving took some careful scraping.",
+  "new": "{name} counted the ladles in the pot against the men in the queue. The last serving took some careful scraping."
+ },
+ {
+  "section": "daily",
+  "idx": 187,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} conducted a service beside a ration store. The men sang quietly so the sleepers behind the wall could rest.",
+  "new": "{name} held a service beside a ration store. The men sang quietly so the sleepers behind the wall could rest."
+ },
+ {
+  "section": "daily",
+  "idx": 188,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} checked the duty roster and found the same names on the worst shifts. {He} fetched a fresh sheet of paper.",
+  "new": "{name} checked the duty roster and noticed the same names on the worst shifts. {He} fetched a fresh sheet of paper and started over."
+ },
+ {
+  "section": "daily",
+  "idx": 189,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "A report called the trench satisfactory. {name} invited its author to spend the night there before signing it.",
+  "new": "A report called the trench satisfactory. {name} invited the author to spend a night in it before signing."
+ },
+ {
+  "section": "daily",
+  "idx": 193,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} checked the firing step after the shelling. The wall had moved; the familiar place for one foot was gone.",
+  "new": "{name} checked the fire step after the shelling. The wall had moved, and the spot where {he} always put {his} foot was gone."
+ },
+ {
+  "section": "daily",
+  "idx": 195,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "Two carrying parties met in the narrow trench. {name} helped negotiate the passing of an ammunition box and a very large kettle.",
+  "new": "Two carrying parties met in the narrow trench. {name} helped work out how an ammunition box and a very large kettle could pass each other."
+ },
+ {
+  "section": "daily",
+  "idx": 198,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{name} found a chair in the billet and sat down carefully, as though it might be reserved for someone of higher rank.",
+  "new": "{name} found a chair in the barn and sat down carefully, as if it might be reserved for someone of higher rank."
+ },
+ {
+  "section": "daily",
+  "idx": 201,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "In the billet, {name} woke at the usual watch hour. For several minutes, nobody could persuade {him} to go back to sleep.",
+  "new": "{name} woke up at the usual time for night watch, even in the rear. It took several minutes to convince {him} to go back to sleep."
+ },
+ {
+  "section": "daily",
+  "idx": 209,
+  "why": "nedává smysl",
+  "old": "A child had enclosed a riddle in a parcel for {name}. The answer was on the back. {He} kept the dugout guessing until supper.",
+  "new": "A child had slipped a riddle into a parcel for {name}. {He} kept the dugout guessing until supper, then turned the page over and read the answer."
+ },
+ {
+  "section": "daily",
+  "idx": 212,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} mended a split glove with pale thread. The repair makes one finger look as though it has been promoted.",
+  "new": "{name} mended a split glove with pale thread. One finger now looks like it has been promoted."
+ },
+ {
+  "section": "daily",
+  "idx": 214,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} has learnt to recognise the ration cart by its squeaking wheel. A different squeak caused considerable disappointment this afternoon.",
+  "new": "{name} has learned to recognize the ration cart by its squeaky wheel. This afternoon, a different squeak caused real disappointment."
+ },
+ {
+  "section": "daily",
+  "idx": 217,
+  "why": "nedává smysl",
+  "old": "A loose thread in {name}'s blanket proved longer than expected. By the time {he} stopped pulling, the repair needed explaining.",
+  "new": "A loose thread in {name}'s blanket turned out to be very long. By the time {he} stopped pulling, there was a hole to explain."
+ },
+ {
+  "section": "daily",
+  "idx": 218,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} read a letter that said the neighbour had married again. The whole dugout wanted the missing first half of the story.",
+  "new": "{name} read a letter saying the neighbor had married again. The whole dugout wanted the first half of the story, which was missing."
+ },
+ {
+  "section": "daily",
+  "idx": 219,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The new soap slipped into the wash bucket. {name} recovered it by touch and then had to wash again.",
+  "new": "The new soap slipped into the wash bucket. {name} fished it out by feel and then had to wash again."
+ },
+ {
+  "section": "daily",
+  "idx": 225,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "A scrap of newspaper announced a sale of garden furniture. {name} calculated how many months' pay a comfortable afternoon might cost.",
+  "new": "A scrap of newspaper advertised a sale of garden furniture. {name} worked out how many months of pay a comfortable afternoon would cost."
+ },
+ {
+  "section": "daily",
+  "idx": 226,
+  "why": "nedává smysl",
+  "old": "{name} caught a falling mug with {his} foot. Saving the mug was impressive; retrieving the foot without spilling it required assistance.",
+  "new": "{name} caught a falling mug with {his} boot. Nobody could say if it was skill or luck, and {he} did not say either."
+ },
+ {
+  "section": "daily",
+  "idx": 227,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} offered to read the newspaper aloud. The audience requested the advertisements first, then the racing, and finally the war.",
+  "new": "{name} offered to read the newspaper aloud. The audience asked for the advertisements first, then the racing results, and the war last."
+ },
+ {
+  "section": "enlist",
+  "idx": 0,
+  "why": "zmínka o počasí v textu, který není o počasí",
+  "old": "{name} came up the line in the rain with {item} and nothing else. The sergeant wrote {him} down as {rank} and pointed at the mud.",
+  "new": "{name} came up the line with {item} and nothing else. The sergeant wrote {him} down as {rank} and pointed at the mud."
+ },
+ {
+  "section": "enlist",
+  "idx": 4,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{name} arrived with the evening ration party, carrying {item} and a borrowed greatcoat two sizes too big.",
+  "new": "{name} arrived with the evening ration party, carrying {item} and a borrowed coat two sizes too big."
+ },
+ {
+  "section": "enlist",
+  "idx": 10,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{name} was a {trade} in {home} until the posters went up. {He} came to {sector} with {item}, and within a day the whole bay knew that {he} {quirk}.",
+  "new": "{name} was a {trade} in {home} until the posters went up. {He} came to {sector} with {item}, and within a day the whole squad knew that {he} {quirk}."
+ },
+ {
+  "section": "enlist",
+  "idx": 14,
+  "why": "zmínka o počasí v textu, který není o počasí",
+  "old": "{name} told the sergeant {he} was a {trade}. The sergeant said the war needed one of those like it needed more rain, and put {him} on sentry.",
+  "new": "{name} told the sergeant {he} was a {trade}. The sergeant said the war needed one of those like it needed a hole in the roof, and put {him} on sentry."
+ },
+ {
+  "section": "enlist",
+  "idx": 16,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} arrived at {sector} with a carefully folded uniform. The first low beam corrected the cap; the first puddle corrected the rest.",
+  "new": "{name} arrived at {sector} with a carefully folded uniform. The first low beam ruined the cap; the first puddle ruined the rest."
+ },
+ {
+  "section": "enlist",
+  "idx": 20,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} unpacked {item} at {sector}. A neighbour shifted a bag to make room without asking what it was.",
+  "new": "{name} unpacked {item} at {sector}. The man in the next bunk shifted his bag to make room without asking what it was."
+ },
+ {
+  "section": "firstWave",
+  "idx": 3,
+  "why": "zmínka o počasí v textu, který není o počasí",
+  "old": "The colonel shook hands with the first hundred, one by one. {name} was number {n}. {He} still remembers how cold the colonel's glove was.",
+  "new": "The colonel shook hands with the first hundred, one by one. {name} was number {n}. {He} still remembers how stiff the colonel's glove felt."
+ },
+ {
+  "section": "firstWave",
+  "idx": 4,
+  "why": "zmínka o počasí v textu, který není o počasí",
+  "old": "First Wave. {name} signed when the posters were still wet. {He} keeps the ribbon wrapped in oilcloth with {item}.",
+  "new": "First Wave. {name} signed when the ink on the posters was still fresh. {He} keeps the ribbon wrapped in oilcloth with {item}."
+ },
+ {
+  "section": "firstWave",
+  "idx": 9,
+  "why": "zmínka o počasí v textu, který není o počasí",
+  "old": "One of the first hundred, {name} was given the First Wave ribbon. {He} wrapped the accompanying paper against the damp.",
+  "new": "One of the first hundred, {name} was given the First Wave ribbon. {He} wrapped the paper that came with it in oilcloth to keep it safe."
+ },
+ {
+  "section": "recovered",
+  "idx": 1,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{name} came back to {sector} with a new scar and an old joke. The bay was glad of both.",
+  "new": "{name} came back to {sector} with a new scar and an old joke. The squad was glad of both."
+ },
+ {
+  "section": "recovered",
+  "idx": 11,
+  "why": "nedává smysl",
+  "old": "{name} rejoined {sector} carrying a borrowed book from the ward. Returning it has become a reason to survive the next leave application.",
+  "new": "{name} rejoined {sector} carrying a borrowed book from the ward. It is now overdue, which {he} says is a good reason to stay alive."
+ },
+ {
+  "section": "returned",
+  "idx": 1,
+  "why": "zmínka o počasí v textu, který není o počasí",
+  "old": "The sentry nearly shot {name} coming in through the wire. {He} had been lost in the fog at {place}, living on rainwater and stubbornness.",
+  "new": "The sentry nearly shot {name} coming in through the wire. {He} had been lost near {place} for two days, living on puddle water and stubbornness."
+ },
+ {
+  "section": "transfer",
+  "idx": 4,
+  "why": "zmínka o počasí v textu, který není o počasí",
+  "old": "The {role}s took {name} in on a wet morning in {sector}. By noon {he} had learned the first rule of the job, and by evening the second.",
+  "new": "The {role}s took {name} in on a busy morning in {sector}. By noon {he} had learned the first rule of the job, and by evening the second."
+ },
+ {
+  "section": "comrade",
+  "idx": 0,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{a} and {b} shared the last tin of bully beef in the bay, counting the bites out loud to keep it fair.",
+  "new": "{a} and {b} split the last tin of beef, counting the bites out loud to keep it fair."
+ },
+ {
+  "section": "comrade",
+  "idx": 2,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{a} taught {b} to play the harmonica. The bay has asked them both, formally, to stop.",
+  "new": "{a} taught {b} to play the harmonica. The whole squad has asked them both, politely, to stop."
+ },
+ {
+  "section": "comrade",
+  "idx": 3,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{a} pulled {b} out of a flooded shell hole at {place}. Neither of them has mentioned it since. Both of them remember.",
+  "new": "{a} pulled {b} out of a flooded shell hole at {place}. Neither has mentioned it since. Both remember."
+ },
+ {
+  "section": "comrade",
+  "idx": 4,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{a} and {b} argued all night about whose home town has the better beer. The argument has been adjourned until after the war.",
+  "new": "{a} and {b} argued all night about whose hometown has the better beer. They agreed to finish the argument after the war."
+ },
+ {
+  "section": "comrade",
+  "idx": 8,
+  "why": "zmínka o počasí v textu, který není o počasí",
+  "old": "{a} and {b} made a pact on sentry tonight: whoever gets home first visits the other's family. They shook on it with frozen hands.",
+  "new": "{a} and {b} made a pact on sentry tonight: whoever gets home first visits the other's family. They shook on it."
+ },
+ {
+  "section": "comrade",
+  "idx": 9,
+  "why": "zmínka o počasí v textu, který není o počasí",
+  "old": "{a} saw {b} freeze on the fire step at {place}. {as} said nothing, just stood closer. It was enough.",
+  "new": "{a} saw {b} freeze up on the fire step at {place}. {as} said nothing, just stood closer. It was enough."
+ },
+ {
+  "section": "comrade",
+  "idx": 10,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{a} and {b} divided a parcel using the lid of a tin as scales. The final crumb required a second opinion.",
+  "new": "{a} and {b} divided a parcel using a tin lid as scales. The last crumb needed a second opinion."
+ },
+ {
+  "section": "comrade",
+  "idx": 13,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{a} lent {b} a pencil. The returned pencil came wrapped in a scrap of paper marked 'One good turn'.",
+  "new": "{a} lent {b} a pencil. It came back wrapped in a scrap of paper that said 'One good turn'."
+ },
+ {
+  "section": "comrade",
+  "idx": 14,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{a} and {b} carried a kettle through three narrow traverses without spilling a drop. Applause at the destination caused the accident.",
+  "new": "{a} and {b} carried a kettle through three narrow turns without spilling a drop. The applause at the end caused the accident."
+ },
+ {
+  "section": "comrade",
+  "idx": 15,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{a} repaired the strap on {b}'s pack. Payment was a biscuit and a promise to stop mentioning the haircut.",
+  "new": "{a} fixed the strap on {b}'s pack. The price was a biscuit and a promise to stop mentioning the haircut."
+ },
+ {
+  "section": "comrade",
+  "idx": 16,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{a} and {b} tried to invent a new card game. The rules became clearer only after the tobacco stakes were removed.",
+  "new": "{a} and {b} tried to invent a new card game. The rules only made sense once they stopped betting tobacco."
+ },
+ {
+  "section": "comrade",
+  "idx": 17,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{a} and {b} sat through a quiet hour without finding anything to say. At relief, the next watch was told it had been a good hour.",
+  "new": "{a} and {b} sat through a quiet hour without finding anything to say. At the change of watch, the next pair was told it had been a good hour."
+ },
+ {
+  "section": "enemy",
+  "idx": 1,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{a} ({af}) and {b} ({bf}) met in the same shell hole at {place} during a raid. They stared at each other. Then each crawled home, and neither has told anyone.",
+  "new": "{a} ({af}) and {b} ({bf}) ended up in the same shell hole at {place}. They stared at each other. Then each crawled home, and neither has told anyone."
+ },
+ {
+  "section": "enemy",
+  "idx": 3,
+  "why": "zájmeno v textu pro dvojici",
+  "old": "{a} had {b} of the {bf} in {his} sights at {place} for a long second. {b} was lighting a pipe. {a} let the match burn all the way down.",
+  "new": "{a} had {b} of the {bf} in the sights at {place} for a long second. {b} was lighting a pipe. {a} let the match burn all the way down."
+ },
+ {
+  "section": "enemy",
+  "idx": 6,
+  "why": "zmínka o počasí v textu, který není o počasí",
+  "old": "At {place}, {a} of the {af} and {b} of the {bf} fired at the same loose sheet of metal. The wind kept winning.",
+  "new": "At {place}, {a} of the {af} and {b} of the {bf} spent the morning shooting at the same loose sheet of metal. The sheet kept winning."
+ },
+ {
+  "section": "enemy",
+  "idx": 8,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "During a lull at {place}, {a} called across from the {af} line. {b} answered from the {bf} side with a convincing imitation of an officer. Both trenches went quiet.",
+  "new": "During a lull at {place}, {a} called across from the {af} line. {b} answered from the {bf} side with a perfect imitation of an officer. Both trenches went quiet."
+ },
+ {
+  "section": "enemy",
+  "idx": 9,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{a} of the {af} and {b} of the {bf} watched a broken branch near {place} all morning. Neither side could afford to assume it was only a branch.",
+  "new": "{a} of the {af} and {b} of the {bf} watched a broken branch near {place} all morning. Neither could risk assuming it was only a branch."
+ },
+ {
+  "section": "enemy",
+  "idx": 10,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "A shouted challenge from {a} ({af}) reached {b} ({bf}) at {place}. The answer was lost beneath the guns. The challenge was not repeated.",
+  "new": "{a} ({af}) shouted a challenge across to {b} ({bf}) at {place}. The answer was lost under the guns. Nobody repeated the challenge."
+ },
+ {
+  "section": "enemy",
+  "idx": 12,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{a} of the {af} spotted {b} of the {bf} repairing a parapet at {place}. A warning shot brought the repair to an abrupt halt.",
+  "new": "{a} of the {af} spotted {b} of the {bf} repairing a parapet at {place}. A warning shot stopped the repair on the spot."
+ },
+ {
+  "section": "enemy",
+  "idx": 13,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "A bucket appeared above the {bf} parapet at {place}. {a} fired; {b} pulled the bucket down. A sign later appeared: 'Water costs enough already.'",
+  "new": "A bucket appeared above the {bf} parapet at {place}. {a} fired. {b} pulled the bucket down. Later a sign went up: 'Water costs enough already.'"
+ },
+ {
+  "section": "hitLight",
+  "idx": 0,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "A splinter opened {name}'s cheek at {sector}. A medic stitched it in the bay and {he} was back on the fire step before the tea went cold.",
+  "new": "A splinter opened {name}'s cheek at {sector}. A medic stitched it on the spot and {he} was back on the fire step before the tea went cold."
+ },
+ {
+  "section": "hitLight",
+  "idx": 5,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "Blast from a trench mortar threw {name} against the revetment at {sector}. Ringing ears, a split lip, and no intention of leaving.",
+  "new": "Blast from a trench mortar threw {name} against the trench wall at {sector}. Ringing ears, a split lip, and no intention of leaving."
+ },
+ {
+  "section": "hitHeavy",
+  "idx": 4,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "A trench mortar bomb landed in the next bay. The blast caught {name} at {sector} and the bearers came at a run.",
+  "new": "A trench mortar bomb landed in the next section of trench. The blast caught {name} at {sector} and the bearers came at a run."
+ },
+ {
+  "section": "shellHeavy",
+  "idx": 0,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "A shell burst in the bay at {sector}. {name} was thrown against the revetment and did not get up. The bearers came at a run.",
+  "new": "A shell burst in the trench at {sector}. {name} was thrown against the wall and did not get up. The bearers came at a run."
+ },
+ {
+  "section": "shellCrit",
+  "idx": 1,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "A direct hit on the bay at {sector}. {name} was the only one they could still help, and only just.",
+  "new": "A direct hit on the trench at {sector}. {name} was the only one they could still help, and only just."
+ },
+ {
+  "section": "shotHit",
+  "idx": 3,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "Stand-to at dawn. {name} put a round across no man's land and the enemy line went quiet: {target}, {how}.",
+  "new": "Dawn watch. {name} put a round across no man's land and the enemy line went quiet: {target}, {how}."
+ },
+ {
+  "section": "shotHit",
+  "idx": 4,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{name} fired twice at the enemy sap. The second shot found {target}, {how}. Nobody in the bay said anything.",
+  "new": "{name} fired twice at the enemy sap. The second shot found {target}, {how}. Nobody nearby said anything."
+ },
+ {
+  "section": "stretcher",
+  "idx": 0,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "There was no bed for {name}. {He} lay on a stretcher outside, wrapped in a greatcoat, listening to the guns.",
+  "new": "There was no bed for {name}. {He} lay on a stretcher outside, wrapped in a coat, listening to the guns."
+ },
+ {
+  "section": "stabilized",
+  "idx": 1,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{name} opened {his} eyes today and asked for water. In the {sector} bay they cheered when the news came up the line.",
+  "new": "{name} opened {his} eyes today and asked for water. At {sector} they cheered when the news came up the line."
+ },
+ {
+  "section": "diedNoBed",
+  "idx": 1,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "There was no room for {name}. {He} died in the night under a borrowed greatcoat, a few yards from a bed that never came free.",
+  "new": "There was no room for {name}. {He} died in the night under a borrowed coat, a few yards from a bed that never came free."
+ },
+ {
+  "section": "arcs/ham",
+  "idx": 1,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{name} volunteered for a supply run to headquarters. {He} came back with exactly what was ordered and a suspiciously large greatcoat.",
+  "new": "{name} volunteered for a supply run to headquarters. {He} came back with exactly what was ordered and a suspiciously large coat."
+ },
+ {
+  "section": "arcs/diary",
+  "idx": 1,
+  "why": "zmínka o počasí v textu, který není o počasí",
+  "old": "{name}'s diary, day nine: \"Still here. Rain. A rat called the Major. Nothing else worth writing, which is the point.\"",
+  "new": "{name}'s diary, day nine: \"Still here. Soup again. A rat called the Major. Nothing else worth writing, which is the point.\""
+ },
+ {
+  "section": "arcs/extra_chess_by_post",
+  "idx": 1,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The reply to {name}'s chess move arrived with a complaint about the weather at home. {His} opponent has taken a pawn and apologised for nothing.",
+  "new": "The reply to {name}'s chess move arrived with a long complaint about the weather at home and a note that {his} opponent had taken a pawn."
+ },
+ {
+  "section": "arcs/extra_wrong_parcel",
+  "idx": 0,
+  "why": "nedává smysl",
+  "old": "{name} received a parcel meant for another soldier with the same surname. Inside were {gift}. {He} put everything back and kept the wrapping.",
+  "new": "A parcel came for {name} that was really meant for another soldier with the same surname. Inside: {gift}. {He} put everything back and kept only the wrapping."
+ },
+ {
+  "section": "arcs/extra_wrong_parcel",
+  "idx": 2,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} caught a supply driver heading toward one of the units. The parcel went along with a note asking for word when it arrived.",
+  "new": "{name} caught a supply driver heading for one of the units and handed the parcel over with a note asking for word when it arrived."
+ },
+ {
+  "section": "arcs/extra_wrong_parcel",
+  "idx": 3,
+  "why": "nedává smysl",
+  "old": "A card reached {name}: the parcel had found its owner. The message thanked {him} for returning {gift}, especially with the shortage at home.",
+  "new": "A card reached {name}: the parcel had found its owner. The message said thank you, and that {gift} had come just in time."
+ },
+ {
+  "section": "arcs/extra_phantom_receiver",
+  "idx": 0,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} heard a faint second conversation on the telephone line. Headquarters insisted only one circuit was connected.",
+  "new": "{name} heard a faint second conversation on the telephone line. Headquarters said only one line was connected."
+ },
+ {
+  "section": "arcs/extra_phantom_receiver",
+  "idx": 1,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "The extra voice returned during {name}'s test. It was discussing potatoes, which made enemy intelligence seem an unlikely explanation.",
+  "new": "The extra voice came back during {name}'s test. It was talking about potatoes, which made enemy spies an unlikely explanation."
+ },
+ {
+  "section": "arcs/extra_phantom_receiver",
+  "idx": 2,
+  "why": "krkolomná nebo nejasná věta",
+  "old": "{name} traced the fault to two poorly insulated wires pressed together near a junction. One belonged to the supply office.",
+  "new": "{name} traced the fault to two badly insulated wires touching near a junction. One of them belonged to the supply office."
+ },
+ {
+  "section": "arcs/extra_phantom_receiver",
+  "idx": 3,
+  "why": "nedává smysl",
+  "old": "With the wires separated, {name}'s telephone carried only orders again. The section misses knowing in advance what is wrong with supper.",
+  "new": "With the wires separated, {name}'s telephone carried only orders again. The section misses hearing what was for supper before it was served."
+ },
+ {
+  "section": "background/waiting",
+  "idx": 3,
+  "why": "nedává smysl",
+  "old": "nobody, which {he} says is easier",
+  "new": "a mother who sets a place for {him} at every meal"
+ },
+ {
+  "section": "background/waiting",
+  "idx": 6,
+  "why": "nedává smysl",
+  "old": "a dog called Bastion on the farm",
+  "new": "an old neighbor who promised to keep {his} garden alive"
+ },
+ {
+  "section": "daily",
+  "idx": 46,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{name} turned a year older today. The bay sang for {him}, badly, and the cook found a candle.",
+  "new": "{name} turned a year older today. The whole squad sang for {him}, badly, and the cook found a candle."
+ },
+ {
+  "section": "daily",
+  "idx": 48,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{name} stood to at dawn with the rest of {sector}, bayonet fixed, staring into the grey. Nothing came. Nothing came yesterday, either.",
+  "new": "{name} stood at the parapet at dawn with the rest of {sector}, bayonet fixed, staring into the grey. Nothing came. Nothing came yesterday, either."
+ },
+ {
+  "section": "daily",
+  "idx": 52,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{name} repaired a collapsed traverse at {sector} with sandbags, boards and language not fit for letters home.",
+  "new": "{name} repaired a collapsed wall of the trench at {sector} with sandbags, boards and language not fit for letters home."
+ },
+ {
+  "section": "daily",
+  "idx": 54,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "In the reserve billet {name} played football against the sappers. The ball was a sandbag stuffed with straw. The sappers cheated.",
+  "new": "In the rear quarters, {name} played football against the sappers. The ball was a sandbag stuffed with straw. The sappers cheated."
+ },
+ {
+  "section": "recovered",
+  "idx": 2,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "The field hospital let {name} go. {He} came back up the line on foot because the lorry would not wait.",
+  "new": "The field hospital let {name} go. {He} came back up the line on foot because the truck would not wait."
+ },
+ {
+  "section": "exchanged",
+  "idx": 1,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "A white flag, a handshake in the mud, and {name} walked back across no man's land in an exchange of prisoners. The bay cheered {him} in.",
+  "new": "A white flag, a handshake in the mud, and {name} walked back across no man's land in an exchange of prisoners. The whole squad cheered {him} in."
+ },
+ {
+  "section": "killedShell",
+  "idx": 0,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "A shell landed square in the bay at {sector}. {name} was killed outright. The bearers found nothing to carry.",
+  "new": "A shell landed square in the trench at {sector}. {name} was killed outright. The bearers found nothing to carry."
+ },
+ {
+  "section": "shotHit",
+  "idx": 4,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{name} fired twice at the enemy sap. The second shot found {target}, {how}. Nobody nearby said anything.",
+  "new": "{name} fired twice at the enemy post. The second shot found {target}, {how}. Nobody nearby said anything."
+ },
+ {
+  "section": "arcs/rat",
+  "idx": 1,
+  "why": "žargon, kterému hráč nerozumí",
+  "old": "{pet} the rat now waits for {name} at stand-to every morning. {He} shares crumbs with it. The corporal calls this desertion of rations.",
+  "new": "{pet} the rat now waits for {name} at dawn watch every morning. {He} shares crumbs with it. The corporal calls this desertion of rations."
+ }
+]

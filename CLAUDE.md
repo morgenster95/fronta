@@ -33,6 +33,8 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
 - **Každou domluvenou změnu mechaniky** (boj, role, ztráty, bombardování, útoky) i návrh zapiš do `docs/MECHANICS.md` (datum, stav NASAZENO/SCHVÁLENO/NÁVRH, čísla, proč).
 - Před commitem `npm test` (musí projít). Commity do `main`, smyčka změny sama nasadí.
 - Engine (`engine/`) je obecný, téma (`themes/front-ww1/`) je konkrétní hra. Ten rozdíl drž (stejný engine půjde použít pro jiná témata).
+- **Angličtina příběhů** (od 2026-11-11, hráči nerozuměli): jednoduchá, konkrétní, krátké věty, bez žargonu a britských slov, která neznají US hráči (ne „bay“, „revetment“, „puttees“, „greatcoat“, „billet“, „stand-to“, „lorry“; používej „trench“, „squad“, „coat“, „truck“, „dawn watch“). Žádné krkolomné věty ani vtipy, kterým nikdo nerozumí.
+  Přepsáno 153 šablon, staré a nové v `docs/textreview/changes.json` (skript `docs/textreview/rewrite.py` je jednorázový). Šablona s `{waiting}` musí dávat smysl i pro „nobody“ (engine ho nahrazuje).
 - Příběhové texty: proměnné jen tam, kde je kód doplní; žádná zájmena u dvojic spolubojovník/nepřítel; slova o počasí jen v šablonách počasí;
   v krocích příběhových linek žádné „yesterday“. Po úpravě `themes/front-ww1/story.json` spustit `npm test` (90denní simulace hledá chyby).
 

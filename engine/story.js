@@ -69,7 +69,8 @@ export function soldierVars(soldier, theme, story, extra = {}) {
     home: bg.home ?? 'home',
     trade: bg.trade ?? 'soldier',
     quirk: bg.quirk ?? 'keeps {his} head down',
-    waiting: bg.waiting ?? 'nobody',
+    // „nobody“ ve větě („thought about nobody“) nedává smysl; na kartě zůstává původní text
+    waiting: !bg.waiting || /^nobody/i.test(bg.waiting) ? 'the people {he} used to know' : bg.waiting,
     name: soldier.name,
     family: soldier.family ?? '',
     rank: theme.ranks[soldier.rank],

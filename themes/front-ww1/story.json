@@ -113,27 +113,27 @@
     "a key to a house that is no longer there"
   ],
   "enlist": [
-    "{name} came up the line in the rain with {item} and nothing else. The sergeant wrote {him} down as {rank} and pointed at the mud.",
+    "{name} came up the line with {item} and nothing else. The sergeant wrote {him} down as {rank} and pointed at the mud.",
     "Nobody saw {name} arrive. One morning there was simply one more helmet in {sector}, and a quiet {archetype} under it.",
     "{name} signed the papers with a steady hand. The trench at {sector} took {him} in like it takes everyone: without a word.",
     "They issued {name} a rifle, a spade and a number. {He} kept {item} in {his} breast pocket, where the shrapnel would have to go through it first.",
-    "{name} arrived with the evening ration party, carrying {item} and a borrowed greatcoat two sizes too big.",
+    "{name} arrived with the evening ration party, carrying {item} and a borrowed coat two sizes too big.",
     "The new {archetype} gave {his} name as {name}. The corporal looked at {his} boots, then at the mud, and laughed for the first time in a week.",
     "{name} stepped off the supply cart at {sector} and stood very still, listening to the guns as if they were saying {his} name.",
     "Nobody asked {name} why {he} came. Nobody in {sector} asks that. {He} was handed a spade before {he} was handed a rifle.",
     "{name} took the place of a man nobody would talk about. The dugout still had his blanket. {He} kept it folded.",
     "{name} reported to {sector} with {item} sewn into {his} tunic lining. The sergeant pretended not to notice.",
-    "{name} was a {trade} in {home} until the posters went up. {He} came to {sector} with {item}, and within a day the whole bay knew that {he} {quirk}.",
+    "{name} was a {trade} in {home} until the posters went up. {He} came to {sector} with {item}, and within a day the whole squad knew that {he} {quirk}.",
     "In {home}, {name} was a {trade}. In {sector}, {he} is a number and a rifle. {He} has told everyone {he} intends to be a {trade} again.",
     "{name} left {waiting} behind in {home} and came up the line with {item}. The men noticed at once that {he} {quirk}.",
     "The new {archetype} is {name}, once a {trade} from {home}. The corporal asked if a {trade} was any use in a trench. {name} said {he} would find out.",
-    "{name} told the sergeant {he} was a {trade}. The sergeant said the war needed one of those like it needed more rain, and put {him} on sentry.",
+    "{name} told the sergeant {he} was a {trade}. The sergeant said the war needed one of those like it needed a hole in the roof, and put {him} on sentry.",
     "{name} came from {home}, where there is a river, a church and no mud at all. {He} talks about all three as if they were people.",
-    "{name} arrived at {sector} with a carefully folded uniform. The first low beam corrected the cap; the first puddle corrected the rest.",
+    "{name} arrived at {sector} with a carefully folded uniform. The first low beam ruined the cap; the first puddle ruined the rest.",
     "At the depot, {name} had practised answering to {his} name. At {sector}, the first person to call it only wanted help with a crate.",
     "{name} reached {sector} expecting a speech. The welcome consisted of a mug, a space on a bench and directions to the latrine.",
     "The quartermaster asked {name} to sign for the blanket. {He} examined the blanket and asked whether the holes were included.",
-    "{name} unpacked {item} at {sector}. A neighbour shifted a bag to make room without asking what it was.",
+    "{name} unpacked {item} at {sector}. The man in the next bunk shifted his bag to make room without asking what it was.",
     "{name} introduced {him}self as a {trade} from {home}. The corporal repeated the name correctly. That helped more than the advice.",
     "On the way to {sector}, {name} tried to memorise every turn. By the dugout door, {he} was simply glad someone else knew the way.",
     "{name} found a place in {sector} between a snorer and a man who talked in his sleep. The available alternative was under the leak."
@@ -276,7 +276,7 @@
     {
       "w": 3,
       "weather": "clear",
-      "text": "Sun on {sector}. {name} took off {his} boots for the first time in nine days and the whole bay applauded."
+      "text": "Sun on {sector}. {name} took off {his} boots for the first time in nine days and the whole squad applauded."
     },
     {
       "w": 3,
@@ -291,7 +291,7 @@
     {
       "w": 4,
       "weather": "storm",
-      "text": "Thunder all night. {name} kept flinching. The old hands said that is how you tell the new ones: they flinch at God."
+      "text": "Thunder all night. {name} flinched at every crack. The old hands said that is how you spot the new ones. By morning, they were flinching too."
     },
     {
       "w": 5,
@@ -353,7 +353,7 @@
     },
     {
       "w": 1,
-      "text": "{name} turned a year older today. The bay sang for {him}, badly, and the cook found a candle."
+      "text": "{name} turned a year older today. The whole squad sang for {him}, badly, and the cook found a candle."
     },
     {
       "w": 1,
@@ -362,7 +362,7 @@
     {
       "w": 3,
       "line": "front",
-      "text": "{name} stood to at dawn with the rest of {sector}, bayonet fixed, staring into the grey. Nothing came. Nothing came yesterday, either."
+      "text": "{name} stood at the parapet at dawn with the rest of {sector}, bayonet fixed, staring into the grey. Nothing came. Nothing came yesterday, either."
     },
     {
       "w": 3,
@@ -382,7 +382,7 @@
     {
       "w": 2,
       "line": "support",
-      "text": "{name} repaired a collapsed traverse at {sector} with sandbags, boards and language not fit for letters home."
+      "text": "{name} repaired a collapsed wall of the trench at {sector} with sandbags, boards and language not fit for letters home."
     },
     {
       "w": 3,
@@ -392,7 +392,7 @@
     {
       "w": 2,
       "line": "reserve",
-      "text": "In the reserve billet {name} played football against the sappers. The ball was a sandbag stuffed with straw. The sappers cheated."
+      "text": "In the rear quarters, {name} played football against the sappers. The ball was a sandbag stuffed with straw. The sappers cheated."
     },
     {
       "w": 2,
@@ -407,7 +407,7 @@
     {
       "w": 2,
       "archetype": "medic",
-      "text": "{name} splinted a broken leg with a rifle and two puttees. The patient asked if {he} was a real doctor. {He} said yes. {He} was lying."
+      "text": "{name} splinted a broken leg with a rifle and two belts. The patient asked if {he} was a real doctor. {He} said yes. {He} was lying."
     },
     {
       "w": 2,
@@ -462,7 +462,7 @@
     {
       "w": 2,
       "archetype": "cook",
-      "text": "The cook's fire went out in the rain. {name} relit it under {his} own greatcoat and served stew that tasted of wool."
+      "text": "The cook's fire went out. {name} relit it under {his} own coat and served stew that tasted of wool."
     },
     {
       "w": 2,
@@ -516,7 +516,7 @@
     },
     {
       "w": 3,
-      "text": "{name} dreamt {he} was back in {home}, working as a {trade}. {He} woke to rain and said nothing all morning."
+      "text": "{name} dreamt {he} was back in {home}, working as a {trade}. {He} woke up and said nothing all morning."
     },
     {
       "w": 2,
@@ -532,7 +532,7 @@
     },
     {
       "w": 2,
-      "text": "{name} thought about {waiting} on sentry tonight, and the cold felt a little further away."
+      "text": "{name} thought about {waiting} on sentry tonight, and the night felt a little shorter."
     },
     {
       "w": 2,
@@ -573,152 +573,152 @@
     {
       "w": 3,
       "line": "front",
-      "text": "The shelling stopped while {name} was counting between impacts. {He} reached the next number anyway, then waited a long time before moving."
+      "text": "The shelling stopped while {name} was counting the seconds between hits. {He} kept counting anyway, and waited a long time before moving."
     },
     {
       "w": 4,
-      "text": "A newspaper reached {name} with the corner torn off. The war was going well, according to half a sentence."
+      "text": "A newspaper reached {name} with the corner torn off. According to the half a sentence that survived, the war was going well."
     },
     {
       "w": 4,
-      "text": "{name} dreamt of missing a train. Waking up here seemed an unreasonable punishment for it."
+      "text": "{name} dreamt about missing a train. Waking up here felt like a harsh punishment for it."
     },
     {
       "w": 4,
-      "text": "The blanket exchange left {name} with a better blanket and a reputation for sharp dealing. The previous owner wants a rematch."
+      "text": "{name} traded for a better blanket and got a reputation as a sharp dealer. The man who lost it wants a rematch."
     },
     {
       "w": 4,
-      "text": "{name} tried writing with gloves on. The address is readable. Everything else will require imagination."
+      "text": "{name} tried to write home with gloves on. The address is readable. Everything else will need some imagination."
     },
     {
       "w": 4,
-      "text": "{name} found a clean patch on the table and put {his} bread on it. Someone immediately asked to borrow the patch."
+      "text": "{name} found a clean spot on the table and set {his} bread on it. Within a minute, someone asked to borrow the spot."
     },
     {
       "w": 4,
-      "text": "The next dugout has acquired a doorbell. {name} went to inspect it. It is a spoon tied to an empty tin."
+      "text": "Somebody hung a doorbell on the next dugout. {name} went to look. It was a spoon tied to an empty tin."
     },
     {
       "w": 4,
-      "text": "{name} was asked what {he} wanted after the war. A chair, {he} said. After some thought: a chair nobody else was using."
+      "text": "Asked what {he} wanted after the war, {name} said a chair. After some thought: a chair nobody else was sitting on."
     },
     {
       "w": 3,
       "line": "front",
-      "text": "{name} heard wire rattle beyond the parapet. At relief, the next sentry was told exactly where and asked not to dismiss it."
+      "text": "{name} heard wire rattling beyond the parapet. At the change of watch, {he} said exactly where and asked for it to be taken seriously."
     },
     {
       "w": 4,
-      "text": "{name} drew the street leading into {home}. There was no room for the last house, so {he} used the back of the page."
+      "text": "{name} drew the street leading to {home}. There was no room left for the last house, so {he} turned the page over."
     },
     {
       "w": 4,
-      "text": "The men argued about whether fish sleep. {name} said yes, and was made to explain how anyone could tell."
+      "text": "The men argued about whether fish sleep. {name} said yes, and was told to explain how anyone could know."
     },
     {
       "w": 3,
       "line": "front",
-      "text": "A shot struck the sandbag beside {name}. {He} crouched down and discovered that the hands could shake while still doing everything required."
+      "text": "A bullet hit the sandbag beside {name}. {He} ducked, and noticed {his} hands were shaking. {He} kept working anyway."
     },
     {
       "w": 4,
-      "text": "{name} saved half a biscuit for later. Later turned out to be six minutes away."
+      "text": "{name} saved half a biscuit for later. Later came six minutes afterwards."
     },
     {
       "w": 4,
-      "text": "The cook asked for an honest opinion. {name} asked whether second helpings depended on the answer."
+      "text": "The cook asked for an honest opinion of the stew. {name} asked if second helpings depended on the answer."
     },
     {
       "w": 4,
-      "text": "{name} brushed dried mud from a letter and uncovered one more word: 'soon'. {He} wished the sentence around it had survived."
+      "text": "{name} brushed dried mud off a letter and found one more word under it: 'soon'. {He} wished the rest of the sentence had survived."
     },
     {
       "w": 3,
       "line": "front",
-      "text": "The patrol returned one at a time. {name} held the entrance clear and counted until the corporal said that was everyone."
+      "text": "The patrol came back one man at a time. {name} held the gap open and counted until the corporal said that was everyone."
     },
     {
       "w": 4,
-      "text": "{name} wrote a list of things to buy on leave. It began with socks and ended with a meal nobody could call a ration."
+      "text": "{name} made a list of things to buy on leave. It started with socks and ended with a meal nobody could call a ration."
     },
     {
       "w": 4,
-      "text": "A new pair of laces made {name}'s boots look briefly respectable. The effect lasted until {he} stood up."
+      "text": "New laces made {name}'s boots look almost respectable, until {he} stood up."
     },
     {
       "w": 3,
       "line": "front",
-      "text": "{name} waited at the fire step while a flare burned out. The pale shape beyond the wire resolved into a sack, exactly where the sack had always been."
+      "text": "{name} watched a pale shape beyond the wire while a flare burned out. It turned out to be a sack, right where the sack had always been."
     },
     {
       "w": 4,
-      "text": "The parcel contained a comb. {name} has hardly any hair left after the last haircut, but accepted the encouragement."
+      "text": "A parcel from home held a comb. {name} has hardly any hair left after the last haircut, but {he} appreciated the thought."
     },
     {
       "w": 3,
       "line": "front",
-      "text": "An unexploded shell lay beside the approach trench. {name} helped divert the carrying party and was glad to leave its inspection to someone else."
+      "text": "An unexploded shell lay beside the approach trench. {name} helped steer the carrying party around it and was glad to leave the problem to somebody else."
     },
     {
       "w": 4,
-      "text": "An empty jam tin became {name}'s cup. The first drink tasted faintly of strawberries. {He} took smaller sips than usual."
+      "text": "An empty jam tin became {name}'s cup. The first drink still tasted of strawberries. {He} took small sips."
     },
     {
       "w": 4,
-      "text": "{name} remembered the tune but not the words. Six volunteers supplied six different songs, none of them an improvement."
+      "text": "{name} remembered the tune but not the words. Six men offered six different songs, and none of them helped."
     },
     {
       "w": 3,
       "line": "front",
-      "text": "The warning to check masks reached {name} during supper. {He} put the bread down carefully and did not finish it until the all-clear."
+      "text": "The gas alarm sounded during supper. {name} put the bread down carefully and did not finish it until the all-clear."
     },
     {
       "w": 4,
-      "text": "{name} washed {his} face and was asked whether headquarters was visiting. Apparently cleanliness requires an explanation."
+      "text": "{name} washed {his} face and someone asked if headquarters was visiting. Apparently being clean needs an explanation."
     },
     {
       "w": 4,
-      "text": "{name} borrowed a book with three readers already waiting. For once, everyone was impatient about something other than relief."
+      "text": "{name} borrowed a book with three readers already waiting in line. For once, everyone was impatient about something harmless."
     },
     {
       "w": 4,
-      "text": "The lice inspection interrupted a fierce argument about politics. {name} observed that at least one enemy had been positively identified."
+      "text": "A lice inspection interrupted a heated argument about politics. {name} pointed out that at least one enemy had been positively identified."
     },
     {
       "w": 3,
       "line": "front",
-      "text": "{name} heard a man laugh beyond the enemy parapet. The sound was ordinary enough to be more unsettling than a shot."
+      "text": "{name} heard a man laugh on the other side of the enemy parapet. It sounded so ordinary that it was more unsettling than a shot."
     },
     {
       "w": 4,
-      "text": "{name} tried to remember the sound of the bell in {home}. Every version came out sounding like the ration bell."
+      "text": "{name} tried to remember the sound of the church bell in {home}. Every version sounded like the ration bell."
     },
     {
       "w": 3,
       "line": "front",
-      "text": "A section of parapet collapsed near {name}. The repairs began as soon as the dust settled, with one man watching while the others worked."
+      "text": "Part of the parapet collapsed near {name}. Repairs started as soon as the dust settled, with one man on watch while the rest worked."
     },
     {
       "w": 4,
-      "text": "{name} received a photograph taken outside the family home. {He} studied the unfamiliar curtains longer than the faces."
+      "text": "{name} got a photo of the family house. {He} spent longer looking at the strange curtains than at the faces."
     },
     {
       "w": 4,
-      "text": "{name} was halfway through a story when the listener fell asleep. {He} took it as a useful service rendered."
+      "text": "{name} was halfway through a story when {his} listener fell asleep. {He} counted that as a success."
     },
     {
       "w": 4,
-      "text": "Someone asked {name} to wake them in ten minutes. {He} spent all ten worrying about how to measure them."
+      "text": "Someone asked {name} to wake them in ten minutes. {He} had no watch, so {he} counted slowly and woke them at what felt like ten."
     },
     {
       "w": 3,
       "line": "front",
-      "text": "{name} came off watch unable to remember whether the last hour had been long or short. {He} remembered every movement in one patch of wire."
+      "text": "{name} came off watch and could not say whether the last hour had felt long or short. {He} remembered every move in one patch of wire."
     },
     {
       "w": 4,
-      "text": "The company barber offered a choice of styles. {name} asked to see the second one. The barber laughed."
+      "text": "The company barber offered a choice of haircuts. {name} asked to see the second one. The barber laughed."
     },
     {
       "w": 4,
@@ -727,16 +727,16 @@
     {
       "w": 3,
       "line": "front",
-      "text": "The trench wall shook against {name}'s shoulder during the bombardment. {He} pressed both feet into the boards and waited for the next impact."
+      "text": "The trench wall shook against {name}'s shoulder during the bombardment. {He} pressed both feet into the boards and waited for the next hit."
     },
     {
       "w": 4,
-      "text": "A story about a goat travelled through three dugouts and reached {name} as a story about a general. The ending was unchanged."
+      "text": "A story about a goat passed through three dugouts and reached {name} as a story about a general. The ending was the same."
     },
     {
       "w": 3,
       "line": "front",
-      "text": "{name} checked the safety catch three times before handing over the post. The replacement noticed and checked it once more."
+      "text": "{name} checked the safety catch three times before handing over the post. The man taking over noticed, and checked it once more."
     },
     {
       "w": 4,
@@ -745,54 +745,54 @@
     {
       "w": 3,
       "line": "support",
-      "text": "Shellfire stopped the carrying party at a trench junction. {name} waited beneath a load that grew heavier with every minute."
+      "text": "Shellfire stopped the carrying party at a trench junction. {name} waited under a load that got heavier by the minute."
     },
     {
       "w": 4,
-      "text": "{name} sharpened a pencil with great care and then could not think what to write. {He} put the date at the top anyway."
+      "text": "{name} sharpened a pencil carefully and then could not think what to write. {He} put the date at the top anyway."
     },
     {
       "w": 4,
-      "text": "{name} opened a parcel addressed in an unfamiliar hand. Inside was a note explaining that the usual letter writer had hurt a wrist. {He} read that note first."
+      "text": "{name} opened a parcel addressed in unfamiliar handwriting. A note inside said the usual writer had hurt a wrist. {He} read that note first."
     },
     {
       "w": 4,
-      "text": "{name} traded a cigarette for a pinch of salt. Supper was better; the discussion of the exchange rate was worse."
+      "text": "{name} traded a cigarette for a pinch of salt. Supper improved. The argument about the exchange rate did not."
     },
     {
       "w": 4,
-      "text": "A pocket watch passed along the bench so everyone could set the time. {name} has no watch, but looked carefully all the same."
+      "text": "A pocket watch went along the bench so everyone could set the time. {name} has no watch, but checked it anyway, just to feel included."
     },
     {
       "w": 3,
       "line": "support",
-      "text": "A stretcher party needed the passage. {name} backed into a recess with an ammunition box and held it there until the last bearer passed."
+      "text": "A stretcher party needed the passage. {name} backed into a recess with an ammunition box and stayed there until the last bearer passed."
     },
     {
       "w": 4,
-      "text": "{name} tried to sketch a horse from memory. The result has been accepted by the dugout as a very good dog."
+      "text": "{name} tried to sketch a horse from memory. The dugout agreed it was a very good dog."
     },
     {
       "w": 3,
       "line": "support",
-      "text": "{name} brought replacement sandbags forward and found the damage worse than the message had said. The party sent back for another load."
+      "text": "{name} brought sandbags forward and found the damage worse than the message had said. The party went back for another load."
     },
     {
       "w": 4,
-      "text": "{name} finished a letter with 'nothing to report', then added half a page about the missing soap."
+      "text": "{name} ended a letter with 'nothing to report', then added half a page about the missing soap."
     },
     {
       "w": 3,
       "line": "support",
-      "text": "The telephone failed during the shelling. {name} watched the runner leave with the written orders, then listened for the telephone to ring again."
+      "text": "The telephone went dead during the shelling. {name} watched the runner leave with the written orders, then listened for the phone to ring again."
     },
     {
       "w": 4,
-      "text": "{name} kept a seat for someone fetching supper. Holding it against three hungry men proved harder than expected."
+      "text": "{name} saved a seat for someone fetching supper. Holding it against three hungry men turned out to be hard work."
     },
     {
       "w": 4,
-      "text": "{name} counted the stitches in a darned sock while waiting for orders. Whoever repaired it had used three colours of wool."
+      "text": "{name} counted the stitches in a darned sock while waiting for orders. Whoever fixed it had used three colors of wool."
     },
     {
       "w": 4,
@@ -822,7 +822,7 @@
     {
       "w": 4,
       "weather": "fog",
-      "text": "Fog hid the far end of {sector}. {name} kept counting the bays to avoid walking past the dugout."
+      "text": "Fog hid the far end of {sector}. {name} kept counting the turns so as not to walk past the dugout."
     },
     {
       "w": 4,
@@ -877,17 +877,17 @@
     {
       "w": 4,
       "weather": "storm",
-      "text": "A gust blew rain under the dugout door. {name} moved the boots indoors, then remembered they were already indoors."
+      "text": "Rain blew in under the dugout door. {name} moved {his} boots out of the wet, then realized they were already inside."
     },
     {
       "w": 4,
       "weather": "storm",
-      "text": "{name} braced a loose roof board while the storm passed. Every conversation had to wait until {he} could lower both arms."
+      "text": "{name} held a loose roof board in place while the storm passed. Every conversation had to wait until {he} could lower both arms."
     },
     {
       "w": 4,
       "weather": "storm",
-      "text": "Thunder shook dust from the beams over {name}. The man beside {him} asked whether the sky had the correct range."
+      "text": "Thunder shook dust from the beams over {name}. For once, nobody blamed the enemy."
     },
     {
       "w": 4,
@@ -902,7 +902,7 @@
     {
       "w": 4,
       "weather": "wind",
-      "text": "{name} spent the afternoon chasing a cap that stopped moving whenever {he} stopped chasing it."
+      "text": "{name} spent the afternoon chasing {his} cap across the trench. It stopped every time {he} did, and jumped away again when {he} reached for it."
     },
     {
       "w": 4,
@@ -927,47 +927,47 @@
     {
       "w": 4,
       "archetype": "machinegunner",
-      "text": "{name} checked each belt by lamplight. A cartridge seated badly was enough to start the whole inspection again."
+      "text": "{name} checked every ammunition belt by lamplight. One bad cartridge was enough to make {him} start the whole inspection again."
     },
     {
       "w": 4,
       "archetype": "machinegunner",
-      "text": "The gun team argued about who had carried the heaviest load. {name} suggested exchanging loads. The argument ended immediately."
+      "text": "The gun team argued about who carried the heaviest load. {name} offered to swap loads. The argument ended at once."
     },
     {
       "w": 4,
       "archetype": "sapper",
-      "text": "{name} measured a replacement beam three times. The passage was narrow enough to punish optimism."
+      "text": "{name} measured a replacement beam three times in the narrow passage. Nobody wanted to be the one who got it wrong."
     },
     {
       "w": 4,
       "archetype": "sapper",
-      "text": "A pump handle came off in {name}'s hands. {He} repaired it while the water rose around {his} ankles."
+      "text": "A pump handle snapped off in {name}'s hands. {He} fixed it while the water rose around {his} ankles."
     },
     {
       "w": 4,
       "archetype": "medic",
-      "text": "A patient apologised for bleeding on {name}'s sleeve. {He} asked the patient to concentrate on staying awake instead."
+      "text": "A patient apologized for bleeding on {name}'s sleeve. {He} told the patient to concentrate on staying awake."
     },
     {
       "w": 4,
       "archetype": "medic",
-      "text": "{name} labelled the dressings by lamplight. When the next stretcher arrived, {he} could find everything without looking."
+      "text": "{name} sorted the dressings by lamplight. When the next stretcher arrived, {he} could find everything without looking."
     },
     {
       "w": 4,
       "archetype": "runner",
-      "text": "{name} delivered an urgent message and waited while the recipient searched every pocket for a pencil to acknowledge it."
+      "text": "{name} delivered an urgent message and waited while the officer searched every pocket for a pencil to sign for it."
     },
     {
       "w": 4,
       "archetype": "runner",
-      "text": "A new trench junction cost {name} ten minutes. {He} marked the correct turn with a broken spoon on the return journey."
+      "text": "A new trench junction cost {name} ten minutes. On the way back, {he} marked the right turn with a broken spoon."
     },
     {
       "w": 4,
       "archetype": "sniper",
-      "text": "{name} noticed a loophole that had been dark for days. {He} watched it until dusk and wrote down the change."
+      "text": "{name} noticed a loophole that had been dark for days. {He} watched it until dusk and wrote down what changed."
     },
     {
       "w": 4,
@@ -977,17 +977,17 @@
     {
       "w": 4,
       "archetype": "signaller",
-      "text": "{name} tested the telephone and heard someone at headquarters chewing. The line was pronounced perfectly clear."
+      "text": "{name} tested the telephone and heard someone at headquarters chewing. The line was declared perfectly clear."
     },
     {
       "w": 4,
       "archetype": "signaller",
-      "text": "{name} taught a replacement to recognise letters by sound. By supper, the table had become an unofficial Morse key."
+      "text": "{name} taught a recruit to recognize letters by sound. By supper, the whole table was tapping out Morse on the planks."
     },
     {
       "w": 4,
       "archetype": "cook",
-      "text": "{name} counted the ladles in the pot against the men in the queue. The final serving took some careful scraping."
+      "text": "{name} counted the ladles in the pot against the men in the queue. The last serving took some careful scraping."
     },
     {
       "w": 4,
@@ -1002,17 +1002,17 @@
     {
       "w": 4,
       "archetype": "chaplain",
-      "text": "{name} conducted a service beside a ration store. The men sang quietly so the sleepers behind the wall could rest."
+      "text": "{name} held a service beside a ration store. The men sang quietly so the sleepers behind the wall could rest."
     },
     {
       "w": 4,
       "archetype": "officer",
-      "text": "{name} checked the duty roster and found the same names on the worst shifts. {He} fetched a fresh sheet of paper."
+      "text": "{name} checked the duty roster and noticed the same names on the worst shifts. {He} fetched a fresh sheet of paper and started over."
     },
     {
       "w": 4,
       "archetype": "officer",
-      "text": "A report called the trench satisfactory. {name} invited its author to spend the night there before signing it."
+      "text": "A report called the trench satisfactory. {name} invited the author to spend a night in it before signing."
     },
     {
       "w": 4,
@@ -1032,7 +1032,7 @@
     {
       "w": 4,
       "line": "front",
-      "text": "{name} checked the firing step after the shelling. The wall had moved; the familiar place for one foot was gone."
+      "text": "{name} checked the fire step after the shelling. The wall had moved, and the spot where {he} always put {his} foot was gone."
     },
     {
       "w": 4,
@@ -1042,7 +1042,7 @@
     {
       "w": 4,
       "line": "support",
-      "text": "Two carrying parties met in the narrow trench. {name} helped negotiate the passing of an ammunition box and a very large kettle."
+      "text": "Two carrying parties met in the narrow trench. {name} helped work out how an ammunition box and a very large kettle could pass each other."
     },
     {
       "w": 4,
@@ -1057,7 +1057,7 @@
     {
       "w": 4,
       "line": "reserve",
-      "text": "{name} found a chair in the billet and sat down carefully, as though it might be reserved for someone of higher rank."
+      "text": "{name} found a chair in the barn and sat down carefully, as if it might be reserved for someone of higher rank."
     },
     {
       "w": 4,
@@ -1072,7 +1072,7 @@
     {
       "w": 4,
       "line": "reserve",
-      "text": "In the billet, {name} woke at the usual watch hour. For several minutes, nobody could persuade {him} to go back to sleep."
+      "text": "{name} woke up at the usual time for night watch, even in the rear. It took several minutes to convince {him} to go back to sleep."
     },
     {
       "w": 4,
@@ -1104,7 +1104,7 @@
     },
     {
       "w": 4,
-      "text": "A child had enclosed a riddle in a parcel for {name}. The answer was on the back. {He} kept the dugout guessing until supper."
+      "text": "A child had slipped a riddle into a parcel for {name}. {He} kept the dugout guessing until supper, then turned the page over and read the answer."
     },
     {
       "w": 4,
@@ -1116,7 +1116,7 @@
     },
     {
       "w": 4,
-      "text": "{name} mended a split glove with pale thread. The repair makes one finger look as though it has been promoted."
+      "text": "{name} mended a split glove with pale thread. One finger now looks like it has been promoted."
     },
     {
       "w": 4,
@@ -1124,7 +1124,7 @@
     },
     {
       "w": 4,
-      "text": "{name} has learnt to recognise the ration cart by its squeaking wheel. A different squeak caused considerable disappointment this afternoon."
+      "text": "{name} has learned to recognize the ration cart by its squeaky wheel. This afternoon, a different squeak caused real disappointment."
     },
     {
       "w": 4,
@@ -1136,15 +1136,15 @@
     },
     {
       "w": 4,
-      "text": "A loose thread in {name}'s blanket proved longer than expected. By the time {he} stopped pulling, the repair needed explaining."
+      "text": "A loose thread in {name}'s blanket turned out to be very long. By the time {he} stopped pulling, there was a hole to explain."
     },
     {
       "w": 4,
-      "text": "{name} read a letter that said the neighbour had married again. The whole dugout wanted the missing first half of the story."
+      "text": "{name} read a letter saying the neighbor had married again. The whole dugout wanted the first half of the story, which was missing."
     },
     {
       "w": 4,
-      "text": "The new soap slipped into the wash bucket. {name} recovered it by touch and then had to wash again."
+      "text": "The new soap slipped into the wash bucket. {name} fished it out by feel and then had to wash again."
     },
     {
       "w": 4,
@@ -1168,15 +1168,15 @@
     },
     {
       "w": 4,
-      "text": "A scrap of newspaper announced a sale of garden furniture. {name} calculated how many months' pay a comfortable afternoon might cost."
+      "text": "A scrap of newspaper advertised a sale of garden furniture. {name} worked out how many months of pay a comfortable afternoon would cost."
     },
     {
       "w": 4,
-      "text": "{name} caught a falling mug with {his} foot. Saving the mug was impressive; retrieving the foot without spilling it required assistance."
+      "text": "{name} caught a falling mug with {his} boot. Nobody could say if it was skill or luck, and {he} did not say either."
     },
     {
       "w": 4,
-      "text": "{name} offered to read the newspaper aloud. The audience requested the advertisements first, then the racing, and finally the war."
+      "text": "{name} offered to read the newspaper aloud. The audience asked for the advertisements first, then the racing results, and the war last."
     },
     {
       "w": 4,
@@ -1247,8 +1247,8 @@
   ],
   "recovered": [
     "{name} is back from the field hospital, thinner and quieter, with {item} still in {his} pocket.",
-    "{name} came back to {sector} with a new scar and an old joke. The bay was glad of both.",
-    "The field hospital let {name} go. {He} came back up the line on foot because the lorry would not wait.",
+    "{name} came back to {sector} with a new scar and an old joke. The squad was glad of both.",
+    "The field hospital let {name} go. {He} came back up the line on foot because the truck would not wait.",
     "{name} returned from hospital carrying letters, chocolate and rumours, and handed out all three.",
     "Back with {his} platoon, {name} found that someone had kept {his} place on the fire step. Nobody admitted who.",
     "{name} returned from hospital and found a new face beside the bunk. The old argument about shelf space resumed immediately.",
@@ -1257,7 +1257,7 @@
     "The medical officer cleared {name} for duty. At {sector}, someone quietly moved a pack off {his} usual seat.",
     "{name} returned with instructions to take care. The corporal read them, looked around {sector}, and folded them carefully.",
     "Back from hospital, {name} distributed messages from other recovering men. For an hour, the dugout sounded like a railway waiting room.",
-    "{name} rejoined {sector} carrying a borrowed book from the ward. Returning it has become a reason to survive the next leave application.",
+    "{name} rejoined {sector} carrying a borrowed book from the ward. It is now overdue, which {he} says is a good reason to stay alive.",
     "{name} came back fit for duty and discovered the section had changed the recipe for its tea. {He} demanded an explanation."
   ],
   "fallen": [
@@ -1313,7 +1313,7 @@
   ],
   "returned": [
     "{name} crawled back into {sector} at dawn after two nights in a shell hole at {place}, covered in mud and carrying {item}. {He} asked if {he} had missed breakfast.",
-    "The sentry nearly shot {name} coming in through the wire. {He} had been lost in the fog at {place}, living on rainwater and stubbornness.",
+    "The sentry nearly shot {name} coming in through the wire. {He} had been lost near {place} for two days, living on puddle water and stubbornness.",
     "{name} turned up at a neighbouring battalion, having walked the wrong way for a day and a half. {He} came home to {sector} with three new friends and no explanation.",
     "{name} came back to {sector} after sheltering with another unit. {He} brought a note confirming the story and a borrowed mug to return.",
     "The missing report was still on the desk when {name} walked in. The clerk crossed it out hard enough to tear the paper.",
@@ -1325,40 +1325,40 @@
     "{name} came back exhausted, having waited in cover until the way cleared. {He} slept through the argument about who had worried most."
   ],
   "comrade": [
-    "{a} and {b} shared the last tin of bully beef in the bay, counting the bites out loud to keep it fair.",
+    "{a} and {b} split the last tin of beef, counting the bites out loud to keep it fair.",
     "{a} kept watch so that {b} could sleep. Then {bs} kept watch so that {as} could. Neither slept.",
-    "{a} taught {b} to play the harmonica. The bay has asked them both, formally, to stop.",
-    "{a} pulled {b} out of a flooded shell hole at {place}. Neither of them has mentioned it since. Both of them remember.",
-    "{a} and {b} argued all night about whose home town has the better beer. The argument has been adjourned until after the war.",
+    "{a} taught {b} to play the harmonica. The whole squad has asked them both, politely, to stop.",
+    "{a} pulled {b} out of a flooded shell hole at {place}. Neither has mentioned it since. Both remember.",
+    "{a} and {b} argued all night about whose hometown has the better beer. They agreed to finish the argument after the war.",
     "{a} cut {b}'s hair with a bayonet and a cracked mirror. It is not good. It is, however, short.",
     "{a} wrote a letter for {b}'s mother, because {bs} could not find the words. {bs} signed it.",
     "{a} and {b} carved a chessboard into an ammunition box. The pieces are bullets, buttons and one very patient beetle.",
-    "{a} and {b} made a pact on sentry tonight: whoever gets home first visits the other's family. They shook on it with frozen hands.",
-    "{a} saw {b} freeze on the fire step at {place}. {as} said nothing, just stood closer. It was enough.",
-    "{a} and {b} divided a parcel using the lid of a tin as scales. The final crumb required a second opinion.",
+    "{a} and {b} made a pact on sentry tonight: whoever gets home first visits the other's family. They shook on it.",
+    "{a} saw {b} freeze up on the fire step at {place}. {as} said nothing, just stood closer. It was enough.",
+    "{a} and {b} divided a parcel using a tin lid as scales. The last crumb needed a second opinion.",
     "{a} held the mirror while {b} shaved. The arrangement survived the shaving but not the comments.",
     "{a} and {b} compared drawings of home. Both drawings included a kitchen table larger than the house.",
-    "{a} lent {b} a pencil. The returned pencil came wrapped in a scrap of paper marked 'One good turn'.",
-    "{a} and {b} carried a kettle through three narrow traverses without spilling a drop. Applause at the destination caused the accident.",
-    "{a} repaired the strap on {b}'s pack. Payment was a biscuit and a promise to stop mentioning the haircut.",
-    "{a} and {b} tried to invent a new card game. The rules became clearer only after the tobacco stakes were removed.",
-    "{a} and {b} sat through a quiet hour without finding anything to say. At relief, the next watch was told it had been a good hour."
+    "{a} lent {b} a pencil. It came back wrapped in a scrap of paper that said 'One good turn'.",
+    "{a} and {b} carried a kettle through three narrow turns without spilling a drop. The applause at the end caused the accident.",
+    "{a} fixed the strap on {b}'s pack. The price was a biscuit and a promise to stop mentioning the haircut.",
+    "{a} and {b} tried to invent a new card game. The rules only made sense once they stopped betting tobacco.",
+    "{a} and {b} sat through a quiet hour without finding anything to say. At the change of watch, the next pair was told it had been a good hour."
   ],
   "enemy": [
     "At {place}, {a} of the {af} and {b} of the {bf} traded insults across the wire for an hour. By the end they were trading recipes.",
-    "{a} ({af}) and {b} ({bf}) met in the same shell hole at {place} during a raid. They stared at each other. Then each crawled home, and neither has told anyone.",
+    "{a} ({af}) and {b} ({bf}) ended up in the same shell hole at {place}. They stared at each other. Then each crawled home, and neither has told anyone.",
     "{b} of the {bf} threw a tin of tobacco into the {af} trench with a note: \"for the one who sings\". {a} kept the tin.",
-    "{a} had {b} of the {bf} in {his} sights at {place} for a long second. {b} was lighting a pipe. {a} let the match burn all the way down.",
+    "{a} had {b} of the {bf} in the sights at {place} for a long second. {b} was lighting a pipe. {a} let the match burn all the way down.",
     "A football came over the parapet from the {bf} side with {b}'s name scratched on it. {a} kicked it back. It did not come again.",
     "On a quiet night {a} ({af}) and {b} ({bf}) called out their names across no man's land, just to hear another voice. Now each knows exactly who is out there.",
-    "At {place}, {a} of the {af} and {b} of the {bf} fired at the same loose sheet of metal. The wind kept winning.",
+    "At {place}, {a} of the {af} and {b} of the {bf} spent the morning shooting at the same loose sheet of metal. The sheet kept winning.",
     "{a} ({af}) and {b} ({bf}) spotted the same abandoned cart near {place}. A long exchange of shots left the cart exactly where it was.",
-    "During a lull at {place}, {a} called across from the {af} line. {b} answered from the {bf} side with a convincing imitation of an officer. Both trenches went quiet.",
-    "{a} of the {af} and {b} of the {bf} watched a broken branch near {place} all morning. Neither side could afford to assume it was only a branch.",
-    "A shouted challenge from {a} ({af}) reached {b} ({bf}) at {place}. The answer was lost beneath the guns. The challenge was not repeated.",
+    "During a lull at {place}, {a} called across from the {af} line. {b} answered from the {bf} side with a perfect imitation of an officer. Both trenches went quiet.",
+    "{a} of the {af} and {b} of the {bf} watched a broken branch near {place} all morning. Neither could risk assuming it was only a branch.",
+    "{a} ({af}) shouted a challenge across to {b} ({bf}) at {place}. The answer was lost under the guns. Nobody repeated the challenge.",
     "At {place}, {a} and {b} exchanged rifle shots until a shell burst between the positions. For a while, both rifles remained silent.",
-    "{a} of the {af} spotted {b} of the {bf} repairing a parapet at {place}. A warning shot brought the repair to an abrupt halt.",
-    "A bucket appeared above the {bf} parapet at {place}. {a} fired; {b} pulled the bucket down. A sign later appeared: 'Water costs enough already.'"
+    "{a} of the {af} spotted {b} of the {bf} repairing a parapet at {place}. A warning shot stopped the repair on the spot.",
+    "A bucket appeared above the {bf} parapet at {place}. {a} fired. {b} pulled the bucket down. Later a sign went up: 'Water costs enough already.'"
   ],
   "arcs": [
     {
@@ -1376,7 +1376,7 @@
       },
       "steps": [
         "A rat has started sitting on the ammunition box next to {name}'s bunk. {He} has named it {pet}.",
-        "{pet} the rat now waits for {name} at stand-to every morning. {He} shares crumbs with it. The corporal calls this desertion of rations.",
+        "{pet} the rat now waits for {name} at dawn watch every morning. {He} shares crumbs with it. The corporal calls this desertion of rations.",
         "{pet} ran squealing out of the dugout at three in the morning. {name} followed, cursing, seconds before a shell came through the roof. {He} owes {pet} {his} life.",
         "{name} has not seen {pet} for two days. {He} tells everyone rats come and go. {He} still leaves crumbs on the box."
       ]
@@ -1541,7 +1541,7 @@
       },
       "steps": [
         "{name} learned that {prize} is stored in the cellar at battalion headquarters. {He} has been making careful drawings.",
-        "{name} volunteered for a supply run to headquarters. {He} came back with exactly what was ordered and a suspiciously large greatcoat.",
+        "{name} volunteered for a supply run to headquarters. {He} came back with exactly what was ordered and a suspiciously large coat.",
         "The whole of {sector} ate well tonight. {prize} has been reported missing. {name} has been reported as a very good cook."
       ]
     },
@@ -1560,7 +1560,7 @@
       "w": 2,
       "steps": [
         "{name} started keeping a diary in the back of a field service book. First entry: \"Still here.\"",
-        "{name}'s diary, day nine: \"Still here. Rain. A rat called the Major. Nothing else worth writing, which is the point.\"",
+        "{name}'s diary, day nine: \"Still here. Soup again. A rat called the Major. Nothing else worth writing, which is the point.\"",
         "{name} read {his} diary from the start tonight and laughed at how frightened {he} was back then. Then {he} stopped laughing and wrote: \"Still here.\""
       ]
     },
@@ -1596,7 +1596,7 @@
       "w": 3,
       "steps": [
         "{name} began a chess game by post with a friend at home. {He} copied the opening move onto the corner of an ordinary letter.",
-        "The reply to {name}'s chess move arrived with a complaint about the weather at home. {His} opponent has taken a pawn and apologised for nothing.",
+        "The reply to {name}'s chess move arrived with a long complaint about the weather at home and a note that {his} opponent had taken a pawn.",
         "{name} asked the dugout for advice on the next move. Three men disagreed so fiercely that a second board had to be drawn.",
         "{name} received a letter announcing checkmate. The dugout insists the position was copied incorrectly. {He} has written back asking for another game."
       ]
@@ -1632,10 +1632,10 @@
         ]
       },
       "steps": [
-        "{name} received a parcel meant for another soldier with the same surname. Inside were {gift}. {He} put everything back and kept the wrapping.",
+        "A parcel came for {name} that was really meant for another soldier with the same surname. Inside: {gift}. {He} put everything back and kept only the wrapping.",
         "The parcel's address was smudged. {name} took it to the clerk, who found two possible units and no reason to hurry.",
-        "{name} caught a supply driver heading toward one of the units. The parcel went along with a note asking for word when it arrived.",
-        "A card reached {name}: the parcel had found its owner. The message thanked {him} for returning {gift}, especially with the shortage at home."
+        "{name} caught a supply driver heading for one of the units and handed the parcel over with a note asking for word when it arrived.",
+        "A card reached {name}: the parcel had found its owner. The message said thank you, and that {gift} had come just in time."
       ]
     },
     {
@@ -1716,10 +1716,10 @@
       "w": 3,
       "archetype": "signaller",
       "steps": [
-        "{name} heard a faint second conversation on the telephone line. Headquarters insisted only one circuit was connected.",
-        "The extra voice returned during {name}'s test. It was discussing potatoes, which made enemy intelligence seem an unlikely explanation.",
-        "{name} traced the fault to two poorly insulated wires pressed together near a junction. One belonged to the supply office.",
-        "With the wires separated, {name}'s telephone carried only orders again. The section misses knowing in advance what is wrong with supper."
+        "{name} heard a faint second conversation on the telephone line. Headquarters said only one line was connected.",
+        "The extra voice came back during {name}'s test. It was talking about potatoes, which made enemy spies an unlikely explanation.",
+        "{name} traced the fault to two badly insulated wires touching near a junction. One of them belonged to the supply office.",
+        "With the wires separated, {name}'s telephone carried only orders again. The section misses hearing what was for supper before it was served."
       ]
     },
     {
@@ -1918,13 +1918,13 @@
     "{name} is one of the first hundred to answer the call. {He} wears the ribbon of the First Wave.",
     "Volunteer number {n}. The quartermaster pinned the First Wave ribbon on {name}'s tunic and said: 'Don't let the mud have it.'",
     "{name} was among the first hundred through the depot gates. The First Wave ribbon is the only clean thing {he} owns.",
-    "The colonel shook hands with the first hundred, one by one. {name} was number {n}. {He} still remembers how cold the colonel's glove was.",
-    "First Wave. {name} signed when the posters were still wet. {He} keeps the ribbon wrapped in oilcloth with {item}.",
+    "The colonel shook hands with the first hundred, one by one. {name} was number {n}. {He} still remembers how stiff the colonel's glove felt.",
+    "First Wave. {name} signed when the ink on the posters was still fresh. {He} keeps the ribbon wrapped in oilcloth with {item}.",
     "{name} answered the first call, number {n} on the rolls. Somebody chalked the number on {his} helmet. It has not washed off yet.",
     "{name} was in the first hundred. The old hands in {sector} call them 'the early birds', and not always kindly.",
     "Number {n} on the early rolls: {name}. The First Wave ribbon arrived with instructions about where to sew it and no needle.",
     "{name} received the First Wave ribbon. {He} checked the stitching twice before putting the tunic back on.",
-    "One of the first hundred, {name} was given the First Wave ribbon. {He} wrapped the accompanying paper against the damp.",
+    "One of the first hundred, {name} was given the First Wave ribbon. {He} wrapped the paper that came with it in oilcloth to keep it safe.",
     "The First Wave ribbon marked {name} as an early volunteer. At {sector}, a newcomer asked what those first days had been like.",
     "{name}, volunteer number {n}, received the First Wave ribbon. The quartermaster pronounced the name wrong; {he} corrected it for the record.",
     "The first hundred were recognised, and {name} was among them. {He} wrote the news on the back of an unfinished letter.",
@@ -2010,10 +2010,10 @@
       "{his} mother, who writes every Sunday",
       "a younger sister who sends drawings",
       "a sweetheart who has stopped writing",
-      "nobody, which {he} says is easier",
+      "a mother who sets a place for {him} at every meal",
       "a wife and a daughter {he} has never met",
       "an old father who runs the family shop alone",
-      "a dog called Bastion on the farm",
+      "an old neighbor who promised to keep {his} garden alive",
       "a girl from the dance hall, maybe",
       "five brothers, all on other fronts",
       "a grandmother who prays for both armies",
@@ -2090,7 +2090,7 @@
     "Orders came through: {name} is a {role} now. {He} handed in {his} old kit and kept only {item}.",
     "{name} transferred to the {role}s. The men in {sector} said they would miss {him}. {He} is only three dugouts away.",
     "After what happened at {place}, {name} asked to serve as a {role}. Nobody argued.",
-    "The {role}s took {name} in on a wet morning in {sector}. By noon {he} had learned the first rule of the job, and by evening the second.",
+    "The {role}s took {name} in on a busy morning in {sector}. By noon {he} had learned the first rule of the job, and by evening the second.",
     "{name} reported for duty as a {role}. The new kit was heavier than the explanation of how to use it.",
     "The transfer made {name} a {role}. {He} spent the first hour learning where everything belonged, including {him}self.",
     "{name} left the work of a {oldRole} to become a {role}. Someone from the old section came over to see how it was going.",
@@ -2102,7 +2102,7 @@
   ],
   "exchanged": [
     "{name} came back in a prisoner exchange at dawn, thinner, with a borrowed coat and {item}. {He} will not talk about the cage.",
-    "A white flag, a handshake in the mud, and {name} walked back across no man's land in an exchange of prisoners. The bay cheered {him} in.",
+    "A white flag, a handshake in the mud, and {name} walked back across no man's land in an exchange of prisoners. The whole squad cheered {him} in.",
     "{name} was traded back for an enemy officer. {He} says the other side's coffee is worse than ours, and that is the only thing {he} says.",
     "{name} returned in a prisoner exchange. At the first meal, {he} pocketed half the bread before remembering where {he} was.",
     "The exchange brought {name} back to {sector}. Everyone had questions. The corporal sent them away and fetched a chair.",
@@ -2384,12 +2384,12 @@
     ]
   },
   "hitLight": [
-    "A splinter opened {name}'s cheek at {sector}. A medic stitched it in the bay and {he} was back on the fire step before the tea went cold.",
+    "A splinter opened {name}'s cheek at {sector}. A medic stitched it on the spot and {he} was back on the fire step before the tea went cold.",
     "Shrapnel at {place}. {name} walked to the medics on {his} own feet and asked for a cigarette before the stitches.",
     "A grenade fragment found {name}'s shoulder. {He} calls it a souvenir and refuses to be sent back.",
     "{name} cut {his} hand to the bone on the wire at {place}. Iodine, a bandage, and a lecture from the medic.",
     "Shell splinters peppered {sector}. {name} picked three out of {his} sleeve and a fourth out of {his} arm.",
-    "Blast from a trench mortar threw {name} against the revetment at {sector}. Ringing ears, a split lip, and no intention of leaving.",
+    "Blast from a trench mortar threw {name} against the trench wall at {sector}. Ringing ears, a split lip, and no intention of leaving.",
     "A splinter of duckboard, kicked up by a shell, went into {name}'s calf. The medic pulled it out with pliers. {name} did not make a sound.",
     "A grenade burst short of the parapet at {sector}. {name} took a splinter in the hand and was bandaged where {he} stood."
   ],
@@ -2398,7 +2398,7 @@
     "A shell burst over {sector} and {name} went down with a leg that would not hold {him}. The stretcher bearers came at a run.",
     "{name} was buried by a near miss at {place} and dug out with a broken arm and a chest full of earth.",
     "{name} was hit in the thigh crossing {place}. {He} crawled the last yards back to the trench on {his} elbows.",
-    "A trench mortar bomb landed in the next bay. The blast caught {name} at {sector} and the bearers came at a run."
+    "A trench mortar bomb landed in the next section of trench. The blast caught {name} at {sector} and the bearers came at a run."
   ],
   "hitCrit": [
     "{name} was hit badly at {place}. The medics worked on {him} in the bottom of the trench and shouted for a bed.",
@@ -2419,7 +2419,7 @@
     "{name} no longer winces when {he} lifts {his} rifle. The medic signed {him} off with a grunt."
   ],
   "stretcher": [
-    "There was no bed for {name}. {He} lay on a stretcher outside, wrapped in a greatcoat, listening to the guns.",
+    "There was no bed for {name}. {He} lay on a stretcher outside, wrapped in a coat, listening to the guns.",
     "{name} spent the night on a stretcher in the trench behind the aid post. Every bed was taken.",
     "The beds were full. {name} waits on a stretcher in the dark with a medic's promise and a dry mouth.",
     "Outside the aid post, {name} lies on a stretcher among the others. The orderlies step over {him} and say soon."
@@ -2431,12 +2431,12 @@
   ],
   "stabilized": [
     "The worst has passed for {name}. The surgeon says {he} will live, though not quickly.",
-    "{name} opened {his} eyes today and asked for water. In the {sector} bay they cheered when the news came up the line.",
+    "{name} opened {his} eyes today and asked for water. At {sector} they cheered when the news came up the line.",
     "{name} is out of danger. Still bedridden, still bandaged, but out of danger."
   ],
   "diedNoBed": [
     "{name} died on a stretcher outside the aid post, still waiting for a bed. The medics had nothing left to give {him}.",
-    "There was no room for {name}. {He} died in the night under a borrowed greatcoat, a few yards from a bed that never came free.",
+    "There was no room for {name}. {He} died in the night under a borrowed coat, a few yards from a bed that never came free.",
     "{name} did not last the night outside the full aid post. The bearers who carried {him} in carried {him} out again at dawn.",
     "Every bed was taken and every medic was busy. {name} died waiting. The men at {sector} have not stopped talking about it."
   ],
@@ -2447,7 +2447,7 @@
     "The bearers reached {name} at {sector} too late. One shot, and it was over."
   ],
   "killedShell": [
-    "A shell landed square in the bay at {sector}. {name} was killed outright. The bearers found nothing to carry.",
+    "A shell landed square in the trench at {sector}. {name} was killed outright. The bearers found nothing to carry.",
     "{name} was killed outright by a direct hit at {sector}. The men dug for an hour and found only {his} identity disc.",
     "The shell that hit {sector} took {name} with it. No stretcher, no surgeon, no last words. Just the crater.",
     "{name} died at {his} post at {sector} when the dugout roof came down under a direct hit."
@@ -2465,14 +2465,14 @@
     "{name} was peppered by shell splinters at {sector}. A medic picked them out one by one while the next salvo came in."
   ],
   "shellHeavy": [
-    "A shell burst in the bay at {sector}. {name} was thrown against the revetment and did not get up. The bearers came at a run.",
+    "A shell burst in the trench at {sector}. {name} was thrown against the wall and did not get up. The bearers came at a run.",
     "The guns found {sector}. {name} was dug out of a collapsed dugout with both legs pinned and carried back on a groundsheet.",
     "A shell splinter the size of a fist hit {name} at {sector}. {He} is alive and {he} is in pain, and {he} needs a bed.",
     "The salvo walked along {sector} and caught {name} in the open. Two men carried {him} back between salvos."
   ],
   "shellCrit": [
     "A shell landed square in {sector}. They found {name} alive under the sandbags, barely. Every minute counts now.",
-    "A direct hit on the bay at {sector}. {name} was the only one they could still help, and only just.",
+    "A direct hit on the trench at {sector}. {name} was the only one they could still help, and only just.",
     "The barrage caught {name} in the open at {sector}. The medic tied two tourniquets and shouted for a bed."
   ],
   "patchedStretcher": [
@@ -2484,8 +2484,8 @@
     "{name} fired at a movement across the wire at {sector}. The man went down: {target}, {how}.",
     "A clear shot from {sector}. {name} {how} {target} and slid back down below the parapet.",
     "{name} had been watching the same gap for an hour. When {target} crossed it, {name} fired. {target} was {how}.",
-    "Stand-to at dawn. {name} put a round across no man's land and the enemy line went quiet: {target}, {how}.",
-    "{name} fired twice at the enemy sap. The second shot found {target}, {how}. Nobody in the bay said anything."
+    "Dawn watch. {name} put a round across no man's land and the enemy line went quiet: {target}, {how}.",
+    "{name} fired twice at the enemy post. The second shot found {target}, {how}. Nobody nearby said anything."
   ],
   "bulletLight": [
     "A bullet clipped {name}'s helmet at {sector} and took a strip of scalp with it. {He} bled into {his} collar, swore, and lay low.",
