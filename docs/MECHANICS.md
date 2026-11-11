@@ -113,6 +113,51 @@ Příčiny smrti v klidu: ~85 % padne přímo zásahem kulkou, zbytek na zraněn
 
 ---
 
+## 2026-11-11 (noc) · v11 = v10 + víc zásahů střelců · NÁVRH (simulováno, NENASAZOVAT bez schválení)
+**Podnět uživatele:** puškař trefí 0,33× za týden (1× za 3 týdny), to je na válku málo; odstřelovači mají trefit víc.
+**Nález:** v10 měl nominálně 7 % denně, po krytí cíle a nasycení zbylo 0,33× za týden. Zásahy jde zvednout, ale **každý zásah je zranění někoho jiného**,
+takže víc zásahů znamená víc ranění i mrtvých. Řešení: víc zásahů, z nichž většina jsou **škrábnutí** (lehké zranění na 1 den), kritické a těžké zůstávají podobně časté.
+
+**Změny proti v10:**
+| | v10 | v11 |
+|---|---|---|
+| palba puškař / kulomet / ostřelovač za den | 7 / 11 / 12 % | **17 / 26 / 30 %** |
+| závažnost puškaře lehce / těžce / kriticky | 55 / 25 / 20 % | **82 / 10 / 8 %** |
+| závažnost kulometu | 70 / 22 / 8 % | **75 / 21 / 4 %** (`light .25, heavy .04`) |
+| závažnost ostřelovače | 35 / 30 / 35 % | **45 / 25 / 30 %** |
+| ošetření lehce raněného (potřeba práce medika / šance sám se zahojit) | 1 / 15 % | **0,4 / 40 %** (škrábnutí nežere práci mediků) |
+| strop raněných pod granáty | 15 na 80 | **30 na 80** (palba hráčů se do něj počítá, jinak by bombardování zaniklo) |
+Parametry pro simulaci: `--set aidPost.stretchersPerMedic=1 --set roles.medic.work=2 --set care.crit.dieBase=0.35 --set aidPost.critRisk=0.8 --set buildings.dugout.critRisk=0.4 --set care.crit.stabilizeBed=3 --set shell.kill=0.5 --set shell.severity.light=0.7 --set shell.severity.heavy=0.3 --set daily.shellMax=15 --set shell.hit=0.5 --set roles.saturation=1.5 --set roles.machinegunner.suppressMax=0.3 --set roles.kill=0.35 --set roles.sniper.kill=0.6 --set hit=0.02 --set daily.max=99 --set daily.min=1 --set care.triage=1 --set care.heavy.need=1 --set hit=0.015 --set roles.rifleman.severity.light=0.45 --set roles.rifleman.severity.heavy=0.2 --set roles.machinegunner.severity.heavy=0.08 --set roles.sniper.severity.heavy=0.35 --set roles.kill=0.6 --set roles.sniper.kill=0.8 --set roles.rifleman.fire=0.07 --set roles.machinegunner.fire=0.11 --set roles.sniper.fire=0.12 --set roles.saturation=1 --set roles.rifleman.fire=0.17 --set roles.rifleman.severity.light=0.18 --set roles.rifleman.severity.heavy=0.08 --set roles.machinegunner.fire=0.26 --set roles.machinegunner.severity.light=0.25 --set roles.machinegunner.severity.heavy=0.04 --set roles.sniper.fire=0.30 --set roles.sniper.severity.light=0.55 --set roles.sniper.severity.heavy=0.3 --set care.light.need=0.4 --set care.light.baseHeal=0.4 --set daily.shellMax=30`
+
+**Zásahů na střelce v přední linii za týden:**
+| role | v10 | **v11** |
+|---|---|---|
+| puškař | 0,32 | **0,85** (1 zásah za ~8 dní) |
+| kulometčík | 0,58 | **1,4** |
+| odstřelovač | 0,59 | **1,65** |
+| při 870 proti 270: velká strana / malá strana | – | 0,42 / ~0,85 (nasycení: když je nepřátel málo, velká strana se „překáží“) |
+
+**Padlí denně na stranu** (v závorce na 100 vojáků; `docs/sim/2026-11-11_v11_*.txt`):
+| | v10 | **v11** |
+|---|---|---|
+| dnes (88 / 91), klid | 0,50 / 0,51 | **0,5–0,65 / 0,65–0,8** |
+| 10× (880 / 910), klid, skutečné role | 4,3 / 5,8 | **5,3 / 7,6** (0,6 / 0,8) |
+| strana s 3 % mediků při 10× | 4,3 | **22** (2,5 na 100): medici rozhodují; stabilní, ne spirála |
+| strana s 15 % mediků při 10× | 4,8 | **5,9** |
+| den bombardování, dnes / 10× | 2,4 / 27 | **2,2 / 30** |
+| poražený za týden od dobytí kóty, dnes / 10× | 12–19 % / 14–23 % | **16 % / 25 %** |
+| 870 proti 270, malá strana | 0,75 na 100 | **0,97 na 100** |
+| raněných za den na stranu (hlavně lehce) | 4 | **8–10** (dnes) |
+Rozdíl proti v10: ~15–30 % víc padlých, mnohem víc zásahů a „zranění“ (lehká jsou škrábnutí na den, každý voják je během týdne aspoň jednou škrábnutý).
+
+**Zjištění při ladění:**
+- Bez levnějšího ošetření lehkých (potřeba 1) se při 10× hráčů a 3–7 % medicích vrátila spirála smrti (400 padlých „bez nosítek“ za 28 dní):
+  lehká zranění nacpala medikům práci. Proto `care.light.need 0,4`.
+- Bez zvýšeného stropu pod granáty bylo bombardování jen 11 % strany za týden, protože palba hráčů vyčerpala denní strop dřív než granáty.
+- Zbývá otázka z v10: smrt je v klidu hlavně od kulky (~85 %), medici a nemocnice rozhodují hlavně při bombardování a u strany s málo medici.
+
+---
+
 ## 2026-11-11 · OVER THE TOP: útok přes zákop · NÁVRH (čeká na rozhodnutí)
 Jedna strana jednou za 5–6 dní vyrazí v daných úsecích do útoku. Gazette to ohlásí den předem („At dawn the Concord goes over the top at …“),
 večerní reel na to může navázat.

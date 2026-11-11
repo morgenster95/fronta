@@ -6,13 +6,14 @@ Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co
 
 ## ROZPRACOVÁNO (přečti jako první a napiš to uživateli hned na začátku relace)
 **Na začátku KAŽDÉ relace uživateli česky napiš, že rozpracovaná je tahle věc, a zeptej se, jestli v ní pokračujeme:**
-**Přepracování boje na v10 (ztráty, role, bombardování), navrženo a nasimulováno 2026-11-11, NENASAZENO.** Ve hře běží v7.
+**Přepracování boje na v11 (ztráty, role, bombardování; v11 = v10 + víc zásahů střelců), navrženo a nasimulováno 2026-11-11, NENASAZENO.** Ve hře běží v7.
 - Důvod: uživateli přišlo úmrtí a zranění „hrozně málo“, žádný klid, střelci k ničemu, bombardování má být silné, stejně při malé i velké hře a pro různé složení stran.
-- Kompletní návrh, čísla, zamítnuté varianty a otevřené otázky: **`docs/MECHANICS.md`** (sekce „Vyvážení v10“), výstupy simulací `docs/sim/`.
+- Kompletní návrh, čísla, zamítnuté varianty a otevřené otázky: **`docs/MECHANICS.md`** (nejdřív sekce „v11“, pak „v10“, na které v11 staví), výstupy simulací `docs/sim/`.
+- Poslední podnět uživatele: střelci se trefují málo (puškař 0,33× za týden). Řešení v11: puškař ~0,85×, kulomet ~1,4×, ostřelovač ~1,65× za týden, většina zásahů jsou škrábnutí.
 - Nové volby v `engine/battle.js` jsou hotové a vypnuté (`roles.saturation`, `roles.kill`, `shell.kill`, `care.triage`, `aidPost.stretchersPerMedic`); zapnou se až čísla v `theme.json`.
-  Parametry v10 pro simulaci jsou v `docs/MECHANICS.md` (řádek „Parametry pro simulaci“). Simulace: `node tools/sim-matrix.mjs --eff --causes <parametry>`, `tools/sim-daily.mjs`.
+  Parametry v11 pro simulaci jsou v `docs/MECHANICS.md` (řádek „Parametry pro simulaci“ v sekci v11). Simulace: `node tools/sim-matrix.mjs --eff --causes <parametry>`, `tools/sim-daily.mjs`.
 - **Čeká na rozhodnutí uživatele:** (1) kde mají vznikat smrti: teď ~85 % přímo kulkou, kompromis je víc smrtí na zranění (pak větší váha mediků a nemocnic, ale riziko spirály ve velkých číslech);
-  (2) stačí ~0,5 padlého na stranu denně při dnešní velikosti (~4–5 při 10×)? Potom nasadit: čísla do `theme.json`, `balance: 10`, aktualizovat `docs/BATTLE.md`, `docs/COMBAT_ROLES.md`, KPI v `tools/sim-battle.mjs`, testy, náhled `node tools/preview-tick.mjs`.
+  (2) stačí ~0,5 padlého na stranu denně při dnešní velikosti (~4–5 při 10×)? Potom nasadit: čísla do `theme.json`, `balance: 11`, aktualizovat `docs/BATTLE.md`, `docs/COMBAT_ROLES.md`, KPI v `tools/sim-battle.mjs`, testy, náhled `node tools/preview-tick.mjs`.
 - Pravidla návrhu od uživatele: lůžka jsou pevná (nemocnice jen hlasováním, 4 lůžka), škálovat smí jen to, co volí hráči (medici, role); menší strana smí umírat víc,
   ale ne když má víc střelců a kulometů; testovat různé velikosti (1×, 10×, 870 proti 270) a různé složení rolí.
 - Hotovo a nasazeno 2026-11-11: oprava horního panelu „Dispatch · Day 2“ (výsledek hlasování nese den vydání).
