@@ -104,6 +104,7 @@ export function parseComment(text, theme) {
 // comment: { id, userId, username, text, timestamp, mediaId }
 export function applyComment(state, comment, theme, story, map) {
   if (state.seenComments.includes(comment.id)) return null;
+  story = storyFor(state, theme, story);
   state.seenComments.push(comment.id);
   if (state.seenComments.length > 20000) state.seenComments.splice(0, 5000);
   const vote = castVote(state, comment);
@@ -323,10 +324,22 @@ export function unlocks(state, theme) {
   return (theme.unlocks || []).map((u) => ({ id: u.id, label: u.label, need: u.claimed, have: claimed, open: claimed >= u.claimed }));
 }
 
+// Příběhy bez toho, co ve hře zatím není (texty i místa se vypustí, viz silenceGuns):
+//   děla do první výhry v závodě o kótu (theme.battle.gunsWords), výpravy, když jsou vypnuté (theme.valley.words),
+//   a kóty, o které se ještě nebojuje (theme.race.objectives za tou právě dobývanou).
+export function storyFor(state, theme, story) {
+  const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const words = [
+    gunsSilent(state, theme) ? theme.battle.gunsWords : null,
+    theme.valley?.enabled === false ? theme.valley.words : null,
+    ...(theme.race?.objectives || []).slice((state.race?.idx ?? 0) + 1).map((o) => esc(o.name)),
+  ].filter(Boolean);
+  return words.length ? silenceGuns(story, words.join('|')) : story;
+}
+
 // Denní tah: nový den, zápisy, osudy, nástupci padlých, kronika dne do Deníku fronty.
 export function dailyTick(state, theme, story, ctx = {}) {
-  // děla mlčí do první výhry v závodě o kótu: žádné texty o ostřelování (bombardování začne až po výhře)
-  if (gunsSilent(state, theme)) story = silenceGuns(story, theme.battle.gunsWords);
+  story = storyFor(state, theme, story);
   const decided = resolveVote(state, theme, ctx.now);
   if (decided && !decided.perFaction) {
     ctx = { ...ctx, danger: ctx.danger ?? decided.danger };

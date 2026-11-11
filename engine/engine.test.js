@@ -878,3 +878,18 @@ test('dopis domů: dlouhý dopis se jménem nepřítele nikoho nenarukuje, krát
   assert.equal(c('l2', 'pen', 'CONCORD')?.type, 'enlist');
   assert.equal(s.soldiers[0].faction, 1);
 });
+
+test('příběhy nezmiňují výpravy, když jsou vypnuté, ani kóty, o které se ještě nebojuje', async () => {
+  const { storyFor } = await import('./roster.js');
+  const s = emptyState(theme);
+  const off = { ...theme, valley: { ...theme.valley, enabled: false } };
+  const q = storyFor(s, off, story);
+  const texts = JSON.stringify([q.daily, q.missing, q.enemy, q.arcs, q.enlist, q.background]);
+  assert.ok(!/\braid/i.test(texts), 'text o výpravě prošel');
+  assert.ok(q.places.includes(theme.race.objectives[0].name), 'dobývaná kóta v místech zůstává');
+  for (const o of theme.race.objectives.slice(1)) assert.ok(!q.places.includes(o.name), `${o.name} je v místech předčasně`);
+  // po dobytí první kóty se další odemkne; se zapnutými výpravami se texty vrátí
+  const later = storyFor({ ...s, race: { idx: 1, base: [0, 0] }, victories: [{ id: 'ridge' }] }, { ...theme, valley: { ...theme.valley, enabled: true } }, story);
+  assert.ok(later.places.includes(theme.race.objectives[1].name));
+  assert.ok(/\braid/i.test(JSON.stringify(later.daily)));
+});
