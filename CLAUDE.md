@@ -4,6 +4,19 @@ Tenhle soubor čte Claude Code i v cloudu (aplikace Claude v mobilu, claude.ai/c
 Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co je teď ve hře), `docs/BATTLE.md` a `docs/COMBAT_ROLES.md` (boj), `docs/ONBOARDING.md` (rekruti a provoz),
 `docs/SCHEDULE.md` (rytmus dne), `docs/MAP_MISSIONS.md` (výpravy, vypnuté), **`docs/MECHANICS.md` (deník domluvených mechanik)**. `docs/DESIGN.md` je původní návrh, neaktualizuje se.
 
+## ROZPRACOVÁNO (přečti jako první a napiš to uživateli hned na začátku relace)
+**Na začátku KAŽDÉ relace uživateli česky napiš, že rozpracovaná je tahle věc, a zeptej se, jestli v ní pokračujeme:**
+**Přepracování boje na v10 (ztráty, role, bombardování), navrženo a nasimulováno 2026-11-11, NENASAZENO.** Ve hře běží v7.
+- Důvod: uživateli přišlo úmrtí a zranění „hrozně málo“, žádný klid, střelci k ničemu, bombardování má být silné, stejně při malé i velké hře a pro různé složení stran.
+- Kompletní návrh, čísla, zamítnuté varianty a otevřené otázky: **`docs/MECHANICS.md`** (sekce „Vyvážení v10“), výstupy simulací `docs/sim/`.
+- Nové volby v `engine/battle.js` jsou hotové a vypnuté (`roles.saturation`, `roles.kill`, `shell.kill`, `care.triage`, `aidPost.stretchersPerMedic`); zapnou se až čísla v `theme.json`.
+  Parametry v10 pro simulaci jsou v `docs/MECHANICS.md` (řádek „Parametry pro simulaci“). Simulace: `node tools/sim-matrix.mjs --eff --causes <parametry>`, `tools/sim-daily.mjs`.
+- **Čeká na rozhodnutí uživatele:** (1) kde mají vznikat smrti: teď ~85 % přímo kulkou, kompromis je víc smrtí na zranění (pak větší váha mediků a nemocnic, ale riziko spirály ve velkých číslech);
+  (2) stačí ~0,5 padlého na stranu denně při dnešní velikosti (~4–5 při 10×)? Potom nasadit: čísla do `theme.json`, `balance: 10`, aktualizovat `docs/BATTLE.md`, `docs/COMBAT_ROLES.md`, KPI v `tools/sim-battle.mjs`, testy, náhled `node tools/preview-tick.mjs`.
+- Pravidla návrhu od uživatele: lůžka jsou pevná (nemocnice jen hlasováním, 4 lůžka), škálovat smí jen to, co volí hráči (medici, role); menší strana smí umírat víc,
+  ale ne když má víc střelců a kulometů; testovat různé velikosti (1×, 10×, 870 proti 270) a různé složení rolí.
+- Hotovo a nasazeno 2026-11-11: oprava horního panelu „Dispatch · Day 2“ (výsledek hlasování nese den vydání).
+
 ## Pravidla
 - **Odpovídej česky.** Texty ve hře a na Instagramu jsou anglicky (publikum USA/UK, ne Praha).
 - **Jen zdarma:** žádné placené služby, Firebase Blaze, Cloud Functions ani placená API. Firebase je na Spark, média na GitHub Pages.
