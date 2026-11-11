@@ -347,6 +347,17 @@
       "voices": true,
       "_note": "Dopisy domů do komentářů; ukládají se do data/voices.json (hlasy fronty). Bez publishAt se nezveřejní: čas doplnit až se souhlasem uživatele (2026-11-11: uživatel chce post mít ve frontě připravený).",
       "publishAt": "2026-11-12T09:00:00Z"
+    },
+    {
+      "id": "council-ridge",
+      "type": "image",
+      "files": [
+        "council_1.jpg"
+      ],
+      "voices": true,
+      "council": true,
+      "caption": "FRONT COUNCIL 🗺️\n\nVerdel Ridge has fallen. The guns are talking. Now it's your turn.\n\nWhat should your side do next? Write your idea in the comments. Big or small, serious or crazy, as long as it fits the war:\n⚔️ an attack, a trap, a raid\n🏥 a way to save more men\n🧱 something to build\n📣 anything the front would remember\n\nThe most liked idea of each side becomes an order in the game, and is announced in the Trench Gazette. ❤️ Like the ideas you want to see happen.\n\nYour soldier is your voter: we know which side you serve, so no need to write it. Not enlisted yet? Comment CONCORD or HEGEMONY first, and then your idea.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
+      "_note": "Rada fronty: nápady do komentářů, vyhrává nejvíc lajků za každou stranu (tools/council.mjs). Bez publishAt se nezveřejní: čas doplnit se souhlasem uživatele."
     }
   ]
 }

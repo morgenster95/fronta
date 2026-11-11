@@ -83,11 +83,11 @@ async function mediaToPoll(state) {
 // Komentáře našeho účtu se přeskakují: odpovědi bota obsahují hesla frakcí a bot by narukoval sám sebe.
 // full = projít všechny stránky (změnil se počet komentářů: nová odpověď může být i pod starým komentářem).
 let OWN = { id: USER, username: null };
-const C_FIELDS = 'id,text,username,timestamp,from';
+const C_FIELDS = 'id,text,username,timestamp,from,like_count';
 async function* comments(mediaId, seen, full = true) {
   const name = (c) => (c.username || c.from?.username || '').toLowerCase();
   const own = (c) => (c.from?.id && c.from.id === OWN.id) || (OWN.username && name(c) === OWN.username);
-  const item = (c, parent = null) => ({ id: c.id, text: c.text, username: c.username || c.from?.username, userId: c.from?.id, timestamp: c.timestamp, mediaId, parentId: parent, replyTo: parent || c.id });
+  const item = (c, parent = null) => ({ id: c.id, text: c.text, username: c.username || c.from?.username, userId: c.from?.id, timestamp: c.timestamp, likes: c.like_count ?? 0, mediaId, parentId: parent, replyTo: parent || c.id });
   let page = await ig(`${mediaId}/comments`, { fields: `${C_FIELDS},replies.limit(50){${C_FIELDS}}`, limit: 50 });
   for (;;) {
     let allSeen = true;
@@ -127,6 +127,11 @@ async function main() {
   const map = loadMap(theme);
   const state = loadState(theme);
   const seen = new Set(state.seenComments);
+  // ruční zrušení běžícího hlasování (např. smazaný post): data/cancel-vote.json { "mediaId": "…" } (jednou, pak se soubor ignoruje)
+  try {
+    const cv = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'cancel-vote.json'), 'utf8'));
+    if (state.vote && state.vote.mediaId === cv.mediaId) { console.log(`✖ hlasování ${cv.mediaId} zrušeno: ${state.vote.question}`); state.vote = null; }
+  } catch { /* soubor není */ }
   const db = await firestore();
   let enlisted = 0, claimed = 0;
 
@@ -147,6 +152,7 @@ async function main() {
   // + posty z fronty s `voices: true` (např. „Letters from the front“: dopisy domů do komentářů)
   const queue = JSON.parse(fs.readFileSync(path.join(ROOT, 'marketing', 'queue.json'), 'utf8'));
   const letterMedia = (queue.items || []).filter((i) => i.voices && i.published?.id).map((i) => i.published.id);
+  const councilMedia = (queue.items || []).filter((i) => i.council && i.published?.id).map((i) => i.published.id); // „Rada fronty“: nápady hráčů, vyhrává nejvíc lajků (tools/council.mjs)
   const voteMedia = new Set([state.vote?.mediaId, ...(state.events || []).filter((e) => e.perFaction && e.day >= state.day - 2).map((e) => e.mediaId), ...letterMedia].filter(Boolean));
   for (const mid of voteMedia) if (!posts.some((p) => p.id === mid)) posts.push({ id: mid, count: undefined }); // hlasování projít vždy
   // hesla všech hlasování (běžící, nedávná i čekající ve frontě), ne napevno v kódu
@@ -154,12 +160,13 @@ async function main() {
   let voicesDirty = false;
   const keepVoice = (c, mid) => {
     const text = (c.text || '').trim();
-    if (text.split(/\s+/).length < 6) return; // jen heslo nebo pár slov: to není zdůvodnění
     const list = (voices.posts[mid] ??= []);
-    if (list.some((v) => v.id === c.id)) return;
+    const old = list.find((v) => v.id === c.id);
+    if (old) { if (c.likes != null && old.likes !== c.likes) { old.likes = c.likes; voicesDirty = true; } return; } // počty lajků se obnovují při každém průchodu
+    if (text.split(/\s+/).length < (councilMedia.includes(mid) ? 2 : 6)) return; // jen heslo nebo pár slov: to není zdůvodnění (v radě fronty stačí nápad o dvou slovech)
     const s = state.soldiers.find((x) => x.id === c.userId) || state.soldiers.find((x) => x.handle === (c.username || '').toLowerCase());
     const kw = voiceKws.find((k) => new RegExp(`\\b${k.replace(/S$/, '')}S?\\b`).test(text.toUpperCase())) || null;
-    list.push({ id: c.id, handle: c.username, faction: s?.faction ?? null, kw, text: text.slice(0, 800), at: c.timestamp, reply: !!c.parentId });
+    list.push({ id: c.id, handle: c.username, faction: s?.faction ?? null, kw, text: text.slice(0, 800), at: c.timestamp, likes: c.likes ?? 0, reply: !!c.parentId });
     voicesDirty = true;
   };
   for (const { id: mid, count } of posts) {
