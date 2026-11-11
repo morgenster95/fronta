@@ -229,7 +229,9 @@
     }
   ],
   "dm": {
-    "enlisted": "{rank} @{handle}, you have been assigned to {unit}, sector {sector}. Find yourself on the front: {url}",
+    "_": "Soukromé zprávy (Private Reply pod komentář; Instagram dovolí JEDNU zprávu na komentář do 7 dnů, novým followerům bez komentáře psát nejde). enlisted = průvodce pro nového rekruta, guide = jak se přidat (komentář bez hesla od někoho, kdo ještě nemá vojáka; každému jen jednou). Zapíná proměnná IG_SEND_DM=1. Proměnné: {rank} {handle} {name} {unit} {sector} {url} {site} {objective} {sides}.",
+    "enlisted": "Welcome to the front, {rank} @{handle}. 🪖\nYour soldier {name} now holds sector {sector}.\n\nWhat to do next:\n1. Find yourself on the map: {url}\n2. Want a trade? Comment it under any of our posts: MEDIC, SNIPER, MACHINE GUNNER, SAPPER, COOK… Your first choice is free.\n3. When we post a vote, comment the word. Your soldier is your ballot.\n4. Every day at 13:00 UTC the Trench Gazette prints what happened to your soldier.\n5. Tap \"This is me\" on your card to claim your soldier and ask for transfers.\n\nEvery friend you bring is one more rifle in the race for {objective}.",
+    "guide": "Soldier, you are not on the line yet. 🪖\nMud & Iron is a war fought by Instagram: every player is one soldier on a giant trench map.\n\nHow to join:\n1. Comment one word under any of our posts: {sides}. That is your side for good, so choose carefully.\n2. Within minutes a soldier with your @name takes a post on the front.\n3. Find your soldier here: {site}\n\nAdd a trade if you like (for example \"CONCORD medic\"). Every day at 13:00 UTC the Trench Gazette prints what happened on the line.",
     "claim": "Your claim code: {code}. Comment it under our latest post to take command of your soldier."
   },
   "unlocks": [],

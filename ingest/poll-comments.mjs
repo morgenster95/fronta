@@ -15,6 +15,7 @@ import path from 'node:path';
 import { ROOT, loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
 import { lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
+import { raceStatus } from '../engine/race.js';
 import { deathReply } from '../engine/house.js';
 
 // Nové aplikace Meta: Unified login + systémový token z firemního portfolia → graph.facebook.com (token nevyprší).
@@ -162,6 +163,23 @@ async function main() {
     list.push({ id: c.id, handle: c.username, faction: s?.faction ?? null, kw, text: text.slice(0, 800), at: c.timestamp, reply: !!c.parentId });
     voicesDirty = true;
   };
+  // proměnné soukromých zpráv (theme.dm): kromě předaných i web, hesla stran a právě dobývaná kóta
+  const dmText = (tpl, vars = {}) => {
+    const all = { site: process.env.SITE_URL || '', sides: theme.factions.map((f) => f.keyword).join(' or '), objective: raceStatus(state, theme)?.name ?? 'the next objective', ...vars };
+    return tpl.replace(/\{(\w+)\}/g, (m, k) => (k in all ? all[k] : m)).slice(0, 1000);
+  };
+  // „Jak se přidat“ do soukromé zprávy: komentář bez hesla od někoho, kdo ještě nemá vojáka. Každému účtu jen jednou
+  // (state.guided), jen na čerstvý komentář (Instagram dovolí soukromou odpověď do 7 dnů) a jen s IG_SEND_DM=1.
+  const guideDm = async (c) => {
+    if (process.env.IG_SEND_DM !== '1' || process.env.DRY_RUN || !theme.dm?.guide || !c.userId) return;
+    if (Date.now() - Date.parse(c.timestamp) > 6 * 864e5) return;
+    const guided = (state.guided ||= []);
+    if (guided.includes(c.userId) || findOwnSoldier(state, c.userId, (c.username || '').toLowerCase())) return;
+    guided.push(c.userId);
+    if (guided.length > 5000) guided.splice(0, 1000);
+    await igPost(`${USER}/messages`, { recipient: { comment_id: c.id }, message: { text: dmText(theme.dm.guide) } })
+      .then(() => console.log(`✉ průvodce @${c.username}`)).catch((e) => console.warn(`DM průvodce @${c.username}: ${e.message}`));
+  };
   for (const { id: mid, count } of posts) {
     const fullVote = voteMedia.has(mid) && !voices.scanned?.[mid]; // první průchod hlasováním: projít i už viděné komentáře
     // běžící hlasování: jednou projít i už zpracované komentáře (hlasy napsané před otevřením nebo jiným tvarem hesla)
@@ -176,8 +194,9 @@ async function main() {
         const own = state.soldiers.find((s) => s.id === c.userId);
         if (own && !own.reply && parseComment(c.text, theme)?.type === 'enlist') own.reply = c.replyTo || c.id;
       }
+      const isNew = !seen.has(c.id);
       const res = applyComment(state, c, theme, story, map);
-      if (!res) continue;
+      if (!res) { if (isNew) await guideDm(c); continue; }
       if (res.type === 'ambiguous') {
         console.log(`? @${res.handle}: obě strany v jednom komentáři, nenarukován`);
         const kws = theme.factions.map((f) => f.keyword);
@@ -227,13 +246,10 @@ async function main() {
         }
         if (process.env.IG_SEND_DM === '1' && !process.env.DRY_RUN) {
           const s = res.soldier;
-          const text = theme.dm.enlisted
-            .replace('{rank}', theme.ranks[s.rank])
-            .replace('{handle}', s.handle)
-            .replace('{unit}', s.unit)
-            .replace('{sector}', s.sector)
-            .replace('{url}', `${process.env.SITE_URL || ''}/?s=${encodeURIComponent(s.handle)}`);
-          await igPost(`${USER}/messages`, { recipient: { comment_id: c.id }, message: { text } }).catch((e) => console.warn(e.message));
+          // průvodce pro nového rekruta do soukromé zprávy (jedna zpráva na komentář, víc Instagram nedovolí)
+          const text = dmText(theme.dm.enlisted, { rank: theme.ranks[s.rank], handle: s.handle, name: s.name, unit: s.unit, sector: s.sector,
+            url: `${process.env.SITE_URL || ''}/?s=${encodeURIComponent(s.handle)}` });
+          await igPost(`${USER}/messages`, { recipient: { comment_id: c.id }, message: { text } }).catch((e) => console.warn(`DM @${s.handle}: ${e.message}`));
         }
       } else if (res.type === 'claim' && db && !res.soldier) {
         // kód od někoho, kdo ještě nenarukoval
