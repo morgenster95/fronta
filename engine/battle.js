@@ -266,9 +266,11 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const side = state.battle.sides[s.faction];
     const rand = rngFor(s.id, 'battle', day);
     const underShells = barrage?.target === s.faction && shelled.has(s.sector);
-    const own = R.signaller.counter * share(near(signallers[s.faction], X(s), range).length, R.signaller.covers, near(targetsOf[s.faction], X(s), range).length);
+    const sig = share(near(signallers[s.faction], X(s), range).length, R.signaller.covers, near(targetsOf[s.faction], X(s), range).length);
+    const own = R.signaller.counter * sig;
+    // roles.signaller.counterShell: spojař navádí protipalbu i proti bombardování (snižuje zásahy granátem v jeho okolí, podle pokrytí)
     const p = underShells
-      ? cfg.shell.hit * (cfg.line[s.line] ?? 1) * (1 - cfg.buildings.sandbags.cover * count(side, 'sandbags'))
+      ? cfg.shell.hit * (cfg.line[s.line] ?? 1) * (1 - cfg.buildings.sandbags.cover * count(side, 'sandbags')) * (1 - (R.signaller.counterShell || 0) * sig)
       : cfg.hit * coverOf(s) * (ctx.dangerOf?.(s) ?? 1) * (barrage?.target === s.faction ? cfg.barrage : 1) * (1 - own); // spojař poblíž: telefon k vlastnímu dělostřelectvu, protipalba
     if (rand() >= p) continue;
     bgHit(s, severity(s, underShells ? cfg.shell.severity : cfg.severity, rand, underShells), underShells);

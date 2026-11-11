@@ -158,6 +158,26 @@ Rozdíl proti v10: ~15–30 % víc padlých, mnohem víc zásahů a „zranění
 
 ---
 
+## 2026-11-11 (noc) · Bombardování a složení stran (v11) · NÁVRH (simulováno)
+**Otázka uživatele:** záleží u bombardování na složení rolí, ne jen na počtu lidí? Testováno na VYROVNANÝCH stranách (88 / 92 a 880 / 920), poražená (bombardovaná)
+strana má různé složení, vítěz skutečné role. Padlí za 7 dní od dobytí kóty (3 dny granátů + 4 dny doznívání), v11, 1 nemocnice:
+| Složení bombardované strany | medici | dnes (~92) | 10× (~920) | s `counterShell=0,4` dnes / 10× |
+|---|---|---|---|---|
+| skutečné role (7 % mediků) | 12 | 14,7 % | 24,5 % | 11,4 % / 18,9 % |
+| 15 % mediků | 14 | 16,5 % | 17,0 % | 13,2 % / 15,2 % |
+| 35 % kulometů, 5 % mediků | 5 | **23,7 %** | **30,8 %** | 21,0 % / 28,5 % |
+| 30 % odstřelovačů, 6 % mediků | 5 | **23,2 %** | **29,3 %** | 20,8 % / 26,9 % |
+| 60 % střelců, 8 % mediků | 11 | 19,2 % | 30,1 % | 16,5 % / 29,2 % |
+| 35 % kulometů + 13 % mediků | 14 | 16,8 % | 27,1 % | 13,8 % / 20,7 % |
+| 55 % střelců + 13 % mediků | 16 | 17,0 % | 27,9 % | 15,0 % / 26,5 % |
+**Závěr:** granáty zasahují všechny role stejně (kdo už leží raněný, se nezraňuje znovu). Rozdíl dělá, kolik je mediků, kuchařů, kaplanů a spojařů, a zda je nemocnice.
+Strana s 5 % medici ztratí o 7 bodů víc než strana s 14 % (dnes), při 10× o 6–13 bodů. Kulomet ani odstřelovač bombardování nesnižují.
+**Zjištěná mezera:** spojař (protipalba) dosud nepůsobil proti granátům. Přidáno **volitelně** `roles.signaller.counterShell` (vypnuto, 0): snižuje zásahy granátem v okolí spojaře podle pokrytí (jeden spojař pokryje 10 vojáků).
+S hodnotou 0,4 klesnou ztráty bombardované strany o ~3 body dnes a ~5 bodů při 10× u skutečného složení. Návrh: zapnout 0,4 s v11 (rozhodnutí uživatele).
+**Poznámka:** dřívější řádek „malá strana proti velké“ (870 proti 270) byl jiný test, o nerovné velikosti. Bombardování na velikosti strany nezávisí, jen na úsecích a složení.
+
+---
+
 ## 2026-11-11 · OVER THE TOP: útok přes zákop · NÁVRH (čeká na rozhodnutí)
 Jedna strana jednou za 5–6 dní vyrazí v daných úsecích do útoku. Gazette to ohlásí den předem („At dawn the Concord goes over the top at …“),
 večerní reel na to může navázat.
