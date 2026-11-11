@@ -959,4 +959,12 @@ test('atlas spritů odpovídá souborům (po změně PNG spustit python tools/pa
     ...Object.values(m.anims || {}).flatMap((byDir) => Object.values(byDir).flat()),
   ]);
   for (const f of used) assert.ok(atlas.frames[f], `manifest odkazuje na ${f}, který v atlasu není`);
+
+test('titulek novin není každodenní rubrika (Across the wire, obvaziště)', () => {
+  const s = emptyState(theme);
+  for (let i = 0; i < 120; i++) applyComment(s, { id: `t${i}`, userId: `ut${i}`, username: `titulek${i}x`, text: i % 2 ? 'concord sniper' : 'hegemony sniper' }, theme, story, map);
+  const titles = [];
+  for (let d = 0; d < 12; d++) { dailyTick(s, theme, story); titles.push(s.chronicle.at(-1).title); }
+  for (const t of titles) assert.ok(!/^(Across the wire|The aid posts|The hospitals|Hospitals and aid posts)$/.test(t), `titulek je rubrika: ${t}`);
+  for (let i = 1; i < titles.length; i++) assert.notEqual(titles[i], titles[i - 1], `dva dny po sobě stejný titulek: ${titles[i]}`);
 });
