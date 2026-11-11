@@ -211,7 +211,7 @@
     "kw": null,
     "text": "Hegemony builds up trenches (sentry/sniper nets and bomb shelters)",
     "at": "2026-11-11T22:25:16+0000",
-    "likes": 0,
+    "likes": 1,
     "reply": false
    },
    {
@@ -221,7 +221,7 @@
     "kw": null,
     "text": "Hegemony should dig more underground bunkers in case of arty attack and prepare better trench to reduce mud and watter inside",
     "at": "2026-11-11T22:33:23+0000",
-    "likes": 0,
+    "likes": 1,
     "reply": false
    },
    {
@@ -241,7 +241,7 @@
     "kw": null,
     "text": "Hegemony should dig tunnels as close to Concord trenches and set explosive. When they inevitably attempt to strike we set off the explosives, cutting off any escape route and weakening their forces.",
     "at": "2026-11-11T22:30:20+0000",
-    "likes": 1,
+    "likes": 2,
     "reply": false
    },
    {
@@ -251,8 +251,18 @@
     "kw": null,
     "text": "Spotlights on those bunkers too.",
     "at": "2026-11-11T22:30:18+0000",
-    "likes": 2,
+    "likes": 3,
     "reply": true
+   },
+   {
+    "id": "18015586139971503",
+    "handle": "c10ud_b3rry3.0",
+    "faction": 1,
+    "kw": null,
+    "text": "Concord artillery from the newly acquired ridge should shell the frontlines while concord sappers riflemen and machine gunners raid the enemies medical encampments and take their wounded hostage",
+    "at": "2026-11-11T22:40:10+0000",
+    "likes": 0,
+    "reply": false
    }
   ]
  },
