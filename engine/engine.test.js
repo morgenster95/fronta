@@ -959,6 +959,7 @@ test('atlas spritů odpovídá souborům (po změně PNG spustit python tools/pa
     ...Object.values(m.anims || {}).flatMap((byDir) => Object.values(byDir).flat()),
   ]);
   for (const f of used) assert.ok(atlas.frames[f], `manifest odkazuje na ${f}, který v atlasu není`);
+});
 
 test('titulek novin není každodenní rubrika (Across the wire, obvaziště)', () => {
   const s = emptyState(theme);
