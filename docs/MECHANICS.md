@@ -158,6 +158,33 @@ Rozdíl proti v10: ~15–30 % víc padlých, mnohem víc zásahů a „zranění
 
 ---
 
+## 2026-11-11 (noc) · v12 = v11 + smrt hlavně z nedostatku míst, spojař proti granátům · NÁVRH (simulováno, čeká na „nasadit“)
+**Podnět uživatele:** ve v11 většina mrtvých padla přímo kulkou (~85 %). Logičtěji: pár mrtvých, pár raněných, pár kriticky, a pak dojdou lůžka, nosítka a medici.
+**Změny proti v11:**
+| | v11 | v12 |
+|---|---|---|
+| smrt na místě po kritickém zásahu kulkou (`roles.kill`) / ostřelovač | 60 % / 80 % | **20 % / 35 %** |
+| smrt kritického za noc (`care.crit.dieBase`) | 35 % | **50 %** (nosítka s plnou péčí; lůžko ×0,8 / ×0,4 v nemocnici; bez péče až +70 %) |
+| závažnost puškaře lehce / těžce / kriticky | 82 / 10 / 8 % | **83 / 7 / 10 %** (víc kritických, aby se plnila lůžka) |
+| spojař proti granátům (`roles.signaller.counterShell`) | vypnuto | **0,4** |
+Parametry pro simulaci: `--set aidPost.stretchersPerMedic=1 --set roles.medic.work=2 --set care.crit.dieBase=0.35 --set aidPost.critRisk=0.8 --set buildings.dugout.critRisk=0.4 --set care.crit.stabilizeBed=3 --set shell.kill=0.5 --set shell.severity.light=0.7 --set shell.severity.heavy=0.3 --set daily.shellMax=15 --set shell.hit=0.5 --set roles.saturation=1.5 --set roles.machinegunner.suppressMax=0.3 --set roles.kill=0.35 --set roles.sniper.kill=0.6 --set hit=0.02 --set daily.max=99 --set daily.min=1 --set care.triage=1 --set care.heavy.need=1 --set hit=0.015 --set roles.rifleman.severity.light=0.45 --set roles.rifleman.severity.heavy=0.2 --set roles.machinegunner.severity.heavy=0.08 --set roles.sniper.severity.heavy=0.35 --set roles.kill=0.6 --set roles.sniper.kill=0.8 --set roles.rifleman.fire=0.07 --set roles.machinegunner.fire=0.11 --set roles.sniper.fire=0.12 --set roles.saturation=1 --set roles.rifleman.fire=0.17 --set roles.rifleman.severity.light=0.18 --set roles.rifleman.severity.heavy=0.08 --set roles.machinegunner.fire=0.26 --set roles.machinegunner.severity.light=0.25 --set roles.machinegunner.severity.heavy=0.04 --set roles.sniper.fire=0.30 --set roles.sniper.severity.light=0.55 --set roles.sniper.severity.heavy=0.3 --set care.light.need=0.4 --set care.light.baseHeal=0.4 --set daily.shellMax=30 --set roles.kill=0.2 --set roles.sniper.kill=0.35 --set care.crit.dieBase=0.5 --set roles.rifleman.severity.light=0.17 --set roles.rifleman.severity.heavy=0.10 --set roles.signaller.counterShell=0.4`
+
+**Příčiny smrti** (4 běhy × 40 dní; zápis „hned kulkou / na lůžku / bez péče a nosítek“):
+| Situace | hned kulkou | na lůžku + bez péče/nosítek | podíl „z nedostatku místa a péče“ |
+|---|---|---|---|
+| dnes (~90), skutečné role | 29–52 | 41–51 | ~50–60 % |
+| dnes, 3 % mediků | 28 | 115 | **80 %** |
+| 10× (~900), skutečné role | 148–235 | 292–409 | **~64 %** |
+| 10× se 3 % mediků | 140 | 1 596 | **92 %** |
+**v11 měla stejné celkové počty mrtvých (v12 ~ ±10 %), ale ~85 % bylo od kulky.** Střelba teď dělá raněné a kritické, umírají přeplněné obvaziště a nemocnice.
+Stabilní i po 60 dnech (`docs/sim/2026-11-11_v12_long60.txt`): žádná spirála; strana se 3 % medici ztrácí ~2 % stavu denně.
+
+**Padlí denně na stranu (v závorce na 100):** dnes 0,41–0,66 (0,46–0,71), při 10× 5,0–7,4 (0,56–0,80), strana se 3 % medici při 10× 18 (2,1).
+**Bombardování** (poražená strana, za 7 dní od dobytí kóty): dnes 11–20 % (skutečné role 11 %, 30 % odstřelovačů 20 %), při 10× 16–28 %. S mediky 15 % vždy nejméně.
+**Střelci:** puškař 0,40 zásahu za týden při 870 proti 270 na velké straně (nasycení), ve vyrovnaných stranách ~0,85.
+
+---
+
 ## 2026-11-11 (noc) · Bombardování a složení stran (v11) · NÁVRH (simulováno)
 **Otázka uživatele:** záleží u bombardování na složení rolí, ne jen na počtu lidí? Testováno na VYROVNANÝCH stranách (88 / 92 a 880 / 920), poražená (bombardovaná)
 strana má různé složení, vítěz skutečné role. Padlí za 7 dní od dobytí kóty (3 dny granátů + 4 dny doznívání), v11, 1 nemocnice:
