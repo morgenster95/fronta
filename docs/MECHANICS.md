@@ -52,6 +52,17 @@ Přínos rolí ověřen (`--roles`): medik, kuchař, kulomet a spojař výrazně
 
 ---
 
+## 2026-11-11 · Nemocnice: smrt i na lůžku (v8) · NÁVRH (čeká na rozhodnutí)
+**Zjištění:** obě strany mají od Dne 3 nemocnici (`built.dugout = 1`). S nemocnicí v7 padne jen ~0,3–0,6 vojáka na stranu týdně,
+protože 4 lůžka stačí pro všechny kritické a na lůžku umírá jen 3,6 % za noc. Nemocnice tak smrt skoro vypne, místo aby ji jen snížila.
+**Kdo co dělá:** lůžka (nemocnice) zachraňují kriticky raněné, medici drží lehce a těžce raněné, aby se nezhoršili do kritického stavu.
+Dvojnásobná práce mediků bez nemocnice: Hegemony ~1,2, Concord ~0,9 padlých týdně.
+**Návrh v8:** `care.crit.dieBase` 0,09 → 0,2, `buildings.dugout.critRisk` 0,4 → 0,8, `care.crit.stabilizeBed` 2 → 3.
+Simulace (30 × 21 dní, na stranu a týden): bez nemocnice Heg ~6,4 / Con ~2,9 padlých, **s nemocnicí Heg ~1,6 / Con ~1,3**
+(nemocnice pořád snižuje úmrtí asi 2–4×, ale neodstraní je).
+
+---
+
 ## 2026-11-11 · OVER THE TOP: útok přes zákop · NÁVRH (čeká na rozhodnutí)
 Jedna strana jednou za 5–6 dní vyrazí v daných úsecích do útoku. Gazette to ohlásí den předem („At dawn the Concord goes over the top at …“),
 večerní reel na to může navázat.
