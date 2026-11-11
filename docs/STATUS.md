@@ -91,7 +91,8 @@ service account pro nasazování (`FIREBASE_SERVICE_ACCOUNT`). Postup zapojení 
   **Opatření (od 2026-11-11):** obrázky hry (sprity, efekty, rekvizity) se berou ze **zrcadla na GitHub Pages** (`https://morgenster95.github.io/fronta/game/assets/…`, nahrává je workflow `media.yml`
   spolu s otiskem `game/assets.sha`). Build zrcadlo zapne jen když tam leží stejná verze (`tools/asset-base.sh`, proměnná `VITE_ASSET_BASE`); jinak jdou obrázky z Firebase. Když zrcadlo za běhu selže,
   `web/src/assets.js` načte obrázek z vlastní domény. Z Firebase pak jde ~0,2 MB na návštěvu, limit vydrží ~1 700 nových návštěvníků denně (Pages: měkký limit 100 GB měsíčně).
-  Hashované JS/CSS mají `Cache-Control: immutable`. Watchdog (každých 20 min) při odpovědi jiné než HTTP 200 založí issue `site-down` (e-mail).
+  Hashované JS/CSS mají `Cache-Control: immutable`.
+  Smyčka od 2026-11-11 nasazuje web jen při **skutečné změně obsahu** (`dist_hash` v `tools/loop.sh`, bez časových razítek `updated`); dřív se nasazovalo při každém kole (~213× denně, z toho ~85 se skutečnou změnou). Watchdog (každých 20 min) při odpovědi jiné než HTTP 200 založí issue `site-down` (e-mail).
   **Kontrola vytížení:** Firebase Console → Hosting → Využití (přenos za den). Další krok, kdyby to nestačilo: JavaScript také na Pages / přesun hostingu na Cloudflare Pages (zdarma, bez limitu přenosu; vyžaduje účet a změnu odkazu v bio).
 - Testy se na GitHubu nespouštějí samy (jen `npm test` před commitem).
 - Historie gitu obsahuje stará videa (~110 MB). Smazání souborů repo nezmenší, to by šlo jen přepsáním historie.

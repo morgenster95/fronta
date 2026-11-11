@@ -9,6 +9,12 @@ set -u
 MINUTES=${LOOP_MINUTES:-330}
 END=$(( $(date +%s) + MINUTES * 60 ))
 DEPLOYED=""
+DEPLOYED_HASH="" # otisk obsahu naposledy nasazeného webu (bez časových razítek „updated“, která se mění při každém buildu)
+dist_hash() {
+  (cd dist && find . -type f | LC_ALL=C sort | while read -r f; do
+    case "$f" in ./data/*.json) sed -E 's/"updated":"[^"]*"//' "$f" | sha1sum ;; *) sha1sum < "$f" ;; esac
+  done | sha1sum | cut -d' ' -f1)
+}
 FAILS=0
 export REPLIED_LOG="${RUNNER_TEMP:-/tmp}/replied.txt" # komentáře, na které už bot odpověděl (i když se kolo opakuje)
 export PUBLISHED_LOG="${RUNNER_TEMP:-/tmp}/published.jsonl" # příspěvky zveřejněné v tomto běhu (nesmí vyjít dvakrát)
@@ -45,9 +51,15 @@ round() {
   if [ "$(git rev-parse HEAD)" != "$DEPLOYED" ]; then
     export VITE_ASSET_BASE="$(bash tools/asset-base.sh)" # obrázky ze zrcadla na GitHub Pages, když tam leží aktuální verze (šetří limit Firebase)
     npm run -s build > /dev/null || { echo "build selhal"; return 1; }
-    if firebase deploy --only hosting --non-interactive --project fronta-ig > "${RUNNER_TEMP:-/tmp}/deploy.log" 2>&1; then
+    hash=$(dist_hash)
+    if [ -n "$hash" ] && [ "$hash" = "$DEPLOYED_HASH" ]; then
+      # změnil se jen nepodstatný údaj (např. čas synchronizace profilů, počty lajků): web by vypadal stejně
+      echo "web beze změny, nenasazuji ($(git rev-parse --short HEAD))"
+      DEPLOYED=$(git rev-parse HEAD)
+    elif firebase deploy --only hosting --non-interactive --project fronta-ig > "${RUNNER_TEMP:-/tmp}/deploy.log" 2>&1; then
       echo "nasazeno $(git rev-parse --short HEAD)"
       DEPLOYED=$(git rev-parse HEAD)
+      DEPLOYED_HASH=$hash
       resolve deploy-failed "Nasazeno, web je zase aktuální."
     else
       echo "NASAZENÍ SELHALO:"
