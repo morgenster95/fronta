@@ -52,4 +52,4 @@ Kreslené rekvizity vedle sprite vojáků (PixelLab, víc stínování a obrysy)
 - Reely: `marketing/reels/render.json` → workflow `reel`; podklady `tools/ridge-reel.mjs`, `tools/rip-data.mjs`; hlas `marketing/story_vo.py` (profil vypravěče), hudba `marketing/reel_audio.py` (`epic_score`, lament).
 - Mapa ve hře: `web/src/orders-fx.js` (kryty, lékař, sklad munice), `hospital.js`, `life.js`; dev náhled `/?orders=0:DUGOUTS,0:DOCTOR,0:AMMO`.
 - **Story ke každému příspěvku:** `node tools/story-for.mjs <id> [--still snimek.png]` (`marketing/make_story.py`); u reelu čistý snímek záběru bez titulků, banner mimo spodní lištu IG.
-- Kalendář příspěvků: `marketing/promo/plan.html` (`tools/calendar.mjs`).
+- Kalendář příspěvků a úkoly: soukromý Artifact „Štáb fronty“ (viz CLAUDE.md), ne veřejná stránka.

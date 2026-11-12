@@ -39,12 +39,10 @@ round() {
   sync || { echo "sync selhal"; return 1; }
   node ingest/poll-comments.mjs || echo "ingest selhal"
   node ingest/publish.mjs --due || echo "publish selhal"
-  node tools/calendar.mjs || echo "kalendář selhal" # marketing/promo/plan.html → GitHub Pages (plán příspěvků a novin)
   node ingest/daily-tick.mjs || echo "tick selhal" # sám pozná, jestli už dnes (pražský čas) proběhl
   npm run -s data:build || { echo "data:build selhal"; return 1; }
   git add data/state.json data/state-records data/voices.json marketing/queue.json
   git add -u marketing/promo # zveřejněná videa, která publish.mjs smazal
-  git add marketing/promo/plan.html
   if ! git diff --cached --quiet; then
     git commit -qm "loop: $(date -u +%FT%TZ)" || return 1
     git push -q origin HEAD:main || { echo "push kolize, kolo se zopakuje"; return 2; }
