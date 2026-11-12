@@ -453,9 +453,9 @@
       "files": [
         "letter_hand_1.jpg"
       ],
-      "caption": "MAIL CALL ✉️\n\nLetters have arrived at the front, and now you can send one too.\n\nHOW IT WORKS\n1️⃣ Log in on the game site (link in bio) with the account you claimed your soldier with.\n2️⃣ Open your soldier's card.\n3️⃣ Tap “Send a letter home”.\n\nA soldier who has written home goes into the night with a clearer head, and he is a little safer for it. The letter counts for tonight only. The next night, write again.\n\nThe Trench Gazette counts how many soldiers got a letter (“Mail call”), and your soldier writes about it in his diary. Skip a day and he goes out without it.\n\nIt costs nothing, and anyone with a soldier can do it. Not enlisted yet? Comment CONCORD or HEGEMONY and your soldier takes a post on the line.\n\n#pixelart #ww1 #lettershome #indiegame #trenchwarfare #gamedev #mudandiron",
+      "caption": "MAIL CALL ✉️\n\nA letter from home can reach your soldier at the front. You are the one who sends it.\n\nHOW IT WORKS\n1️⃣ Log in on the game site (link in bio) with the account you claimed your soldier with.\n2️⃣ Open your soldier's card.\n3️⃣ Tap “Send your soldier a letter”.\n\nA soldier who gets a letter from home goes into the night with a clearer head, and is a little safer for it. The letter counts for tonight only. The next day, send another.\n\nYour soldier reads it and writes about it in the diary. Skip a day and the night comes without one.\n\nIt costs nothing, and anyone with a soldier can do it. Not enlisted yet? Comment CONCORD or HEGEMONY and your soldier takes a post on the line.\n\n#pixelart #ww1 #lettershome #indiegame #trenchwarfare #gamedev #mudandiron",
       "publishAt": "2026-11-12T21:00:00Z",
-      "_note": "Dopis domů: mechanika vysvětlena bez procent. 12. 11. 22:00 Praha (21:00 UTC), schváleno uživatelem. Vyžaduje nasazená pravidla Firestore."
+      "_note": "Dopis z domova: hráč ho posílá svému vojákovi (bez procent). 12. 11. 22:00 Praha (21:00 UTC). Vyžaduje nasazená pravidla Firestore."
     },
     {
       "id": "story-mail-call",

@@ -385,7 +385,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       let sent = false;
       try { sent = localStorage.getItem(`letter:${s.handle}`) === String(roster.day); } catch { /* bez úložiště */ }
       L.disabled = sent;
-      L.textContent = sent ? '✉ Letter sent. 15% safer tonight' : '✉ Send a letter home (15% safer tonight)';
+      L.textContent = sent ? '✉ Letter sent. 15% safer tonight' : '✉ Send your soldier a letter (15% safer tonight)';
       L.onclick = async () => {
         L.disabled = true;
         const owner = await signInAsOwner(s, toast).catch(() => null);

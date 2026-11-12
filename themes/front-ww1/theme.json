@@ -685,7 +685,7 @@
       "barrage": 0.12,
       "repair": 0.08
     },
-    "letter": { "cut": 0.15, "_": "dopis domů (web, přihlášený majitel, jednou za den): voják má v příštím tahu o `cut` menší šanci na zásah všeho druhu; neodeslaný dopis = žádný buff (retence)" },
+    "letter": { "cut": 0.15, "_": "dopis z domova (hráč ho na webu pošle svému vojákovi, přihlášený majitel, jednou za den): voják má v příštím tahu o `cut` menší šanci na zásah všeho druhu; neodeslaný dopis = žádný buff (retence)" },
     "mine": { "hit": 0.85, "sectors": 3, "_": "mina (rozkaz TUNNELLERS): šance zásahu každého v zasaženém úseku; závažnost a smrt na místě jako u granátů (shell)" },
     "shell": {
       "sectors": 4,

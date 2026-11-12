@@ -424,14 +424,10 @@ export function dailyTick(state, theme, story, ctx = {}) {
   }
   awardHouseBadges(state, theme); // odznaky rodu (zůstávají v rodu)
   const news = [...(state.news || []).filter((n) => n.day >= day - 1), ...raid.news, ...fight.news]; // zprávy o dobytí kóty jdou první
-  // pošta: kdo včera odeslal dopis domů, má zápis a v novinách je řádek „Mail call“
+  // pošta: hráč „posílá“ svému vojákovi dopis z domova; kdo ho včera dostal, má o něm zápis (v novinách se nezmiňuje)
   const readers = state.soldiers.filter((s) => s.letter === day - 1 && s.status !== 'fallen');
-  if (readers.length) {
-    const LETTERS = ['A letter from home reached {n} before dusk. {n} read it twice and slept a little easier.', '{n} wrote home by candlelight and got the sealed answer before the night shift.', 'Mail came up the line. {n} read the letter in the dugout and kept the envelope.'];
-    for (const s of readers) addEntry(s, day, LETTERS[(s.order || 0) % LETTERS.length].replaceAll('{n}', s.name));
-    const by = theme.factions.map((_, f) => readers.filter((s) => s.faction === f).length);
-    news.push({ day, kind: 'mail', routine: true, h: 'Mail call', text: `${readers.length} soldiers got a letter before the night: ${theme.factions.map((fc, f) => `${by[f]} ${fc.name.replace(/^The /, '')}`).join(', ')}.` });
-  }
+  const LETTERS = ['A letter from home reached {n} before dusk. {n} read it twice and slept a little easier.', 'Mail came up the line with a letter for {n}. {n} read it in the dugout and kept the envelope.', 'A letter from home found {n} before the night shift. {n} folded it small and kept it close.'];
+  for (const s of readers) addEntry(s, day, LETTERS[(s.order || 0) % LETTERS.length].replaceAll('{n}', s.name));
   state.news = [];
   state.chronicle = [...(state.chronicle || []), writeChronicle(state, day, { theme, story, weather, events, decided, news })]; // celá historie, nic se nemaže
   return state;
