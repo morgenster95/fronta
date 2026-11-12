@@ -1,7 +1,7 @@
 // Viditelné účinky rozkazů z hlasování na mapě (stav z roster.orders: { faction, kw, from, to }):
 //  • DUGOUTS  – hluboké kryty proti bombardování: u zálohy strany stojí pytlové kryty s trámovým vchodem a hlínou (jen po dobu rozkazu),
 //  • DOCTOR   – u obvaziště / nemocnice se mezi raněnými prochází lékař v bílém plášti (sprite zdravotníka, červený kříž nad hlavou).
-//  • GUNS – Hegemonie: protipalba (counter-battery), Concord: víc děl; na nepřátelské straně dopadá víc granátů (vizuálně; mechanika mění počet ostřelovaných úseků),
+//  • AMMO – víc munice: za nepřátelskou linií dopadá víc granátů (vizuálně; mechanika zvyšuje palbu vlastních střelců),
 // V dev režimu jde vyzkoušet bez hlasování: /?orders=0:DUGOUTS,0:DOCTOR  (strana:heslo).
 import { Container, Graphics, Sprite, Texture } from 'pixi.js';
 
@@ -80,7 +80,7 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
   });
 
   // --- COUNTERFIRE: občasné dopady za nepřátelskou linií v záběru kamery ---
-  const back = theme.factions.map((_, f) => has('GUNS', f));
+  const back = theme.factions.map((_, f) => has('AMMO', f));
   let nextShot = 0;
   let raised = false;
   return {

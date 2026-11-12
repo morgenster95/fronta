@@ -400,7 +400,7 @@
       "files": [
         "vote_orders_1.jpg"
       ],
-      "caption": "THE FRONT DECIDES ⚔️\n\nVerdel Ridge is in Concord hands, and the Hegemony lines are under the guns. Now the front chooses its next order. One post, one vote, three choices.\n\nComment ONE word:\n🧱 DUGOUTS: deep shelters. The Hegemony takes fewer shell hits. The Concord takes fewer hits on the ridge.\n🩺 DOCTOR: a surgeon arrives. Fewer dead and faster healing, for either side.\n💥 GUNS: the guns speak. The Hegemony answers with counterfire, so less of its line is shelled. The Concord brings up more guns, so more of the enemy line is shelled.\n\nYour soldier is your vote: we know which side you serve, so no need to write it. Each side picks for itself, so the two sides can choose differently. Not enlisted yet? Comment CONCORD or HEGEMONY together with your choice.\n\nThe winning word of each side runs as an order for 3 days. Announced in the Trench Gazette at 13:00 UTC.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
+      "caption": "THE FRONT DECIDES ⚔️\n\nVerdel Ridge is in Concord hands, and the Hegemony lines are under the guns. Now the front chooses its next order. One post, one vote, three choices.\n\nComment ONE word:\n🧱 DUGOUTS: deep shelters. Fewer men hit by shells and by fire.\n🩺 DOCTOR: a surgeon arrives. Fewer dead and faster healing.\n📦 AMMO: an ammunition train arrives. Your shooters hit 40% more.\n\nYour soldier is your vote: we know which side you serve, so no need to write it. Each side counts its own votes, so the two sides can choose differently. Not enlisted yet? Comment CONCORD or HEGEMONY together with your choice.\n\nThe winning word of each side runs as an order for 3 days. Announced in the Trench Gazette at 13:00 UTC.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
       "vote": {
         "question": "Verdel Ridge has fallen. What is the front's next order?",
         "perFaction": true,
@@ -409,19 +409,11 @@
         "options": [
           {
             "kw": "DUGOUTS",
-            "label": "Deep shelters: fewer hits for 3 days",
+            "label": "Deep shelters: fewer hits from shells and fire for 3 days",
+            "shell": 0.7,
+            "exposed": 0.7,
             "days": 3,
-            "outcome": "Deep shelters were dug.",
-            "byFaction": [
-              {
-                "shell": 0.7,
-                "outcome": "The Hegemony dug deep shelters: fewer men hit by shells."
-              },
-              {
-                "exposed": 0.6,
-                "outcome": "The Concord dug in on the ridge: fewer men hit."
-              }
-            ]
+            "outcome": "The {side} dug deep shelters: fewer men hit by shells and fire."
           },
           {
             "kw": "DOCTOR",
@@ -432,20 +424,11 @@
             "outcome": "A surgeon arrived at the {side} aid post: fewer dead, faster healing."
           },
           {
-            "kw": "GUNS",
-            "label": "The guns speak: counterfire or more guns for 3 days",
+            "kw": "AMMO",
+            "label": "Ammunition train: your shooters hit 40% more for 3 days",
+            "fire": 1.4,
             "days": 3,
-            "outcome": "The guns spoke.",
-            "byFaction": [
-              {
-                "guns": 0.7,
-                "outcome": "The Hegemony guns answered back: less of its line under the barrage."
-              },
-              {
-                "barrage": 1.4,
-                "outcome": "The Concord brought up more guns: more of the enemy line under the barrage."
-              }
-            ]
+            "outcome": "An ammunition train reached the {side} line: the shooters hit harder."
           }
         ]
       },
