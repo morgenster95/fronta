@@ -225,6 +225,10 @@ večerní reel na to může navázat.
   Návrh nabídky po dobytí Verdel Ridge (vliv na 3 dny z dnešního stavu, `node /tmp/opts.mjs` = simulace 40 běhů): **Hegemonie** DUGOUTS (`shell` 0,7, jen proti bombardování: o 1,8 padlého a 6 raněných méně; na mapě kryty u zálohy, `web/src/orders-fx.js`), DOCTOR (`die` 0,5 + `heal` 1,5: o 1,2 padlého méně; na mapě lékař u obvaziště), COUNTERFIRE (`guns` 0,7 = protipalba, o 30 % méně ostřelovaných úseků: o ~1,8 padlého méně; na mapě dopady za nepřátelskou linií) – STORM (palba ×1,4, `exposed` 1,5) jsme zamítli: nedávalo smysl (všichni střílí víc, ale jsou víc vidět), `exposed` zůstává v enginu;
   **Concord** SNIPERS (`fire` sniper 1,8: nepřítel +1,2 padlého), VICKERS (`fire` machinegunner 1,8: +4 raněných), MINE (nepřítel +1,6 padlého a +9 raněných jednorázově). Historické vzory: Hindenburgova linie, sanitní roty, Sturmtruppen 1918; sniperské školy 1915, Machine Gun Corps 1915, Messines 1917.
 
+- **2026-11-12 · Společná nabídka tří možností s účinkem podle strany · SCHVÁLENO (pokyn uživatele: jedno hlasování, ať si vyberou z toho, co je):** `option.byFaction[f]` přebíjí účinek i text pro danou stranu (stejné heslo, jiný efekt).
+  DUGOUTS (Hegemonie `shell` 0,7, Concord `exposed` 0,6), DOCTOR (obě `die` 0,5 + `heal` 1,5), GUNS (Hegemonie `guns` 0,7 = protipalba, Concord `barrage` 1,4 = víc děl). Dřívější návrh dvou odlišných nabídek (`option.only`) uživatel nechtěl; `only` zůstává v enginu.
+  Simulace 3 dnů (padlí Hegemonie | Concord): bez voleb 7,4 | 2,4; Hegemonie DUGOUTS 5,8, DOCTOR 6,1, GUNS 5,7; Concord DOCTOR → vlastní padlí 1,7, Concord GUNS → Hegemonie 9,8 padlých (nejsilnější, jednostranná hrozba), Concord DUGOUTS → vlastní ranění 30 → 17.
+
 ## Dřívější rozhodnutí (shrnutí)
 - **2026-11-10 · Vyvážení v6 · NASAZENO:** zásah sám nezabíjí, zabije chybějící lůžko, nosítka nebo medik; obvaziště 2 lůžka a 6 nosítek; nemocnice jen hlasováním;
   děla mlčí do první dobyté kóty; po výhře 3 dny bombardování poraženého (`docs/BATTLE.md`).

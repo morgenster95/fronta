@@ -400,24 +400,31 @@
       "files": [
         "vote_orders_1.jpg"
       ],
-      "caption": "THE FRONT DECIDES ⚔️\n\nVerdel Ridge is in Concord hands, and the Hegemony lines are under the guns. Now each side chooses its next order. One post, one vote, two menus.\n\n🩶 HEGEMONY, comment one word:\n🧱 DUGOUTS: deep shelters, 30% fewer shell hits\n🩺 DOCTOR: a surgeon arrives, fewer dead and faster healing\n💥 COUNTERFIRE: our guns reply, fewer sectors shelled\n\n🫒 CONCORD, comment one word:\n🎯 SNIPERS: sniping school, snipers hit 80% more\n🔫 VICKERS: machine gun corps, machine guns hit 80% more\n⛏️ MINE: tunnellers dig, in 3 days a mine blows under the enemy line\n\nYour soldier is your vote: we know which side you serve, so no need to write it. You can only pick from your own side's list. Not enlisted yet? Comment CONCORD or HEGEMONY with your choice.\n\nThe winning order of each side runs for 3 days and is announced in the Trench Gazette at 13:00 UTC.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
+      "caption": "THE FRONT DECIDES ⚔️\n\nVerdel Ridge is in Concord hands, and the Hegemony lines are under the guns. Now the front chooses its next order. One post, one vote, three choices.\n\nComment ONE word:\n🧱 DUGOUTS: deep shelters. The Hegemony takes fewer shell hits. The Concord takes fewer hits on the ridge.\n🩺 DOCTOR: a surgeon arrives. Fewer dead and faster healing, for either side.\n💥 GUNS: the guns speak. The Hegemony answers with counterfire, so less of its line is shelled. The Concord brings up more guns, so more of the enemy line is shelled.\n\nYour soldier is your vote: we know which side you serve, so no need to write it. Each side picks for itself, so the two sides can choose differently. Not enlisted yet? Comment CONCORD or HEGEMONY together with your choice.\n\nThe winning word of each side runs as an order for 3 days. Announced in the Trench Gazette at 13:00 UTC.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
       "vote": {
-        "question": "Verdel Ridge has fallen. What is your side's next order?",
+        "question": "Verdel Ridge has fallen. What is the front's next order?",
         "perFaction": true,
         "minHours": 8,
-        "note": "Each side picks from its own list: comment one word under our latest post. Your soldier is your ballot.",
+        "note": "Comment one word under our latest post. Each side votes for itself; your soldier is your ballot.",
         "options": [
           {
             "kw": "DUGOUTS",
-            "only": 0,
-            "label": "Deep shelters: 30% fewer shell hits for 3 days",
-            "shell": 0.7,
+            "label": "Deep shelters: fewer hits for 3 days",
             "days": 3,
-            "outcome": "The {side} dug deep shelters behind the line: fewer men hit by shells."
+            "outcome": "Deep shelters were dug.",
+            "byFaction": [
+              {
+                "shell": 0.7,
+                "outcome": "The Hegemony dug deep shelters: fewer men hit by shells."
+              },
+              {
+                "exposed": 0.6,
+                "outcome": "The Concord dug in on the ridge: fewer men hit."
+              }
+            ]
           },
           {
             "kw": "DOCTOR",
-            "only": 0,
             "label": "A surgeon arrives: fewer dead, faster healing for 3 days",
             "die": 0.5,
             "heal": 1.5,
@@ -425,40 +432,20 @@
             "outcome": "A surgeon arrived at the {side} aid post: fewer dead, faster healing."
           },
           {
-            "kw": "COUNTERFIRE",
-            "only": 0,
-            "label": "Our guns reply: fewer sectors shelled for 3 days",
-            "guns": 0.7,
+            "kw": "GUNS",
+            "label": "The guns speak: counterfire or more guns for 3 days",
             "days": 3,
-            "outcome": "The {side} guns answered back: fewer sectors under the barrage."
-          },
-          {
-            "kw": "SNIPERS",
-            "only": 1,
-            "label": "Sniping school: snipers hit 80% more for 3 days",
-            "fire": {
-              "sniper": 1.8
-            },
-            "days": 3,
-            "outcome": "The {side} opened a sniping school: snipers hit harder."
-          },
-          {
-            "kw": "VICKERS",
-            "only": 1,
-            "label": "Machine gun corps: machine guns hit 80% more for 3 days",
-            "fire": {
-              "machinegunner": 1.8
-            },
-            "days": 3,
-            "outcome": "The {side} formed a machine gun corps: machine guns hit harder."
-          },
-          {
-            "kw": "MINE",
-            "only": 1,
-            "label": "Tunnellers: in 3 days a mine blows under the enemy",
-            "mine": true,
-            "days": 3,
-            "outcome": "The {side} tunnellers are digging. In three days the ground will move."
+            "outcome": "The guns spoke.",
+            "byFaction": [
+              {
+                "guns": 0.7,
+                "outcome": "The Hegemony guns answered back: less of its line under the barrage."
+              },
+              {
+                "barrage": 1.4,
+                "outcome": "The Concord brought up more guns: more of the enemy line under the barrage."
+              }
+            ]
           }
         ]
       },

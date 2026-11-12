@@ -19,7 +19,7 @@
 import { rngFor } from './rng.js';
 import { eventEntry } from './story.js';
 import { activeBarrage } from './race.js';
-import { orderStretchers, orderMedics, orderGuns } from './orders.js';
+import { orderStretchers, orderMedics, orderGuns, orderBarrage } from './orders.js';
 import { fallSoldier, addEntry } from './soldier.js';
 
 const B = (theme) => theme.battle;
@@ -148,7 +148,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const secs = sectorsOf(state, barrage.target).sort();
     const r = rngFor(theme.id, 'shell', day);
     const want0 = Math.max(cfg.shell.sectors || 0, Math.round(secs.length * (cfg.shell.share || 0))); // podíl úseků roste s frontou
-    const want = Math.max(1, Math.round(want0 * orderGuns(state, barrage.target, day))); // protipalba (COUNTERFIRE) zredukuje počet ostřelovaných úseků
+    const want = Math.max(1, Math.round(want0 * orderGuns(state, barrage.target, day) * orderBarrage(state, barrage.by, day))); // protipalba (COUNTERFIRE) zredukuje počet ostřelovaných úseků
     while (shelled.size < Math.min(want, secs.length)) shelled.add(secs[Math.floor(r() * secs.length)]);
   }
   const shellHits = [];

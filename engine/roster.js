@@ -292,13 +292,13 @@ function resolveFactionVote(state, v, theme) {
   const total = Object.keys(v.tallies).length;
 
   const winner = per.map((p) => `${sideName(theme, p.faction)}: ${p.winner?.kw ?? 'no votes'}`).join(' · ');
-  const orders = issueOrders(state, per.filter((p) => p.winner).map((p) => ({ ...p.winner, faction: p.faction })), state.day + 1);
+  const orders = issueOrders(state, per.filter((p) => p.winner).map((p) => ({ ...p.winner, ...(p.winner.byFaction?.[p.faction] || {}), faction: p.faction })), state.day + 1); // byFaction: stejné heslo, jiný účinek podle strany
   // stavby (dugout, pytle, drát…): trvalé, staví se jen hlasováním
   // věta o stavbě (theme.battle.buildings[].done) nahradí obecný výsledek možnosti, ať se v Gazette neříká totéž dvakrát
   const builtOf = per.map((p) => (p.winner?.build ? buildStructure(state, theme, p.faction, p.winner.build) : null));
   const built = builtOf.filter(Boolean);
   const text = per.map((p, i) => (builtOf[i] ? `${builtOf[i]}.`
-    : (p.winner ? p.winner.outcome || '' : 'No word came back from the {side}: nothing was built.').replaceAll('{side}', sideName(theme, p.faction)))).join(' ');
+    : (p.winner ? p.winner.byFaction?.[p.faction]?.outcome || p.winner.outcome || '' : 'No word came back from the {side}: nothing was built.').replaceAll('{side}', sideName(theme, p.faction)))).join(' ');
   const result = { day: state.day, mediaId: v.mediaId, question: v.question, perFaction: true, winner, winners: per.map((p) => p.winner?.kw ?? null),
     counts: per.map((p) => p.counts), total, text: text.trim(), danger: 1, orders, built };
   state.events = [...(state.events || []), result].slice(-60);
