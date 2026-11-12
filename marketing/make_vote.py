@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from make_posts import P, W, H, K, canvas, font, text_c, sprite, up, footer  # noqa: E402
-from day_art import grad, shade, bayer  # noqa: E402
+from day_art import grad, shade, bayer, light  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROMO = os.path.join(ROOT, "marketing", "promo")
@@ -34,50 +34,96 @@ def art_base(sky_cols, ground_cols, horizon=32):
 
 
 def dugout_art():
-    im = art_base([P["dark"], P["mud0"], P["blood"], P["rust"]], (P["mud1"], P["mud0"]))
+    """řez zemí: nahoře explodují granáty, dole v hlubokém krytu (trámy, lucerna, lavice) sedí vojáci v bezpečí"""
+    im = Image.new("RGBA", (AW, AH), P["ink"] + (255,))
+    grad(im, (0, 0, AW, 16), [P["dark"], P["blood"], P["rust"]])
     d = ImageDraw.Draw(im)
-    # hliněný násyp s pytli nahoře, trámový rám vchodu, tma, schody
-    for y in range(18, 44):
-        k = (y - 18) / 26
-        half = int(30 - (1 - math.sqrt(max(0, 1 - (1 - k) ** 2))) * 8)
-        for x in range(35 - half, 35 + half):
-            d.point((x, y), fill=P["mud2"] if (x * 7 + y * 3) % 5 < 2 else (P["mud0"] if x > 35 + half * 0.4 else P["mud1"]))
-    for i in range(6):
-        d.rectangle((12 + i * 7, 17 - (i % 2), 18 + i * 7, 20 - (i % 2)), fill=P["bone"] if i % 2 else P["sand"])
-    d.rectangle((26, 26, 44, 43), fill=P["ink"])
-    d.rectangle((24, 24, 27, 44), fill=P["mud3"]); d.rectangle((43, 24, 46, 44), fill=P["mud3"]); d.rectangle((24, 23, 46, 26), fill=P["mud3"])
-    d.line((24, 23, 46, 23), fill=P["sand"])
-    for k in range(4):
-        d.line((28, 38 + k, 42, 38 + k), fill=P["mud1"] if k % 2 else P["mud2"])
-    # granát padá a vybuchuje vedle (kryt drží)
+    # země: hlína v dithered vrstvách, kameny
+    rnd = random.Random(4)
+    for y in range(16, AH):
+        for x in range(AW):
+            k = (y - 16) / (AH - 16)
+            d.point((x, y), fill=P["mud2"] if bayer(x, y) < 0.5 - k * 0.4 else (P["mud1"] if bayer(x, y) < 0.8 - k * 0.3 else P["mud0"]))
+    for _ in range(18):
+        x, y = rnd.randrange(AW), rnd.randrange(30, AH)
+        d.point((x, y), fill=P["mud3"]); d.point((x + 1, y), fill=P["sand"])
+    d.line((0, 16, AW, 16), fill=P["olive"])
+    # povrch: kráter, plechová střecha s pytli nad krytem, dopady granátů
+    d.rectangle((18, 12, 56, 15), fill=P["steel"])
+    for i in range(0, 38, 4):
+        d.line((18 + i, 12, 18 + i, 15), fill=P["grey"])
     for i in range(7):
-        d.point((60 - i * 2, 4 + i * 3), fill=P["pale"] if i else P["white"])
-    d.ellipse((54, 40, 66, 48), fill=P["fire"]); d.ellipse((57, 42, 63, 47), fill=P["gold"]); d.point((60, 44), fill=P["white"])
+        d.rectangle((17 + i * 6, 9 - (i % 2), 22 + i * 6, 12 - (i % 2)), fill=P["bone"] if i % 2 else P["sand"])
+    d.ellipse((2, 15, 12, 19), fill=P["ink"])
+    for cx, cy, r in ((8, 9, 6), (62, 8, 7)):  # výbuchy po stranách
+        d.ellipse((cx - r, cy - r + 2, cx + r, cy + r - 1), fill=P["fire"]); d.ellipse((cx - r // 2, cy - r // 2 + 1, cx + r // 2, cy + r // 2), fill=P["gold"]); d.point((cx, cy), fill=P["white"])
+        for k in range(5):
+            d.point((cx + rnd.randrange(-9, 10), cy + rnd.randrange(-9, 4)), fill=P["mud3"])
+    for i in range(6):  # padající granát
+        d.point((44 + i, 0 + i * 2), fill=P["pale"] if i else P["white"])
+    # komora: trámy, strop, podlaha, schody, lucerna se světlem, lavice a dva vojáci
+    cx0, cy0, cx1, cy1 = 14, 24, 58, 46
+    d.rectangle((cx0 - 2, cy0 - 3, cx1 + 2, cy1 + 2), fill=P["ink"])
+    d.rectangle((cx0, cy0, cx1, cy1), fill=P["mud0"])
+    for x in range(cx0, cx1, 6):
+        d.rectangle((x, cy0, x + 1, cy1), fill=P["mud2"])
+    d.rectangle((cx0 - 2, cy0 - 3, cx1 + 2, cy0), fill=P["mud3"]); d.line((cx0 - 2, cy0 - 3, cx1 + 2, cy0 - 3), fill=P["sand"])
+    d.rectangle((cx0, cy1 - 2, cx1, cy1), fill=P["mud2"])
+    for k in range(3):  # schody dolů vlevo
+        d.rectangle((cx0 - 8 + k * 3, cy0 + 4 + k * 4, cx0 - 1, cy0 + 7 + k * 4), fill=P["mud3"] if k % 2 else P["mud2"])
+    d.rectangle((33, cy0 + 1, 34, cy0 + 4), fill=P["ink"]); d.rectangle((31, cy0 + 4, 36, cy0 + 8), fill=P["gold"]); d.rectangle((32, cy0 + 5, 35, cy0 + 7), fill=P["white"])
+    light(im, 33, cy0 + 6, 18, strength=0.9, box=(cx0, cy0, cx1, cy1), steps=3)
+    d = ImageDraw.Draw(im)
+    d.rectangle((20, cy1 - 7, 52, cy1 - 5), fill=P["mud3"])  # lavice
     try:
-        im.alpha_composite(sprite("hegemony_east.png").crop((6, 0, 26, 32)), (2, 14))
+        s = sprite("hegemony_south.png")
+        for x in (21, 38):
+            im.alpha_composite(s.crop((6, 1, 26, 22)), (x, cy1 - 24))
     except FileNotFoundError:
         pass
     return im
 
 
 def doctor_art():
-    im = art_base([P["dark"], P["mud0"], P["mud1"], P["mud2"]], (P["mud2"], P["mud1"]), horizon=14)
+    """dugout-lazaret: lampa nad operačním lůžkem, raněný s obvazem pod dekou, doktor nad ním, police s lahvemi, červený kříž"""
+    im = Image.new("RGBA", (AW, AH), P["ink"] + (255,))
     d = ImageDraw.Draw(im)
-    d.rectangle((0, 0, AW, 13), fill=P["mud1"])
-    for x in range(0, AW, 7):
-        d.line((x, 0, x, 13), fill=P["mud0"])
-    # lampa, červený kříž, lůžko s raněným, doktor
-    d.rectangle((54, 2, 64, 12), fill=P["pale"]); d.rectangle((58, 3, 60, 11), fill=P["rust"]); d.rectangle((55, 6, 63, 8), fill=P["rust"])
-    d.rectangle((28, 20, 31, 22), fill=P["gold"]); d.line((29, 14, 29, 19), fill=P["ink"])
-    d.rectangle((5, 31, 38, 40), fill=P["steel"]); d.rectangle((5, 31, 38, 33), fill=P["grey"])
-    d.rectangle((5, 28, 14, 31), fill=P["white"])
-    d.rectangle((3, 40, 6, 47), fill=P["ink"]); d.rectangle((36, 40, 39, 47), fill=P["ink"])
-    d.ellipse((7, 26, 13, 31), fill=P["pale"])
-    d.rectangle((6, 25, 13, 27), fill=P["white"])  # obvaz
+    for y in range(AH):
+        for x in range(AW):
+            d.point((x, y), fill=P["mud1"] if (x // 3) % 2 else P["mud0"])  # roubení z prken
+    d.rectangle((0, 0, AW, 6), fill=P["mud2"]); d.line((0, 6, AW, 6), fill=P["ink"]); d.line((0, 0, AW, 0), fill=P["sand"])
+    for x in (2, AW - 5):
+        d.rectangle((x, 0, x + 2, AH), fill=P["mud3"]); d.line((x, 0, x, AH), fill=P["sand"])
+    d.rectangle((0, 40, AW, AH), fill=P["mud2"])  # podlaha
+    for x in range(0, AW, 8):
+        d.line((x, 40, x, AH), fill=P["mud1"])
+    d.line((0, 40, AW, 40), fill=P["ink"])
+    # police s lahvemi a obvazy
+    d.rectangle((44, 14, 66, 15), fill=P["mud3"]); d.rectangle((44, 22, 66, 23), fill=P["mud3"])
+    for i, col in enumerate((P["water"], P["olive"], P["rust"], P["pale"], P["water"])):
+        d.rectangle((46 + i * 4, 9, 48 + i * 4, 14), fill=col); d.point((47 + i * 4, 8), fill=P["bone"])
+    for i in range(4):
+        d.rectangle((46 + i * 5, 17, 50 + i * 5, 22), fill=P["white"]); d.line((46 + i * 5, 20, 50 + i * 5, 20), fill=P["pale"])
+    # kříž na stěně
+    d.rectangle((26, 9, 36, 19), fill=P["pale"]); d.rectangle((30, 10, 32, 18), fill=P["rust"]); d.rectangle((27, 13, 35, 15), fill=P["rust"])
+    # lůžko: rám, matrace, dekra, polštář, raněný (hlava s obvazem, ruka přes deku)
+    d.rectangle((3, 33, 40, 36), fill=P["ink"]); d.rectangle((4, 29, 39, 33), fill=P["steel"]); d.rectangle((4, 29, 39, 30), fill=P["grey"])
+    d.rectangle((3, 36, 5, 44), fill=P["ink"]); d.rectangle((38, 36, 40, 44), fill=P["ink"])
+    d.rectangle((6, 26, 14, 29), fill=P["white"]); d.line((6, 26, 14, 26), fill=P["pale"])
+    d.ellipse((7, 21, 14, 28), fill=P["pale"]); d.rectangle((7, 21, 14, 23), fill=P["white"]); d.point((10, 25), fill=P["ink"]); d.line((7, 23, 14, 23), fill=P["rust"])  # obvaz s krví
+    d.rectangle((13, 24, 38, 30), fill=P["olive"]); d.rectangle((13, 24, 38, 25), fill=P["khaki"])
+    for x in range(16, 38, 5):
+        d.line((x, 25, x, 30), fill=P["dark"])
+    d.rectangle((23, 22, 28, 25), fill=P["pale"])  # ruka
+    # lampa nad lůžkem se světlem
+    d.line((22, 0, 22, 9), fill=P["ink"]); d.rectangle((17, 9, 27, 12), fill=P["ink"]); d.rectangle((18, 10, 26, 12), fill=P["white"])
+    light(im, 22, 22, 24, strength=1.2, box=(3, 8, 44, 41), steps=3)
+    d = ImageDraw.Draw(im)
     try:
-        im.alpha_composite(sprite("hegemony_medic_south.png"), (36, 14))
+        im.alpha_composite(sprite("hegemony_medic_south.png"), (40, 12))
     except FileNotFoundError:
         pass
+    d.rectangle((52, 36, 62, 41), fill=P["ink"]); d.rectangle((53, 37, 61, 40), fill=P["mud3"]); d.rectangle((56, 37, 58, 40), fill=P["rust"])  # brašna lékaře
     return im
 
 
@@ -123,7 +169,7 @@ def make():
     d.line((0, 224, W, 224), fill=P["gold"])
     text_c(d, W // 2, 228, "COMMENT ONE WORD.", font(8, True), P["white"])
     text_c(d, W // 2, 239, "YOUR SOLDIER IS YOUR VOTE.", font(8), P["pale"])
-    text_c(d, W // 2, 248, "THE WINNING ORDER RUNS 3 DAYS.", font(8), P["gold"])
+    text_c(d, W // 2, 248, "THE WINNER IS ANNOUNCED IN THE GAZETTE.", font(8), P["gold"])
     footer(d, H - 11)
     out = os.path.join(PROMO, "vote_orders_1.jpg")
     up(im, K).convert("RGB").save(out, quality=95, subsampling=0)
