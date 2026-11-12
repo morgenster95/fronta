@@ -34,6 +34,7 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
 
 ## Pojmy (domluveno 2026-11-12, drž je ve všech zprávách i v kódu)
 - **Day reel** = denní shrnutí ve videu (reel `day<N>`, např. `ridge` = Day reel Dne 3). **Noviny** = ranní vydání ve 13:00 UTC (Trench Gazette: denní tah, výsledky, zprávy).
+- **Kalendář / plán:** stránka https://morgenster95.github.io/fronta/plan.html (generuje ji `tools/calendar.mjs` z `marketing/queue.json` a stavu, smyčka ji obnovuje po každém kole; na GitHub Pages ji nasadí workflow `media`). Je v ní co vyjde a kdy (UTC i Praha, odpočet), videa/obrázky k přehrání, co vyšlo (odkaz na Instagram), co čeká bez termínu, kdy jsou Noviny a ztráty posledního vydání. Při každé změně fronty ho uživateli připomeň (odkaz).
 - **Před každými novinami** uživateli ukaž ztráty z nanečisto: `node tools/preview-tick.mjs` (jedno vydání, text novin) a `node tools/sim-edition.mjs` (30 běhů × 3 dny: padlí a raněni po stranách).
   Při bombardování musí mít poražený strana víc ztrát než vítěz (kontrola je ve výpisu sim-edition); jinak mechaniku neladit potichu, ale nahlásit.
 
