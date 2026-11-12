@@ -16,3 +16,4 @@ marketing/posts/_contact.png
 marketing/reels/*.mp4
 web/public/promo/
 __pycache__/
+marketing/promo/*.mp4

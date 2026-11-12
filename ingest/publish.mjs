@@ -8,6 +8,7 @@
 // Když soubor ještě není na GitHub Pages (workflow media ještě neproběhl), položka počká a zkusí se v dalším kole.
 // Proměnné: IG_ACCESS_TOKEN, IG_USER_ID, MEDIA_URL (výchozí https://morgenster95.github.io/fronta), DRY_RUN=1
 import fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { ROOT, loadTheme, loadState, saveState } from '../tools/lib.mjs';
 import { fireTriggers, openItemVote } from './triggers.mjs';
@@ -93,16 +94,24 @@ async function publish(item) {
   return { id: media.id, permalink: info.permalink, at: new Date().toISOString() };
 }
 
-// Zveřejněná videa v repu nezůstávají (repo by rostlo o desítky MB denně): hodinu po zveřejnění se soubor smaže,
-// smyčka smazání commitne. Instagram už má vlastní kopii; kdo chce video mít, stáhne si ho před publikací z GitHub Pages.
+// Videa nejsou v gitu, leží v GitHub Release „media“ (workflow reel a media). Hodinu po zveřejnění se video z Release smaže
+// (Instagram už má vlastní kopii; kdo chce video mít, stáhne si ho před publikací z GitHub Pages). Starší video, které ještě leží v repu, se smaže i odtud.
 function dropPublishedVideos(q) {
+  let changed = false;
   for (const item of q.items) {
     if (!item.published?.at || Date.now() - Date.parse(item.published.at) < 3600e3) continue;
     for (const f of item.files || []) {
       const local = path.join(ROOT, 'marketing', 'promo', f);
-      if (/\.mp4$/i.test(f) && fs.existsSync(local)) { fs.unlinkSync(local); console.log(`🧹 ${f}: zveřejněno, smazáno z repa`); }
+      if (!/\.mp4$/i.test(f)) continue;
+      if (fs.existsSync(local)) { fs.unlinkSync(local); console.log(`🧹 ${f}: zveřejněno, smazáno z repa`); }
+      if (process.env.GH_TOKEN && !item.mediaDropped?.includes(f)) {
+        try { execFileSync('gh', ['release', 'delete-asset', 'media', f, '-y'], { stdio: 'ignore' }); console.log(`🧹 ${f}: zveřejněno, smazáno z Release media`); } catch { /* už tam není */ }
+        item.mediaDropped = [...(item.mediaDropped || []), f];
+        changed = true;
+      }
     }
   }
+  return changed;
 }
 
 function publishedLog() {
@@ -135,7 +144,7 @@ async function main() {
   const todo = args[0] === '--due'
     ? [...q.items.filter((i) => !i.published && !i.trigger && i.publishAt && Date.parse(i.publishAt) <= now), ...fired]
     : args.map((id) => q.items.find((i) => i.id === id)).filter(Boolean);
-  if (args[0] === '--due' && !process.env.DRY_RUN) dropPublishedVideos(q);
+  if (args[0] === '--due' && !process.env.DRY_RUN && dropPublishedVideos(q)) fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
   if (!todo.length) return console.log('nic ke zveřejnění');
   for (const item of todo) {
     if (item.published) { console.log(`= ${item.id}: už zveřejněno ${item.published.permalink || ''}`); continue; }

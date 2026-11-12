@@ -1,5 +1,6 @@
 # GitHub Pages (zdarma, mimo Firebase Hosting, který má malý limit přenosu a úložiště):
-#  1) soubory pro Instagram (marketing/promo/) na https://morgenster95.github.io/fronta/<soubor>
+#  1) soubory pro Instagram na https://morgenster95.github.io/fronta/<soubor>: obrázky z marketing/promo/, VIDEA z GitHub Release „media“
+#     (videa nejsou v gitu, historie repa by jinak rostla o desítky MB denně; smazané video z Release místo opravdu uvolní)
 #  2) zrcadlo obrázků hry (web/public/assets/) na https://morgenster95.github.io/fronta/game/assets/… s otiskem game/assets.sha
 #     (web je bere odtud, dokud tam leží stejná verze; viz tools/asset-base.sh). Obrázky tvoří ~70 % dat jedné návštěvy hry.
 # Spouští se po změně v marketing/promo nebo web/public/assets.
@@ -9,8 +10,8 @@ on:
     branches: [main]
     paths: ['marketing/promo/**', 'web/public/assets/**', 'tools/asset-base.sh']
   workflow_dispatch:
-permissions: { contents: read, pages: write, id-token: write }
-concurrency: { group: pages, cancel-in-progress: true }
+permissions: { contents: write, pages: write, id-token: write }
+concurrency: { group: pages, cancel-in-progress: false }
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,8 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Sestavit web Pages
+        env: { GH_TOKEN: '${{ github.token }}' }
         run: |
           mkdir -p site/game
+          gh release view media >/dev/null 2>&1 || gh release create media --title media --notes 'Videa pro Instagram (reely, stories). Nejsou v gitu; workflow media je vystaví na GitHub Pages.'
+          # přechod: video, které ještě leží v repu, nahrát do Release
+          for f in marketing/promo/*.mp4; do [ -f "$f" ] && gh release upload media "$f" --clobber; done
+          gh release download media -D site --clobber || true
           cp -r marketing/promo/. site/
           cp -r web/public/assets site/game/assets
           (cd web/public/assets && find . -type f | LC_ALL=C sort | xargs sha1sum | sha1sum | cut -d' ' -f1) > site/game/assets.sha

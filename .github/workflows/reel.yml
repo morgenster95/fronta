@@ -1,5 +1,5 @@
 # Výroba reelu v cloudu (bez vlastního počítače): natočí scénář web/src/reel-<name>.js, přidá voiceover a zvuk,
-# výsledek uloží do marketing/promo/reel_<name>.mp4 (commit do main) a nasadí na GitHub Pages:
+# video nahraje do GitHub Release „media“ (NE do gitu) a workflow media ho nasadí na GitHub Pages:
 #   https://morgenster95.github.io/fronta/reel_<name>.mp4  (dá se pustit v mobilu)
 # Spuštění: Actions → reel → Run workflow, `gh workflow run reel -f name=raid`,
 # nebo commit souboru marketing/reels/render.json  {"name": "raid"}  do main (jde i z Claude Code na webu/v mobilu).
@@ -47,14 +47,18 @@ jobs:
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |
           f="marketing/promo/reel_${{ steps.p.outputs.name }}.mp4"
+          n="${{ steps.p.outputs.name }}"
+          # video do Release „media“ (mimo git), přepíše starší verzi
+          gh release view media >/dev/null 2>&1 || gh release create media --title media --notes 'Videa pro Instagram (reely, stories). Nejsou v gitu.'
+          gh release upload media "$f" --clobber
           git config user.name "reel-bot"; git config user.email "actions@users.noreply.github.com"
-          n="${{ steps.p.outputs.name }}"; keep="$RUNNER_TEMP/keep"; mkdir -p "$keep"
-          cp "$f" marketing/reels/$n.*.json "$keep/" 2>/dev/null || cp "$f" "$keep/"
+          keep="$RUNNER_TEMP/keep"; mkdir -p "$keep"
+          cp marketing/reels/$n.*.json "$keep/" 2>/dev/null || true
           for i in 1 2 3 4 5; do
-            # vždy nad čerstvým main (smyčka mezitím commituje), přidat jen vlastní soubory
+            # podklady (json) do main, vždy nad čerstvým main (smyčka mezitím commituje)
             git fetch -q origin main && git checkout -q -f origin/main
-            cp "$keep/reel_$n.mp4" "$f"; cp "$keep"/$n.*.json marketing/reels/ 2>/dev/null || true
-            git add "$f" marketing/reels/$n.*.json 2>/dev/null || git add "$f"
+            cp "$keep"/$n.*.json marketing/reels/ 2>/dev/null || true
+            git add marketing/reels/$n.*.json 2>/dev/null || true
             git diff --cached --quiet && break
             git commit -q -m "reel: $n" && git push -q origin HEAD:main && break
             sleep 5

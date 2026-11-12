@@ -59,8 +59,9 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
 - **Ve videích žádní „duchové“** (průsvitní vojáci; uživatel na to upozorňoval opakovaně): každý voják ve videu má plné krytí a barvu. Ve hře jsou neobsazená stanoviště záměrně šedá a poloprůhledná, ale v režimu natáčení (`?reel=`) to `web/src/main.js` vypíná.
   Nový reel nebo filmový záběr nesmí nikde kreslit vojáky s `alpha < 1` (mlha a stín jen jako barevný tint, ne průhlednost) a po vyrenderování se snímky vždy zkontrolují, jestli tam žádný duch není.
 - Repo je **veřejné**: žádné tajné údaje, e-maily ani tokeny do commitů.
-- **Zveřejněná videa v repu nezůstávají:** `ingest/publish.mjs` je hodinu po publikaci smaže z `marketing/promo/` (smyčka smazání commitne).
-  Uživatel chce videa mít u sebe: každé hotové video mu pošli ke stažení (nebo odkaz na GitHub Pages) ještě před publikací.
+- **Videa nejsou v gitu** (od 2026-11-12; dřív se commitovala a historie repa rostla o desítky MB denně, smazání ji nezmenší): workflow `reel` nahraje video do GitHub Release `media`,
+  workflow `media` ho odtud vystaví na GitHub Pages (`marketing/promo/*.mp4` je v `.gitignore`; obrázky postů zůstávají v gitu). Hodinu po zveřejnění na IG `ingest/publish.mjs` video z Release smaže.
+  Uživatel chce videa mít u sebe: každé hotové video mu pošli ke stažení (nebo odkaz na GitHub Pages) ještě před publikací. Video, které vyrobíš lokálně, nahraj do Release (`gh release upload media <soubor> --clobber`, jen v Actions) nebo přes workflow `reel`.
 - Hra běží naostro: https://mudandiron.web.app, IG @mudandiron. Automatika = smyčka `.github/workflows/front-loop.yml` (`tools/loop.sh`)
   každých ~5 min: stáhne komentáře, odpoví, publikuje frontu `marketing/queue.json`, denní tah v 13:00 UTC, nasadí web.
   Smyčka commituje do main → **před pushem vždy `git pull --rebase`**; `data/state.json` ručně neupravuj.
@@ -80,7 +81,7 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
 ## Reely z cloudu (bez vlastního PC)
 Celý reel se vyrobí na GitHub Actions, workflow **`reel`** (`.github/workflows/reel.yml` → `tools/make-reel.sh`):
 voiceover (edge-tts, en-GB-RyanNeural) → natočení scénáře v headless Chrome → zvuk → zmenšení pro IG →
-`marketing/promo/reel_<name>.mp4` (commit do main) → GitHub Pages: `https://morgenster95.github.io/fronta/reel_<name>.mp4`
+**GitHub Release `media`** (videa NEJSOU v gitu, od 2026-11-12) → workflow `media` → GitHub Pages: `https://morgenster95.github.io/fronta/reel_<name>.mp4`
 (video jde pustit v mobilu; tahle adresa slouží i k publikaci na IG).
 
 Postup pro nový reel `<name>`:
