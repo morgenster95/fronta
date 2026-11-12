@@ -1,15 +1,22 @@
 // Reel „jak claimnout vojáka“ (/?reel=claim, jen vývojový server): návod (karta → Google → kód → komentář → odpověď bota)
-// a co umí claimnutý voják (dopis z domova, převelení, rodokmen). Telefon s replikou karty ze hry + filmové záběry (cinema-race.js).
+// a co umí claimnutý voják (dopis z domova, převelení, rodokmen). Telefon s replikou karty ze hry nad vlastním pozadím (pytlová stěna, déšť);
+// žádný záběr z jiných reelů (march, shelter, lineage se tu nepoužívají).
 // Hlas: marketing/reels/claim.script.json (python marketing/story_vo.py claim). Žádný skutečný hráč: jméno a handle jsou smyšlené.
 import { CSS as BASE } from './reel-day1.js';
 import { FX_CSS, cues, subtitles, transitions, fxLayers, clamp01, easeOut, typed } from './reel-kit.js';
-import { makeRaceScenes } from './cinema-race.js';
 
 const files = import.meta.glob('../../marketing/reels/claim.vo.json', { eager: true, import: 'default' });
 const scripts = import.meta.glob('../../marketing/reels/claim.script.json', { eager: true, import: 'default' });
 
 const CSS = `${BASE}${FX_CSS}
-#rd-race { inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
+#cl-bg { inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
+#cl-intro { left: 0; right: 0; top: 22%; text-align: center; }
+#cl-intro canvas { width: 192px; height: 192px; image-rendering: pixelated; }
+#cl-intro .nm { font-family: 'Silkscreen', monospace; font-size: 24px; margin-top: 4px; text-shadow: 3px 3px 0 #0e0d0c; }
+#cl-intro .hd { font-size: 24px; color: #c9b99a; text-shadow: 2px 2px 0 #0e0d0c; }
+#cl-stamp { z-index: 6; left: 50%; top: 58%; font-family: 'Silkscreen', monospace; font-size: 38px; letter-spacing: 0.06em; padding: 4px 16px; border: 5px solid; background: rgba(14,13,12,0.55); white-space: nowrap; }
+#cl-phone .tree { margin-top: 12px; border-left: 3px solid #524a3f; padding-left: 14px; display: grid; gap: 16px; }
+#cl-phone .tree .n { opacity: 0; } #cl-phone .tree .gone { color: #a85a36; }
 #rd-dim2 { inset: 0; background: rgba(14,13,12,0.95); }
 #rd-sub { left: 6%; right: 6%; top: 77%; text-align: center; }
 #cl-phone { left: 11%; right: 11%; top: 17%; height: 54%; background: #1c1a17; border: 6px solid #0e0d0c; outline: 2px solid #524a3f;
@@ -58,7 +65,7 @@ export function startClaimReel({ tex, anims }) {
   const C = cues(vo);
   const END = vo.seconds, T = (id) => C.at(id);
   const sub = subtitles(vo);
-  const fx = transitions(['but', 's1', 's2', 's3', 's4', 'letter', 'transfer', 'house', 'cta'].filter((i) => C.has(i)).map((i) => [T(i) - 0.05, i === 'cta' ? 'flash' : 'whip']));
+  const fx = transitions(['s1', 's2', 's3', 's4', 'letter', 'transfer', 'house', 'cta'].filter((i) => C.has(i)).map((i) => [T(i) - 0.05, i === 'cta' ? 'flash' : 'whip']));
   const SFX = [];
   for (const id of ['s1', 's2', 's3', 's4', 'letter', 'transfer']) if (C.has(id)) SFX.push([T(id) + 1.0, 'type', 0.5]);
   if (C.has('s4')) SFX.push([T('s4') + 2.4, 'medal', 0]);
@@ -70,11 +77,50 @@ export function startClaimReel({ tex, anims }) {
   document.head.appendChild(style);
   const root = document.createElement('div');
   root.id = 'rd';
-  root.innerHTML = '<div id="rd-dim2"></div><div id="cl-phone"><div id="cl-step"></div><div class="scr" id="cl-scr"></div></div><div id="rd-sub"></div><div id="rd-big"></div>';
+  root.innerHTML = '<canvas id="cl-bg" width="108" height="192"></canvas><div id="rd-dim2"></div><div id="cl-intro"></div><div id="cl-stamp"></div><div id="cl-phone"><div id="cl-step"></div><div class="scr" id="cl-scr"></div></div><div id="rd-sub"></div><div id="rd-big"></div>';
   document.body.appendChild(root);
-  const race = makeRaceScenes(tex, anims);
-  root.prepend(race.canvas);
   const paint = fxLayers(root);
+  // pozadí: noční stěna z pytlů (mřížka 108×192 ×5), déšť a světlo lampy
+  const bgc = root.querySelector('#cl-bg'), bg = bgc.getContext('2d');
+  const wall = (() => {
+    const w = document.createElement('canvas'); w.width = 108; w.height = 192;
+    const g = w.getContext('2d');
+    let sd = 7; const rnd = () => ((sd = (sd * 16807) % 2147483647) / 2147483647);
+    const COL = ['#3f3a30', '#4a4338', '#36312a', '#524a3f'];
+    g.fillStyle = '#14120f'; g.fillRect(0, 0, 108, 192);
+    for (let r = 0, y = 0; y < 192; r++, y += 10) {
+      for (let x = -(r % 2) * 9; x < 108; x += 18) {
+        const wb = 17 - (rnd() * 2 | 0), hb = 9;
+        g.fillStyle = COL[rnd() * 4 | 0]; g.fillRect(x + 1, y + 1, wb, hb);
+        g.fillStyle = '#5d5446'; g.fillRect(x + 2, y + 1, wb - 2, 1);
+        g.fillStyle = '#1c1a17'; g.fillRect(x + 1, y + hb, wb, 1); g.fillRect(x + wb, y + 1, 1, hb);
+        if (rnd() < 0.3) { g.fillStyle = '#2b2722'; g.fillRect(x + 4 + (rnd() * 8 | 0), y + 3 + (rnd() * 4 | 0), 2, 1); }
+      }
+    }
+    const rg = g.createRadialGradient(20, 18, 4, 20, 18, 110);
+    rg.addColorStop(0, 'rgba(217,143,63,0.38)'); rg.addColorStop(0.5, 'rgba(217,143,63,0.1)'); rg.addColorStop(1, 'rgba(8,7,6,0.7)');
+    g.fillStyle = rg; g.fillRect(0, 0, 108, 192);
+    return w;
+  })();
+  const drawBg = (t) => {
+    bg.imageSmoothingEnabled = false;
+    bg.drawImage(wall, 0, 0);
+    bg.fillStyle = 'rgba(8,7,6,0.18)'; bg.fillRect(0, 0, 108, 192);
+    bg.fillStyle = 'rgba(160,172,178,0.5)';
+    for (let i = 0; i < 40; i++) { const x = (i * 37 + 11) % 108, y = ((i * 53 + t * 120 + i * 9) % 200) - 6; bg.fillRect(x, y, 1, 4); }
+    const fl = 0.92 + 0.08 * Math.sin(t * 9) * Math.sin(t * 3.7);
+    bg.fillStyle = `rgba(217,143,63,${(0.05 * fl).toFixed(3)})`; bg.fillRect(0, 0, 108, 192);
+  };
+  const intro = root.querySelector('#cl-intro');
+  intro.innerHTML = '<canvas width="32" height="32" id="cl-sp"></canvas><div class="nm">ANTON KESSLER</div><div class="hd">Private · @your.handle</div>';
+  const drawSprite = () => {
+    const c = root.querySelector('#cl-sp'), x = c.getContext('2d');
+    x.clearRect(0, 0, 32, 32);
+    const tx = tex.concord?.south, img = tx?.source?.resource, fr = tx?.frame;
+    if (img && fr) x.drawImage(img, fr.x, fr.y, fr.width, fr.height, 0, 0, 32, 32);
+  };
+  drawSprite();
+  const stamp = root.querySelector('#cl-stamp');
   const $ = (s) => root.querySelector(s);
 
   // portrét ze spritu hry
@@ -99,6 +145,7 @@ export function startClaimReel({ tex, anims }) {
       <div class="c rep" id="ig-bot" style="opacity:0"><div class="av bot"></div><div><b>mudandiron</b> <span class="t">now</span><br>✓ @your.handle, Anton Kessler is now yours. Your claim is confirmed, soldier.</div></div>
       <div class="in" id="ig-in"></div></div>`,
     mine: () => cardHtml(true, '<span class="btn" id="b-letter">✉ Send your soldier a letter</span><span class="btn" id="b-tr">Request a transfer</span>'),
+    house: () => `<h3>House of Kessler</h3><p class="m">Every fall is written in the tree.</p><div class="tree"><div class="n gone" id="h1"><b>Anton Kessler</b> \u00b7 Gen 1<br><span class="m">\u271d fell on Day 4</span></div><div class="n" id="h2"><b>Pavel Kessler</b> \u00b7 Gen 2<br><span class="m">The next of the family took up the rifle that night.</span></div></div>`,
     roles: () => `<h3>Request a transfer</h3><p class="m">Choose where Anton Kessler serves.</p>${ROLES.map((r, i) => `<div class="role" id="r${i}"><b>${r[1]}</b><span>${r[2]}</span></div>`).join('')}<div class="toast" id="tr-toast" style="opacity:0">Transfer requested.</div>`,
   };
   let phase = null;
@@ -112,19 +159,27 @@ export function startClaimReel({ tex, anims }) {
 
   function frame(t) {
     const f = fx(t);
-    const tBut = T('but'), t1 = T('s1'), t2 = T('s2'), t3 = T('s3'), t4 = T('s4'), tL = T('letter'), tT = T('transfer'), tH = T('house'), tCta = T('cta');
+    const t1 = T('s1'), t2 = T('s2'), t3 = T('s3'), t4 = T('s4'), tL = T('letter'), tT = T('transfer'), tH = T('house'), tCta = T('cta');
     const phone = $('#cl-phone'), step = $('#cl-step');
-    const showPhone = t >= t1 && t < tH;
-    // filmový podklad: záběr pochodu / úkryt / rodokmen; telefon je nad ním
-    if (t >= tH) race.draw('lineage', t - tH, { side: 1, house: 'Kessler', fallen: 'Anton Kessler', heir: 'Pavel Kessler', gen: 2, day: 4 });
-    else if (t >= tL) race.draw('shelter', (t - tL) % 7, { side: 0 });
-    else if (t >= t1) race.draw('shelter', (t - t1) % 7, { side: 1 });
-    else race.draw('march', t, { side: 1, n: 12 });
-    race.canvas.style.opacity = 1;
-    $('#rd-dim2').style.opacity = showPhone ? 0.55 : t >= tCta ? clamp01((t - tCta) / 0.5) : 0;
+    bgc.style.opacity = 1;
+    drawBg(t);
+    const hookOn = t < t1;
+    intro.style.opacity = hookOn ? Math.min(1, t / 0.4) * (t > t1 - 0.3 ? clamp01((t1 - t) / 0.3) : 1) : 0;
+    intro.style.transform = `translateY(${(Math.sin(t * 3) * 3).toFixed(1)}px)`;
+    stamp.textContent = hookOn ? 'UNCLAIMED' : 'CLAIMED';
+    stamp.style.color = hookOn ? '#b5402c' : '#8fb05a';
+    stamp.style.borderColor = stamp.style.color;
+    const stAt = hookOn ? 0.9 : t4 + 1.0;
+    const stOn = hookOn ? t > 0.9 : t > t4 + 1.0 && t < t4 + 2.6;
+    const su = easeOut(clamp01((t - stAt) / 0.25));
+    stamp.style.opacity = stOn ? su : 0;
+    stamp.style.transform = `translate(-50%,-50%) rotate(-8deg) scale(${(1.6 - 0.6 * su).toFixed(3)})`;
+    stamp.style.top = hookOn ? '58%' : '34%';
+    const showPhone = t >= t1 && t < tCta;
+    $('#rd-dim2').style.opacity = t >= tCta ? clamp01((t - tCta) / 0.5) * 0.7 : 0;
     phone.style.opacity = showPhone ? 1 : 0;
     phone.style.transform = `translateY(${((1 - easeOut(clamp01((t - t1) / 0.4))) * 40).toFixed(1)}px)`;
-    step.textContent = t < t2 ? 'STEP 1 \u00b7 TAP YOUR SOLDIER' : t < t3 ? 'STEP 2 \u00b7 SIGN IN, GET A CODE' : t < t4 ? 'STEP 3 \u00b7 COMMENT THE CODE' : t < tL ? 'DONE \u00b7 THE SOLDIER IS YOURS' : t < tT ? 'EVERY DAY \u00b7 A LETTER FROM HOME' : 'ANY TIME \u00b7 ASK FOR A TRANSFER';
+    step.textContent = t < t2 ? 'STEP 1 \u00b7 TAP YOUR SOLDIER' : t < t3 ? 'STEP 2 \u00b7 SIGN IN, GET A CODE' : t < t4 ? 'STEP 3 \u00b7 COMMENT THE CODE' : t < tL ? 'DONE \u00b7 THE SOLDIER IS YOURS' : t < tT ? 'EVERY DAY \u00b7 A LETTER FROM HOME' : t < tH ? 'ANY TIME \u00b7 ASK FOR A TRANSFER' : 'ALWAYS \u00b7 THE FAMILY TREE';
     if (showPhone) {
       if (t < t2) { setPhase('card'); const b = $('#b-claim'); if (b) b.classList.toggle('hit', t > t2 - 1.2); }
       else if (t < t2 + 1.6) { setPhase('google'); const g = $('#b-g'); if (g) g.classList.toggle('hit', t > t2 + 0.9); }
@@ -139,11 +194,16 @@ export function startClaimReel({ tex, anims }) {
       } else if (t < tT) {
         setPhase('mine');
         const b = $('#b-letter'); if (b) { b.classList.toggle('hit', t > tL + 1.8 && t < tL + 2.4); if (t > tL + 2.2) b.textContent = '✉ Letter sent'; }
-      } else {
+      } else if (t < tH) {
         setPhase('roles');
         const k = t > tT + 2.6 ? 0 : -1, r = $('#r0'), tt = $('#tr-toast');
         if (r) r.classList.toggle('on', k === 0);
         if (tt) tt.style.opacity = t > tT + 3.0 ? 1 : 0;
+      } else {
+        setPhase('house');
+        const h1 = $('#h1'), h2 = $('#h2');
+        if (h1) h1.style.opacity = clamp01((t - tH - 0.5) / 0.4);
+        if (h2) h2.style.opacity = clamp01((t - tH - 2.2) / 0.4);
       }
     }
     paint({ ...f, black: Math.max(f.black, t < 0.5 ? 1 - t / 0.5 : 0, t > END - 0.8 ? clamp01((t - END + 0.8) / 0.7) : 0) });

@@ -1,17 +1,56 @@
 {
- "seconds": 52,
+ "seconds": 48,
  "auto": true,
  "lines": [
-  [0.8, "You commented. A soldier took a post on the line, with your name on it.", "hook"],
-  [0, "But until you claim that soldier, anyone could say it is theirs.", "but"],
-  [0, "Step one. Open the game, and tap your soldier. Then press: This is me.", "s1"],
-  [0, "Step two. Sign in with Google. The game gives you a short code.", "s2"],
-  [0, "Step three. Comment that code under any post on our page.", "s3"],
-  [0, "Within minutes, the bot answers. This soldier is yours.", "s4"],
-  [0, "Now the soldier is yours for good. Every day, send a letter from home. Your soldier goes into the night a little safer.", "letter"],
-  [0, "Want a different job? Ask for a transfer. Medic. Sniper. Machine gunner.", "transfer"],
-  [0, "Read the service record. Follow the family tree. If your soldier falls, an heir takes up the rifle.", "house"],
-  [0, "Claim your soldier. Comment Concord... or Hegemony. Link in bio.", "cta"]
+  [
+   0.8,
+   "A soldier is waiting on the line with your name on it. Let's make that soldier yours.",
+   "hook"
+  ],
+  [
+   0,
+   "Step one. Open the game, and tap your soldier. Then press: This is me.",
+   "s1"
+  ],
+  [
+   0,
+   "Step two. Sign in with Google. The game gives you a short code.",
+   "s2"
+  ],
+  [
+   0,
+   "Step three. Comment that code under any post on our page.",
+   "s3"
+  ],
+  [
+   0,
+   "Within minutes, the bot answers. This soldier is yours.",
+   "s4"
+  ],
+  [
+   0,
+   "Now the soldier is yours for good. Every day, send a letter from home. Your soldier goes into the night a little safer.",
+   "letter"
+  ],
+  [
+   0,
+   "Want a different job? Ask for a transfer. Medic. Sniper. Machine gunner.",
+   "transfer"
+  ],
+  [
+   0,
+   "Follow the family tree. If your soldier falls, an heir takes up the rifle.",
+   "house"
+  ],
+  [
+   0,
+   "Claim your soldier. Comment Concord... or Hegemony. Link in bio.",
+   "cta"
+  ]
  ],
- "drums": ["hook", [], "cta"]
+ "drums": [
+  "hook",
+  [],
+  "cta"
+ ]
 }
