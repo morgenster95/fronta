@@ -23,7 +23,7 @@ await page.setViewport({ width: 540, height: 960, deviceScaleFactor: 1 });
 await page.goto(`${base}/?reel=cine`, { waitUntil: 'networkidle0', timeout: 120000 });
 await page.waitForFunction(() => window.__cine, { timeout: 120000 });
 const { names, seconds } = await page.evaluate(() => ({ names: window.__cine.names, seconds: window.__cine.seconds }));
-const opts = { side: flag('--side') != null ? Number(flag('--side')) : undefined, n: flag('--n') != null ? Number(flag('--n')) : undefined };
+const opts = { side: flag('--side') != null ? Number(flag('--side')) : undefined, n: flag('--n') != null ? Number(flag('--n')) : undefined, names: flag('--names') ? flag('--names').split(',') : undefined };
 for (const name of which === 'all' ? names : [which]) {
   const tmp = path.join(outDir, `_f_${name}`);
   fs.rmSync(tmp, { recursive: true, force: true });

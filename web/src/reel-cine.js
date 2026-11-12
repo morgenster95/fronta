@@ -6,7 +6,7 @@ export function startCineReel({ tex, anims }) {
   const c = makeRaceScenes(tex, anims);
   const q = new URLSearchParams(location.search);
   const scene = q.get('scene') || 'march';
-  const opts = { side: q.has('side') ? Number(q.get('side')) : undefined, n: q.has('n') ? Number(q.get('n')) : undefined };
+  const opts = { side: q.has('side') ? Number(q.get('side')) : undefined, n: q.has('n') ? Number(q.get('n')) : undefined, names: q.get('names') ? q.get('names').split(',') : undefined };
   document.body.classList.add('reel');
   const cv = c.canvas;
   cv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;image-rendering:pixelated;z-index:5;background:#0e0d0c';

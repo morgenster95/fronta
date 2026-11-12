@@ -1,0 +1,46 @@
+{
+ "seconds": 40,
+ "auto": true,
+ "lines": [
+  [
+   0.8,
+   "Night one. The guns of the ridge never stopped.",
+   "night"
+  ],
+  [
+   0,
+   "five men of the Hegemony did not see the morning.",
+   "fell"
+  ],
+  [
+   0,
+   "Bram Yoollyfox. Pavel Zulfi. Nils Wolfmananton. Oskar Brunoescobar. And one more.",
+   "names"
+  ],
+  [
+   0,
+   "Each has a name, a grave, and a family that sends another.",
+   "heir"
+  ],
+  [
+   0,
+   "23 more of the Hegemony lie wounded. The barrage is not over.",
+   "wounded"
+  ],
+  [
+   0,
+   "Comment Concord... or Hegemony. Link in bio.",
+   "cta"
+  ]
+ ],
+ "drums": [
+  "night",
+  [
+   [
+    "fell",
+    "cta"
+   ]
+  ],
+  "cta"
+ ]
+}

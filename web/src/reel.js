@@ -109,6 +109,10 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'rip') {
+    // první padlí bombardování: hroby, vojáci před nimi, v dálce výbuchy (reel-rip.js)
+    return import('./reel-rip.js').then(({ startRipReel }) => startRipReel({ theme, tex, anims }));
+  }
   if (name === 'ridge') {
     // závod o kótu rozhodnut: nábor, hrdina s medailí, dialog vojáků, bombardování, hlas hráče (reel-ridge.js)
     return import('./reel-ridge.js').then(({ startRidgeReel }) => {

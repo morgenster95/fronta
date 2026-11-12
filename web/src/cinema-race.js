@@ -4,7 +4,7 @@
 // t = sekundy od začátku záběru; volby: side (0 Hegemonie, 1 Concord), n (číslo na počítadle; bez něj se ukáže „XXX“).
 import { sky, glow, lit, blast, stakeWire, shakeOf, easeOut, off, hex, rgb, by, clamp01, CW as W, CH as H } from './cinema.js';
 
-export const RACE_SCENES = { march: 7, guns: 9, shelter: 7, ribbon: 7, counter: 6 };
+export const RACE_SCENES = { march: 7, guns: 9, shelter: 7, ribbon: 7, counter: 6, graves: 9 };
 
 // pixelové písmo 3×5 (písmena, číslice, +), ať záběr nezávisí na fontech
 const FONT = {
@@ -623,6 +623,78 @@ export function makeRaceScenes(tex, anims = {}) {
     txt(g, 'NEW PLAYERS', Math.round(cx - txtW('NEW PLAYERS', 2) / 2), 152, 2, P.gold, P.ink);
     // záblesk po dosažení čísla
     if (o.n != null) { const u = t - 3.1; if (u > 0 && u < 0.3) { g.fillStyle = `rgba(255,246,220,${(0.5 * (1 - u / 0.3)).toFixed(2)})`; g.fillRect(14, 84, 152, 94); } }
+    g.setTransform(1, 0, 0, 1, 0, 0);
+  };
+
+
+  // ====================================================================================================
+  // 6) HROBY: první noc bombardování, hroby padlých, vojáci před nimi, v dálce dopadají granáty
+  //    volby: side (strana padlých), n (počet padlých; hroby se kreslí do 12), names (příjmení pro jmenovky prvních hrobů)
+  // ====================================================================================================
+  {
+    const c = off(W, H), cg = c.getContext('2d');
+    sky(cg, 0, 206, ['#12141a', '#1f2129', '#34323b', '#523a39', '#7c4333', '#a8582b']);
+    for (let k = 0; k < 7; k++) { cg.fillStyle = k % 2 ? 'rgba(18,20,26,0.75)' : 'rgba(52,50,59,0.6)'; cg.fillRect(Math.round(k * 29 - 14), 18 + k * 23, 78, 6); }
+    for (const [base, col, amp, ph] of [[188, '#2a2328', 12, 0.9], [200, '#1c181b', 9, 2.4]]) {
+      for (let x = 0; x < W; x++) { cg.fillStyle = col; cg.fillRect(x, Math.round(base - amp * (0.5 + 0.5 * Math.sin(x * 0.05 + ph)) - amp * 0.35 * Math.sin(x * 0.16)), 1, 60); }
+    }
+    const rr = rng(41);
+    for (let i = 0; i < 26; i++) { const x = Math.round(rr() * W), h = 5 + Math.round(rr() * 6); cg.fillStyle = '#141113'; for (let k = 0; k < h; k++) { const w = Math.max(1, Math.round(k * 0.35)); cg.fillRect(Math.round(x - w / 2), 202 - h + k, w, 1); } }
+    for (let y = 204; y < H; y++) for (let x = 0; x < W; x++) { cg.fillStyle = by(x, y) < 0.5 - (y - 204) / 300 ? P.mud1 : P.mud0; cg.fillRect(x, y, 1, 1); }
+    for (let i = 0; i < 160; i++) { cg.fillStyle = rr() < 0.5 ? P.mud2 : P.olive3; cg.fillRect(Math.floor(rr() * W), 206 + Math.floor(rr() * 112), 1, 1 + (rr() < 0.4 ? 1 : 0)); }
+    for (const [x, y, w] of [[24, 232, 22], [150, 246, 26], [96, 224, 14]]) { cg.fillStyle = P.ink; cg.beginPath(); cg.ellipse(x, y, w / 2, w / 6 + 0.5, 0, 0, Math.PI * 2); cg.fill(); cg.fillStyle = P.mud2; cg.fillRect(Math.round(x - w / 2), Math.round(y - w / 6 - 1), Math.round(w * 0.5), 1); }
+    L.graves = c;
+  }
+  const grave = (cx, foot, s, name, extra = {}) => { // dřevěný kříž na mohyle, jmenovka, helma, kytice
+    const w = Math.round(14 * s), h = Math.round(5 * s);
+    g.fillStyle = P.ink; g.beginPath(); g.ellipse(cx, foot - h / 2 + 1, w / 2 + 1, h / 2 + 1, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = P.mud2; g.beginPath(); g.ellipse(cx, foot - h / 2, w / 2, h / 2, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = P.mud3; g.fillRect(Math.round(cx - w / 3), Math.round(foot - h + 1), Math.round(w * 0.5), 1);
+    const ph = Math.round(20 * s), bw = Math.max(2, Math.round(2.2 * s));
+    g.fillStyle = P.ink; g.fillRect(Math.round(cx - bw / 2 - 1), foot - h - ph, bw + 2, ph + 1);
+    g.fillStyle = P.mud3; g.fillRect(Math.round(cx - bw / 2), foot - h - ph + 1, bw, ph - 1);
+    g.fillStyle = P.sand; g.fillRect(Math.round(cx - bw / 2), foot - h - ph + 1, 1, ph - 1);
+    const ay = foot - h - Math.round(ph * 0.68), aw = Math.round(11 * s);
+    g.fillStyle = P.ink; g.fillRect(Math.round(cx - aw / 2 - 1), ay - 1, aw + 2, bw + 2);
+    g.fillStyle = P.mud3; g.fillRect(Math.round(cx - aw / 2), ay, aw, bw); g.fillStyle = P.sand; g.fillRect(Math.round(cx - aw / 2), ay, aw, 1);
+    if (name && s >= 1.2) {
+      const tw = txtW(name, 1), pw = Math.max(tw + 4, 14);
+      g.fillStyle = P.ink; g.fillRect(Math.round(cx - pw / 2 - 1), ay + bw + 2, pw + 2, 9);
+      g.fillStyle = P.bone; g.fillRect(Math.round(cx - pw / 2), ay + bw + 3, pw, 7);
+      txt(g, name, Math.round(cx - tw / 2), ay + bw + 4, 1, P.ink);
+    }
+    if (extra.helmet) { const hy = foot - h - ph - 1; g.fillStyle = P.ink; g.beginPath(); g.ellipse(cx, hy, 3.6 * s, 2.4 * s, 0, Math.PI, 0); g.fill(); g.fillStyle = P.steel; g.beginPath(); g.ellipse(cx, hy, 2.8 * s, 1.8 * s, 0, Math.PI, 0); g.fill(); g.fillStyle = P.grey; g.fillRect(Math.round(cx - s), Math.round(hy - 1.6 * s), Math.max(1, Math.round(s)), 1); }
+    if (extra.flowers) for (let i = 0; i < 3 + Math.round(s); i++) { g.fillStyle = i % 2 ? P.rust : P.gold; g.fillRect(Math.round(cx - w / 3 + i * (w / 3.5)), foot - h + 1 + (i % 2), 1, 1); }
+  };
+  const BURSTS = [[0.4, 30, 192], [1.2, 118, 196], [2.0, 66, 190], [2.9, 152, 194], [3.7, 12, 196], [4.5, 96, 192], [5.4, 138, 190], [6.3, 48, 195], [7.2, 124, 193], [8.0, 80, 191]];
+  scene.graves = (t, o) => {
+    const side = o.side ?? 0, k = key(side), n = o.n ?? null, names = (o.names || []).map((x) => String(x).toUpperCase().slice(0, 7));
+    let sh = 0;
+    for (const [t0] of BURSTS) { const v = shakeOf(t - t0 - 0.35, 0.5) * 0.5; if (Math.abs(v) > Math.abs(sh)) sh = v; }
+    g.setTransform(1, 0, 0, 1, Math.round(sh), Math.round(sh * 0.4));
+    g.drawImage(L.graves, -3, -3, W + 6, H + 6);
+    for (const [t0, x, y] of BURSTS) {
+      const u = t - t0; if (u < 0 || u > 1.6) continue;
+      glow(g, x, y - 4, 34 * (1 - u / 1.6) + 8, '#d98f3f', 1.1 * Math.exp(-u * 2.2));
+      blast(g, x, y, u, 0.45 + (x % 3) * 0.08, ['#7e3b2a', '#2a2328', '#1c181b', '#34323b'], 4);
+    }
+    const total = Math.min(12, n ?? 5), rows = [[3, 1.5, 252], [4, 1.15, 236], [5, 0.85, 222]];
+    let gi = 0; const front = [];
+    for (const [cnt, s, foot] of rows) for (let i = 0; i < cnt && gi < total; i++, gi++) {
+      const cx = Math.round(24 + (i + (cnt < 5 ? 0.5 : 0.3)) * (W - 48) / cnt + Math.sin(gi * 2.3) * 3);
+      front.push([cx, foot, s, gi]);
+    }
+    front.sort((a, b) => a[1] - b[1]);
+    for (const [cx, foot, s, idx] of front) grave(cx, foot, s, idx < 3 ? names[idx] : null, { helmet: idx % 2 === 0, flowers: idx % 3 !== 1 });
+    glow(g, 40, 254, 20, '#d98f3f', 0.55 + 0.15 * Math.sin(t * 9) + 0.08 * Math.sin(t * 23), 0.7);
+    const stand = [[46, 314, 2.1], [90, 318, 2.2], [136, 312, 2.0]];
+    stand.forEach(([x, foot, s], i) => put(pose(k, 'idle', 'north', t + i * 0.7, 3) || tex[k]?.north, x, foot + Math.round(Math.sin(t * 0.9 + i) * 0.6), s, 'rgba(14,13,12,0.28)'));
+    for (let i = 0; i < 70; i++) { const rx = (i * 37 + t * 38) % W, ry = (i * 53 + t * 190) % H; g.fillStyle = 'rgba(163,151,130,0.22)'; g.fillRect(Math.round(rx), Math.round(ry), 1, 3); }
+    const fade = clamp01((t - 1.0) / 0.8);
+    if (fade > 0) {
+      const lab = n == null ? 'XX FALLEN' : `${n} FALLEN`, lw = txtW(lab, 3), bx = Math.round((W - lw) / 2);
+      g.globalAlpha = fade; txt(g, lab, bx, 64, 3, P.white, P.ink); const sub = 'FIRST NIGHT OF THE BARRAGE', sw = txtW(sub, 1); txt(g, sub, Math.round((W - sw) / 2), 86, 1, P.pale, P.ink); g.globalAlpha = 1;
+    }
     g.setTransform(1, 0, 0, 1, 0, 0);
   };
 

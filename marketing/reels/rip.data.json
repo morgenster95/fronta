@@ -1,0 +1,75 @@
+{
+ "day": 4,
+ "fallen": [
+  {
+   "name": "Bram Yoollyfox",
+   "faction": 0,
+   "handle": "yoollyfox",
+   "role": "medic",
+   "shell": true,
+   "heir": "Dorian Yoollyfox"
+  },
+  {
+   "name": "Pavel Zulfi",
+   "faction": 0,
+   "handle": "rayan.zulfi",
+   "role": "runner",
+   "shell": true,
+   "heir": "Felix Zulfi"
+  },
+  {
+   "name": "Nils Wolfmananton",
+   "faction": 0,
+   "handle": "wolfmanantony",
+   "role": "sapper",
+   "shell": true,
+   "heir": "Yann Wolfmananton"
+  },
+  {
+   "name": "Henrik Eccentricred",
+   "faction": 1,
+   "handle": "eccentricredeye",
+   "role": "sapper",
+   "shell": false,
+   "heir": "Bram Eccentricred"
+  },
+  {
+   "name": "Oskar Brunoescobar",
+   "faction": 0,
+   "handle": "brunoescobar36",
+   "role": "rifleman",
+   "shell": true,
+   "heir": "Anselm Brunoescobar"
+  },
+  {
+   "name": "Lucien Jewnipers",
+   "faction": 0,
+   "handle": "jewnipers",
+   "role": "machinegunner",
+   "shell": false,
+   "heir": "Clement Jewnipers"
+  }
+ ],
+ "byCount": [
+  5,
+  1
+ ],
+ "lead": 0,
+ "leadName": "Hegemony",
+ "wounded": [
+  23,
+  19
+ ],
+ "army": [
+  117,
+  120
+ ],
+ "names": [
+  "YOOLLYFOX",
+  "ZULFI",
+  "WOLFMANANTON",
+  "BRUNOESCOBAR",
+  "JEWNIPERS"
+ ],
+ "shelled": 4
+}

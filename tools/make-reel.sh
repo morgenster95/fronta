@@ -12,6 +12,7 @@ PY="${PYTHON:-python3}"; command -v "$PY" >/dev/null || PY=python
 
 npm run -s data:build
 [ "$NAME" = "ridge" ] && node tools/ridge-reel.mjs   # podklady z aktuálního stavu (vítěz, hrdina, hlas hráče, počty)
+[ "$NAME" = "rip" ] && node tools/rip-data.mjs   # padlí posledního tahu
 if grep -q "\"$NAME\": (" marketing/story_vo.py || [ -f "marketing/reels/$NAME.script.json" ]; then "$PY" marketing/story_vo.py "$NAME"; fi
 
 npx vite --port 5187 --strictPort >/tmp/reel-vite.log 2>&1 &
