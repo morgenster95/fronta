@@ -293,6 +293,16 @@ async function boot() {
   const TINT = [0xffffff, 0xf0ece4, 0xe6e2da, 0xfff4e8];
   const chunkSoldiers = new Map(); // chunk key → Container
   const ckey = (x, y) => `${Math.floor(x / (CHUNK * map.tile))},${Math.floor(y / (CHUNK * map.tile))}`;
+  // zlatá hvězdička nad hlavou převzatého vojáka (skutečný hráč, který se přihlásil): vidí ji všichni
+  const starTex = (() => {
+    const g = new Graphics();
+    const PX = [[3, 0], [2, 1], [3, 1], [4, 1], [0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [1, 3], [2, 3], [3, 3], [4, 3], [5, 3], [2, 4], [3, 4], [4, 4], [1, 5], [2, 5], [4, 5], [5, 5]];
+    for (const [x, y] of PX) g.rect(x - 1 + 1, y - 1 + 1, 3, 3).fill(0x1c1a17); // obrys
+    for (const [x, y] of PX) g.rect(x + 1, y + 1, 1, 1).fill(y < 2 ? 0xf2c15a : 0xd98f3f);
+    const t = app.renderer.generateTexture({ target: g, resolution: 1 });
+    g.destroy();
+    return t;
+  })();
   for (const s of placed.sort((a, b) => a.y - b.y)) {
     const d = DIRS[s.slot.d];
     s.texKey = keyFor(s);
@@ -318,6 +328,12 @@ async function boot() {
         sp.scale.x = 1;
         if (s.hosp) sp.anchor.set(0.55, 0.6); // leží na lůžku / nosítkách v nemocnici
       } else sp.tint = 0xd8b8a8;
+    }
+    if (s.claimed && !s.vacant && s.status === 0) {
+      const star = new Sprite(starTex);
+      star.anchor.set(0.5, 1);
+      star.y = -31;
+      sp.addChild(star);
     }
     sp.soldier = s;
     s.sprite = sp;
