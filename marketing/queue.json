@@ -454,8 +454,7 @@
         "letter_hand_1.jpg"
       ],
       "caption": "MAIL CALL ✉️\n\nA letter from home can reach your soldier at the front. You are the one who sends it.\n\nHOW IT WORKS\n1️⃣ Log in on the game site (link in bio) with the account you claimed your soldier with.\n2️⃣ Open your soldier's card.\n3️⃣ Tap “Send your soldier a letter”.\n\nA soldier who gets a letter from home goes into the night with a clearer head, and is a little safer for it. The letter counts for tonight only. The next day, send another.\n\nYour soldier reads it and writes about it in the diary. Skip a day and the night comes without one.\n\nIt costs nothing, and anyone with a soldier can do it. Not enlisted yet? Comment CONCORD or HEGEMONY and your soldier takes a post on the line.\n\n#pixelart #ww1 #lettershome #indiegame #trenchwarfare #gamedev #mudandiron",
-      "publishAt": "2026-11-12T21:00:00Z",
-      "_note": "Dopis z domova: hráč ho posílá svému vojákovi (bez procent). 12. 11. 22:00 Praha (21:00 UTC). Vyžaduje nasazená pravidla Firestore."
+      "_note": "Odloženo (12. 11.): nejdřív návod, jak claimnout vojáka (reel-claim). Dopis z domova ke zveřejnění až po něm, bez termínu."
     },
     {
       "id": "story-mail-call",
@@ -464,8 +463,7 @@
         "story_mail-call.jpg"
       ],
       "caption": "",
-      "publishAt": "2026-11-12T21:10:00Z",
-      "_note": "Story k položce mail-call (pravidlo: ke každé novince i story). "
+      "_note": "Odloženo (12. 11.): nejdřív návod, jak claimnout vojáka (reel-claim). Dopis z domova ke zveřejnění až po něm, bez termínu."
     }
   ]
 }
