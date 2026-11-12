@@ -142,6 +142,14 @@ export async function sendTransfer(owner, role) {
   return true;
 }
 
+// Dopis domů (retence): zapíše den války do profilu majitele; smyčka ho přijme jen pro právě běžící den a voják má další noc o 15 % menší riziko zranění.
+// Jeden zápis na hráče a den (~100–1000 zápisů denně, limit Firestore Spark je 20 000).
+export async function sendLetter(owner, day) {
+  const { getFirestore, doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+  await setDoc(doc(getFirestore(owner.app), 'profiles', owner.user.uid), { letterDay: day, updatedAt: serverTimestamp() }, { merge: true });
+  return true;
+}
+
 // Převzatý voják přihlášeného hráče (pro výpravy z mapy údolí): { app, user, handle } nebo null
 export async function signInClaimed(toast) {
   const s = await signIn(null, toast, 'valley');

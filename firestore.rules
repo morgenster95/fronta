@@ -16,7 +16,8 @@ service cloud.firestore {
     match /profiles/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow write: if request.auth != null && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(['bio', 'pronoun', 'role', 'volunteer', 'updatedAt'])
+        && request.resource.data.keys().hasOnly(['bio', 'pronoun', 'role', 'volunteer', 'letterDay', 'updatedAt'])
+        && (!('letterDay' in request.resource.data) || (request.resource.data.letterDay is int && request.resource.data.letterDay >= 0 && request.resource.data.letterDay < 100000))
         && (!('volunteer' in request.resource.data) || (request.resource.data.volunteer is string && request.resource.data.volunteer.size() <= 40))
         && (!('bio' in request.resource.data) || (request.resource.data.bio is string && request.resource.data.bio.size() <= 280))
         && (!('pronoun' in request.resource.data) || (request.resource.data.pronoun is string && request.resource.data.pronoun.size() <= 10))

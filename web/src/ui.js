@@ -1,6 +1,6 @@
 // DOM vrstva: počty, hledání @handle, karta vojáka se služebním záznamem, panel „Enlist“, sdílení.
 import { shardOf } from '../../engine/roster.js';
-import { startClaim, sendTransfer, signInAsOwner, myAccount, signOutHere, signInHere } from './claim.js';
+import { startClaim, sendTransfer, sendLetter, signInAsOwner, myAccount, signOutHere, signInHere } from './claim.js';
 import { shareCard } from './share.js';
 import { paperTexture, tornClip } from './paper.js';
 import { initValley } from './valley.js';
@@ -365,6 +365,25 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     const h = a?.handle;
     if (h) house.setMe(h); // přihlášený hráč: jeho rod (pamětní listina „My house“, žebříčky „You“)
     $('card-transfer').hidden = !(s.claimed && s.archetype?.id !== 'officer' && h && h === s.handle);
+    // dopis domů: jen majitel, jednou za den (denně znovu; kdo ho neodešle, buff nemá)
+    const L = $('card-letter'), mine = !!(h && h === s.handle && s.status !== 'fallen');
+    L.hidden = !mine;
+    if (mine) {
+      let sent = false;
+      try { sent = localStorage.getItem(`letter:${s.handle}`) === String(roster.day); } catch { /* bez úložiště */ }
+      L.disabled = sent;
+      L.textContent = sent ? '✉ Letter sent. 15% safer tonight' : '✉ Send a letter home (15% safer tonight)';
+      L.onclick = async () => {
+        L.disabled = true;
+        const owner = await signInAsOwner(s, toast).catch(() => null);
+        if (!owner) { L.disabled = false; return; }
+        const ok = await sendLetter(owner, roster.day).catch(() => false);
+        if (!ok) { toast('The letter could not be sent. Try again.'); L.disabled = false; return; }
+        try { localStorage.setItem(`letter:${s.handle}`, String(roster.day)); } catch { /* bez úložiště */ }
+        L.textContent = '✉ Letter sent. 15% safer tonight';
+        toast('Letter sent. Your soldier is 15% less likely to be hurt tonight.');
+      };
+    }
     // kdo už vojáka má (nebo na něj čeká), nemá u cizích karet nabízené převzetí
     $('card-claim').hidden = s.claimed || !!h || !!(a?.pending && a.pending !== s.handle);
     const box = $('card-account');

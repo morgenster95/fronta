@@ -359,6 +359,8 @@ async function main() {
       if (typeof p.bio === 'string') s.bio = p.bio.slice(0, 280);
       if (['he', 'she', 'they'].includes(p.pronoun)) s.pronoun = p.pronoun;
       if (typeof p.role === 'string' && requestTransfer(state, s, p.role, theme)) console.log(`žádost o převelení @${s.handle} → ${p.role}`);
+      // dopis domů: platí jen den, který právě běží (den války při odeslání); engine ho uplatní v příštím tahu (-15 % zásahů)
+      if (Number.isInteger(p.letterDay) && p.letterDay === state.day && s.status !== 'fallen') s.letter = p.letterDay;
       // dobrovolník na výpravu z webu (tlačítko Volunteer), platí jen pro právě otevřenou výpravu
       if (typeof p.volunteer === 'string' && p.volunteer === state.valley?.open?.id) console.log(`⚑ výprava (web) @${s.handle}: ${volunteer(state, theme, s, 'web').reason}`);
     }

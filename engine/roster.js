@@ -376,10 +376,13 @@ export function dailyTick(state, theme, story, ctx = {}) {
   // denní boj: zásahy, medici, lůžka, drát (engine/battle.js); účastníci výpravy dnes v linii nejsou
   const dangerOf = (s) => (ctx.danger ?? 1) * (theme.race ? raceDanger(state, theme, s.faction, day) : 1) * valleyDanger(state, theme, s, day) * orderDanger(state, s.faction, day);
   const careOf = (s) => orderRecover(state, s.faction, day, valleyRecover(state, theme, s)) / 0.35;
-  const shellOf = (s) => orderShell(state, s.faction, day);
+  // dopis domů (odeslán ve dne před tahem): -15 % zásahů všeho druhu na jednu noc (theme.battle.letter.cut)
+  const letterCut = theme.battle?.letter?.cut ?? 0.15;
+  const letterOf = (s) => (s.letter === day - 1 ? 1 - letterCut : 1);
+  const shellOf = (s) => orderShell(state, s.faction, day) * letterOf(s);
   const fireOf = (s) => orderFire(state, s.faction, day, s.archetype);
   const healOf = (s) => orderHeal(state, s.faction, day);
-  const exposedOf = (s) => orderExposed(state, s.faction, day);
+  const exposedOf = (s) => orderExposed(state, s.faction, day) * letterOf(s);
   const dieOf = (s) => orderDie(state, s.faction, day);
   const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf, shellOf, fireOf, healOf, exposedOf, dieOf }) : { events: [], news: [], ids: new Set() };
   const events = [...raid.events, ...fight.events];
@@ -421,6 +424,14 @@ export function dailyTick(state, theme, story, ctx = {}) {
   }
   awardHouseBadges(state, theme); // odznaky rodu (zůstávají v rodu)
   const news = [...(state.news || []).filter((n) => n.day >= day - 1), ...raid.news, ...fight.news]; // zprávy o dobytí kóty jdou první
+  // pošta: kdo včera odeslal dopis domů, má zápis a v novinách je řádek „Mail call“
+  const readers = state.soldiers.filter((s) => s.letter === day - 1 && s.status !== 'fallen');
+  if (readers.length) {
+    const LETTERS = ['A letter from home reached {n} before dusk. {n} read it twice and slept a little easier.', '{n} wrote home by candlelight and got the sealed answer before the night shift.', 'Mail came up the line. {n} read the letter in the dugout and kept the envelope.'];
+    for (const s of readers) addEntry(s, day, LETTERS[(s.order || 0) % LETTERS.length].replaceAll('{n}', s.name));
+    const by = theme.factions.map((_, f) => readers.filter((s) => s.faction === f).length);
+    news.push({ day, kind: 'mail', routine: true, h: 'Mail call', text: `${readers.length} soldiers got a letter before the night: ${theme.factions.map((fc, f) => `${by[f]} ${fc.name.replace(/^The /, '')}`).join(', ')}.` });
+  }
   state.news = [];
   state.chronicle = [...(state.chronicle || []), writeChronicle(state, day, { theme, story, weather, events, decided, news })]; // celá historie, nic se nemaže
   return state;

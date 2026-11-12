@@ -1108,3 +1108,25 @@ test('převedení hráče k druhé straně: nové stanoviště, jednotka, zápis
   assert.match(c.record.at(-1)[1], /asked to serve with the Hegemony instead of the Concord/);
   assert.equal(switchFaction(s, theme, map, 'jonas', 0), null, 'už je u Hegemonie');
 });
+
+test('dopis domů: voják s dopisem z předchozího dne je méně zasahován; v novinách „Mail call“ a zápis', () => {
+  const run = (withLetter) => {
+    let hits = 0;
+    for (let r = 0; r < 12; r++) {
+      const s = emptyState(theme);
+      enlist(s, 160, `L${r}_`);
+      for (const x of s.soldiers) if (withLetter) x.letter = s.day; // odesláno ve dne před tahem
+      const T = { ...theme, id: `lt${r}` };
+      dailyTick(s, T, story);
+      hits += s.battle.stats.at(-1).sides.reduce((a, side) => a + side.sev.light + side.sev.heavy + side.sev.crit, 0);
+      if (withLetter && r === 0) {
+        const mail = s.chronicle.at(-1).blocks.find((b) => b.h === 'Mail call');
+        assert.ok(mail && /soldiers got a letter before the night/.test(mail.text), 'Mail call v novinách');
+        assert.ok(s.soldiers.some((x) => x.record.some((e) => /letter|wrote home|Mail came/.test(e[1]))), 'zápis o dopisu');
+      }
+    }
+    return hits;
+  };
+  const without = run(false), withL = run(true);
+  assert.ok(withL < without * 0.95, `s dopisem méně zásahů (${withL} < ${without})`);
+});
