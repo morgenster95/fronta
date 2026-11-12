@@ -19,6 +19,7 @@
 import { rngFor } from './rng.js';
 import { eventEntry } from './story.js';
 import { activeBarrage } from './race.js';
+import { orderStretchers, orderMedics } from './orders.js';
 import { fallSoldier, addEntry } from './soldier.js';
 
 const B = (theme) => theme.battle;
@@ -41,7 +42,7 @@ export function hospital(state, theme, f) {
   const a = cfg.aidPost, d = cfg.buildings.dugout;
   // aidPost.stretchersPerMedic: každý medik schopný služby nese nosítka navíc (kapacita roste s volbou hráčů, ne s velikostí strany)
   const medics = a.stretchersPerMedic ? state.soldiers.filter((s) => s.faction === f && s.archetype === 'medic' && s.status !== 'fallen' && !(s.wound && s.wound.sev !== 'light')).length : 0;
-  const sc = (v) => v + Math.floor(medics * (a.stretchersPerMedic || 0));
+  const sc = (v) => v + Math.floor(medics * (a.stretchersPerMedic || 0)) + orderStretchers(state, f, state.day); // + nosítka z rozkazu (BEARERS)
   // care = násobek hojení těžce raněného proti nosítkům s plnou péčí (≥ 1), critRisk = násobek rizika smrti kritického za noc
   // proti nosítkům (≤ 1): lůžko je tak VŽDY lepší než nosítka, nemocnice lepší než obvaziště
   if (!n) return { name: a.name, dugout: false, dugouts: 0, beds: a.beds, stretchers: sc(a.stretchers), care: a.care, critRisk: a.critRisk };
@@ -88,7 +89,7 @@ export function medicWork(state, theme, f, busy = new Set()) {
     if (s.wound && s.wound.sev !== 'light') continue;
     supply += role(B(theme), s, 'work') * mult(theme, s) * (s.wound ? 0.5 : 1);
   }
-  return supply;
+  return supply + orderMedics(state, f, state.day); // + ošetřovatelé z rozkazu (MEDICS)
 }
 const needOf = (cfg, s) => (s.wound.place === 'bed' ? 0 : cfg.care[s.wound.sev].need);
 export function medicCover(state, theme, f, busy = new Set()) {
@@ -150,6 +151,18 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     while (shelled.size < Math.min(want, secs.length)) shelled.add(secs[Math.floor(r() * secs.length)]);
   }
   const shellHits = [];
+  // mina (rozkaz TUNNELLERS): v poslední den rozkazu vybuchne pod nejlidnatějším úsekem nepřítele (cfg.mine), jednou za rozkaz
+  const mineAt = new Map(); // frakce → množina úseků, pod kterými vybuchla mina
+  for (const o of (state.orders || []).filter((x) => x.mine && x.to === day && cfg.mine)) {
+    const f = 1 - o.faction, bySec = new Map();
+    for (const s of state.soldiers.filter((x) => x.faction === f && x.sector && x.status === 'active')) bySec.set(s.sector, (bySec.get(s.sector) || 0) + 1);
+    const best = [...bySec].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, cfg.mine.sectors || 1);
+    if (best.length) {
+      mineAt.set(f, new Set(best.map(([sec]) => sec)));
+      const men = best.reduce((a, [, n]) => a + n, 0);
+      out.news.push({ day, kind: 'mine', h: `Mines went up under the ${short(theme, f)} line`, text: `${short(theme, o.faction)} tunnellers had been digging for days. At dawn the ground lifted under sectors ${best.map(([sec]) => sec).join(', ')} and fell back. ${men} ${short(theme, f)} men were in it.` });
+    }
+  }
 
   // převod starších raněných (dřívější modely): vše raněné je status wounded, místo se určí v kroku 3
   for (const s of state.soldiers) {
@@ -265,12 +278,13 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     if (newToday(s.faction) >= maxOf(s.faction)) continue;
     const side = state.battle.sides[s.faction];
     const rand = rngFor(s.id, 'battle', day);
-    const underShells = barrage?.target === s.faction && shelled.has(s.sector);
+    const underMine = !!mineAt.get(s.faction)?.has(s.sector); // mina vybuchla pod jeho úsekem
+    const underShells = (barrage?.target === s.faction && shelled.has(s.sector)) || underMine;
     const sig = share(near(signallers[s.faction], X(s), range).length, R.signaller.covers, near(targetsOf[s.faction], X(s), range).length);
     const own = R.signaller.counter * sig;
     // roles.signaller.counterShell: spojař navádí protipalbu i proti bombardování (snižuje zásahy granátem v jeho okolí, podle pokrytí)
-    const p = underShells
-      ? cfg.shell.hit * (cfg.line[s.line] ?? 1) * (1 - cfg.buildings.sandbags.cover * count(side, 'sandbags')) * (1 - (R.signaller.counterShell || 0) * sig)
+    const p = underMine ? cfg.mine.hit : underShells
+      ? cfg.shell.hit * (cfg.line[s.line] ?? 1) * (1 - cfg.buildings.sandbags.cover * count(side, 'sandbags')) * (1 - (R.signaller.counterShell || 0) * sig) * (ctx.shellOf?.(s) ?? 1)
       : cfg.hit * coverOf(s) * (ctx.dangerOf?.(s) ?? 1) * (barrage?.target === s.faction ? cfg.barrage : 1) * (1 - own); // spojař poblíž: telefon k vlastnímu dělostřelectvu, protipalba
     if (rand() >= p) continue;
     bgHit(s, severity(s, underShells ? cfg.shell.severity : cfg.severity, rand, underShells), underShells);
@@ -393,7 +407,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
           w.sev = 'heavy';
           w.place = null;
           ev(s, 'wounded', eventEntry('worsened', s, day, theme, story, {}, today));
-        } else if (rand() < Math.min(1, C.heal * g + (cook ? cook.heal : 0) * (1 - g) + C.baseHeal)) {
+        } else if (rand() < Math.min(1, C.heal * g * (ctx.healOf?.(s) ?? 1) + (cook ? cook.heal : 0) * (1 - g) + C.baseHeal)) {
           s.wound = null;
           s.status = 'active';
           ev(s, 'patched', eventEntry('patched', s, day, theme, story, {}, today));
@@ -404,7 +418,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
           if (rand() < C.dieBase * H.critRisk) { if (die(s, 'diedInBed', 'wounds')) continue; }
           w.critDays = (w.critDays || 0) + 1;
           if (w.critDays >= C.stabilizeBed) { w.sev = 'heavy'; ev(s, 'stabilized', eventEntry('stabilized', s, day, theme, story, {}, today)); }
-        } else if (!fresh && day - w.day >= cfg.care.heavy.minDays && rand() < cfg.care.heavy.heal * H.care * (ctx.careOf?.(s) ?? 1)) {
+        } else if (!fresh && day - w.day >= cfg.care.heavy.minDays && rand() < cfg.care.heavy.heal * H.care * (ctx.careOf?.(s) ?? 1) * (ctx.healOf?.(s) ?? 1)) {
           recover(s, 'recovered');
         }
       } else if (w.sev === 'heavy') {
@@ -414,7 +428,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
           w.sev = 'crit';
           s.lastCrit = day;
           ev(s, 'wounded', eventEntry('worsened', s, day, theme, story, {}, today));
-        } else if (!fresh && day - w.day >= C.minDays && rand() < C.heal * g * (trench ? 0.5 : 1)) {
+        } else if (!fresh && day - w.day >= C.minDays && rand() < C.heal * g * (trench ? 0.5 : 1) * (ctx.healOf?.(s) ?? 1)) {
           recover(s, 'patchedStretcher');
         }
       } else {

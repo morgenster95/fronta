@@ -7,7 +7,7 @@ import { checkRace, raceStatus, raceDanger, activeBarrage, awardHonors } from '.
 import { pick } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
-import { orderDanger, orderRecover, issueOrders } from './orders.js';
+import { orderDanger, orderRecover, orderShell, orderFire, orderHeal, issueOrders } from './orders.js';
 import { battleTick, battlePublic, build as buildStructure, ensureBattle, levelOf, gunsSilent } from './battle.js';
 import { awardHouseBadges, noticeDeath } from './house.js';
 import { ensureValley, valleyTick, valleyDanger, valleyRecover, raidKeyword, volunteer, valleyPublic } from './valley.js';
@@ -256,6 +256,7 @@ export function lateVote(state, comment) {
   if (!opt || !handle) return null;
   const s = findOwnSoldier(state, comment.userId, handle);
   if (!s || s === TAKEN || v.tallies[s.id]) return null;
+  if (opt.only != null && opt.only !== s.faction) return null; // možnost patří druhé straně
   v.tallies[s.id] = { kw: opt.kw, f: s.faction };
   return { type: 'vote', handle, kw: opt.kw, faction: s.faction, late: true };
 }
@@ -268,6 +269,7 @@ function castVote(state, comment) {
   if (v.perFaction) {
     const s = findOwnSoldier(state, comment.userId, handle);
     if (!s || s === TAKEN) return null; // bez vojáka nehlasuje (komentář může dál narukovat, viz applyComment)
+    if (opt.only != null && opt.only !== s.faction) return { type: 'vote', handle, kw: opt.kw, faction: s.faction, reason: 'otherSide', options: v.options.filter((o) => o.only == null || o.only === s.faction).map((o) => o.kw) };
     v.tallies[s.id] = { kw: opt.kw, f: s.faction };
     return { type: 'vote', handle, kw: opt.kw, faction: s.faction };
   }
@@ -280,10 +282,11 @@ const sideName = (theme, f) => theme?.factions?.[f]?.name.replace(/^The /, '') ?
 function resolveFactionVote(state, v, theme) {
   const nf = theme?.factions?.length || 2;
   const per = Array.from({ length: nf }, (_, f) => {
-    const counts = Object.fromEntries(v.options.map((o) => [o.kw, 0]));
-    for (const t of Object.values(v.tallies)) if (t.f === f) counts[t.kw] = (counts[t.kw] || 0) + 1;
+    const opts = v.options.filter((o) => o.only == null || o.only === f); // každá strana volí ze své nabídky (option.only = frakce)
+    const counts = Object.fromEntries(opts.map((o) => [o.kw, 0]));
+    for (const t of Object.values(v.tallies)) if (t.f === f && t.kw in counts) counts[t.kw] = (counts[t.kw] || 0) + 1;
     // strana bez jediného hlasu nedostane nic (stavba ani rozkaz nepřijde zadarmo); remíza → dřívější možnost
-    const winner = Object.values(counts).some((n) => n > 0) ? v.options.reduce((best, o) => (counts[o.kw] > counts[best.kw] ? o : best), v.options[0]) : null;
+    const winner = Object.values(counts).some((n) => n > 0) ? opts.reduce((best, o) => (counts[o.kw] > counts[best.kw] ? o : best), opts[0]) : null;
     return { faction: f, counts, winner };
   });
   const total = Object.keys(v.tallies).length;
@@ -357,7 +360,10 @@ export function dailyTick(state, theme, story, ctx = {}) {
   // denní boj: zásahy, medici, lůžka, drát (engine/battle.js); účastníci výpravy dnes v linii nejsou
   const dangerOf = (s) => (ctx.danger ?? 1) * (theme.race ? raceDanger(state, theme, s.faction, day) : 1) * valleyDanger(state, theme, s, day) * orderDanger(state, s.faction, day);
   const careOf = (s) => orderRecover(state, s.faction, day, valleyRecover(state, theme, s)) / 0.35;
-  const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf }) : { events: [], news: [], ids: new Set() };
+  const shellOf = (s) => orderShell(state, s.faction, day);
+  const fireOf = (s) => orderFire(state, s.faction, day, s.archetype);
+  const healOf = (s) => orderHeal(state, s.faction, day);
+  const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf, shellOf, fireOf, healOf }) : { events: [], news: [], ids: new Set() };
   const events = [...raid.events, ...fight.events];
   const today = new Set(); // šablony použité dnes (rozmanitost mezi vojáky)
   for (const s of state.soldiers) s.bg ??= makeBackground(s, story);
@@ -489,7 +495,7 @@ export function buildPublic(state, theme) {
     history: (state.events || []).slice(-30).reverse(),
     valley: valley.roster,
     vote: state.vote ? {
-      question: state.vote.question, options: state.vote.options.map((o) => ({ kw: o.kw, label: o.label })), votes: Object.keys(state.vote.tallies).length,
+      question: state.vote.question, options: state.vote.options.map((o) => ({ kw: o.kw, label: o.label, ...(o.only != null ? { only: o.only } : {}) })), votes: Object.keys(state.vote.tallies).length,
       ...(state.vote.perFaction ? { perFaction: true } : {}), ...(state.vote.note ? { note: state.vote.note } : {}),
     } : null,
     battle: battlePublic(state, theme),

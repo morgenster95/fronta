@@ -220,6 +220,11 @@ večerní reel na to může navázat.
 - **2026-11-12 · Ochrana nováčků VYPNUTA · NASAZENO (vyvážení v13):** `theme.battle.newbieDays` 3 → 0 na pokyn uživatele. Dřív první 3 dny služby kulka nezpůsobila kritický zásah a rána se nezhoršovala (granát nováčky nešetřil už dřív).
   Teď platí stejná pravidla pro všechny od prvního dne. Důvod: každý hráč má mít stejné riziko, nováčci nejsou „nezranitelní“. Padlý má nástupce hned v téže noci (`generation` + 1, záznam v `fallen`), nástupce se počítá jako nová služba.
 
+- **2026-11-12 · Hlasování s vlastní nabídkou pro každou stranu + nové druhy rozkazů · NASAZENO (engine), hlasování samotné NÁVRH:** `vote.options[].only` (0 = Hegemonie, 1 = Concord) určuje, kdo si možnost smí vybrat (cizí heslo → bot odpoví nabídkou té strany).
+  Nové rozkazy v `engine/orders.js`: `shell` (násobek zásahů granátem), `fire` (násobek palby, číslo nebo podle role), `heal` (hojení), `stretchers` (nosítka navíc), `medics` (práce mediků navíc), `mine` (po 3 dnech vybuchne pod 3 nejlidnatějšími úseky nepřítele, `theme.battle.mine`).
+  Návrh nabídky po dobytí Verdel Ridge (vliv na 3 dny z dnešního stavu, `node /tmp/opts.mjs` = simulace 40 běhů): **Hegemonie** DUGOUTS (`shell` 0,7: o 1,8 padlého a 6 raněných méně), MEDICS (`medics` 8: ~0,6 padlého méně), STORM (`fire` 1,4 + `danger` 1,15: nepřítel +9 raněných);
+  **Concord** SNIPERS (`fire` sniper 1,8: nepřítel +1,2 padlého), VICKERS (`fire` machinegunner 1,8: +4 raněných), MINE (nepřítel +1,6 padlého a +9 raněných jednorázově). Historické vzory: Hindenburgova linie, sanitní roty, Sturmtruppen 1918; sniperské školy 1915, Machine Gun Corps 1915, Messines 1917.
+
 ## Dřívější rozhodnutí (shrnutí)
 - **2026-11-10 · Vyvážení v6 · NASAZENO:** zásah sám nezabíjí, zabije chybějící lůžko, nosítka nebo medik; obvaziště 2 lůžka a 6 nosítek; nemocnice jen hlasováním;
   děla mlčí do první dobyté kóty; po výhře 3 dny bombardování poraženého (`docs/BATTLE.md`).

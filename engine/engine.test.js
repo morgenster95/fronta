@@ -1044,3 +1044,49 @@ test('web: počet dávek se zápisy roste s vojáky (~25 na dávku), roster ho u
   assert.equal(card.record.length, 10);
   assert.equal(card.older, 20);
 });
+
+import { orderShell, orderFire } from './orders.js';
+test('hlasování po frakcích s vlastní nabídkou: každá strana volí jen své možnosti, nové rozkazy (shell, fire, mine) fungují', () => {
+  const s = emptyState(theme);
+  const c = (id, u, text, mediaId) => applyComment(s, { id, userId: u, username: u, text, mediaId }, theme, story, map);
+  c('e1', 'h1', 'HEGEMONY'); c('e2', 'k1', 'CONCORD'); c('e3', 'k2', 'CONCORD');
+  openVote(s, { mediaId: 'v1', perFaction: true, question: 'Orders?', options: [
+    { kw: 'DUGOUTS', only: 0, label: 'd', shell: 0.7, days: 3, outcome: 'The {side} dug deep.' },
+    { kw: 'STORM', only: 0, label: 's', fire: 1.3, danger: 1.15, days: 3, outcome: 'The {side} formed storm troops.' },
+    { kw: 'VICKERS', only: 1, label: 'v', fire: { machinegunner: 1.4 }, days: 3, outcome: 'The {side} formed a machine gun corps.' },
+    { kw: 'MINE', only: 1, label: 'm', mine: true, days: 3, outcome: 'The {side} tunnellers are digging.' },
+  ] });
+  assert.equal(c('v1', 'h1', 'dugouts', 'v1').faction, 0);
+  const wrong = c('v2', 'k1', 'DUGOUTS', 'v1'); // druhá strana si cizí možnost nevybere
+  assert.equal(wrong.reason, 'otherSide');
+  assert.deepEqual(wrong.options, ['VICKERS', 'MINE']);
+  c('v3', 'k1', 'MINE', 'v1'); c('v4', 'k2', 'vickers', 'v1');
+  dailyTick(s, theme, story);
+  const ev = s.events.at(-1);
+  assert.deepEqual(ev.winners, ['DUGOUTS', 'VICKERS'], 'Concord: remíza 1:1 → dřívější možnost v jeho nabídce');
+  assert.equal(orderShell(s, 0, s.day), 0.7);
+  assert.equal(orderShell(s, 1, s.day), 1);
+  assert.equal(ev.counts[0].STORM, 0);
+  assert.ok(!('DUGOUTS' in ev.counts[1]), 'Concord nemá cizí možnost v počtech');
+  const f = { ...s, orders: [{ faction: 1, kw: 'V', from: s.day, to: s.day + 2, fire: { machinegunner: 1.4 } }] };
+  assert.equal(orderFire(f, 1, s.day, 'machinegunner'), 1.4);
+  assert.equal(orderFire(f, 1, s.day, 'rifleman'), 1);
+});
+
+test('rozkaz shell snižuje zásahy granátem a mina vybuchne v poslední den pod nejlidnatějším úsekem nepřítele', () => {
+  const mk = (orders) => {
+    const s = emptyState(theme);
+    enlist(s, 200);
+    s.victories = [{ id: 'r', name: 'Ridge', faction: 0, day: 1, hero: 'x', from: 2, to: 8, barrageTo: 4, counts: [100, 60] }];
+    s.day = 1;
+    s.orders = orders;
+    return s;
+  };
+  const hits = (orders) => { let n = 0; for (let r = 0; r < 6; r++) { const s = mk(orders); s.soldiers.forEach((x) => (x.id += `#${r}`)); const out = battleTick(s, { ...theme, id: `t${r}` }, story, 2, { shellOf: (x) => (orders.length ? 0.5 : 1) }); n += out.stats.sides[1].hits.shell; } return n; };
+  assert.ok(hits([{ faction: 1, kw: 'D', from: 2, to: 4, shell: 0.5 }]) < hits([]), 'hlubší kryty snižují zásahy granátem');
+  const s = mk([{ faction: 0, kw: 'MINE', from: 2, to: 2, mine: true }]);
+  const out = battleTick(s, theme, story, 2);
+  const mineNews = out.news.find((n) => n.kind === 'mine');
+  assert.ok(mineNews, 'mina vybuchla (Gazette)');
+  assert.match(mineNews.h, /Mines went up under the Concord line/);
+});

@@ -685,6 +685,7 @@
       "barrage": 0.12,
       "repair": 0.08
     },
+    "mine": { "hit": 0.85, "sectors": 3, "_": "mina (rozkaz TUNNELLERS): šance zásahu každého v zasaženém úseku; závažnost a smrt na místě jako u granátů (shell)" },
     "shell": {
       "sectors": 4,
       "share": 0.3,
