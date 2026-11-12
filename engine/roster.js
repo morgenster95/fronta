@@ -7,7 +7,7 @@ import { checkRace, raceStatus, raceDanger, activeBarrage, awardHonors } from '.
 import { pick } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
-import { orderDanger, orderRecover, orderShell, orderFire, orderHeal, issueOrders } from './orders.js';
+import { orderDanger, orderRecover, orderShell, orderFire, orderHeal, orderExposed, orderDie, issueOrders } from './orders.js';
 import { battleTick, battlePublic, build as buildStructure, ensureBattle, levelOf, gunsSilent } from './battle.js';
 import { awardHouseBadges, noticeDeath } from './house.js';
 import { ensureValley, valleyTick, valleyDanger, valleyRecover, raidKeyword, volunteer, valleyPublic } from './valley.js';
@@ -363,7 +363,9 @@ export function dailyTick(state, theme, story, ctx = {}) {
   const shellOf = (s) => orderShell(state, s.faction, day);
   const fireOf = (s) => orderFire(state, s.faction, day, s.archetype);
   const healOf = (s) => orderHeal(state, s.faction, day);
-  const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf, shellOf, fireOf, healOf }) : { events: [], news: [], ids: new Set() };
+  const exposedOf = (s) => orderExposed(state, s.faction, day);
+  const dieOf = (s) => orderDie(state, s.faction, day);
+  const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf, shellOf, fireOf, healOf, exposedOf, dieOf }) : { events: [], news: [], ids: new Set() };
   const events = [...raid.events, ...fight.events];
   const today = new Set(); // šablony použité dnes (rozmanitost mezi vojáky)
   for (const s of state.soldiers) s.bg ??= makeBackground(s, story);

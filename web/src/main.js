@@ -9,6 +9,7 @@ import { createSound } from './sound.js';
 import { startReel } from './reel.js';
 import { buildHospitals, roofAlpha, hospitalSize } from './hospital.js';
 import { hospitalNav } from './hospital-nav.js';
+import { initOrderFx } from './orders-fx.js';
 import { getJson, loadTexture, loadImage } from './assets.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
@@ -284,6 +285,9 @@ async function boot() {
     });
     return H;
   })();
+
+  // viditelné účinky rozkazů z hlasování (kryty proti bombardování, lékař u obvaziště)
+  const orderFx = initOrderFx({ world, anchor: terrainLayer, roster, map, tex, anims, hospitals, theme, openX0, openX1 });
 
   const placed = soldiers.filter((s) => s.slot && s.status !== 4 && s.status !== 2 && s.status !== 3);
   const TINT = [0xffffff, 0xf0ece4, 0xe6e2da, 0xfff4e8];
@@ -592,7 +596,7 @@ async function boot() {
   const hospNav = hospitalNav({ world, cam, sites: hospitals?.sites, theme, soldiers, hidden: !!reelParam && reelParam !== 'news' });
 
   // --- smyčka ---
-  if (import.meta.env.DEV) window.__front = { life, cam, soldiers, tex, anims, hospitals }; // ladění v konzoli
+  if (import.meta.env.DEV) window.__front = { life, cam, soldiers, tex, anims, hospitals, orderFx }; // ladění v konzoli
   const visibleSoldiers = [];
   // ?slow=N zpomalí animace a efekty N× (jen pro kontrolu výstřelů na snímcích obrazovky)
   const slow = Math.max(1, Number(new URLSearchParams(location.search).get('slow')) || 1);
@@ -646,6 +650,7 @@ async function boot() {
     }
 
     // simulovaný život (výstřely, granáty, světlice, zdravotníci) + otřes kamery při blízkém dopadu
+    orderFx.update(now);
     const sh = life.update(now, reelTime != null ? app.ticker.deltaMS : app.ticker.deltaMS / slow, view, visibleSoldiers, showSprites);
     if (sh) world.position.set(world.position.x + Math.round(sh.x), world.position.y + Math.round(sh.y));
 

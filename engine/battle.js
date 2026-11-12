@@ -177,7 +177,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const wire = side.wire[s.sector] ?? (side.wire[s.sector] = cfg.wire.start);
     const service = day - (s.enlisted ?? day);
     return (cfg.line[s.line] ?? 1) * (1 - cfg.buildings.sandbags.cover * count(side, 'sandbags')) * (1 - cfg.wire.cover * wire)
-      * (1 - cfg.experience * Math.min(1, service / cfg.experienceDays));
+      * (1 - cfg.experience * Math.min(1, service / cfg.experienceDays)) * (ctx.exposedOf?.(s) ?? 1);
   };
   const severity = (s, table, rand, shell) => {
     const service = day - (s.enlisted ?? day);
@@ -415,7 +415,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       } else if (w.place === 'bed') {
         // na lůžku: plná péče místa (medika nepotřebuje); stejný vzorec jako na nosítkách, jen s lepšími násobky místa
         if (w.sev === 'crit') {
-          if (rand() < C.dieBase * H.critRisk) { if (die(s, 'diedInBed', 'wounds')) continue; }
+          if (rand() < C.dieBase * H.critRisk * (ctx.dieOf?.(s) ?? 1)) { if (die(s, 'diedInBed', 'wounds')) continue; }
           w.critDays = (w.critDays || 0) + 1;
           if (w.critDays >= C.stabilizeBed) { w.sev = 'heavy'; ev(s, 'stabilized', eventEntry('stabilized', s, day, theme, story, {}, today)); }
         } else if (!fresh && day - w.day >= cfg.care.heavy.minDays && rand() < cfg.care.heavy.heal * H.care * (ctx.careOf?.(s) ?? 1) * (ctx.healOf?.(s) ?? 1)) {
@@ -436,7 +436,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         if (w.place === 'trench') {
           if (die(s, 'diedNoBed', 'nobed')) continue;
         } else {
-          const pDie = (C.dieBase + C.dieNoCare * (1 - g)) * (1 - faith);
+          const pDie = (C.dieBase + C.dieNoCare * (1 - g)) * (1 - faith) * (ctx.dieOf?.(s) ?? 1);
           if (rand() < pDie) { if (die(s, 'diedNoBed', 'nocare')) continue; }
           w.critDays = (w.critDays || 0) + 1;
           if (w.critDays >= C.stabilize && g >= 1) { w.sev = 'heavy'; ev(s, 'stabilized', eventEntry('stabilized', s, day, theme, story, {}, today)); }
