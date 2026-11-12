@@ -1,7 +1,7 @@
 // Viditelné účinky rozkazů z hlasování na mapě (stav z roster.orders: { faction, kw, from, to }):
 //  • DUGOUTS  – hluboké kryty proti bombardování: u zálohy strany stojí pytlové kryty s trámovým vchodem a hlínou (jen po dobu rozkazu),
 //  • DOCTOR   – u obvaziště / nemocnice se mezi raněnými prochází lékař v bílém plášti (sprite zdravotníka, červený kříž nad hlavou).
-//  • AMMO – víc munice: za nepřátelskou linií dopadá víc granátů (vizuálně; mechanika zvyšuje palbu vlastních střelců),
+//  • AMMO    – sklad munice v týlu vedle obvaziště: bedny, police s náboji, plachta a pytlový val (mechanika zvyšuje palbu vlastních střelců),
 // V dev režimu jde vyzkoušet bez hlasování: /?orders=0:DUGOUTS,0:DOCTOR  (strana:heslo).
 import { Container, Graphics, Sprite, Texture } from 'pixi.js';
 
@@ -32,7 +32,40 @@ function shelterTexture(faction = 0, seed = 1) {
   return Texture.from(c);
 }
 
-export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals, theme, openX0, openX1, life }) {
+
+// sklad munice: pytlový val, hromady beden se značkami, police s mosaznými náboji, plachta, lucerna
+function ammoTexture(faction = 0) {
+  const W = 92, H = 60, c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  const px = (x, y, w, h, col) => { g.fillStyle = `#${col.toString(16).padStart(6, '0')}`; g.fillRect(x, y, w, h); };
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) px(x, y, 1, 1, ((x >> 1) * 7 + (y >> 1) * 3) % 5 < 2 ? C.mud1 : C.mud0); // udusaná hlína
+  // pytlový val kolem
+  const bag = (x, y, w) => { px(x, y, w, 5, C.ink); px(x + 1, y + 1, w - 2, 3, (x + y) % 2 ? C.bone : C.sand); px(x + 2, y + 1, w - 5, 1, C.pale); };
+  for (let x = 0; x < W; x += 9) { bag(x, 0, 9); bag(x + 4, 4, 9); bag(x, H - 9, 9); bag(x + 4, H - 5, 9); }
+  for (let y = 5; y < H - 9; y += 9) { bag(0, y, 9); bag(W - 9, y, 9); }
+  // bedny (hromady), prkna a svislé latě, značka
+  const crate = (x, y, w = 18, h = 12, tone = 0) => {
+    px(x - 1, y - 1, w + 2, h + 2, C.ink); px(x, y, w, h, tone ? C.mud3 : C.mud2);
+    px(x, y, w, 2, C.sand); px(x, y + h - 2, w, 1, C.mud1);
+    px(x + 2, y, 2, h, C.mud1); px(x + w - 4, y, 2, h, C.mud1);
+    px(x + 6, y + 4, 6, 3, C.ink); px(x + 7, y + 5, 4, 1, C.rust);
+  };
+  crate(14, 34); crate(33, 34, 18, 12, 1); crate(14, 21); crate(23, 9, 18, 12, 1); crate(33, 21);
+  // police s náboji (mosazné hlavně, rezavé špice)
+  px(60, 12, 24, 3, C.mud2); px(60, 12, 24, 1, C.sand);
+  for (let i = 0; i < 6; i++) { px(62 + i * 4, 3, 3, 9, C.ink); px(63 + i * 4, 4, 1, 7, 0xd98f3f); px(62 + i * 4, 3, 3, 2, C.rust); }
+  for (let i = 0; i < 6; i++) { px(62 + i * 4, 18, 3, 9, C.ink); px(63 + i * 4, 19, 1, 7, 0xc9c26a); px(62 + i * 4, 18, 3, 2, C.rust); }
+  px(60, 27, 24, 3, C.mud2);
+  // plachta přes část beden
+  px(58, 34, 26, 14, C.ink); px(59, 35, 24, 12, faction === 0 ? 0x666d70 : 0x52543a); px(59, 35, 24, 2, faction === 0 ? 0x8a9295 : 0x6f7148);
+  for (let i = 0; i < 5; i++) px(61 + i * 5, 38 + (i % 2), 1, 8, 0x3f4230);
+  // lucerna na kůlu
+  px(53, 31, 1, 14, C.ink); px(51, 29, 5, 4, C.ink); px(52, 30, 3, 2, 0xd98f3f);
+  return Texture.from(c);
+}
+
+export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals, theme, openX0, openX1 }) {
   let orders = (roster.orders || []).filter((o) => o.kw);
   if (import.meta.env.DEV) {
     const q = new URLSearchParams(location.search).get('orders');
@@ -79,21 +112,20 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
     docs.push({ sp, cross, walk, idle: tex[key], x0: site.x - 30, x1: site.x + 30, y: site.y + (site.beds?.[0] ? 0 : 0), t0: Math.random() * 6000 });
   });
 
-  // --- COUNTERFIRE: občasné dopady za nepřátelskou linií v záběru kamery ---
-  const back = theme.factions.map((_, f) => has('AMMO', f));
-  let nextShot = 0;
+  // --- AMMO: sklad munice v týlu (jako obvaziště): bedny, police s náboji, plachta, pytlový val ---
+  theme.factions.forEach((_, f) => {
+    if (!has('AMMO', f)) return;
+    const site = hospitals?.sites.find((x) => x.faction === f);
+    if (!site) return;
+    const s = new Sprite(ammoTexture(f));
+    s.anchor.set(0.5, 0.5);
+    s.x = Math.round(site.x + 150); s.y = Math.round(site.y);
+    layer.addChild(s);
+  });
   let raised = false;
   return {
     shelters: layer.children,
     update(now, view) {
-      if (view && life && back.some(Boolean) && now > nextShot) {
-        nextShot = now + 700 + Math.random() * 1800;
-        for (let f = 0; f < back.length; f++) {
-          if (!back[f]) continue;
-          const e = 1 - f, y = map.front[e] * map.tile + 16 + (e === 1 ? 1 : -1) * (80 + Math.random() * 260); // za nepřátelskou frontou
-          if (y > view.y0 - 40 && y < view.y1 + 40) life.shell(view.x0 + Math.random() * (view.x1 - view.x0), y, Math.random() < 0.5);
-        }
-      }
       if (!raised && docs.length) { raised = true; world.setChildIndex(top, world.children.length - 1); } // lékař nad vojáky
       for (const d of docs) {
         const T = 9000, u = ((now + d.t0) % (2 * T)) / T; // tam a zpět

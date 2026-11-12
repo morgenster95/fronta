@@ -287,7 +287,7 @@ async function boot() {
   })();
 
   // viditelné účinky rozkazů z hlasování (kryty proti bombardování, lékař u obvaziště)
-  const orderFx = initOrderFx({ world, anchor: terrainLayer, roster, map, tex, anims, hospitals, theme, openX0, openX1, life: { shell: (...a) => life.shell(...a) } }); // life vzniká až níže
+  const orderFx = initOrderFx({ world, anchor: terrainLayer, roster, map, tex, anims, hospitals, theme, openX0, openX1 });
 
   const placed = soldiers.filter((s) => s.slot && s.status !== 4 && s.status !== 2 && s.status !== 3);
   const TINT = [0xffffff, 0xf0ece4, 0xe6e2da, 0xfff4e8];
