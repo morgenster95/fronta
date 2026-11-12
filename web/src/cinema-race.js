@@ -4,7 +4,7 @@
 // t = sekundy od začátku záběru; volby: side (0 Hegemonie, 1 Concord), n (číslo na počítadle; bez něj se ukáže „XXX“).
 import { sky, glow, lit, blast, stakeWire, shakeOf, easeOut, off, hex, rgb, by, clamp01, CW as W, CH as H } from './cinema.js';
 
-export const RACE_SCENES = { march: 7, guns: 9, shelter: 7, ribbon: 7, counter: 6, graves: 9 };
+export const RACE_SCENES = { march: 7, guns: 9, shelter: 7, ribbon: 7, counter: 6, graves: 9, heir: 8, lineage: 8 };
 
 // pixelové písmo 3×5 (písmena, číslice, +), ať záběr nezávisí na fontech
 const FONT = {
@@ -696,6 +696,87 @@ export function makeRaceScenes(tex, anims = {}) {
       g.globalAlpha = fade; txt(g, lab, bx, 64, 3, P.white, P.ink); const sub = 'FIRST NIGHT OF THE BARRAGE', sw = txtW(sub, 1); txt(g, sub, Math.round((W - sw) / 2), 86, 1, P.pale, P.ink); g.globalAlpha = 1;
     }
     g.setTransform(1, 0, 0, 1, 0, 0);
+  };
+
+
+  // ====================================================================================================
+  // 7) NÁSTUPCE: po cestě k frontě v soumraku přichází nový voják z rodu padlého (jmenovka s číslem generace)
+  //    volby: side, heir (jméno nástupce), house (příjmení rodu), gen (která generace)
+  // ====================================================================================================
+  const clean = (s) => String(s || '').toUpperCase().replace(/"[^"]*"/g, '').replace(/[^A-Z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
+  const ordinal = (n) => `${n}${[, 'ST', 'ND', 'RD'][n] || 'TH'}`;
+  const BURSTS2 = [[0.6, 24, 170], [1.9, 150, 166], [3.1, 70, 172], [4.4, 120, 168], [5.6, 40, 170], [6.8, 140, 172]];
+  scene.heir = (t, o) => {
+    const side = o.side ?? 0, k = key(side), heir = clean(o.heir) || 'NEW RECRUIT', house = clean(o.house) || '';
+    g.drawImage(L.march, 0, 0);
+    g.fillStyle = 'rgba(16,14,22,0.5)'; g.fillRect(0, 0, W, H); // soumrak
+    for (const [t0, x, y] of BURSTS2) { const u = t - t0; if (u > 0 && u < 1.4) glow(g, x, y, 22 * (1 - u / 1.4) + 6, '#d98f3f', 1.0 * Math.exp(-u * 2.4)); }
+    const p = easeOut(clamp01(t / 5.2)), d = 0.14 + 0.66 * p;
+    const y = 178 + Math.pow(d, 1.15) * 150, cx = 96 - d * 6, s = 0.3 + d * 1.5, walking = p < 0.985;
+    const bob = walking ? Math.abs(Math.sin(t * 6.5)) * s * 0.35 : 0;
+    put(walking ? pose(k, 'walk', 'south', t, 7) : tex[k]?.south, cx, y - bob, s, 'rgba(16,14,22,0.12)');
+    // jmenovka nahoře (mimo horní lištu IG)
+    const fade = clamp01((t - 3.6) / 0.7);
+    if (fade > 0) {
+      g.globalAlpha = fade;
+      const w1 = txtW(heir, 2), bx = Math.max(6, Math.round((W - Math.max(w1, 100)) / 2) - 4);
+      const bw = Math.max(w1, 100) + 8;
+      g.fillStyle = P.ink; g.fillRect(bx - 2, 58, bw + 4, 38); g.fillStyle = P.gold; g.fillRect(bx - 1, 59, bw + 2, 36); g.fillStyle = P.dark; g.fillRect(bx, 60, bw, 34);
+      txt(g, heir, Math.round((W - w1) / 2), 65, 2, P.white, P.ink);
+      const line = `${ordinal(o.gen || 2)} OF THE HOUSE OF ${house}`, lw = txtW(line, 1);
+      txt(g, line, Math.round((W - lw) / 2), 82, 1, P.pale);
+      txt(g, 'REPORTS FOR DUTY', Math.round((W - txtW('REPORTS FOR DUTY', 1)) / 2), 89, 1, P.gold);
+      g.globalAlpha = 1;
+    }
+  };
+
+  // ====================================================================================================
+  // 8) RODOKMEN: pergamen se jménem rodu, padlý nahoře (kříž), nástupce pod ním; čára se kreslí a rod pokračuje
+  //    volby: side, house, fallen (jméno padlého), heir, gen, day
+  // ====================================================================================================
+  scene.lineage = (t, o) => {
+    const side = o.side ?? 0, k = key(side), house = clean(o.house) || 'HOUSE', fallen = clean(o.fallen) || 'THE FALLEN', heir = clean(o.heir) || 'THE HEIR', gen = o.gen || 2, day = o.day ?? '';
+    // tmavý podklad s pergamenem
+    g.fillStyle = P.dark; g.fillRect(0, 0, W, H);
+    for (let y = 0; y < H; y += 2) { if ((y / 2) % 3 === 0) { g.fillStyle = P.ink; g.fillRect(0, y, W, 1); } }
+    const px0 = 12, py0 = 50, pw = W - 24, ph = 214;
+    g.fillStyle = P.ink; g.fillRect(px0 - 2, py0 - 2, pw + 4, ph + 4);
+    for (let y = 0; y < ph; y++) for (let x = 0; x < pw; x++) { g.fillStyle = by(x + px0, y + py0) < 0.5 - y / 600 ? P.pale : P.bone; g.fillRect(px0 + x, py0 + y, 1, 1); }
+    g.fillStyle = P.mud3; g.fillRect(px0, py0, pw, 1); g.fillRect(px0, py0 + ph - 1, pw, 1);
+    const cxm = W / 2;
+    const head = `HOUSE OF ${house}`, hw = txtW(head, 2);
+    txt(g, head, Math.round(cxm - hw / 2), py0 + 9, 2, P.mud1);
+    g.fillStyle = P.mud2; g.fillRect(px0 + 14, py0 + 24, pw - 28, 1);
+    // generace 1: padlý (kříž, jméno, datum)
+    const a = easeOut(clamp01((t - 0.4) / 0.8));
+    const n1y = py0 + 38;
+    g.globalAlpha = a;
+    const cr = (x, y) => { g.fillStyle = P.ink; g.fillRect(x - 1, y - 1, 5, 18); g.fillRect(x - 4, y + 3, 11, 4); g.fillStyle = P.mud3; g.fillRect(x, y, 3, 16); g.fillRect(x - 3, y + 4, 9, 2); };
+    cr(Math.round(cxm - 1), n1y);
+    const w1 = txtW(fallen, 1); txt(g, fallen, Math.round(cxm - w1 / 2), n1y + 22, 1, P.ink);
+    const f1 = `GEN 1 · FELL DAY ${day}`, fw1 = txtW(f1, 1); txt(g, f1, Math.round(cxm - fw1 / 2), n1y + 30, 1, P.rust);
+    g.globalAlpha = 1;
+    // čára dolů (kreslí se)
+    const lp = clamp01((t - 1.6) / 1.0), ly0 = n1y + 40, ly1 = py0 + 112;
+    g.fillStyle = P.mud1; g.fillRect(Math.round(cxm), ly0, 1, Math.round((ly1 - ly0) * lp)); g.fillRect(Math.round(cxm) - 1, ly0, 1, Math.round((ly1 - ly0) * lp));
+    if (lp > 0.95) { g.fillStyle = P.mud1; g.fillRect(Math.round(cxm) - 3, ly1 - 1, 7, 2); }
+    // generace 2: nástupce (sprit ze hry, jméno, nástup do služby)
+    const b = easeOut(clamp01((t - 2.8) / 0.7));
+    if (b > 0) {
+      g.globalAlpha = b;
+      put(t > 3.6 ? tex[k]?.south : pose(k, 'idle', 'south', t, 3) || tex[k]?.south, cxm, ly1 + 52 - (1 - b) * 10, 1.55);
+      g.globalAlpha = 1;
+      const w2 = txtW(heir, 1); txt(g, heir, Math.round(cxm - w2 / 2), ly1 + 56, 1, P.ink);
+      const f2 = `GEN ${gen} · SERVES FROM DAY ${day}`, fw2 = txtW(f2, 1); txt(g, f2, Math.round(cxm - fw2 / 2), ly1 + 64, 1, P.olive2);
+    }
+    // závěr
+    const c = clamp01((t - 4.8) / 0.8);
+    if (c > 0) {
+      g.globalAlpha = c;
+      const l1 = 'THE NAME DOES NOT DIE OUT.', w3 = txtW(l1, 1); txt(g, l1, Math.round(cxm - w3 / 2), py0 + ph - 22, 1, P.mud1);
+      const l2 = 'YOUR SOLDIER HAS A HOUSE TOO.', w4 = txtW(l2, 1); txt(g, l2, Math.round(cxm - w4 / 2), py0 + ph - 12, 1, P.rust);
+      g.globalAlpha = 1;
+    }
   };
 
   return {

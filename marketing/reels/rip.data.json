@@ -1,5 +1,11 @@
 {
  "day": 4,
+ "heirs": {
+  "fallen": "Bram Yoollyfox",
+  "heir": "Dorian Yoollyfox",
+  "house": "Yoollyfox",
+  "gen": 2
+ },
  "fallen": [
   {
    "name": "Bram Yoollyfox",
@@ -7,7 +13,10 @@
    "handle": "yoollyfox",
    "role": "medic",
    "shell": true,
-   "heir": "Dorian Yoollyfox"
+   "heir": "Dorian Yoollyfox",
+   "house": "Yoollyfox",
+   "gen": 2,
+   "heirRole": "rifleman"
   },
   {
    "name": "Pavel Zulfi",
@@ -15,7 +24,10 @@
    "handle": "rayan.zulfi",
    "role": "runner",
    "shell": true,
-   "heir": "Felix Zulfi"
+   "heir": "Felix Zulfi",
+   "house": "Zulfi",
+   "gen": 2,
+   "heirRole": "sniper"
   },
   {
    "name": "Nils Wolfmananton",
@@ -23,7 +35,10 @@
    "handle": "wolfmanantony",
    "role": "sapper",
    "shell": true,
-   "heir": "Yann Wolfmananton"
+   "heir": "Yann Wolfmananton",
+   "house": "Wolfmananton",
+   "gen": 2,
+   "heirRole": "sniper"
   },
   {
    "name": "Henrik Eccentricred",
@@ -31,7 +46,10 @@
    "handle": "eccentricredeye",
    "role": "sapper",
    "shell": false,
-   "heir": "Bram Eccentricred"
+   "heir": "Bram Eccentricred",
+   "house": "Eccentricred",
+   "gen": 2,
+   "heirRole": "rifleman"
   },
   {
    "name": "Oskar Brunoescobar",
@@ -39,7 +57,10 @@
    "handle": "brunoescobar36",
    "role": "rifleman",
    "shell": true,
-   "heir": "Anselm Brunoescobar"
+   "heir": "Anselm Brunoescobar",
+   "house": "Brunoescobar",
+   "gen": 2,
+   "heirRole": "signaller"
   },
   {
    "name": "Lucien Jewnipers",
@@ -47,7 +68,10 @@
    "handle": "jewnipers",
    "role": "machinegunner",
    "shell": false,
-   "heir": "Clement Jewnipers"
+   "heir": "Clement Jewnipers",
+   "house": "Jewnipers",
+   "gen": 2,
+   "heirRole": "rifleman"
   }
  ],
  "byCount": [
@@ -57,11 +81,11 @@
  "lead": 0,
  "leadName": "Hegemony",
  "wounded": [
-  23,
+  22,
   19
  ],
  "army": [
-  117,
+  121,
   120
  ],
  "names": [
