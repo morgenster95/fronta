@@ -32,6 +32,11 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
 **Na začátku relace to uživateli stručně připomeň a zeptej se, jak se v12 chová ve hře** (padlí, raněni, bombardování po dobytí kóty); ladění jedním číslem v `theme.json` → `battle` (viz „Provoz v12“ v `docs/MECHANICS.md`).
 Čeká na uživatele: útok OVER THE TOP (návrh v `docs/MECHANICS.md`).
 
+## Pojmy (domluveno 2026-11-12, drž je ve všech zprávách i v kódu)
+- **Day reel** = denní shrnutí ve videu (reel `day<N>`, např. `ridge` = Day reel Dne 3). **Noviny** = ranní vydání ve 13:00 UTC (Trench Gazette: denní tah, výsledky, zprávy).
+- **Před každými novinami** uživateli ukaž ztráty z nanečisto: `node tools/preview-tick.mjs` (jedno vydání, text novin) a `node tools/sim-edition.mjs` (30 běhů × 3 dny: padlí a raněni po stranách).
+  Při bombardování musí mít poražený strana víc ztrát než vítěz (kontrola je ve výpisu sim-edition); jinak mechaniku neladit potichu, ale nahlásit.
+
 ## Pravidla
 - **Odpovídej česky.** Texty ve hře a na Instagramu jsou anglicky (publikum USA/UK, ne Praha).
 - **Jen zdarma:** žádné placené služby, Firebase Blaze, Cloud Functions ani placená API. Firebase je na Spark, média na GitHub Pages.

@@ -395,7 +395,7 @@ test('boj: bombardování po výhře udělá paseku v několika sektorech poraž
   const out = battleTick(s, theme, story, 3);
   const news = out.news.find((n) => n.kind === 'barrage');
   assert.ok(news, 'Gazette hlásí bombardování');
-  const secs = news.h.replace(/.* fell on /, '').split(' and ');
+  const secs = news.sectors;
   const SH = theme.battle.shell, nSecs = new Set(s.soldiers.filter((x) => x.faction === 1 && x.sector).map((x) => x.sector)).size;
   assert.equal(secs.length, Math.min(nSecs, Math.max(SH.sectors || 0, Math.round(nSecs * (SH.share || 0)))), 'počet úseků roste s frontou');
   const there = s.soldiers.filter((x) => x.faction === 1 && secs.includes(x.sector));

@@ -396,7 +396,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
     for (const text of tickSoldier(s, day, theme, story, sctx)) addEntry(s, day, text);
   }
   awardHouseBadges(state, theme); // odznaky rodu (zůstávají v rodu)
-  const news = [...raid.news, ...fight.news, ...(state.news || []).filter((n) => n.day >= day - 1)];
+  const news = [...(state.news || []).filter((n) => n.day >= day - 1), ...raid.news, ...fight.news]; // zprávy o dobytí kóty jdou první
   state.news = [];
   state.chronicle = [...(state.chronicle || []), writeChronicle(state, day, { theme, story, weather, events, decided, news })]; // celá historie, nic se nemaže
   return state;
