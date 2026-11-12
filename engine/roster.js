@@ -421,7 +421,7 @@ export function leaderboards(state, theme, n = 20) {
     decorated: top(live, honours),
     houseHonours: top(state.soldiers, (s) => honours(s) + (s.fallen || []).reduce((a, p) => a + (p.medals || []).length + (p.titles || []).length, 0)),
     survivors: top(live, (s) => s.scars || 0),
-    medics: top(live.filter((s) => s.archetype === 'medic'), (s) => s.treated || 0),
+    medics: top(live, (s) => s.treated || 0), // celoživotní počet ošetřených: drží se i po převelení na jinou roli (stejně jako zásahy a XP)
     marksmen: top(live, (s) => s.hits || 0), // zásahy nepřítele palbou (docs/COMBAT_ROLES.md)
     experienced: top(live, (s) => Math.round(s.xp || 0)),
   };
