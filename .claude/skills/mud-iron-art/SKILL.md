@@ -51,4 +51,5 @@ Kreslené rekvizity vedle sprite vojáků (PixelLab, víc stínování a obrysy)
 - `node tools/render-cine.mjs <scéna|all> <složka> [--side 0|1 --n N --names A,B --heir X --house Y --fallen Z --gen 2 --day 4]` (filmové záběry march, guns, shelter, ribbon, counter, graves, heir, lineage → mp4 1080×1920).
 - Reely: `marketing/reels/render.json` → workflow `reel`; podklady `tools/ridge-reel.mjs`, `tools/rip-data.mjs`; hlas `marketing/story_vo.py` (profil vypravěče), hudba `marketing/reel_audio.py` (`epic_score`, lament).
 - Mapa ve hře: `web/src/orders-fx.js` (kryty, lékař, sklad munice), `hospital.js`, `life.js`; dev náhled `/?orders=0:DUGOUTS,0:DOCTOR,0:AMMO`.
+- **Story ke každému příspěvku:** `node tools/story-for.mjs <id> [--still snimek.png]` (`marketing/make_story.py`); u reelu čistý snímek záběru bez titulků, banner mimo spodní lištu IG.
 - Kalendář příspěvků: `marketing/promo/plan.html` (`tools/calendar.mjs`).
