@@ -14,7 +14,28 @@ Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co
 4. **Doména** (Cloudflare) a škálování: viz sekce níže. **`letters-1`** a **`reel-sides`** čekají na čas od uživatele.
 5. **Boj v12** (od vydání Dne 4): zeptat se, jak se chová (padlí, raněni, bombardování).
 
-## ROZPRACOVÁNO: doména a škálování na tisíce hráčů (domluveno 2026-11-11, řešit příště)
+## SEZENÍ 2026-11-12 VEČER (Ko-fi, videa mimo git, poručíci): hotovo, nápady a čeká na rozhodnutí
+**Hotovo:**
+- **Day reel Dne 2** zveřejněn 2026-11-10 17:59 UTC (https://www.instagram.com/reel/Dfkf3GQEy_X/). Titulky denních reelů posunuty pod horní lištu IG (`#rd-sub` top 15,5 %), karta hlasování menší a níž.
+  Denní reel má od Dne 3 vždy počty hráčů: celkem + přejezd kamery po první linii každé strany s jejím číslem (`armyH`/`armyC`, kamera jen po skutečných hráčích).
+- **Ko-fi + War Bonds** (viz Pojmy). Text pro formulář platební služby (popis „firmy“: bezplatná hra, dobrovolné dary přes Ko-fi, kosmetická stužka) uživatel vyplnil.
+- **Videa mimo git** (viz Pravidla): 3 nezveřejněná videa (`reel_claim`, `reel_howto`, `reel_sides`) jsou v Release `media`, z gitu vyřazena 2026-11-12.
+- **Vyrovnání poručíků** (`theme.officerBalance`, `docs/MECHANICS.md`): stav byl Hegemonie 7 : Concord 1. Nováček bez přání role ze strany s méně poručíky je poručík, strana s víc žádného nedostane, při rovnosti losování;
+  vypne se samo po srovnání. Povyšování na poručíka uživatel NECHCE. Odpověď bota na přání poručíka: „Lieutenants aren't requested, soldier. The front chooses them.“
+- **Nové pravidlo IG:** v popiscích žádné @označení hráčů (viz Pravidla).
+**Nápady (nestavět bez souhlasu):**
+- **Trench Dog** pro měsíční předplatitele (Ko-fi membership).
+- **Video o skrytých hříčkách v textech** (uživatele to baví, chce je vysvětlit ve videu): „One good turn“ (přísloví *one good turn deserves another*, tužka), „the early birds“ (First Wave, ranní ptáče),
+  „Don't let the mud have it“, „Hold.“ (rozkaz o jednom slově), „Water costs enough already.“ (kbelík nad nepřátelským valem), „Soup“ (kbelík s vodou), „cabbage“ (lupa), „nothing to report“ + půl stránky o mýdle,
+  krysa jménem Major, jídelní lístek „Bread, in the Army Manner“ → „The Usual“, „No lodgers“ (cedulka v krytu). Vše v `themes/front-ww1/story.json`. Hříčky a přísloví NEODSTRAŇOVAT (uživatel je chce).
+- **Riziko výpadku (přehled 2026-11-12):** web, data i Firestore mají velkou rezervu (286 hráčů); rizika: virální nápor na Firebase Hosting (~1 700 nových návštěv/den), chybí omezení rychlosti odpovědí na IG,
+  úložiště Firebase Hosting 10 GB (uživatel si má v konzoli nastavit, ať drží ~20 posledních verzí webu). Git repo nejde „zvětšit“, ale už není potřeba (videa v Release, data malá).
+**Čeká na rozhodnutí uživatele:**
+- **Vyčištění historie gitu od starých videí** (stovky MB; sama se nikdy nesmaže): přepis historie `git filter-repo` + force push. Postup: po ranních novinách vypnout smyčku a počkat, záloha, přepsat, nahrát, zapnout, ověřit;
+  ostatní sezení a kopie repa pak znovu naklonovat. Riziko malé, přínos malý; uživatel zvažuje, doporučeno udělat v klidné chvíli (nebo spolu s přechodem na doménu).
+- Post `support-kofi` (kdy, jestli vůbec), `reel-claim`, `reel-sides`, `reel-howto`, `letters-1`: čas zveřejnění od uživatele.
+
+ na tisíce hráčů (domluveno 2026-11-11, řešit příště)
 **Na začátku relace uživateli napiš, že tohle čeká, a zeptej se, jak postupovat.** Detaily čísel: `docs/SCALING.md`.
 - **Doménu uživatel koupil u Cloudflare** (název zatím neznám, zeptat se). Doporučení: **krok 1** = doménu připojit k **Firebase Hostingu** (Cloudflare jen jako DNS, záznamy v režimu „DNS only“, šedý obláček), změnit `authDomain` ve `web/src/firebase-config.js`,
   uživatel v Firebase Auth přidá doménu a v Google Cloud OAuth `https://<doména>/__/auth/handler`, přepsat GitHub proměnnou `SITE_URL` (odkazy v odpovědích bota) a odkaz v biu, stará `mudandiron.web.app` přesměrovat na novou (skript v `index.html`, `firebase.json` neumí host).
@@ -38,10 +59,15 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
 - **Hlasování (od 2026-11-12):** jedno hlasování, tři stejné volby pro obě strany, stejný účinek, funkční kdykoli (DUGOUTS, DOCTOR, AMMO; `vote-orders-d4` ve frontě bez termínu, `docs/MECHANICS.md`). Na mapě je vidět kryty, lékaře u obvaziště a sklad munice (`web/src/orders-fx.js`, dev náhled `/?orders=0:DUGOUTS,0:DOCTOR,0:AMMO`). Žádné dvě nabídky podle strany.
 - **Do fronty (`queue.json`) patří jen schválené věci** (pravidlo uživatele 2026-11-12): rozpracovaný post nebo reel se do ní nedává; návrh položky drž mimo (např. `marketing/reels/<id>.draft.json`) a přidej ho až po výslovném schválení. Teď rozpracováno: `reel-claim` (`marketing/reels/claim.draft.json`). Uloženo na později: post na podporu přes Ko-fi `support-kofi` (`marketing/drafts/support-kofi.draft.json`, obrázek `marketing/promo/support_1.jpg`; uživatel ho teď nechce tlačit, Ko-fi je zatím jen tlačítko na webu).
 - **Ke každé novince i story (pravidlo uživatele 2026-11-12):** když přidáš do fronty post nebo reel, přidej i story: `node tools/story-for.mjs <id> [--still snimek.png]` (obrázek 1080×1920 `marketing/make_story.py` + položka `story-<id>`, výchozí čas = čas příspěvku + 10 min). U reelu dej čistý snímek ze záběru bez titulků (`--still`), u postu se použije post samotný. Stories se zveřejňují stejně jen se souhlasem uživatele (schválení příspěvku platí i pro jeho story).
-- **Podpora přes Ko-fi = War Bonds** (od 2026-11-12, `docs/MECHANICS.md`): dárce napíše do zprávy na Ko-fi IG jméno; udělení příkazem `{ id, cmd: "support", handle }` v `data/commands.json`
-  (stužka na kartě, v albu rodu a na obrázku ke sdílení, zápis do deníku, poděkování v novinách; bez herní výhody). Adresu Ko-fi doplnit do `theme.support.url` (zatím prázdná, tlačítko skryté).
-  **Trench Dog** (pes u vojáka na mapě) je nápad pro budoucí měsíční předplatitele, nestavět bez souhlasu.
-- **Ruční zásahy do stavu přes příkazy** (stav ručně neupravuj): `data/commands.json` = pole `{ id, cmd, … }`, smyčka každý provede jednou (`state.commandsDone`). Zatím `switchFaction` `{ handle, faction }` (hráč chce k druhé straně: nové stanoviště a jednotka, zápis do deníku, role/XP/zásahy zůstanou, počty stran i závod se přepočítají samy; `engine/roster.js`). Zrušení hlasování: `data/cancel-vote.json`.
+- **Podpora přes Ko-fi = War Bonds** (od 2026-11-12, `docs/MECHANICS.md`): stránka **https://ko-fi.com/mudandiron** (`theme.support.url`), jednorázový dobrovolný dar („ration“, 3 $), jen čest, žádná herní výhoda, žádné stupně ani počítání darů.
+  Dárce napíše do zprávy na Ko-fi IG jméno, **uživatel mi ho pošle** a já přidám příkaz `{ id: "support-<handle>-<datum>", cmd: "support", handle }` do `data/commands.json` (smyčka do ~5 min:
+  stužka u jména a řádek na kartě „War Bonds: supported the making of Mud & Iron“, 🎗 v albu rodu, stužka na obrázku „I ENLISTED“, zápis do deníku „{name} bought War Bonds for the front. The quartermaster pinned the ribbon on personally: 'The front remembers who kept it fed.'“,
+  v příštích novinách „The front thanks {names}, who bought War Bonds and kept the guns fed.“). Server na webhook Ko-fi nemáme (Spark), proto ručně.
+  **Dárci:** v01py (Bastian „Lucky“ Vpy, Concord) 2026-11-12; jeho zápis se starým textem byl na výslovný pokyn uživatele přepsán příkazem `rewriteSupport` (jediná výjimka z nedotknutelných deníků).
+  Na webu: nenápadné tlačítko **„☕ Support“** u lupy (mobil jen ikona, styl tlačítek +/−; uživatel nechce nic křiklavého) a delší tlačítko s vysvětlením v panelu náboru.
+  Post na Ko-fi `support-kofi` je uložený jako návrh (viz výš), čtverec pro stránku Ko-fi `marketing/promo/support_square.jpg` (`marketing/make_support.py`). Texty pro Ko-fi (bio, děkovací zpráva po platbě) jsou nastavené uživatelem.
+  **Trench Dog** (pes u vojáka na mapě, jméno psa, zdědí ho nástupce) je nápad pro budoucí **měsíční předplatitele**, nestavět bez souhlasu.
+- **Ruční zásahy do stavu přes příkazy** (stav ručně neupravuj): `data/commands.json` = pole `{ id, cmd, … }`, smyčka každý provede jednou (`state.commandsDone`). Příkazy: `support` (War Bonds), `rewriteSupport` (jednorázový přepis textu odměny), `switchFaction` `{ handle, faction }` (hráč chce k druhé straně: nové stanoviště a jednotka, zápis do deníku, role/XP/zásahy zůstanou, počty stran i závod se přepočítají samy; `engine/roster.js`). Zrušení hlasování: `data/cancel-vote.json`.
 - **Plán rozvoje (průzkum 2026-11-12):** `docs/RESEARCH_ROADMAP.md` (podobné hry, Instagram jako ovládání, dopisy jako buff, soutěž plakátů „Propaganda War“, držení pozic a sezóny, pořadí kroků a otevřené otázky). Výpravy zůstávají vypnuté, nic z toho není postavené, dokud uživatel neodsouhlasí.
 - **Před každými novinami** uživateli ukaž ztráty z nanečisto: `node tools/preview-tick.mjs` (jedno vydání, text novin) a `node tools/sim-edition.mjs` (30 běhů × 3 dny: padlí a raněni po stranách).
   Při bombardování musí mít poražený strana víc ztrát než vítěz (kontrola je ve výpisu sim-edition); jinak mechaniku neladit potichu, ale nahlásit.
@@ -128,6 +154,6 @@ Postup pro nový reel `<name>`:
   (výběr nejlepších do reelu, vždy ke schválení uživatelem). **Dopisový post „Letters from the front“** (`letters-1`, `marketing/make_letters.py`, obrázek `letters_1.jpg` 1080×1350) je od 2026-11-11 večer znovu ve frontě **bez termínu** (uživatel ho chce mít připravený). Zveřejnit až s časem od uživatele (`publishAt`).
 - **Nemocnice na mapě** (od 2026-11-10): postavená nemocnice = velký dugout za zálohami (`dugoutArt` v `web/src/hospital.js`), jen když je ve stavu hry
   (`state.battle.sides[f].built.dugout`, staví jen vyhodnocené hlasování). Bombardování poraženého je na webu vidět už v den dobytí kóty.
-- **Publikace hlídá verzi souboru** (od 2026-11-11): položka vyjde, až je na GitHub Pages soubor stejné velikosti jako v repu (po novém renderu).
+- **Publikace hlídá verzi souboru** (od 2026-11-11): položka vyjde, až je soubor na GitHub Pages (u obrázků v repu i stejné velikosti; videa v repu nejsou, leží v Release `media`).
 - **Další na řadě (domluvený návrh, zatím nepostavený):** změny terénu,
   hlášení se jmény skutečných hráčů. Výměna zajatců jako společná událost.
