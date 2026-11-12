@@ -205,7 +205,9 @@ async function main() {
       if (res.type === 'vote' && (res.faction != null || res.reason === 'notEnlisted')) {
         console.log(`☑ hlas @${res.handle}: ${res.kw}${res.reason ? ` (${res.reason})` : ` za ${theme.factions[res.faction].name}`}`);
         const side = res.faction != null && theme.factions[res.faction].name;
-        const text = res.reason === 'notEnlisted'
+        const text = res.reason === 'otherSide'
+          ? `@${res.handle} ${res.kw} is an order of the other side. Your side chooses: ${res.options.join(', ')}. Comment one of those.`
+          : res.reason === 'notEnlisted'
           ? `@${res.handle} Only soldiers vote on orders. Comment ${theme.factions.map((f) => f.keyword).join(' or ')} together with ${res.kw} and you'll enlist and vote at once.`
           : `@${res.handle} Vote counted: ${res.kw} for ${side}. Orders are read out in the next Trench Gazette (13:00 UTC). Your last comment counts.`;
         if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) await replyOnce(c, text).catch((e) => console.warn(e.message));
