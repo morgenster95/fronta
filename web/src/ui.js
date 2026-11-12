@@ -31,16 +31,13 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   $('lab-a').textContent = `${A.name.replace('The ', '')} ${n[0].toLocaleString('en')}`;
   $('lab-b').textContent = `${B.name.replace('The ', '')} ${n[1].toLocaleString('en')}`;
 
-  // denní zpráva a hlasování
-  if (roster.dispatch || roster.vote) {
+  // hlasování (starší „Dispatch“ o výsledku minulého hlasování a stavbách se v panelu už neukazuje: jen aktuální věci, deník fronty a závod)
+  if (roster.vote) {
     $('dispatch').hidden = false;
     // na telefonu sbalené do jednoho řádku, klepnutím se rozbalí
-    $('dispatch-more').textContent = roster.vote ? `▸ The front decides · ${roster.vote.votes} votes` : `▸ Dispatch · ${dayLabel(roster.dispatch.day)}`;
+    $('dispatch-more').textContent = `▸ The front decides · ${roster.vote.votes} votes`;
     if (innerWidth < 600) $('dispatch').classList.add('collapsed');
     $('dispatch').onclick = () => $('dispatch').classList.toggle('collapsed');
-    if (roster.dispatch) {
-      $('dispatch-text').innerHTML = `<span class="d">Dispatch · ${dayLabel(roster.dispatch.day)}</span>${esc(roster.dispatch.text)}`;
-    }
     if (roster.vote) {
       const v = roster.vote;
       $('vote').hidden = false;
@@ -179,7 +176,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     el.onclick = (ev) => { ev.stopPropagation(); openDiary(); };
     $('dispatch').prepend(el);
     // sbalený řádek ukazuje nejnovější: dnešní Deník fronty má přednost před starší zprávou (hlasování má přednost vždy)
-    if (!roster.vote && (!roster.dispatch || roster.diary.day >= roster.dispatch.day)) $('dispatch-more').textContent = `▸ Front Diary · ${dayLabel(roster.diary.day)}`;
+    if (!roster.vote) $('dispatch-more').textContent = `▸ Front Diary · ${dayLabel(roster.diary.day)}`;
   }
   // Údolí a výpravy; upoutávka na otevřenou výpravu v horním panelu
   const valley = initValley({ theme, roster, soldiers, openSoldier: (s) => openSoldier(s), toast: (m) => toast(m), show: (id) => show(id) });
