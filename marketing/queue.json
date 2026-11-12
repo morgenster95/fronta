@@ -511,7 +511,10 @@
         "id": "18089505587313404",
         "permalink": "https://www.instagram.com/reel/Dfp8mKWlb3Q/",
         "at": "2026-11-12T20:47:09.642Z"
-      }
+      },
+      "mediaDropped": [
+        "reel_claim.mp4"
+      ]
     },
     {
       "id": "story-reel-claim",
