@@ -250,7 +250,3 @@ večerní reel na to může navázat.
 - Sleduj `state.battle.stats` (příčiny smrti `deaths.nobed/nocare/wounds/shell/shot`): má vycházet ~60 % smrtí z nedostatku míst a péče. Pokud ne nebo je padlých víc, než chceš,
   ladí se jedním číslem v `theme.json` → `battle`: `care.crit.dieBase` (smrt za noc), `roles.kill` (smrt na místě), `roles.rifleman.fire` (palba), `shell.hit` (bombardování); při změně zvýšit `balance`.
 - Simulace nanečisto: `node tools/sim-matrix.mjs --eff --causes` (velikosti × složení × nemocnice × bombardování), `node tools/sim-daily.mjs --scale 10`, `node tools/sim-battle.mjs --kpi`.
-
-
-## Hvězdička nad převzatým vojákem (2026-11-12) — NASAZENO
-Nad hlavou každého živého převzatého vojáka (`claimed`, skutečný hráč) je na mapě malá zlatá hvězdička, vidí ji všichni; na kartě řádek „★ Claimed“. Důvod: odměna a odlišení těch, kdo se přihlásili (retence, vidět, kdo je skutečný hráč). Jen vzhled, žádný vliv na boj. Další stupně (medaile za dny na frontě, dopisy) lze přidat později.
