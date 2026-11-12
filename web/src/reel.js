@@ -109,6 +109,10 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'claim') {
+    // návod: jak claimnout vojáka + co umí claimnutý voják (reel-claim.js)
+    return import('./reel-claim.js').then(({ startClaimReel }) => startClaimReel({ theme, tex, anims }));
+  }
   if (name === 'rip') {
     // první padlí bombardování: hroby, vojáci před nimi, v dálce výbuchy (reel-rip.js)
     return import('./reel-rip.js').then(({ startRipReel }) => startRipReel({ theme, tex, anims }));
