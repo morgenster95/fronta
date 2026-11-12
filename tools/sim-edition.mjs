@@ -21,7 +21,7 @@ for (let r = 0; r < RUNS; r++) {
   for (const x of s.soldiers) x.id = `${x.id}#${r}`; // jiný los v každém běhu
   const d = [[0, 0], [0, 0]], w = [[0, 0], [0, 0]];
   for (let k = 0; k < DAYS; k++) {
-    dailyTick(s, theme, story);
+    dailyTick(s, { ...theme, id: `${theme.id}#${r}` }, story);
     const st = s.battle.stats.at(-1);
     for (const f of [0, 1]) {
       const a = st.sides[f];
