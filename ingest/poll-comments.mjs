@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
-import { lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
+import { switchFaction, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 import { deathReply } from '../engine/house.js';
 
@@ -132,6 +132,19 @@ async function main() {
     const cv = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'cancel-vote.json'), 'utf8'));
     if (state.vote && state.vote.mediaId === cv.mediaId) { console.log(`✖ hlasování ${cv.mediaId} zrušeno: ${state.vote.question}`); state.vote = null; }
   } catch { /* soubor není */ }
+  // ruční příkazy (data/commands.json): { id, cmd: 'switchFaction', handle, faction }; každý se provede jednou (state.commandsDone)
+  try {
+    const cmds = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'commands.json'), 'utf8'));
+    state.commandsDone ??= [];
+    for (const c of cmds) {
+      if (state.commandsDone.includes(c.id)) continue;
+      if (c.cmd === 'switchFaction') {
+        const r = switchFaction(state, theme, map, c.handle, c.faction);
+        console.log(r ? `⇄ @${r.handle}: ${r.from} → ${r.to}, ${r.unit}, ${r.sector}` : `⇄ příkaz ${c.id}: nic se nezměnilo`);
+      }
+      state.commandsDone.push(c.id);
+    }
+  } catch { /* žádné příkazy */ }
   const db = await firestore();
   let enlisted = 0, claimed = 0;
 

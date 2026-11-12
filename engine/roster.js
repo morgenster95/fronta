@@ -207,6 +207,22 @@ export function placeSoldier(s, map, state) {
   }
 }
 
+// Převedení hráče k druhé straně (na jeho žádost): faction, nové stanoviště, jednotka a zápis do deníku. Role, XP, zásahy, rod i medaile zůstávají.
+// Počty stran a stav závodu o kótu se přepočítají samy (počítají se vojáci podle `faction`).
+export function switchFaction(state, theme, map, handle, faction) {
+  const s = state.soldiers.find((x) => x.handle === handle);
+  if (!s || s.faction === faction || !theme.factions[faction]) return null;
+  const from = theme.factions[s.faction].name.replace(/^The /, '');
+  const to = theme.factions[faction].name.replace(/^The /, '');
+  s.faction = faction;
+  s.pos = null; // staré stanoviště patřilo druhé frontě
+  s.slot = null;
+  placeSoldier(s, map, state);
+  s.pendingRole = null;
+  addEntry(s, state.day, `${s.name} asked to serve with the ${to} instead of the ${from}. The transfer came through: ${s.unit}, sector ${s.sector}.`);
+  return { handle, from, to, sector: s.sector, unit: s.unit };
+}
+
 const ORD = (n) => n + (['th', 'st', 'nd', 'rd'][((n % 100) - 20) % 10] || ['th', 'st', 'nd', 'rd'][n % 100] || 'th');
 export function unitName(order) {
   const company = Math.floor(order / 120) + 1;

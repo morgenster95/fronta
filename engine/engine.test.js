@@ -1090,3 +1090,21 @@ test('rozkaz shell snižuje zásahy granátem a mina vybuchne v poslední den po
   assert.ok(mineNews, 'mina vybuchla (Gazette)');
   assert.match(mineNews.h, /Mines went up under the Concord line/);
 });
+
+import { switchFaction } from './roster.js';
+test('převedení hráče k druhé straně: nové stanoviště, jednotka, zápis, počty stran; role a XP zůstávají', () => {
+  const s = emptyState(theme);
+  const c = applyComment(s, { id: 'sw1', userId: 'sw1', username: 'jonas', text: 'CONCORD sniper' }, theme, story, map).soldier;
+  applyComment(s, { id: 'sw2', userId: 'sw2', username: 'other', text: 'HEGEMONY' }, theme, story, map);
+  c.xp = 42; c.hits = 3;
+  const before = [0, 1].map((f) => s.soldiers.filter((x) => x.faction === f).length);
+  const r = switchFaction(s, theme, map, 'jonas', 0);
+  assert.equal(r.to, 'Hegemony');
+  assert.equal(c.faction, 0);
+  assert.deepEqual([0, 1].map((f) => s.soldiers.filter((x) => x.faction === f).length), [before[0] + 1, before[1] - 1]);
+  assert.ok(c.sector && c.pos, 'dostal nové stanoviště');
+  assert.ok(!s.soldiers.some((x) => x !== c && x.faction === 0 && x.pos && x.pos[0] === c.pos[0] && x.pos[1] === c.pos[1]), 'stanoviště nikdo nesdílí');
+  assert.equal(c.archetype, 'sniper'); assert.equal(c.xp, 42); assert.equal(c.hits, 3);
+  assert.match(c.record.at(-1)[1], /asked to serve with the Hegemony instead of the Concord/);
+  assert.equal(switchFaction(s, theme, map, 'jonas', 0), null, 'už je u Hegemonie');
+});
