@@ -1176,3 +1176,12 @@ test('rewriteSupport: starý text War Bonds v deníku a poděkování v novinác
   assert.equal(st.soldiers[0].record[0][1], 'Pencil story. Ann bought bonds.');
   assert.equal(st.news[0].text, 'Ann, thanks.');
 });
+
+import crypto from 'node:crypto';
+test('atlas spritů odpovídá souborům (po změně spritů: python tools/make-atlas.py)', () => {
+  const dir = new URL('../web/public/assets/soldiers/', import.meta.url);
+  const meta = JSON.parse(fs.readFileSync(new URL('atlas.json', dir), 'utf8'));
+  const pngs = fs.readdirSync(dir).filter((f) => f.endsWith('.png') && f !== 'atlas.png').sort();
+  assert.deepEqual(Object.keys(meta.files).sort(), pngs, 'atlas neobsahuje přesně všechny sprity');
+  for (const f of pngs) assert.equal(meta.files[f], crypto.createHash('sha1').update(fs.readFileSync(new URL(f, dir))).digest('hex').slice(0, 12), `${f} se změnil`);
+});

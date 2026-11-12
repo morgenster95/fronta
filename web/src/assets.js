@@ -2,7 +2,7 @@
 // (Spark: 360 MB denně; sprity tvoří ~70 % dat jedné návštěvy). Zrcadlo se zapíná při sestavení proměnnou VITE_ASSET_BASE
 // (adresa složky `…/game`, kde leží `assets/`); bez ní se vše bere z vlastní domény. Když zrcadlo selže, načte se obrázek
 // z vlastní domény, takže hra běží dál (dokud Firebase nepřekročí limit).
-import { Assets } from 'pixi.js';
+import { Assets, Texture } from 'pixi.js';
 
 export const BASE = (import.meta.env.VITE_ASSET_BASE || '').replace(/\/$/, '');
 
@@ -27,3 +27,22 @@ export const loadImage = (path) => withFallback(path, (u) => new Promise((ok, er
   i.onerror = err;
   i.src = u;
 }));
+
+// Atlas spritů (tools/make-atlas.py): jeden obrázek + pozice místo stovek samostatných souborů. Každý sprite se vyřízne
+// do vlastního plátna, takže textura se chová jako samostatný obrázek (source.resource = jen ten sprite; dýchání, sdílení…).
+// Vrací Map soubor → Texture; když atlas chybí nebo selže, prázdnou mapu (sprity se pak načtou jednotlivě).
+export async function loadAtlas(dir) {
+  const atlas = new Map();
+  try {
+    const meta = await getJson(`${dir}atlas.json`, { cache: 'no-cache' });
+    const img = await loadImage(`${dir}atlas.png?v=${meta.v}`);
+    for (const [file, [x, y, w, h]] of Object.entries(meta.frames)) {
+      const c = document.createElement('canvas');
+      c.width = w;
+      c.height = h;
+      c.getContext('2d').drawImage(img, x, y, w, h, 0, 0, w, h);
+      atlas.set(file, Texture.from(c));
+    }
+  } catch { /* bez atlasu: jednotlivé soubory */ }
+  return atlas;
+}

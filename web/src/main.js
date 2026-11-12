@@ -10,7 +10,7 @@ import { startReel } from './reel.js';
 import { buildHospitals, roofAlpha, hospitalSize } from './hospital.js';
 import { hospitalNav } from './hospital-nav.js';
 import { initOrderFx } from './orders-fx.js';
-import { getJson, loadTexture, loadImage } from './assets.js';
+import { getJson, loadTexture, loadImage, loadAtlas } from './assets.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
 
@@ -103,6 +103,9 @@ async function boot() {
   // textury vojáků: klíč = "frakce" (střelec) nebo "frakce_archetyp"; chybějící archetyp → střelec
   const V = `?v=${manifest._v || '1'}`; // verze proti staré mezipaměti
   delete manifest._v;
+  // sprity vojáků z atlasu (2 požadavky místo ~390); co v atlasu není, načte se samostatně
+  const atlas = await loadAtlas('/assets/soldiers/');
+  const soldierTex = async (file) => atlas.get(file) ?? loadTexture(`/assets/soldiers/${file}${V}`);
   const tex = {};
   const mirrored = {}; // směr chybí v manifestu → použije se zrcadlený protějšek
   const anims = {}; // anims[klíč][animace][směr] = [Texture]
@@ -113,13 +116,13 @@ async function boot() {
       const jobs = DIRS.map(async (d) => {
         mirrored[key][d] = !manifest[key][d] && !!manifest[key][MIRROR[d]];
         const file = manifest[key][d] ?? manifest[key][MIRROR[d]] ?? manifest[key].south;
-        tex[key][d] = await loadTexture(`/assets/soldiers/${file}${V}`);
+        tex[key][d] = await soldierTex(file);
       });
       for (const [anim, byDir] of Object.entries(manifest[key].anims || {})) {
         anims[key] ??= {};
         anims[key][anim] = {};
         for (const [d, files] of Object.entries(byDir)) {
-          jobs.push(Promise.all(files.map((f) => loadTexture(`/assets/soldiers/${f}${V}`))).then((t) => (anims[key][anim][d] = t)));
+          jobs.push(Promise.all(files.map((f) => soldierTex(f))).then((t) => (anims[key][anim][d] = t)));
         }
       }
       return jobs;
@@ -351,7 +354,7 @@ async function boot() {
     const meta = await getJson(`/assets/soldiers/aims.json${V}`, { cache: 'no-cache' });
     await Promise.all(Object.entries(meta).map(async ([key, byDir]) => {
       aims[key] = {};
-      for (const [d, m] of Object.entries(byDir)) aims[key][d] = { tex: await loadTexture(`/assets/soldiers/${m.file}${V}`), mx: m.mx, my: m.my };
+      for (const [d, m] of Object.entries(byDir)) aims[key][d] = { tex: await soldierTex(m.file), mx: m.mx, my: m.my };
     }));
   } catch (e) {
     console.warn('aims', e);
