@@ -1,0 +1,66 @@
+{
+ "seconds": 59.3,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.8,
+   4.18,
+   "You commented. A soldier took a post on the line, with your name on it.",
+   "hook"
+  ],
+  [
+   5.23,
+   3.04,
+   "But until you claim that soldier, anyone could say it is theirs.",
+   "but"
+  ],
+  [
+   8.52,
+   5.73,
+   "Step one. Open the game, and tap your soldier. Then press: This is me.",
+   "s1"
+  ],
+  [
+   14.5,
+   5.07,
+   "Step two. Sign in with Google. The game gives you a short code.",
+   "s2"
+  ],
+  [
+   19.82,
+   3.91,
+   "Step three. Comment that code under any post on our page.",
+   "s3"
+  ],
+  [
+   23.98,
+   3.77,
+   "Within minutes, the bot answers. This soldier is yours.",
+   "s4"
+  ],
+  [
+   28.0,
+   7.54,
+   "Now the soldier is yours for good. Every day, send a letter from home. Your soldier goes into the night a little safer.",
+   "letter"
+  ],
+  [
+   35.79,
+   7.4,
+   "Want a different job? Ask for a transfer. Medic. Sniper. Machine gunner.",
+   "transfer"
+  ],
+  [
+   43.44,
+   6.87,
+   "Read the service record. Follow the family tree. If your soldier falls, an heir takes up the rifle.",
+   "house"
+  ],
+  [
+   50.56,
+   5.25,
+   "Claim your soldier. Comment Concord... or Hegemony. Link in bio.",
+   "cta"
+  ]
+ ]
+}
