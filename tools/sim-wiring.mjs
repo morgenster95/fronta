@@ -25,7 +25,7 @@ for (let r = 0; r < runs; r++) {
     const vol = s.soldiers.filter((x) => ids.has(x.id) && x.faction === f);
     tot[f].n += vol.length;
     tot[f].hit += night.sides[f].hit;
-    tot[f].heavy += vol.filter((x) => x.wound?.wiring && x.wound.sev !== 'light').length;
+    tot[f].heavy += night.sides[f].bad; // závažnost v okamžiku zásahu (péče ji pak může změnit)
     tot[f].dead += vol.filter((x) => x.status === 'fallen' && x.fallenDay === s.day).length;
     tot[f].yards += night.sides[f].yards;
     const w = Object.values(s.battle.sides[f].wire); tot[f].wire1 += w.reduce((a, b) => a + b, 0) / w.length;

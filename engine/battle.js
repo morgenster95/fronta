@@ -221,9 +221,9 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       s.wiring = (s.wiring || 0) + 1;
       gainXp(theme, s, WC.xp || 0);
       if (WC.badgeAt && s.wiring >= WC.badgeAt && !(s.medals || []).includes('wire-party')) s.medals = [...(s.medals || []), 'wire-party'];
-      const rand = rngFor(s.id, 'wiring', day);
+      const rand = rngFor(theme.id, s.id, 'wiring', day);
       if (rand() < p) {
-        const sev = severity(s, WC.severity || cfg.roles.rifleman?.severity || cfg.severity, rand, false);
+        const sev = severity(s, WC.severity || cfg.roles.rifleman?.severity || cfg.severity, rngFor(theme.id, s.id, 'wiringSev', day), false); // vlastní řada: po zásahu (malé číslo) by další číslo téže řady nebylo nezávislé
         wound(s, sev, { wiring: true });
         stats[f].hits.bg++;
         res[f].hit.push({ handle: s.handle, name: s.name, sev });
@@ -245,7 +245,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         wiring: res,
       });
     }
-    state.wiring.nights = [...(state.wiring.nights || []), { day, media: wo.media, ids: wo.ids.length, sides: res.map((r) => ({ n: r.n, yards: r.yards, hit: r.hit.length })) }].slice(-60);
+    state.wiring.nights = [...(state.wiring.nights || []), { day, media: wo.media, ids: wo.ids.length, sides: res.map((r) => ({ n: r.n, yards: r.yards, hit: r.hit.length, bad: r.hit.filter((h) => h.sev !== 'light').length })) }].slice(-60);
     state.wiring.open = null;
   }
 
