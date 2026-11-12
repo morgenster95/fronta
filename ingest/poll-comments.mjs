@@ -240,7 +240,7 @@ async function main() {
           let text = pool[Math.floor(Math.random() * pool.length)].replace('{handle}', s.handle).replace('{sector}', s.sector).replace('{rank}', theme.ranks[s.rank]);
           const rw = res.roleWish;
           const role = theme.archetypes.find((a) => a.id === s.archetype).name;
-          const extra = rw?.reason === 'granted' || rw?.reason === 'same' ? ` Role: ${role}, as you asked.` : rw?.reason === 'officer' ? ` Lieutenants are made by promotion only, so you start as ${role}.` : '';
+          const extra = rw?.reason === 'granted' || rw?.reason === 'same' ? ` Role: ${role}, as you asked.` : rw?.reason === 'officer' ? ` Lieutenants aren't requested, the front chooses them, so you start as ${role}.` : '';
           text += extra;
           if (res.vote) text += ` Your vote for ${res.vote.kw} is counted.`;
           // selže-li odeslání (limit IG, výpadek), komentář je už „viděný“ a voják narukoval: odpověď se zkusí znovu v dalších kolech

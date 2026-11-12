@@ -241,7 +241,7 @@ večerní reel na to může navázat.
 - **Pravidlo (`balanceOfficer` v `engine/roster.js`, `theme.officerBalance`):** nováček strany, která má méně živých poručíků než druhá strana, je poručík.
   Když si v náborovém komentáři napíše roli („CONCORD medic“), dostane roli (přání vyhraje). Strana, která má poručíků víc, nového nedostane. Při rovnosti platí běžné losování.
   Vypíná se samo, jakmile se počty srovnají; úplně vypnout: `"officerBalance": false`. Stávajícím vojákům se role nemění.
-- Bot dál odpovídá, že poručík je „jen povýšením“ (nepravda, povýšení na poručíka neexistuje); povýšení na poručíka uživatel zatím nechce.
+- Odpověď bota na přání poručíka (2026-11-12): „Lieutenants aren't requested, the front chooses them.“ (dřív „jen povýšením“, což neplatilo). Povýšení na poručíka uživatel zatím nechce.
 
 ## 2026-11-12 · Podpora hry (Ko-fi): War Bonds NASAZENO, Trench Dog NÁPAD
 - **Jednorázový dar = War Bonds · NASAZENO 2026-11-12:** dobrovolný, jedna stužka bez stupňů a bez počítání darů; jen čest, žádná herní výhoda.

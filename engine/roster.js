@@ -84,7 +84,7 @@ export function roleReply(theme, s, role, reason) {
   switch (reason) {
     case 'granted': return `@${s.handle} Granted. ${s.name} now serves as ${name}. Find your soldier on the front, link in bio.`;
     case 'same': return `@${s.handle} ${s.name} already serves as ${name}, soldier.`;
-    case 'officer': return `@${s.handle} Lieutenants are made by promotion only. Survive, get decorated, and the bars will come.`;
+    case 'officer': return `@${s.handle} Lieutenants aren't requested, soldier. The front chooses them. Pick another role.`;
     case 'used': return `@${s.handle} ${s.name} already chose a role. Claim your soldier on the front (link in bio) to request a transfer to ${name}.`;
     case 'notEnlisted': return `@${s.handle} Pick a side first: comment ${kw} together with ${name} and you'll be enlisted straight into that role.`;
     default: return null;
