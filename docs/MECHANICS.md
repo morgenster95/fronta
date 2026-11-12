@@ -230,6 +230,11 @@ večerní reel na to může navázat.
   Simulace 3 dnů (padlí/ranění): Hegemonie bez voleb 7,6/55 → DUGOUTS 5,2/40, DOCTOR 6,3/55, AMMO nepříteli +9 raněných; Concord bez voleb 2,3/30 → DUGOUTS 1,9/21, DOCTOR 1,7/30, AMMO Hegemonii +1,2 padlého a +9 raněných.
   V enginu zůstávají (nepoužité): nabídka podle strany (`option.only`, `option.byFaction`) a rozkazy `guns`, `barrage`, `mine`, `medics`, `stretchers`. Zamítnuto: STORM (nedávalo smysl), dvě odlišné nabídky pro každou stranu (uživatel chce jednu společnou).
 
+- **2026-11-12 · Držení pozic a noční výpravy (útok/obrana, opevnění) · NÁVRH (rozhodnutí uživatele: děla se NEpřehazují, držení slouží jen k určení, kdo vede):** hra nemá konec (vítězství by ji ukončilo), proto má mapa (kóty a místa údolí) majitele a „kdo vede“ se počítá z držených pozic.
+  Zatím jen návrh, nic nepostaveno. Výpravy jsou stále vypnuté (`valley.enabled = false`) a zapnou se jen s výslovným souhlasem uživatele.
+  Princip: každé místo má majitele a stupeň opevnění; večer strana hlasuje, kam zaútočí; druhá strana se hlásí k obraně; ráno v novinách se střetnou družstva (role, počasí, opevnění). Pozice se jen drží (žádný vliv na bombardování), počítají se body za držené pozice a dny držení.
+  Otevřené: rytmus (denně / 2–3 dny), úmrtí při výpravě ano/ne, jak se vedení ukáže (horní panel, War Room), zda je „sezóna“ s resetem.
+
 ## Dřívější rozhodnutí (shrnutí)
 - **2026-11-10 · Vyvážení v6 · NASAZENO:** zásah sám nezabíjí, zabije chybějící lůžko, nosítka nebo medik; obvaziště 2 lůžka a 6 nosítek; nemocnice jen hlasováním;
   děla mlčí do první dobyté kóty; po výhře 3 dny bombardování poraženého (`docs/BATTLE.md`).
