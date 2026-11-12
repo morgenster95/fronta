@@ -811,7 +811,7 @@
   "_storyShare": "Podíl vojáků, kteří dostanou každý den zápis do deníku (1 = každý, jeden zápis za den; dřív 0,25). Při velkém počtu hráčů roste stav (data/state.json) o ~220 B na vojáka a den.",
   "support": {
     "_note": "Dobrovolný dar přes Ko-fi: medaile bez herní výhody. url = stránka Ko-fi (prázdné = tlačítko na webu se neukáže).",
-    "url": "",
+    "url": "https://ko-fi.com/mudandiron",
     "medal": "war-bonds",
     "name": "War Bonds",
     "line": "kept the front running",
