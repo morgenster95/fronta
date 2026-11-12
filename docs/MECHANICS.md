@@ -235,6 +235,13 @@ večerní reel na to může navázat.
   Princip: každé místo má majitele a stupeň opevnění; večer strana hlasuje, kam zaútočí; druhá strana se hlásí k obraně; ráno v novinách se střetnou družstva (role, počasí, opevnění). Pozice se jen drží (žádný vliv na bombardování), počítají se body za držené pozice a dny držení.
   Otevřené: rytmus (denně / 2–3 dny), úmrtí při výpravě ano/ne, jak se vedení ukáže (horní panel, War Room), zda je „sezóna“ s resetem.
 
+## 2026-11-12 · Podpora hry (Ko-fi) · NÁVRH
+- **Jednorázový dar (teď):** dobrovolný, jedna malá odměna bez stupňů a bez počítání darů; jen čest, žádná herní výhoda. Podoba odměny se domlouvá (viz níže).
+- **NÁPAD pro měsíční předplatitele (později): Trench Dog.** Voják předplatitele má na mapě v zákopu malého pixelového psa (sedí u něj, vrtí ocasem, občas si lehne),
+  na kartě „🐕 Trench Dog: kept the front running“, pes má jméno (Biscuit, Rex…) a může se objevit v deníku; nástupce ho zdědí. Psi na frontě 1. sv. války (poslové, hlídači, maskoti).
+  Bez herní výhody. Nic není postavené.
+- Platby přes Ko-fi (0 % z darů, jen poplatek PayPal/Stripe); server na webhook nemáme (Spark), dárce se zapisuje ručně do `data/supporters.json` podle IG jména ze zprávy.
+
 ## Dřívější rozhodnutí (shrnutí)
 - **2026-11-10 · Vyvážení v6 · NASAZENO:** zásah sám nezabíjí, zabije chybějící lůžko, nosítka nebo medik; obvaziště 2 lůžka a 6 nosítek; nemocnice jen hlasováním;
   děla mlčí do první dobyté kóty; po výhře 3 dny bombardování poraženého (`docs/BATTLE.md`).
