@@ -217,6 +217,9 @@ večerní reel na to může navázat.
 
 ---
 
+- **2026-11-12 · Ochrana nováčků VYPNUTA · NASAZENO (vyvážení v13):** `theme.battle.newbieDays` 3 → 0 na pokyn uživatele. Dřív první 3 dny služby kulka nezpůsobila kritický zásah a rána se nezhoršovala (granát nováčky nešetřil už dřív).
+  Teď platí stejná pravidla pro všechny od prvního dne. Důvod: každý hráč má mít stejné riziko, nováčci nejsou „nezranitelní“. Padlý má nástupce hned v téže noci (`generation` + 1, záznam v `fallen`), nástupce se počítá jako nová služba.
+
 ## Dřívější rozhodnutí (shrnutí)
 - **2026-11-10 · Vyvážení v6 · NASAZENO:** zásah sám nezabíjí, zabije chybějící lůžko, nosítka nebo medik; obvaziště 2 lůžka a 6 nosítek; nemocnice jen hlasováním;
   děla mlčí do první dobyté kóty; po výhře 3 dny bombardování poraženého (`docs/BATTLE.md`).

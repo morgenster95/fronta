@@ -416,7 +416,7 @@ test('boj: bombardování po výhře udělá paseku v několika sektorech poraž
   assert.ok(crit > 0 && dead > 0, `kritických ${crit}, padlých ${dead} v 10 bězích`);
 });
 
-test('boj: převzatí hráči nejsou chránění, nováčci prvních newbieDays dní nedostanou kritický zásah', () => {
+test('boj: převzatí hráči nejsou chránění a nováčci taky ne (newbieDays = 0, od 2026-11-12)', () => {
   const s = emptyState(theme);
   enlist(s, 200);
   s.soldiers.forEach((x, i) => { if (i % 2) x.claimed = true; });
@@ -424,7 +424,8 @@ test('boj: převzatí hráči nejsou chránění, nováčci prvních newbieDays 
   battleTick(s, hot, story, 2);
   const hit = s.soldiers.filter((x) => x.wound);
   assert.ok(hit.some((x) => x.claimed), 'i převzatí dostávají zásahy');
-  assert.ok(!hit.some((x) => x.wound.sev === 'crit'), 'nováček nemá kritický zásah');
+  assert.equal(theme.battle.newbieDays, 0, 'ochrana nováčků je vypnutá');
+  assert.ok(hit.some((x) => x.wound.sev === 'crit'), 'i nováček může dostat kritický zásah');
 });
 
 test('boj: hlídací simulace – 100 vojáků, 9 týdnů: horní mez úmrtí (obvaziště < 9, nemocnice < 3 na stranu týdně), nemocnice pomáhá, texty doplněné', () => {

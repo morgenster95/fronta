@@ -499,7 +499,7 @@
   "battle": {
     "_note": "Denní boj (engine/battle.js, docs/COMBAT_ROLES.md). Všechna čísla se dají ladit; dopad ukáže node tools/sim-battle.mjs --kpi (a --set klíč=hodnota). Pravděpodobnosti jsou na vojáka a den.",
     "enabled": true,
-    "balance": 12,
+    "balance": 13,
     "_balance": "verze vyvážení: zvyš při každé změně čísel, zapisuje se do denních metrik (state.battle.stats)",
     "hit": 0.015,
     "gunsAfterVictory": true,
@@ -527,7 +527,8 @@
       "heavy": 0.15
     },
     "_severity": "závažnost u pozadí: náhoda > light = lehce (60 %), > heavy = těžce (25 %), jinak kriticky (15 %)",
-    "newbieDays": 3,
+    "newbieDays": 0,
+    "_newbieDays": "ochrana nováčků je VYPNUTÁ (0 dní, od 2026-11-12 na pokyn uživatele): kritický zásah i zhoršení rány hrozí od prvního dne. Dřív 3 dny bez kritického zásahu kulkou a bez zhoršení.",
     "critCooldown": 7,
     "care": {
       "_note": "need = práce mediků na raněného za den (medik má 1). Na lůžku need 0 (léčí nemocnice).",
