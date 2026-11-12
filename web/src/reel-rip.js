@@ -61,6 +61,7 @@ export function startRipReel({ tex, anims }) {
     bigEl.style.opacity = logo ? Math.min(1, (t - tCta - 0.4) / 0.3) : 0;
     if (logo && !bigEl.dataset.on) { bigEl.dataset.on = 1; bigEl.className = 'logo'; bigEl.innerHTML = '<span>MUD <i>&amp;</i> IRON</span><span>@mudandiron · link in bio</span>'; }
     const s = sub(t), subEl = $('#rd-sub');
+    subEl.style.top = tTree != null && t >= tTree ? '46%' : tHeir != null && t >= tHeir ? '69%' : '41%'; // titulky nezakrývají jmenovky na křížích ani strom rodu (a jsou pod horní lištou IG)
     if (s && !logo) { subEl.style.opacity = 1; if (subEl.dataset.text !== s) { subEl.dataset.text = s; subEl.innerHTML = `<span>${s}</span>`; } } else subEl.style.opacity = 0;
   }
   window.__reel = { seconds: END, sfx: SFX, frame, ready: true };
