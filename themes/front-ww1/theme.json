@@ -808,5 +808,15 @@
     ]
   },
   "storyShare": 1,
-  "_storyShare": "Podíl vojáků, kteří dostanou každý den zápis do deníku (1 = každý, jeden zápis za den; dřív 0,25). Při velkém počtu hráčů roste stav (data/state.json) o ~220 B na vojáka a den."
+  "_storyShare": "Podíl vojáků, kteří dostanou každý den zápis do deníku (1 = každý, jeden zápis za den; dřív 0,25). Při velkém počtu hráčů roste stav (data/state.json) o ~220 B na vojáka a den.",
+  "support": {
+    "_note": "Dobrovolný dar přes Ko-fi: medaile bez herní výhody. url = stránka Ko-fi (prázdné = tlačítko na webu se neukáže).",
+    "url": "",
+    "medal": "war-bonds",
+    "name": "War Bonds",
+    "line": "kept the front running",
+    "entry": "Word came from home: War Bonds were bought in the name of {name}. The ribbon came up the line with the mail.",
+    "newsHead": "The front thanks",
+    "newsText": "{names}. War Bonds keep the guns fed and the line standing."
+  }
 }

@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
-import { switchFaction, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
+import { switchFaction, grantSupport, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 import { deathReply } from '../engine/house.js';
 
@@ -141,6 +141,10 @@ async function main() {
       if (c.cmd === 'switchFaction') {
         const r = switchFaction(state, theme, map, c.handle, c.faction);
         console.log(r ? `⇄ @${r.handle}: ${r.from} → ${r.to}, ${r.unit}, ${r.sector}` : `⇄ příkaz ${c.id}: nic se nezměnilo`);
+      }
+      if (c.cmd === 'support') {
+        const r = grantSupport(state, theme, c.handle);
+        console.log(r ? `🎗 War Bonds: @${r.handle} (${r.name})` : `🎗 příkaz ${c.id}: voják nenalezen nebo medaili už má`);
       }
       state.commandsDone.push(c.id);
     }

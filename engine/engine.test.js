@@ -1129,3 +1129,19 @@ test('dopis domů: voják s dopisem z předchozího dne je méně zasahován; v 
   const without = run(false), withL = run(true);
   assert.ok(withL < without * 0.95, `s dopisem méně zásahů (${withL} < ${without})`);
 });
+
+import { grantSupport } from './roster.js';
+test('grantSupport: War Bonds medaile, zápis, jedna řádka poděkování za den, podruhé nic', () => {
+  const theme = { support: { medal: 'war-bonds', name: 'War Bonds', entry: 'Bonds for {name}.', newsHead: 'The front thanks', newsText: '{names}. Thanks.' } };
+  const mk = (h, n) => ({ handle: h, name: n, medals: [], record: [], status: 'active' });
+  const st = { day: 4, soldiers: [mk('ann', 'Ann Lee'), mk('bob', 'Bob Ray')], news: [] };
+  assert.ok(grantSupport(st, theme, '@Ann'));
+  assert.ok(grantSupport(st, theme, 'bob'));
+  assert.equal(grantSupport(st, theme, 'ann'), null, 'medaile jen jednou');
+  assert.equal(grantSupport(st, theme, 'nikdo'), null);
+  assert.deepEqual(st.soldiers[0].medals, ['war-bonds']);
+  assert.equal(st.soldiers[0].record.length, 1);
+  const t = st.news.filter((n) => n.kind === 'thanks');
+  assert.equal(t.length, 1);
+  assert.equal(t[0].text, 'Ann Lee, Bob Ray. Thanks.');
+});

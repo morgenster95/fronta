@@ -20,6 +20,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
   const badgeDef = (id) => theme.house?.badges?.find((b) => b.id === id);
   const medalName = (m) => {
     if (m === 'first-wave') return ['🎖', 'First Wave', 'One of the first 100 to enlist'];
+    if (theme.support && m === theme.support.medal) return ['🎗', theme.support.name, theme.support.line[0].toUpperCase() + theme.support.line.slice(1)];
     if (m === 'raiders-cross') return ['✠', "Raider's Cross", 'Three night raids'];
     if (m.startsWith('hero:')) {
       const v = (roster.victories || []).find((x) => x.id === m.slice(5));

@@ -82,6 +82,12 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   const ig = theme.instagram.replace('@', '');
   $('ig-link').href = `https://instagram.com/${ig}`;
   $('ig-link').textContent = theme.instagram;
+  // dobrovolná podpora (Ko-fi): tlačítko jen když je v tématu adresa
+  if (theme.support?.url) {
+    $('support').hidden = false;
+    $('support-link').href = theme.support.url;
+    $('support-note').textContent = `A one-time gift, if you want to. Write your Instagram handle in the message and your soldier gets the ${theme.support.name} ribbon. Honour only, never an advantage.`;
+  }
   $('enlist-factions').innerHTML = '';
   for (const f of theme.factions) {
     const b = document.createElement('span');
@@ -288,6 +294,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     $('card-share').textContent = 'Share';
     $('card-rank').textContent = theme.ranks[s.rank];
     $('card-name').textContent = s.name;
+    if (theme.support && s.medals?.includes(theme.support.medal)) $('card-name').insertAdjacentHTML('beforeend', ` <span class="ribbon" title="${esc(theme.support.name)}"></span>`);
     $('card-handle').textContent = `@${s.handle}`;
     $('card-handle').href = `https://instagram.com/${encodeURIComponent(s.handle)}`;
     $('card-faction').innerHTML = `<span style="color:${f.color}">■</span> ${esc(f.name)}`;
@@ -323,6 +330,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     for (const p of rec.fallen || []) fam.push(`✝ ${esc(p.name)}, fell on Day ${p.day}`);
     if (rec.background) fam.unshift(`<span class="bg">${esc(rec.background)}</span>`);
     if (s.medals?.includes('first-wave')) fam.unshift('<span class="medal">🎖 First Wave</span> one of the first 100 to enlist');
+    if (theme.support && s.medals?.includes(theme.support.medal)) fam.unshift(`<span class="ribbon sm"></span> <span class="medal">${esc(theme.support.name)}</span> ${esc(theme.support.line)}`);
     if (s.medals?.includes('raiders-cross')) fam.unshift(`<span class="medal">✠ Raider's Cross</span> ${rec.raids || 3} night raids`);
     else if (rec.raids) fam.push(`Night raids: ${rec.raids}`);
     for (const m of s.medals || []) {

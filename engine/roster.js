@@ -223,6 +223,23 @@ export function switchFaction(state, theme, map, handle, faction) {
   return { handle, from, to, sector: s.sector, unit: s.unit };
 }
 
+// Poděkování za dobrovolný dar (data/commands.json: { id, cmd: 'support', handle }): medaile z theme.support, zápis do deníku a jedna řádka
+// poděkování do příštích novin (víc dárců téhož dne se spojí do jedné řádky). Jen čest, žádná herní výhoda. Vrací null, když voják není nebo už medaili má.
+export function grantSupport(state, theme, handle) {
+  const sup = theme.support;
+  const s = state.soldiers.find((x) => x.handle === String(handle || '').toLowerCase().replace(/^@/, ''));
+  if (!sup || !s || (s.medals || []).includes(sup.medal)) return null;
+  s.medals = [...(s.medals || []), sup.medal];
+  if (s.status !== 'fallen' && sup.entry) addEntry(s, state.day, sup.entry.replaceAll('{name}', s.name));
+  state.news ??= [];
+  const n = state.news.find((x) => x.kind === 'thanks' && x.day === state.day);
+  if (n) n.names.push(s.name);
+  else state.news.push({ day: state.day, kind: 'thanks', routine: true, h: sup.newsHead, names: [s.name] });
+  const t = state.news.find((x) => x.kind === 'thanks' && x.day === state.day);
+  t.text = sup.newsText.replace('{names}', t.names.join(', '));
+  return { handle: s.handle, name: s.name };
+}
+
 const ORD = (n) => n + (['th', 'st', 'nd', 'rd'][((n % 100) - 20) % 10] || ['th', 'st', 'nd', 'rd'][n % 100] || 'th');
 export function unitName(order) {
   const company = Math.floor(order / 120) + 1;

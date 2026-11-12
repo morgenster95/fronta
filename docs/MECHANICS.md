@@ -235,8 +235,11 @@ večerní reel na to může navázat.
   Princip: každé místo má majitele a stupeň opevnění; večer strana hlasuje, kam zaútočí; druhá strana se hlásí k obraně; ráno v novinách se střetnou družstva (role, počasí, opevnění). Pozice se jen drží (žádný vliv na bombardování), počítají se body za držené pozice a dny držení.
   Otevřené: rytmus (denně / 2–3 dny), úmrtí při výpravě ano/ne, jak se vedení ukáže (horní panel, War Room), zda je „sezóna“ s resetem.
 
-## 2026-11-12 · Podpora hry (Ko-fi) · NÁVRH
-- **Jednorázový dar (teď):** dobrovolný, jedna malá odměna bez stupňů a bez počítání darů; jen čest, žádná herní výhoda. Podoba odměny se domlouvá (viz níže).
+## 2026-11-12 · Podpora hry (Ko-fi): War Bonds NASAZENO, Trench Dog NÁPAD
+- **Jednorázový dar = War Bonds · NASAZENO 2026-11-12:** dobrovolný, jedna stužka bez stupňů a bez počítání darů; jen čest, žádná herní výhoda.
+  Stužka u jména a řádek „War Bonds kept the front running“ na kartě, v albu rodu (🎗), na obrázku „I ENLISTED“ ke sdílení (pod First Wave), zápis do deníku
+  a jednou řádka „The front thanks: …“ v příštích novinách (víc dárců téhož dne v jedné řádce). Udělení: `data/commands.json` `{ "id": "support-<handle>-<datum>", "cmd": "support", "handle": "<ig>" }`
+  (`grantSupport` v `engine/roster.js`, texty `theme.support`). Tlačítko „Support the front ☕“ v panelu náboru se ukáže, až bude v `theme.support.url` adresa Ko-fi.
 - **NÁPAD pro měsíční předplatitele (později): Trench Dog.** Voják předplatitele má na mapě v zákopu malého pixelového psa (sedí u něj, vrtí ocasem, občas si lehne),
   na kartě „🐕 Trench Dog: kept the front running“, pes má jméno (Biscuit, Rex…) a může se objevit v deníku; nástupce ho zdědí. Psi na frontě 1. sv. války (poslové, hlídači, maskoti).
   Bez herní výhody. Nic není postavené.

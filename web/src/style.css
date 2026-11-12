@@ -174,6 +174,11 @@ body.reel #card { bottom: 18%; width: 86%; }
 #reel-caption.cta { top: auto; bottom: 16%; }
 #reel-caption.cta span { background: rgba(126, 59, 42, 0.92); font-size: 34px; }
 .medal { color: var(--accent); font-family: 'Silkscreen', monospace; font-size: 13px; }
+/* stužka War Bonds (dobrovolný dar): svislé pruhy v paletě hry */
+.ribbon { display: inline-block; width: 30px; height: 10px; vertical-align: middle; outline: 2px solid #0e0d0c; box-shadow: inset 0 2px 0 rgba(255,255,255,.18), inset 0 -2px 0 rgba(0,0,0,.35);
+  background: linear-gradient(90deg, #7e3b2a 0 14%, #d98f3f 14% 26%, #e3d9c3 26% 34%, #d98f3f 34% 44%, #6f7148 44% 56%, #d98f3f 56% 66%, #e3d9c3 66% 74%, #d98f3f 74% 86%, #7e3b2a 86% 100%); }
+.ribbon.sm { width: 22px; height: 8px; }
+.support-btn { display: inline-block; margin-top: 4px; padding: 6px 14px; background: #7e3b2a; color: #e3d9c3; font-family: 'Silkscreen', monospace; text-decoration: none; border-bottom: 3px solid #d98f3f; }
 #share-overlay {
   position: fixed; inset: 0; z-index: 60; background: rgba(14, 13, 12, 0.96); display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 10px; padding: 16px; text-align: center;

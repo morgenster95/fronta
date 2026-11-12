@@ -105,6 +105,17 @@ export async function shareCard({ s, rec, theme, tex }) {
     text(ctx, 'FIRST WAVE', W / 2, y0 + 16, 40, PAL.white);
   }
 
+  // stužka War Bonds (dobrovolný dar): pruhy v paletě hry, pod First Wave, když má voják obě
+  if (theme.support && s.medals?.includes(theme.support.medal)) {
+    const y0 = s.medals.includes('first-wave') ? 280 : 196, x0 = W / 2 - 260;
+    const st = [[PAL.rust, 70], [PAL.gold, 60], [PAL.white, 40], [PAL.gold, 50], ['#6f7148', 80], [PAL.gold, 50], [PAL.white, 40], [PAL.gold, 60], [PAL.rust, 70]];
+    let x = x0;
+    for (const [c, w] of st) { ctx.fillStyle = c; ctx.fillRect(x, y0, w, 72); x += w; }
+    ctx.fillStyle = PAL.ink;
+    ctx.fillRect(W / 2 - 170, y0 + 14, 340, 44);
+    text(ctx, theme.support.name.toUpperCase(), W / 2, y0 + 16, 40, PAL.gold);
+  }
+
   // jméno a hodnost
   const rank = theme.ranks[s.rank].toUpperCase();
   text(ctx, rank, W / 2, 1140, 38, PAL.bone);
