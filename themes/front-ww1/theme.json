@@ -818,5 +818,7 @@
     "entry": "Word came from home: War Bonds were bought in the name of {name}. The ribbon came up the line with the mail.",
     "newsHead": "The front thanks",
     "newsText": "{names}. War Bonds keep the guns fed and the line standing."
-  }
+  },
+  "officerBalance": true,
+  "_officerBalance": "Vyrovnání poručíků (2026-11-12): nováček bez přání role ze strany s méně poručíky je poručík, strana s víc poručíky žádného nedostane, při rovnosti běžné losování. false = jen losování."
 }

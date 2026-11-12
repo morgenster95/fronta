@@ -4,7 +4,7 @@ import { createSoldier, tickSoldier, heir, selectForStory, addEntry } from './so
 import { enlistEntry, weatherFor, eventEntry, tplKey, makeBackground, backgroundLine, silenceGuns } from './story.js';
 import { writeChronicle } from './chronicle.js';
 import { checkRace, raceStatus, raceDanger, activeBarrage, awardHonors } from './race.js';
-import { pick } from './rng.js';
+import { pick, weighted, rngFor } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
 import { orderDanger, orderRecover, orderShell, orderFire, orderHeal, orderExposed, orderDie, issueOrders } from './orders.js';
@@ -141,6 +141,7 @@ export function applyComment(state, comment, theme, story, map) {
   const order = state.soldiers.filter((s) => s.faction === f).length;
   const s = createSoldier({ id: comment.userId || handle, handle, faction: f, day: state.day, order }, theme, story);
   s.reply = comment.replyTo || comment.id; // náborový komentář: sem bot odpoví při smrti vojáka
+  balanceOfficer(state, theme, s); // strana s méně poručíky dostane poručíka (přání role ho níž přepíše)
   // „CONCORD medic“: rovnou v té roli (důstojník jen povýšením)
   const roleWish = wish ? { role: wish, reason: wishRole(state, s, wish, theme, story) } : null;
   placeSoldier(s, map, state);
@@ -153,6 +154,28 @@ export function applyComment(state, comment, theme, story, map) {
   const raidRes = raid ? volunteer(state, theme, s, 'comment') : null;
   const voted = state.vote?.perFaction ? castVote(state, comment) : null;
   return { type: 'enlist', soldier: s, victory, raid: raidRes, roleWish, ...(voted ? { vote: voted } : {}) };
+}
+
+// Vyrovnání poručíků (theme.officerBalance, od 2026-11-12): poručík se losuje jen při narukování, a tak měla jedna strana 6 a druhá 1.
+// Nováček strany, která má méně živých poručíků než druhá strana, je poručík (když si napíše roli, dostane ji: wishRole ho přepíše).
+// Strana, která jich má víc, nového poručíka nedostane. Při rovnosti platí běžné losování (váha role). Vrací true, když se role změnila.
+export function balanceOfficer(state, theme, s) {
+  if (!theme.officerBalance) return false;
+  const n = theme.factions.map((_, f) => state.soldiers.filter((x) => x.faction === f && x !== s && x.archetype === 'officer' && x.status !== 'fallen').length);
+  const others = n.filter((_, f) => f !== s.faction);
+  if (n[s.faction] < Math.max(...others)) {
+    if (s.archetype === 'officer') return false;
+    s.archetype = 'officer';
+    s.rank = theme.ranks.indexOf('Second Lieutenant') >= 0 ? theme.ranks.indexOf('Second Lieutenant') : s.rank;
+    return true;
+  }
+  if (s.archetype === 'officer' && n[s.faction] > Math.min(...others)) {
+    const roles = theme.archetypes.filter((a) => a.id !== 'officer').map((a) => [a.id, a.weight]);
+    s.archetype = weighted(rngFor(s.id, 'officer-balance'), roles);
+    s.rank = 0;
+    return true;
+  }
+  return false;
 }
 
 // Přidělí první volné místo podle priority (střed → ven, přední linie první) v otevřených sektorech.

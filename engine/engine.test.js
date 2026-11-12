@@ -1145,3 +1145,25 @@ test('grantSupport: War Bonds medaile, zápis, jedna řádka poděkování za de
   assert.equal(t.length, 1);
   assert.equal(t[0].text, 'Ann Lee, Bob Ray. Thanks.');
 });
+
+import { balanceOfficer } from './roster.js';
+test('balanceOfficer: strana s méně poručíky dostane poručíka, druhá žádného, přání role vyhraje', () => {
+  const theme = { officerBalance: true, factions: [{}, {}], ranks: ['Private', 'L', 'C', 'S', 'SS', 'Second Lieutenant'], archetypes: [{ id: 'rifleman', weight: 50 }, { id: 'medic', weight: 8 }, { id: 'officer', weight: 4 }] };
+  const off = (f) => ({ faction: f, archetype: 'officer', status: 'active' });
+  const st = { soldiers: [off(0), off(0), off(0), off(1)] };
+  const c = { id: 'c1', faction: 1, archetype: 'rifleman', rank: 0 };
+  st.soldiers.push(c);
+  assert.equal(balanceOfficer(st, theme, c), true);
+  assert.equal(c.archetype, 'officer');
+  assert.equal(c.rank, 5);
+  const h = { id: 'h1', faction: 0, archetype: 'officer', rank: 5 };
+  st.soldiers.push(h);
+  assert.equal(balanceOfficer(st, theme, h), true, 'Hegemonie má víc: poručíka nedostane');
+  assert.notEqual(h.archetype, 'officer');
+  assert.equal(h.rank, 0);
+  // vyrovnáno (3:3 bez h): běžné losování nechá roli, jak je
+  const c2 = { id: 'c2', faction: 1, archetype: 'medic', rank: 0 };
+  st.soldiers.push(off(1));
+  assert.equal(balanceOfficer(st, theme, c2), false);
+  assert.equal(balanceOfficer(st, { ...theme, officerBalance: false }, { id: 'x', faction: 1, archetype: 'medic' }), false);
+});

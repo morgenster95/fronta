@@ -235,6 +235,14 @@ večerní reel na to může navázat.
   Princip: každé místo má majitele a stupeň opevnění; večer strana hlasuje, kam zaútočí; druhá strana se hlásí k obraně; ráno v novinách se střetnou družstva (role, počasí, opevnění). Pozice se jen drží (žádný vliv na bombardování), počítají se body za držené pozice a dny držení.
   Otevřené: rytmus (denně / 2–3 dny), úmrtí při výpravě ano/ne, jak se vedení ukáže (horní panel, War Room), zda je „sezóna“ s resetem.
 
+## 2026-11-12 · Vyrovnání poručíků · NASAZENO
+- **Proč:** poručík (role Lieutenant, hodnost Second Lieutenant) se dá získat jen losem při narukování (váha 4 ze 100) a povýšení končí na Staff Sergeant.
+  Kdo si napíše roli, poručíka nedostane, a tak měla Hegemonie 6 poručíků a Concord 1 (poručík dává vojákům kolem sebe +20 % palby a +25 % zkušeností).
+- **Pravidlo (`balanceOfficer` v `engine/roster.js`, `theme.officerBalance`):** nováček strany, která má méně živých poručíků než druhá strana, je poručík.
+  Když si v náborovém komentáři napíše roli („CONCORD medic“), dostane roli (přání vyhraje). Strana, která má poručíků víc, nového nedostane. Při rovnosti platí běžné losování.
+  Vypíná se samo, jakmile se počty srovnají; úplně vypnout: `"officerBalance": false`. Stávajícím vojákům se role nemění.
+- Bot dál odpovídá, že poručík je „jen povýšením“ (nepravda, povýšení na poručíka neexistuje); povýšení na poručíka uživatel zatím nechce.
+
 ## 2026-11-12 · Podpora hry (Ko-fi): War Bonds NASAZENO, Trench Dog NÁPAD
 - **Jednorázový dar = War Bonds · NASAZENO 2026-11-12:** dobrovolný, jedna stužka bez stupňů a bez počítání darů; jen čest, žádná herní výhoda.
   Stužka u jména a řádek „War Bonds kept the front running“ na kartě, v albu rodu (🎗), na obrázku „I ENLISTED“ ke sdílení (pod First Wave), zápis do deníku
