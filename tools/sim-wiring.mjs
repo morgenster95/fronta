@@ -12,7 +12,8 @@ for (let r = 0; r < runs; r++) {
   openWiring(s, 'sim', s.day);
   [nH, nC].forEach((n, f) => {
     const pool = s.soldiers.filter((x) => x.faction === f && x.status === 'active' && !x.wound);
-    for (let i = 0; i < n && i < pool.length; i++) joinWiring(s, pool[(i * 7 + r * 3) % pool.length]);
+    const off = (r * 13) % pool.length;
+    for (let i = 0; i < n && i < pool.length; i++) joinWiring(s, pool[(off + i) % pool.length]); // n různých vojáků
   });
   const ids = new Set(s.wiring.open.ids);
   [0, 1].forEach((f) => { const w = Object.values(s.battle.sides[f].wire); tot[f].wire0 += w.reduce((a, b) => a + b, 0) / w.length; });
