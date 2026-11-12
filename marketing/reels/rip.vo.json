@@ -1,0 +1,48 @@
+{
+ "seconds": 39.6,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.8,
+   3.08,
+   "Night one. The guns of the ridge never stopped.",
+   "night"
+  ],
+  [
+   4.13,
+   2.13,
+   "five men of the Hegemony did not see the morning.",
+   "fell"
+  ],
+  [
+   6.51,
+   11.23,
+   "Bram Yoollyfox. Pavel Zulfi. Nils Wolfmananton. Oskar Brunoescobar. And one more. The Concord buried one too.",
+   "names"
+  ],
+  [
+   17.99,
+   1.33,
+   "But no name dies out here.",
+   "heir"
+  ],
+  [
+   19.57,
+   5.64,
+   "That same night, Dorian Yoollyfox reports for duty. The next of the family picks up the rifle.",
+   "heir2"
+  ],
+  [
+   25.46,
+   7.06,
+   "Every family keeps a tree. Every fall is written in it. Open your soldier's card, and read your house.",
+   "tree"
+  ],
+  [
+   32.77,
+   3.41,
+   "Comment Concord... or Hegemony. Link in bio.",
+   "cta"
+  ]
+ ]
+}
