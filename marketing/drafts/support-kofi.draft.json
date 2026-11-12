@@ -1,0 +1,7 @@
+{
+  "_note": "Návrh postu na podporu přes Ko-fi (War Bonds). Uložen na později na pokyn uživatele 2026-11-12: teď netlačit, jen tlačítko na webu. Do marketing/queue.json až s výslovným souhlasem a časem; k tomu story (node tools/story-for.mjs support-kofi). Obrázek kreslí python marketing/make_support.py.",
+  "id": "support-kofi",
+  "type": "image",
+  "files": ["support_1.jpg"],
+  "caption": "KEEP THE FRONT RUNNING ☕\n\nMud & Iron is free. No ads, no pay-to-win, made by one person, every day.\nIf you want to help, you can buy the front a ration on Ko-fi. It's a one-time gift and it's completely optional.\n\n🎗️ Write your Instagram handle in the Ko-fi message and your soldier gets the War Bonds ribbon on the front, on the card and on the share image. It's honour only, never an advantage.\n📰 The Trench Gazette thanks every supporter in the next morning edition.\n\nko-fi.com/mudandiron (link in bio)\n\n#pixelart #ww1 #indiegame #gamedev #trenchwarfare #instagramgame #mudandiron"
+}
