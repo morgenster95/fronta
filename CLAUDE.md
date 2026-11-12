@@ -86,7 +86,8 @@ Postup pro nový reel `<name>`:
 - **Výpravy jsou VYPNUTÉ** (`theme.valley.enabled = false`, od 2026-11-10 na pokyn uživatele): výzva CHURCH z Dne 2 zrušena. Zapnout až s výslovným souhlasem uživatele.
   Dokud jsou vypnuté, příběhy se slovy `theme.valley.words` („raid“) se nepoužijí; stejně tak místa kót, o které se ještě nebojuje (`storyFor` v `engine/roster.js`).
 - **Hlasování o stavbách** (post `vote-build-d2`, zveřejněn 2026-11-10 12:46 UTC, HOSPITAL / SANDBAGS po frakcích): vyhodnocení ve vydání Dne 3 (2026-11-11 13:00 UTC).
-- **Čeká na uživatele:** nová nabídka hlasování po dobytí kóty (místo FORTIFY / HOSPITAL, návrhy z 2026-11-11 ke schválení); čas pro `reel-sides` a pro `letters-1` (ve frontě bez termínu).
+- **Fronta 2026-11-12:** `reel-ridge` (shrnutí Dne 3: vítěz Concord, hrdina s medailí, dialog, bombardování, hlas hráče, počty) vychází **12. 11. 10:00 UTC (11:00 CZ)**, `letters-1` posunut na **17:00 UTC**, `reel-howto` 23:00 UTC, `poster-concord` 13. 11. 23:00 UTC; `reel-sides` a `poster-hegemony` bez termínu. Post **FRONT COUNCIL** (`council-ridge`, nápady do komentářů, vyhrává nejvíc lajků, `node tools/council.mjs`) a `story-council` vyšly 11. 11. 22:19/22:29 UTC; hlasování FORTIFY/HOSPITAL zrušeno (`data/cancel-vote.json`).
+  Čeká na uživatele: vyhodnocení Rady fronty (navrženo 13. 11. po Gazette), nabídka dalšího hlasování, čas pro `reel-sides`.
   Z dřívějška: uživatel ověří kartu přihlášeného hráče (tlačítko „Request a transfer“ jen u vlastního vojáka).
 - **Přání rolí z komentářů** (od 2026-11-09): komentář, který zmíní právě jednu roli („CONCORD medic“, „MG“), dá roli hned. Zdarma je jen první volba,
   další změny přes převelení na kartě. Lieutenant jen povýšením. Aliasy rolí: `theme.archetypes[].aliases`.
