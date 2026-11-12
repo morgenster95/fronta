@@ -1,6 +1,7 @@
 // Viditelné účinky rozkazů z hlasování na mapě (stav z roster.orders: { faction, kw, from, to }):
 //  • DUGOUTS  – hluboké kryty proti bombardování: u zálohy strany stojí pytlové kryty s trámovým vchodem a hlínou (jen po dobu rozkazu),
 //  • DOCTOR   – u obvaziště / nemocnice se mezi raněnými prochází lékař v bílém plášti (sprite zdravotníka, červený kříž nad hlavou).
+//  • COUNTERFIRE – protipalba: dělostřelectvo strany střílí zpět, na nepřátelské týlové linii dopadají granáty (jen vizuálně; mechanika snižuje počet ostřelovaných úseků),
 // V dev režimu jde vyzkoušet bez hlasování: /?orders=0:DUGOUTS,0:DOCTOR  (strana:heslo).
 import { Container, Graphics, Sprite, Texture } from 'pixi.js';
 
@@ -31,7 +32,7 @@ function shelterTexture(faction = 0, seed = 1) {
   return Texture.from(c);
 }
 
-export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals, theme, openX0, openX1 }) {
+export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals, theme, openX0, openX1, life }) {
   let orders = (roster.orders || []).filter((o) => o.kw);
   if (import.meta.env.DEV) {
     const q = new URLSearchParams(location.search).get('orders');
@@ -78,10 +79,21 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
     docs.push({ sp, cross, walk, idle: tex[key], x0: site.x - 30, x1: site.x + 30, y: site.y + (site.beds?.[0] ? 0 : 0), t0: Math.random() * 6000 });
   });
 
+  // --- COUNTERFIRE: občasné dopady za nepřátelskou linií v záběru kamery ---
+  const back = theme.factions.map((_, f) => has('COUNTERFIRE', f));
+  let nextShot = 0;
   let raised = false;
   return {
     shelters: layer.children,
-    update(now) {
+    update(now, view) {
+      if (view && life && back.some(Boolean) && now > nextShot) {
+        nextShot = now + 700 + Math.random() * 1800;
+        for (let f = 0; f < back.length; f++) {
+          if (!back[f]) continue;
+          const e = 1 - f, y = map.front[e] * map.tile + 16 + (e === 1 ? 1 : -1) * (80 + Math.random() * 260); // za nepřátelskou frontou
+          if (y > view.y0 - 40 && y < view.y1 + 40) life.shell(view.x0 + Math.random() * (view.x1 - view.x0), y, Math.random() < 0.5);
+        }
+      }
       if (!raised && docs.length) { raised = true; world.setChildIndex(top, world.children.length - 1); } // lékař nad vojáky
       for (const d of docs) {
         const T = 9000, u = ((now + d.t0) % (2 * T)) / T; // tam a zpět
