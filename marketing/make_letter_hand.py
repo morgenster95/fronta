@@ -187,13 +187,6 @@ def make():
             d.point((x, y), fill=P["mud2"] if rnd.random() < 0.5 else P["steel"])
     # lucerna vlevo nahoře: světlo na papír
     light(im, 18, 12, 150, strength=0.6, steps=2)
-    # lucerna samotná
-    lx, ly = 14, 6
-    d.rectangle((lx - 5, ly + 2, lx + 5, ly + 16), fill=P["dark"], outline=P["ink"])
-    d.rectangle((lx - 3, ly + 4, lx + 3, ly + 14), fill=P["gold"])
-    d.rectangle((lx - 1, ly + 6, lx + 1, ly + 12), fill=P["white"])
-    d.line((lx - 5, ly, lx + 5, ly), fill=P["ink"])
-    d.line((lx, ly - 4, lx, ly), fill=P["steel"])
     shade(im, (0, 0, W, ART_H), strength=0.55)
     d = ImageDraw.Draw(im)
     # prach a jiskry ve světle
