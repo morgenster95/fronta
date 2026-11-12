@@ -121,6 +121,15 @@ def make():
     d.rectangle((0, 22, W, 62), fill=P["ink"])
     text_c(d, W // 2, 26, "KEEP THE FRONT", font(16, True), P["gold"])
     text_c(d, W // 2, 44, "RUNNING", font(16, True), P["white"])
+    # čtvercová verze pro Ko-fi (1080×1080): scéna s titulkem a dole jeden řádek
+    sq = im.crop((0, 0, W, W))
+    ds = ImageDraw.Draw(sq)
+    ds.rectangle((0, W - 18, W, W), fill=P["dark"])
+    ds.line((0, W - 18, W, W - 18), fill=P["gold"])
+    text_c(ds, W // 2, W - 14, "FREE. NO ADS. NO PAY-TO-WIN.", font(8, True), P["white"])
+    out_sq = os.path.join(PROMO, "support_square.jpg")
+    up(sq, K).convert("RGB").save(out_sq, quality=95, subsampling=0)
+    print(out_sq)
     # textová část
     d.rectangle((0, 214, W, H), fill=P["dark"])
     d.line((0, 214, W, 214), fill=P["gold"])
