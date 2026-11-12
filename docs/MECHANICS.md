@@ -226,7 +226,7 @@ večerní reel na to může navázat.
   **Concord** SNIPERS (`fire` sniper 1,8: nepřítel +1,2 padlého), VICKERS (`fire` machinegunner 1,8: +4 raněných), MINE (nepřítel +1,6 padlého a +9 raněných jednorázově). Historické vzory: Hindenburgova linie, sanitní roty, Sturmtruppen 1918; sniperské školy 1915, Machine Gun Corps 1915, Messines 1917.
 
 - **2026-11-12 · Hlasování o rozkazech: tři stejné volby pro všechny, stejný účinek pro obě strany, funkční kdykoli · SCHVÁLENO (pokyn uživatele):** jedno hlasování, strany počítají hlasy každá za sebe.
-  DUGOUTS (`shell` 0,7 + `exposed` 0,7: méně zásahů granáty i palbou), DOCTOR (`die` 0,5 + `heal` 1,5), AMMO (`fire` 1,4: vlastní střelci trefí o 40 % víc). Všechny fungují vždy (i bez bombardování), na obou stranách.
+  DUGOUTS (`shell` 0,7 + `exposed` 0,7: méně zásahů granáty i palbou), DOCTOR (`die` 0,5 + `heal` 1,5), AMMO (`fire` 1,4: vlastní střelci střílejí o 40 % víc, tedy v průměru víc zásahů; ne přesnější). Všechny fungují vždy (i bez bombardování), na obou stranách.
   Simulace 3 dnů (padlí/ranění): Hegemonie bez voleb 7,6/55 → DUGOUTS 5,2/40, DOCTOR 6,3/55, AMMO nepříteli +9 raněných; Concord bez voleb 2,3/30 → DUGOUTS 1,9/21, DOCTOR 1,7/30, AMMO Hegemonii +1,2 padlého a +9 raněných.
   V enginu zůstávají (nepoužité): nabídka podle strany (`option.only`, `option.byFaction`) a rozkazy `guns`, `barrage`, `mine`, `medics`, `stretchers`. Zamítnuto: STORM (nedávalo smysl), dvě odlišné nabídky pro každou stranu (uživatel chce jednu společnou).
 

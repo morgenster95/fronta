@@ -383,7 +383,7 @@
       "files": [
         "vote_orders_1.jpg"
       ],
-      "caption": "THE FRONT DECIDES ⚔️\n\nVerdel Ridge is in Concord hands, and the Hegemony lines are under the guns. Now the front chooses its next order. One post, one vote, three choices.\n\nComment ONE word:\n🧱 DUGOUTS: deep shelters. Fewer men hit by shells and by fire.\n🩺 DOCTOR: a surgeon arrives. Fewer dead and faster healing.\n📦 AMMO: an ammunition train arrives. Your shooters hit 40% more.\n\nYour soldier is your vote: we know which side you serve, so no need to write it. Each side counts its own votes, so the two sides can choose differently. Not enlisted yet? Comment CONCORD or HEGEMONY together with your choice.\n\nThe winning order of each side is announced in the Trench Gazette at 13:00 UTC.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
+      "caption": "THE FRONT DECIDES ⚔️\n\nVerdel Ridge is in Concord hands, and the Hegemony lines are under the guns. Now the front chooses its next order. One post, one vote, three choices.\n\nComment ONE word:\n🧱 DUGOUTS: deep shelters. Fewer men hit by shells and by fire.\n🩺 DOCTOR: a surgeon arrives. Fewer dead and faster healing.\n📦 AMMO: an ammunition train arrives. Your shooters fire 40% more.\n\nYour soldier is your vote: we know which side you serve, so no need to write it. Each side counts its own votes, so the two sides can choose differently. Not enlisted yet? Comment CONCORD or HEGEMONY together with your choice.\n\nThe winning order of each side is announced in the Trench Gazette at 13:00 UTC.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
       "vote": {
         "question": "Verdel Ridge has fallen. What is the front's next order?",
         "perFaction": true,
@@ -408,10 +408,10 @@
           },
           {
             "kw": "AMMO",
-            "label": "Ammunition train: your shooters hit 40% more",
+            "label": "Ammunition train: your shooters fire 40% more",
             "fire": 1.4,
             "days": 3,
-            "outcome": "An ammunition train reached the {side} line: the shooters hit harder."
+            "outcome": "An ammunition train reached the {side} line: the shooters fire more."
           }
         ]
       },
