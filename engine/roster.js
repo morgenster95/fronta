@@ -8,6 +8,7 @@ import { pick, weighted, rngFor } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
 import { orderDanger, orderRecover, orderShell, orderFire, orderHeal, orderExposed, orderDie, issueOrders } from './orders.js';
+import { wiringKeyword, joinWiring } from './wiring.js';
 import { battleTick, battlePublic, build as buildStructure, ensureBattle, levelOf, gunsSilent } from './battle.js';
 import { awardHouseBadges, noticeDeath } from './house.js';
 import { ensureValley, valleyTick, valleyDanger, valleyRecover, raidKeyword, volunteer, valleyPublic } from './valley.js';
@@ -121,6 +122,11 @@ export function applyComment(state, comment, theme, story, map) {
   const existing = findOwnSoldier(state, comment.userId, handle);
   if (existing === TAKEN) return null; // jméno patří vojákovi jiného účtu: nic nepřebírá, nenarukuje pod cizím jménem
   if (parsed?.type === 'claim') return { type: 'claim', handle: existing?.handle ?? handle, code: parsed.code, soldier: existing };
+  // wiring party (engine/wiring.js): heslo WIRE pod otevřeným postem = přihláška dobrovolníka na noc
+  if (wiringKeyword(state, theme, comment)) {
+    if (!existing) return { type: 'wiring', handle, soldier: { handle }, reason: 'notEnlisted' };
+    return { type: 'wiring', handle, soldier: existing, reason: joinWiring(state, existing) };
+  }
   // heslo otevřené výpravy (např. CHURCH): přihláška dobrovolníka
   const raid = raidKeyword(state, theme, comment.text);
   // dopis domů (post s voices): zmínka role v textu („the medic carried me…“) není přání role
@@ -623,6 +629,7 @@ export function buildPublic(state, theme) {
       titles: s.titles || [],
       nextTransfer: s.transferDay != null ? s.transferDay + TRANSFER_COOLDOWN : null,
       raids: s.raids || 0,
+      wiring: s.wiring || 0,
       // rod: kolikátá generace, odkud v deníku začíná, vztah k předchozímu, vlastní čísla této generace
       generation: s.generation || 1,
       recFrom: s.recFrom || 0,

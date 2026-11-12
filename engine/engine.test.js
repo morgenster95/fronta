@@ -1185,3 +1185,26 @@ test('atlas spritů odpovídá souborům (po změně spritů: python tools/make-
   assert.deepEqual(Object.keys(meta.files).sort(), pngs, 'atlas neobsahuje přesně všechny sprity');
   for (const f of pngs) assert.equal(meta.files[f], crypto.createHash('sha1').update(fs.readFileSync(new URL(f, dir))).digest('hex').slice(0, 12), `${f} se změnil`);
 });
+
+import { openWiring } from './wiring.js';
+test('wiring party: přihláška WIRE jen pod otevřeným postem, oprava drátu, zápis, zpráva v novinách, kdo jde ven, nehlídá', () => {
+  const s = emptyState(theme);
+  enlist(s, 120, 'W_');
+  openWiring(s, 'wp', s.day);
+  const vol = s.soldiers.filter((x) => x.faction === 0).slice(0, 10);
+  const c = (x, mediaId, text) => applyComment(s, { id: `w-${x.handle}-${mediaId}`, text, username: x.handle, userId: x.id, mediaId }, theme, story, map);
+  assert.equal(c(vol[0], 'other', 'WIRE'), null, 'pod jiným postem se nepočítá');
+  for (const x of vol) assert.equal(c(x, 'wp', 'wire!').reason, 'ok');
+  assert.equal(s.wiring.open.ids.length, 10);
+  const side = s.battle?.sides?.[0];
+  const before = theme.battle.wire.start;
+  dailyTick(s, { ...theme, id: 'wt1' }, story);
+  assert.equal(s.wiring.open, null, 'po tahu zavřeno');
+  assert.equal(s.wiring.nights.at(-1).sides[0].n, 10);
+  const wires = Object.values(s.battle.sides[0].wire);
+  assert.ok(Math.max(...wires) > before, 'drát opraven');
+  assert.ok(vol.every((x) => x.wiring === 1));
+  assert.ok(s.chronicle.at(-1).blocks.some((b) => /Wiring parties/.test(b.h)), 'v novinách');
+  assert.ok(vol.every((x) => x.record.some((e) => /wir/i.test(e[1]))), 'zápis v deníku');
+  void side;
+});

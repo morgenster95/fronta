@@ -332,6 +332,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     if (s.generation > 1) fam.push(`<b>${ORD[s.generation] || s.generation + 'th'}</b> of the House of ${esc(rec.family)} at the front.`);
     for (const p of rec.fallen || []) fam.push(`✝ ${esc(p.name)}, fell on Day ${p.day}`);
     if (rec.background) fam.unshift(`<span class="bg">${esc(rec.background)}</span>`);
+    if (s.medals?.includes('wire-party')) fam.unshift(`<span class="medal">\u26d3 Wire Party</span> ${rec.wiring || 3} nights mending the wire`);
     if (s.medals?.includes('first-wave')) fam.unshift('<span class="medal">🎖 First Wave</span> one of the first 100 to enlist');
     if (theme.support && s.medals?.includes(theme.support.medal)) fam.unshift(`<span class="ribbon sm"></span> <span class="medal">${esc(theme.support.name)}</span> ${esc(theme.support.line)}`);
     if (s.medals?.includes('raiders-cross')) fam.unshift(`<span class="medal">✠ Raider's Cross</span> ${rec.raids || 3} night raids`);

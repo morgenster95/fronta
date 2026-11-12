@@ -213,6 +213,16 @@ async function main() {
           await replyOnce(c, text).catch((e) => console.warn(e.message));
         }
       }
+      if (res.type === 'wiring') {
+        console.log(`⛓ wiring party @${res.handle}: ${res.reason}`);
+        const text = {
+          ok: `@${res.handle}, you're on the wiring party tonight. Keep your head down when the flares go up. Results in the Trench Gazette at 13:00 UTC.`,
+          notEnlisted: `@${res.handle}, you need a soldier first. Comment ${theme.factions.map((f) => f.keyword).join(' or ')} to enlist, then WIRE again.`,
+          wounded: `@${res.handle}, your soldier is wounded and stays in the trench tonight.`,
+          fallen: null, already: null, closed: null,
+        }[res.reason];
+        if (text && process.env.IG_REPLY === '1' && !process.env.DRY_RUN) await replyOnce(c, text).catch((e) => console.warn(e.message));
+      }
       if (res.type === 'role' || res.roleWish) {
         const w = res.type === 'role' ? res : res.roleWish;
         console.log(`⚒ role @${res.soldier.handle} → ${w.role}: ${w.reason}`);

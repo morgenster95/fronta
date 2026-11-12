@@ -197,6 +197,58 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   };
   const hitKind = (sev) => ({ light: 'hitLight', heavy: 'hitHeavy', crit: 'hitCrit' })[sev];
 
+  // 0) wiring party (theme.battle.wiring, engine/wiring.js): dobrovolníci v noci opraví drát svého úseku (nebo nejhoršího, když je jejich celý);
+  // riziko dává jen palba hlídek nepřítele na dostřel (kdo z nepřátel šel ven, nehlídá) × počasí × bombardování × ženista; zásah = běžné zranění
+  const WC = cfg.wiring, wo = state.wiring?.open;
+  if (WC && wo && wo.day < day) {
+    const vol = wo.ids.map((id) => state.soldiers.find((s) => s.id === id)).filter((s) => s && able(s));
+    const outside = new Set(vol.map((s) => s.id));
+    const watch = theme.factions.map((_, f) => lineup(state, f, (s) => able(s) && s.line === 'front' && !outside.has(s.id)));
+    const wk = WC.weather?.[state.weather] ?? 1;
+    const res = theme.factions.map(() => ({ n: 0, yards: 0, hit: [] }));
+    for (const s of vol) {
+      const f = s.faction, side = state.battle.sides[f];
+      let sec = s.sector;
+      if ((side.wire[sec] ?? cfg.wire.start) >= (WC.full ?? 0.95)) sec = Object.entries(side.wire).sort((a, b) => a[1] - b[1] || a[0].localeCompare(b[0]))[0]?.[0] ?? sec;
+      const fire = near(watch[1 - f], X(s), range).reduce((a, m) => a + role(cfg, m, 'fire'), 0);
+      const sap = s.archetype === 'sapper';
+      const p = Math.min(WC.max ?? 1, (WC.base + WC.perFire * fire) * wk * (barrage?.target === f ? WC.barrage ?? 1 : 1) * (sap ? WC.sapperRisk ?? 1 : 1));
+      const add = (sap ? WC.sapperRepair : WC.repair) * mult(theme, s);
+      const before = side.wire[sec] ?? cfg.wire.start;
+      side.wire[sec] = Math.round(Math.min(1, before + add) * 100) / 100;
+      res[f].n++;
+      res[f].yards += Math.round((side.wire[sec] - before) * 100);
+      s.wiring = (s.wiring || 0) + 1;
+      gainXp(theme, s, WC.xp || 0);
+      if (WC.badgeAt && s.wiring >= WC.badgeAt && !(s.medals || []).includes('wire-party')) s.medals = [...(s.medals || []), 'wire-party'];
+      const rand = rngFor(s.id, 'wiring', day);
+      if (rand() < p) {
+        const sev = severity(s, cfg.roles.rifleman?.severity || cfg.severity, rand, false);
+        wound(s, sev, { wiring: true });
+        stats[f].hits.bg++;
+        res[f].hit.push({ handle: s.handle, name: s.name, sev });
+        const bk = { light: 'bulletLight', heavy: 'bulletHeavy', crit: 'bulletCrit' }[sev];
+        ev(s, sev === 'light' ? 'hit' : 'wounded', `Out on the wire with the wiring party. ${eventEntry(story[bk] ? bk : hitKind(sev), s, day, theme, story, {}, today)}`);
+      } else if (story.wiringSafe?.length) ev(s, 'wiring', eventEntry('wiringSafe', s, day, theme, story, { sector: sec }, today));
+    }
+    if (vol.length) {
+      const nm = (f) => short(theme, f);
+      const who = (h) => `${h.name} (@${h.handle})${h.sev === 'light' ? '' : h.sev === 'heavy' ? ', badly' : ', gravely'}`;
+      const parts = theme.factions.map((_, f) => (res[f].n ? `${res[f].n} ${nm(f)} soldier${res[f].n > 1 ? 's' : ''} put up ${res[f].yards} yards of wire` : null)).filter(Boolean);
+      const hit = theme.factions.flatMap((_, f) => res[f].hit);
+      const home = theme.factions.map((_, f) => f).filter((f) => !res[f].n);
+      out.news.push({
+        day, kind: 'wiring', h: 'Wiring parties in no man\'s land',
+        text: `Last night ${parts.join(', and ')}.` +
+          (home.length === 1 ? ` The ${nm(home[0])} stayed in the trench and kept every rifle on the parapet.` : '') +
+          (hit.length ? ` Caught in the flares: ${hit.map(who).join(', ')}.` : ' Everyone came back.'),
+        wiring: res,
+      });
+    }
+    state.wiring.nights = [...(state.wiring.nights || []), { day, media: wo.media, ids: wo.ids.length, sides: res.map((r) => ({ n: r.n, yards: r.yards, hit: r.hit.length })) }].slice(-60);
+    state.wiring.open = null;
+  }
+
   // 1) palba hráčů
   const front = theme.factions.map((_, f) => lineup(state, f, (s) => able(s) && s.line === 'front'));
   const targetsOf = theme.factions.map((_, f) => lineup(state, f, (s) => able(s) && (cfg.line[s.line] ?? 0) > 0));

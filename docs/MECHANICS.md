@@ -271,3 +271,11 @@ večerní reel na to může navázat.
 - Sleduj `state.battle.stats` (příčiny smrti `deaths.nobed/nocare/wounds/shell/shot`): má vycházet ~60 % smrtí z nedostatku míst a péče. Pokud ne nebo je padlých víc, než chceš,
   ladí se jedním číslem v `theme.json` → `battle`: `care.crit.dieBase` (smrt za noc), `roles.kill` (smrt na místě), `roles.rifleman.fire` (palba), `shell.hit` (bombardování); při změně zvýšit `balance`.
 - Simulace nanečisto: `node tools/sim-matrix.mjs --eff --causes` (velikosti × složení × nemocnice × bombardování), `node tools/sim-daily.mjs --scale 10`, `node tools/sim-battle.mjs --kpi`.
+
+## Wiring party (2026-11-12) — POSTAVENO, čeká na první post (nápad hráče, schválil uživatel)
+Noční oprava drátu dobrovolníky obou stran (`engine/wiring.js`, krok 0 v `battleTick`, `theme.battle.wiring`).
+- **Otevření:** zveřejněný post ve frontě s `"wiring": true` (`ingest/publish.mjs` → `openWiring`). Přihláška = komentář s heslem **WIRE** pod tím postem (jen zdravý voják; bot odpoví). Vyhodnotí příští denní tah (13:00 UTC), pak se zavře.
+- **Riziko jen z palby ze zákopu** (rozhodnutí uživatele, bez přestřelek mezi partami): p = (0,04 + 0,05 × součet palby hlídek nepřítele na dostřel) × počasí (déšť 0,8, mlha 0,6, bouře 0,7, mráz 1,1, jasno 1,3) × bombardovaná strana 1,5 × ženista 0,7, nejvýš 35 %. **Kdo z nepřátel jde ven, nehlídá** (když druhá strana zůstane doma, střílí víc).
+- Zásah = běžné zranění (tabulka puškaře), dál péče jako jinde (nosítka, lůžka, medici); smrt jen přes běžný řetěz.
+- **Oprava:** +15 % drátu (ženista +30 %, násobek zkušeností) ve vlastním úseku, nebo v nejhorším úseku strany, když je vlastní ≥ 95 %. XP 3. Po 3 nocích medaile `wire-party` („⛓ Wire Party“ na kartě). Noviny: blok „Wiring parties in no man's land“ (kolik yardů, kdo zůstal doma, kdo byl zasažen, se jmény).
+- **Simulace** (`node tools/sim-wiring.mjs <H> <C> <běhů>`, stav po Dni 4, Hegemonie pod bombardováním): 20+20 dobrovolníků → zasaženo Hegemonie ~13 % (těžce ~1 %), Concord ~6 %, padlí 0 v den tahu; Hegemonie opraví ~330 yd za noc, ale bombardování drát dál trhá (39 % → 33 %), Concord 66 % → 74 %.

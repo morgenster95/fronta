@@ -2535,5 +2535,12 @@
     "{name} is still missing. The sergeant keeps {his} name on the roll and calls it out every morning anyway.",
     "No word on {name}. A runner went to ask in the next sector and came back with nothing.",
     "Someone at {sector} saved {name}'s share of the rations. Nobody said why."
+  ],
+  "wiringSafe": [
+    "{name} went out with the wiring party at {sector}. Crawl, hammer a stake, pull the wire, crawl back. Nobody was hit.",
+    "Wiring party. {name} held the coil while two others pulled. Twenty yards of new wire at {sector}, and everyone came back.",
+    "{name} spent the night in no man's land with pliers and a roll of wire. Every flare meant lying flat in the mud. The gap at {sector} is closed now.",
+    "{name} crawled out with the wiring party. When a flare went up, {he} lay still and counted to ten. The wire at {sector} holds again.",
+    "Out on the wire with the wiring party. {name} tore {his} hands on the barbs and did not make a sound. The new wire at {sector} is up."
   ]
 }
