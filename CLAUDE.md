@@ -85,7 +85,10 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
 - **Ve videích žádní „duchové“** (průsvitní vojáci; uživatel na to upozorňoval opakovaně): každý voják ve videu má plné krytí a barvu. Ve hře jsou neobsazená stanoviště záměrně šedá a poloprůhledná, ale v režimu natáčení (`?reel=`) to `web/src/main.js` vypíná.
   Nový reel nebo filmový záběr nesmí nikde kreslit vojáky s `alpha < 1` (mlha a stín jen jako barevný tint, ne průhlednost) a po vyrenderování se snímky vždy zkontrolují, jestli tam žádný duch není.
 - **Atlas spritů vojáků** (od 2026-11-12): web stahuje sprity vojáků jako jeden obrázek `web/public/assets/soldiers/atlas.png` + `atlas.json` (dřív ~390 souborů, načtení na 4G 8,2 s → 1,9 s).
-  **Po každé změně nebo přidání spritu v `assets/soldiers/` spusť `python tools/make-atlas.py`** (npm test jinak spadne). Sprite, který v atlasu chybí, se načte samostatně (`loadAtlas` v `web/src/assets.js`).
+  **Uživatel bude přidávat nové animace a sprity: atlas se přegeneruje SÁM** workflow `atlas` (`.github/workflows/atlas.yml`) po každém pushi do `main`, který změní něco v `web/public/assets/soldiers/`
+  (commitne nový atlas a nasadí zrcadlo na Pages). Při práci v sezení přesto spusť `python tools/make-atlas.py` před commitem, jinak spadne `npm test` (hlídá shodu atlasu se soubory).
+  Nový sprite musí být i v `manifest.json` (nebo `aims.json`), jinak ho hra nepoužije. Sprite, který v atlasu chybí, se načte samostatně (`loadAtlas` v `web/src/assets.js`).
+  **Kontrola při každém nasazení spritů:** `npm test` prošel, workflow `atlas` doběhl (nebo atlas commitnutý ručně), na náhledu webu vojáci vypadají správně.
 - Repo je **veřejné**: žádné tajné údaje, e-maily ani tokeny do commitů.
 - **Videa nejsou v gitu** (od 2026-11-12; dřív se commitovala a historie repa rostla o desítky MB denně, smazání ji nezmenší): workflow `reel` nahraje video do GitHub Release `media`,
   workflow `media` ho odtud vystaví na GitHub Pages (`marketing/promo/*.mp4` je v `.gitignore`; obrázky postů zůstávají v gitu). Hodinu po zveřejnění na IG `ingest/publish.mjs` video z Release smaže.

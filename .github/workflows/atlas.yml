@@ -1,0 +1,34 @@
+# Atlas spritů vojáků se přegeneruje sám: po každém pushi, který změní nebo přidá sprite v web/public/assets/soldiers/,
+# spustí tools/make-atlas.py a nový atlas.png + atlas.json commitne do main (smyčka a workflow media ho pak nasadí).
+# Nikdo na to nemusí myslet; ručně: python tools/make-atlas.py (npm test hlídá shodu atlasu se soubory).
+name: atlas
+on:
+  push:
+    branches: [main]
+    paths: ['web/public/assets/soldiers/**', '!web/public/assets/soldiers/atlas.png', '!web/public/assets/soldiers/atlas.json', 'tools/make-atlas.py']
+  workflow_dispatch:
+permissions: { contents: write, actions: write }
+concurrency: { group: atlas, cancel-in-progress: false }
+jobs:
+  atlas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q pillow
+      - name: Atlas a commit
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          git config user.name "atlas-bot"; git config user.email "actions@users.noreply.github.com"
+          for i in 1 2 3 4 5; do
+            # vždy nad čerstvým main (smyčka mezitím commituje)
+            git fetch -q origin main && git checkout -q -f origin/main
+            python tools/make-atlas.py
+            git add web/public/assets/soldiers/atlas.png web/public/assets/soldiers/atlas.json
+            git diff --cached --quiet && { echo "atlas beze změny"; exit 0; }
+            git commit -q -m "atlas: sprity vojáků přegenerovány" && git push -q origin HEAD:main && break
+            sleep 5
+          done
+          # push z GITHUB_TOKEN nespouští jiné workflow → zrcadlo obrázků na Pages nasadit ručně
+          gh workflow run media.yml --ref main

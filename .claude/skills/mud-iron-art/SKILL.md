@@ -46,6 +46,10 @@ Kreslené rekvizity vedle sprite vojáků (PixelLab, víc stínování a obrysy)
 3. Po každé opravě znovu pohled, ne jen „mělo by to být dobré“. Animace: kontroluj pohyb postav (žádné skoky, teleporty, pendlování), začátek i konec záběru.
 4. Test `npm test`, commit, push do `main` (smyčka a Pages nasadí). Video i post pošli uživateli ke kontrole (`SendUserFile`), nic nepublikuj bez výslovného souhlasu.
 
+## Nové sprity a animace vojáků (atlas)
+- Web bere sprity vojáků z atlasu `web/public/assets/soldiers/atlas.png` + `atlas.json` (rychlé načítání). Po přidání nebo změně spritu: zapsat ho do `manifest.json` (animace do `anims`), spustit `python tools/make-atlas.py`, `npm test`.
+- Když se zapomene, workflow `atlas` atlas po pushi do `main` přegeneruje sám; `npm test` ale do té doby padá (to je správně, hlídá to).
+
 ## Nástroje v repu
 - `python marketing/make_posts.py | make_day.py | make_victory.py | make_letters.py | make_council.py | make_rip.py | make_vote.py` (posty; `make_vote.py` má hotové ilustrace dugouts/doctor/ammo).
 - `node tools/render-cine.mjs <scéna|all> <složka> [--side 0|1 --n N --names A,B --heir X --house Y --fallen Z --gen 2 --day 4]` (filmové záběry march, guns, shelter, ribbon, counter, graves, heir, lineage → mp4 1080×1920).
