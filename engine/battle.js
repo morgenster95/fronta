@@ -223,7 +223,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       if (WC.badgeAt && s.wiring >= WC.badgeAt && !(s.medals || []).includes('wire-party')) s.medals = [...(s.medals || []), 'wire-party'];
       const rand = rngFor(s.id, 'wiring', day);
       if (rand() < p) {
-        const sev = severity(s, cfg.roles.rifleman?.severity || cfg.severity, rand, false);
+        const sev = severity(s, WC.severity || cfg.roles.rifleman?.severity || cfg.severity, rand, false);
         wound(s, sev, { wiring: true });
         stats[f].hits.bg++;
         res[f].hit.push({ handle: s.handle, name: s.name, sev });

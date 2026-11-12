@@ -5,6 +5,8 @@ import { dailyTick } from '../engine/roster.js';
 import { openWiring, joinWiring } from '../engine/wiring.js';
 const [nH = 20, nC = 20, runs = 30] = process.argv.slice(2).map(Number);
 const { theme, story } = loadTheme();
+// zkouška jiných čísel bez změny tématu: WIRING='{"perFire":0.2}' node tools/sim-wiring.mjs …
+if (process.env.WIRING) Object.assign(theme.battle.wiring, JSON.parse(process.env.WIRING));
 const base = loadState(theme);
 const tot = [0, 1].map(() => ({ n: 0, hit: 0, heavy: 0, dead: 0, yards: 0, wire0: 0, wire1: 0 }));
 for (let r = 0; r < runs; r++) {
@@ -30,6 +32,7 @@ for (let r = 0; r < runs; r++) {
   });
 }
 const name = ['Hegemony', 'Concord'];
+let deadAll = 0; // padlí dobrovolníci do 3 dnů po noci (péče pokračuje)
 console.log(`${runs} běhů, dobrovolníků: Hegemonie ${nH}, Concord ${nC}, počasí dne: ${base.weather}`);
 tot.forEach((t, f) => {
   if (!t.n) return console.log(`${name[f]}: nikdo nešel ven`);
