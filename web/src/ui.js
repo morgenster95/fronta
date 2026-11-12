@@ -31,6 +31,19 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   $('lab-a').textContent = `${A.name.replace('The ', '')} ${n[0].toLocaleString('en')}`;
   $('lab-b').textContent = `${B.name.replace('The ', '')} ${n[1].toLocaleString('en')}`;
 
+  // padlí: přetahovaný pruh ve barvách stran (kdo má méně padlých, vede)
+  const fl = roster.fallen;
+  if (fl && fl[0] + fl[1] > 0) {
+    $('fallen').hidden = false;
+    $('fallen-total').textContent = (fl[0] + fl[1]).toLocaleString('en');
+    $('split-fa').style.flex = fl[0] || 0.0001;
+    $('split-fb').style.flex = fl[1] || 0.0001;
+    $('split-fa').style.background = A.color;
+    $('split-fb').style.background = B.color;
+    $('lab-fa').textContent = `${A.name.replace('The ', '')} ${fl[0].toLocaleString('en')}`;
+    $('lab-fb').textContent = `${B.name.replace('The ', '')} ${fl[1].toLocaleString('en')}`;
+  }
+
   // hlasování (starší „Dispatch“ o výsledku minulého hlasování a stavbách se v panelu už neukazuje: jen aktuální věci, deník fronty a závod)
   if (roster.vote) {
     $('dispatch').hidden = false;

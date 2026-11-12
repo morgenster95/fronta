@@ -516,6 +516,8 @@ export function buildPublic(state, theme) {
     day: state.day,
     followers: state.followers,
     openSectors: state.openSectors ?? 8,
+    // padlí celkem po stranách (všichni předchůdci rodů + aktuálně padlí), pruh „Fallen“ v horním panelu
+    fallen: [0, 1].map((f) => state.soldiers.reduce((a, s) => a + (s.faction === f ? (s.fallen || []).length + (s.status === 'fallen' ? 1 : 0) : 0), 0)),
     dispatch: (state.events || []).slice(-1)[0] || null,
     weather: state.weather ?? null,
     race: raceStatus(state, theme),
