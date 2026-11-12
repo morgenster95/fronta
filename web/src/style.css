@@ -65,11 +65,11 @@ button.primary { background: var(--blood); border-color: #a85a36; }
 #zoom button { width: 40px; height: 40px; padding: 0; font-size: 26px; background: var(--panel); }
 #zoom { align-items: flex-end; }
 /* podpora na Ko-fi: vždy vidět; mobil = ikona 40×40, počítač = tlačítko s textem */
-#support-fab { display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 40px; height: 40px; padding: 0 12px; box-sizing: border-box;
-  background: #7e3b2a; color: #e3d9c3; border: 2px solid #a85a36; border-bottom: 3px solid #d98f3f; text-decoration: none; font-family: 'Silkscreen', monospace; font-size: 13px; }
+#support-fab { display: flex; align-items: center; justify-content: center; gap: 6px; min-width: 40px; height: 40px; padding: 0 10px; box-sizing: border-box;
+  background: var(--panel); color: var(--muted, #a39782); border: 2px solid var(--line); text-decoration: none; font-family: 'VT323', monospace; font-size: 20px; opacity: 0.85; }
 #support-fab[hidden] { display: none; }
-#support-fab .ic { font-size: 20px; line-height: 1; }
-#support-fab:hover { background: #a85a36; }
+#support-fab .ic { font-size: 16px; line-height: 1; }
+#support-fab:hover { color: var(--ink); border-color: var(--accent); opacity: 1; }
 @media (max-width: 600px) { #support-fab { width: 40px; padding: 0; } #support-fab .lb { display: none; } }
 
 #bar {
