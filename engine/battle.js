@@ -470,17 +470,23 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       day, kind: 'barrage', sectors: [...shelled], h: `Hell on the ${short(theme, f)} lines, night ${Math.max(1, day - (barrage.since ?? day))}: the guns of ${barrage.name} are firing`,
       text: `All day the ${short(theme, barrage.by)} guns on ${barrage.name} pounded the ${short(theme, f)} lines, sectors ${[...shelled].slice(0, 6).join(', ')}${shelled.size > 6 ? ` and ${shelled.size - 6} more` : ''}. ` +
         `${shellHits.length ? `${shellHits.length} ${shellHits.length === 1 ? 'man was' : 'men were'} hit` : 'By some miracle nobody was hit'}` +
-        `${bad.length ? `, badly: ${bad.join(', ')}` : ''}. The wire there is in shreds.`,
+        `${bad.length ? `, ${bad.length} of them badly` : ''}. The wire there is in shreds.`,
     });
   }
-  // Gazette: kdo koho trefil přes drát
-  if (fireLog.length) {
-    const how = { light: 'grazed', heavy: 'badly wounded', crit: 'gravely wounded' };
-    const roleName = (id) => theme.archetypes.find((a) => a.id === id)?.name.toLowerCase() ?? 'soldier';
-    out.news.push({
-      day, kind: 'fire', routine: true, h: 'Across the wire',
-      text: fireLog.map((x) => `@${x.by} (${short(theme, x.byF)} ${roleName(x.role)}) ${how[x.sev]} @${x.at}.`).join(' '),
+  // Gazette: jen čísla ztrát po stranách a jména padlých (každý zásah a každé zranění vidí hráč u svého vojáka)
+  {
+    const nameOf = (e) => {
+      const x = state.soldiers.find((s) => s.handle === e.handle);
+      const nm = String(x?.name || '').replace(/"[^"]*"\s*/g, '').trim(); // nástupce se dosazuje až po tahu boje, jméno padlého je ještě u vojáka
+      return nm ? `${nm} (@${e.handle})` : `@${e.handle}`;
+    };
+    const parts = theme.factions.map((_, f) => {
+      const v = stats[f].sev, hit = v.light + v.heavy + v.crit;
+      const dead = out.events.filter((e) => e.type === 'fallen' && e.faction === f);
+      const split = [v.light && `${v.light} grazed`, v.heavy && `${v.heavy} badly`, v.crit && `${v.crit} gravely wounded`].filter(Boolean).join(', ');
+      return `${short(theme, f)}: ${hit ? `${hit} hit (${split})` : 'nobody hit'}${dead.length ? `; ${dead.length} fallen: ${dead.map(nameOf).join(', ')}` : '; no one fell'}.`;
     });
+    out.news.push({ day, kind: 'fire', routine: true, h: 'Casualties of the day', text: parts.join(' ') });
   }
   const lines = theme.factions.map((_, f) => {
     const H = hospital(state, theme, f), st = stats[f];

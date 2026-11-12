@@ -80,7 +80,7 @@ export function writeChronicle(state, day, { theme, story, weather, events = [],
   blocks.push({
     h: 'Roll call',
     text:
-      (losses.length ? losses.map(([k, h]) => `${k}: ${list(h, 6)}.`).join(' ') + ' ' : 'No losses reported. ') +
+      (losses.length ? losses.map(([k, h]) => (k === 'Wounded' ? `Wounded: ${h.length}.` : `${k}: ${list(h, 6)}.`)).join(' ') + ' ' : 'No losses reported. ') +
       `Strength on the line: ${theme.factions.map((_, f) => `${short(f)} ${alive[f]}`).join(' · ')}.`,
   });
 
