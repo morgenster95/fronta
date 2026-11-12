@@ -23,6 +23,7 @@ Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co
 - **Vyrovnání poručíků** (`theme.officerBalance`, `docs/MECHANICS.md`): stav byl Hegemonie 7 : Concord 1. Nováček bez přání role ze strany s méně poručíky je poručík, strana s víc žádného nedostane, při rovnosti losování;
   vypne se samo po srovnání. Povyšování na poručíka uživatel NECHCE. Odpověď bota na přání poručíka: „Lieutenants aren't requested, soldier. The front chooses them.“
 - **Nové pravidlo IG:** v popiscích žádné @označení hráčů (viz Pravidla).
+- **Rychlejší web:** sprity vojáků v jednom atlasu (na 4G 8,2 s → 1,9 s), atlas se po změně spritů přegeneruje sám (workflow `atlas`, viz Pravidla). Výbuchy ani krátery se nehromadí (ověřeno).
 **Nápady (nestavět bez souhlasu):**
 - **Trench Dog** pro měsíční předplatitele (Ko-fi membership).
 - **Video o skrytých hříčkách v textech** (uživatele to baví, chce je vysvětlit ve videu): „One good turn“ (přísloví *one good turn deserves another*, tužka), „the early birds“ (First Wave, ranní ptáče),
