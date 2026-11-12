@@ -464,24 +464,6 @@
       ],
       "caption": "",
       "_note": "Odloženo (12. 11.): nejdřív návod, jak claimnout vojáka (reel-claim). Dopis z domova ke zveřejnění až po něm, bez termínu."
-    },
-    {
-      "id": "reel-claim",
-      "type": "reel",
-      "files": [
-        "reel_claim.mp4"
-      ],
-      "caption": "CLAIM YOUR SOLDIER 🪖\n\nYou commented, and a soldier took a post on the line. Now make that soldier yours.\n\n1️⃣ Open the game (link in bio) and tap your soldier.\n2️⃣ Press “This is me” and sign in with Google. You get a short code.\n3️⃣ Comment the code under any of our posts. Within minutes the bot confirms: this soldier is yours.\n\nA claimed soldier can:\n✉️ get a letter from home every day and go into the night a little safer\n🔁 ask for a transfer: medic, sniper, machine gunner and more\n🏠 follow the family tree. If your soldier falls, an heir takes up the rifle.\n\nNot enlisted yet? Comment CONCORD or HEGEMONY and your soldier takes a post on the line.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
-      "_note": "Návod na claim + co umí claimnutý voják (dopis, převelení, rodokmen). Bez termínu, čeká na schválení a čas od uživatele."
-    },
-    {
-      "id": "story-reel-claim",
-      "type": "story",
-      "files": [
-        "story_reel-claim.jpg"
-      ],
-      "caption": "",
-      "_note": "Story k položce reel-claim (pravidlo: ke každé novince i story). Bez publishAt se nezveřejní."
     }
   ]
 }
