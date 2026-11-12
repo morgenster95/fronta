@@ -814,10 +814,10 @@
     "url": "https://ko-fi.com/mudandiron",
     "medal": "war-bonds",
     "name": "War Bonds",
-    "line": "kept the front running",
-    "entry": "Word came from home: War Bonds were bought in the name of {name}. The ribbon came up the line with the mail.",
+    "line": "supported the making of Mud & Iron",
+    "entry": "{name} bought War Bonds for the front. The quartermaster pinned the ribbon on personally: 'The front remembers who kept it fed.'",
     "newsHead": "The front thanks",
-    "newsText": "{names}. War Bonds keep the guns fed and the line standing."
+    "newsText": "{names}, who bought War Bonds and kept the guns fed."
   },
   "officerBalance": true,
   "_officerBalance": "Vyrovnání poručíků (2026-11-12): nováček bez přání role ze strany s méně poručíky je poručík, strana s víc poručíky žádného nedostane, při rovnosti běžné losování. false = jen losování."

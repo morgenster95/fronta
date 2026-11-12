@@ -247,7 +247,10 @@ večerní reel na to může navázat.
 - **Jednorázový dar = War Bonds · NASAZENO 2026-11-12:** dobrovolný, jedna stužka bez stupňů a bez počítání darů; jen čest, žádná herní výhoda.
   Stužka u jména a řádek „War Bonds kept the front running“ na kartě, v albu rodu (🎗), na obrázku „I ENLISTED“ ke sdílení (pod First Wave), zápis do deníku
   a jednou řádka „The front thanks: …“ v příštích novinách (víc dárců téhož dne v jedné řádce). Udělení: `data/commands.json` `{ "id": "support-<handle>-<datum>", "cmd": "support", "handle": "<ig>" }`
-  (`grantSupport` v `engine/roster.js`, texty `theme.support`). Tlačítko „Support the front ☕“ v panelu náboru se ukáže, až bude v `theme.support.url` adresa Ko-fi.
+  (`grantSupport` v `engine/roster.js`, texty `theme.support`).
+  Texty od 2026-11-12 večer: deník „{name} bought War Bonds for the front. The quartermaster pinned the ribbon on personally: 'The front remembers who kept it fed.'“,
+  noviny „The front thanks {names}, who bought War Bonds and kept the guns fed.“, karta „War Bonds: supported the making of Mud & Iron“ (dluhopisy kupuje hráč, podpora tvůrce řečená napřímo).
+  Výjimka z nedotknutelných deníků (na pokyn uživatele): u prvního dárce (v01py) se starý text přepsal příkazem `rewriteSupport`. Tlačítko „Support the front ☕“ v panelu náboru se ukáže, až bude v `theme.support.url` adresa Ko-fi.
 - **NÁPAD pro měsíční předplatitele (později): Trench Dog.** Voják předplatitele má na mapě v zákopu malého pixelového psa (sedí u něj, vrtí ocasem, občas si lehne),
   na kartě „🐕 Trench Dog: kept the front running“, pes má jméno (Biscuit, Rex…) a může se objevit v deníku; nástupce ho zdědí. Psi na frontě 1. sv. války (poslové, hlídači, maskoti).
   Bez herní výhody. Nic není postavené.

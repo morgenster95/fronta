@@ -1167,3 +1167,12 @@ test('balanceOfficer: strana s méně poručíky dostane poručíka, druhá žá
   assert.equal(balanceOfficer(st, theme, c2), false);
   assert.equal(balanceOfficer(st, { ...theme, officerBalance: false }, { id: 'x', faction: 1, archetype: 'medic' }), false);
 });
+
+import { rewriteSupport } from './roster.js';
+test('rewriteSupport: starý text War Bonds v deníku a poděkování v novinách nahradí novým', () => {
+  const theme = { support: { entry: '{name} bought bonds.', newsText: '{names}, thanks.' } };
+  const st = { soldiers: [{ handle: 'ann', name: 'Ann', record: [[4, 'Pencil story. Old bonds for Ann. Mail.']] }], news: [{ kind: 'thanks', names: ['Ann'], text: 'Ann. old' }] };
+  assert.equal(rewriteSupport(st, theme, 'ann', 'Old bonds for {name}. Mail.'), 1);
+  assert.equal(st.soldiers[0].record[0][1], 'Pencil story. Ann bought bonds.');
+  assert.equal(st.news[0].text, 'Ann, thanks.');
+});

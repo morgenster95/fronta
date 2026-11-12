@@ -156,6 +156,20 @@ export function applyComment(state, comment, theme, story, map) {
   return { type: 'enlist', soldier: s, victory, raid: raidRes, roleWish, ...(voted ? { vote: voted } : {}) };
 }
 
+// Jednorázový přepis textu War Bonds u dárce (příkaz rewriteSupport { handle, old }), výjimka z pravidla „deníky se nepřepisují“
+// na výslovný pokyn uživatele 2026-11-12: starý text odměny v deníku nahradí aktuálním theme.support.entry a poděkování v novinách
+// přepočítá podle aktuálního theme.support.newsText. Vrací počet změněných zápisů.
+export function rewriteSupport(state, theme, handle, old) {
+  const sup = theme.support;
+  const s = state.soldiers.find((x) => x.handle === handle);
+  if (!sup || !s) return 0;
+  const from = old.replaceAll('{name}', s.name), to = sup.entry.replaceAll('{name}', s.name);
+  let n = 0;
+  for (const r of s.record || []) if (typeof r[1] === 'string' && r[1].includes(from)) { r[1] = r[1].replace(from, to); n++; }
+  for (const t of state.news || []) if (t.kind === 'thanks' && t.names) t.text = sup.newsText.replace('{names}', t.names.join(', '));
+  return n;
+}
+
 // Vyrovnání poručíků (theme.officerBalance, od 2026-11-12): poručík se losuje jen při narukování, a tak měla jedna strana 6 a druhá 1.
 // Nováček strany, která má méně živých poručíků než druhá strana, je poručík (když si napíše roli, dostane ji: wishRole ho přepíše).
 // Strana, která jich má víc, nového poručíka nedostane. Při rovnosti platí běžné losování (váha role). Vrací true, když se role změnila.
