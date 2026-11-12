@@ -172,7 +172,14 @@ def make():
     text_c(d, W // 2, 248, "THE WINNER IS ANNOUNCED IN THE GAZETTE.", font(8), P["gold"])
     footer(d, H - 11)
     out = os.path.join(PROMO, "vote_orders_1.jpg")
-    up(im, K).convert("RGB").save(out, quality=95, subsampling=0)
+    big = up(im, K).convert("RGB")
+    # ilustrace přímo ze hry (tools/shoot-game.mjs: stejné sprity a terén, zoom 5 = 1 pixel hry = 1 pixel mřížky postu); jinak kreslené náhrady
+    for i, name in enumerate(("dugouts", "doctor", "ammo")):
+        f = os.path.join(ROOT, "marketing", "art", f"vote_{name}.png")
+        if os.path.exists(f):
+            shot = Image.open(f).convert("RGB").resize((AW * K, AH * K), Image.NEAREST)
+            big.paste(shot, (12 * K, (42 + i * 60 + 3) * K))
+    big.save(out, quality=95, subsampling=0)
     print(out)
 
 

@@ -433,6 +433,16 @@
         ]
       },
       "_note": "Hlasování o rozkazech (jeden post, jedno hlasování, každá strana svou nabídku). Bez publishAt se nezveřejní: čas doplnit až se souhlasem uživatele."
+    },
+    {
+      "id": "reel-rip",
+      "type": "reel",
+      "files": [
+        "reel_rip.mp4"
+      ],
+      "publishAt": "2026-11-12T18:00:00Z",
+      "caption": "R.I.P. 🪦 THE FIRST NIGHT OF THE BARRAGE\n\n5 soldiers of the Hegemony did not see the morning: Bram Yoollyfox, Pavel Zulfi, Nils Wolfmananton, Oskar Brunoescobar, Lucien Jewnipers. The Concord buried 1 too: Henrik Eccentricred.\n\nBut no name dies out here. That same night Dorian Yoollyfox reported for duty, the second of the House of Yoollyfox. Every fall is written in the family tree. Open your soldier's card in the game and read your house.\n\n🪖 251 soldiers on the front right now: 127 Hegemony, 124 Concord.\n\nNot enlisted yet? Comment CONCORD or HEGEMONY under any post and your soldier takes a post on the line.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
+      "_note": "Day reel R.I.P. (první padlí bombardování). Naplánováno 12. 11. 18:00 UTC (13:00 New York, 18:00 Londýn); schváleno uživatelem. Čísla (hráči na frontě) před zveřejněním obnovit: node tools/rip-data.mjs."
     }
   ]
 }

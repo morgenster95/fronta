@@ -25,6 +25,13 @@ Tohle je shrnutí toho, co jsme se naučili při práci na postech, reelech a z�
 - **Rodokmen:** pergamen se jménem rodu, kříž a jméno padlého, čára, nástupce se sprite, generace a den. Čára se kreslí postupně.
 - Na hrobech: jmenovky (příjmení, max 7–8 znaků), helma na kříži, kytice, lucerna; v dálce dopady a záblesky osvětlující nebe, déšť.
 
+## Nejlepší technika: snímek přímo ze hry (od 2026-11-12)
+Kreslené rekvizity vedle sprite vojáků (PixelLab, víc stínování a obrysy) občas „nesedí“ ke stylu. Nejlépe vychází **screenshot hry samotné**: stejné sprity, terén, světlo, počasí, dopady granátů.
+- `node tools/shoot-game.mjs <dugouts|doctor|ammo> <out.png> [zoom] [šířka] [výška]` vyfotí hru s rozkazem (`/?orders=0:DUGOUTS`, `0:DOCTOR`, `0:AMMO`, nutný `npm run dev`), kamera na kryt s vojáky / doktora u lůžka / sklad munice. **Zoom 5 + 350×250 px** = 1 pixel hry = 1 pixel mřížky postu 216×270 (po ×5 pixel přesně), vložit do postu nejbližším sousedem (`make_vote.py`).
+- Do postu patří výřezy 70×50 pixelů mřížky; výsledky jsou v `marketing/art/` (commit), kreslené ilustrace jsou jen záložní.
+- Kamera ve hře: `window.__front.cam.set(x, y, zoom)` (dev), skrýt panel (`#dispatch`), čekat na animaci (doktor u lůžka, výbuch u krytu).
+- Pro nové ilustrace nejdřív přidej prvek do hry (`web/src/orders-fx.js`), potom ho vyfoť, ne naopak.
+
 ## Text
 - **Nejmenší písmo 8 px v mřížce 216×270** (`font(8)`); `font(6)` se při zvětšení rozpadne a je nečitelné. Pro názvy `font(14, True)`.
 - Pixelový font 3×5 (`txt()` v cinema-race) má jen A–Z, 0–9, „+“, mezeru; M a W jsou širší (5×5), jinak splynou s H/N. Zbytek znaků odstraň.

@@ -125,6 +125,7 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
   let raised = false;
   return {
     shelters: layer.children,
+    docs,
     update(now, view) {
       if (!raised && docs.length) { raised = true; world.setChildIndex(top, world.children.length - 1); } // lékař nad vojáky
       for (const d of docs) {
