@@ -97,9 +97,10 @@ export function writeChronicle(state, day, { theme, story, weather, events = [],
 
   // titulek: velká zpráva dne (dobytí kóty, bombardování, výprava). Každodenní rubriky (routine: palba přes drát, obvaziště)
   // titulkem být nesmí, jinak se noviny každý den jmenují stejně; bez velké zprávy rozhoduje počasí a místo.
-  const lead = news.find((n) => !n.routine);
-  // stejné počasí dva dny po sobě nesmí dát stejný titulek: vybírá se z titulků, které v posledních pěti vydáních nebyly
+  // titulek se neopakuje ani u velkých zpráv: bere se první, který v posledních pěti vydáních nebyl
   const recent = new Set((state.chronicle || []).slice(-5).map((c) => c.title));
+  const lead = news.filter((n) => !n.routine).find((n) => !recent.has(n.h));
+  // stejné počasí dva dny po sobě nesmí dát stejný titulek: vybírá se z titulků, které v posledních pěti vydáních nebyly
   const fromWeather = () => {
     const all = weather.titles.map((t) => fill(t, { place }, rand));
     const fresh = all.filter((t) => !recent.has(t));

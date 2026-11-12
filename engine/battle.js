@@ -467,7 +467,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const f = barrage.target;
     const bad = shellHits.filter((s) => s.wound && s.wound.sev !== 'light').map((s) => `@${s.handle}`);
     out.news.push({
-      day, kind: 'barrage', sectors: [...shelled], h: `Hell on the ${short(theme, f)} lines: the guns of ${barrage.name} are firing`,
+      day, kind: 'barrage', sectors: [...shelled], h: `Hell on the ${short(theme, f)} lines, night ${Math.max(1, day - (barrage.since ?? day))}: the guns of ${barrage.name} are firing`,
       text: `All day the ${short(theme, barrage.by)} guns on ${barrage.name} pounded the ${short(theme, f)} lines, sectors ${[...shelled].slice(0, 6).join(', ')}${shelled.size > 6 ? ` and ${shelled.size - 6} more` : ''}. ` +
         `${shellHits.length ? `${shellHits.length} ${shellHits.length === 1 ? 'man was' : 'men were'} hit` : 'By some miracle nobody was hit'}` +
         `${bad.length ? `, badly: ${bad.join(', ')}` : ''}. The wire there is in shreds.`,
