@@ -85,6 +85,9 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   // dobrovolná podpora (Ko-fi): tlačítko jen když je v tématu adresa
   if (theme.support?.url) {
     $('support').hidden = false;
+    // stálé tlačítko u lupy: na mobilu jen ikona, na počítači i text
+    $('support-fab').hidden = false;
+    $('support-fab').href = theme.support.url;
     $('support-link').href = theme.support.url;
     $('support-note').textContent = `A one-time gift, if you want to. Write your Instagram handle in the message and your soldier gets the ${theme.support.name} ribbon. Honour only, never an advantage.`;
   }
