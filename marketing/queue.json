@@ -563,6 +563,27 @@
         "permalink": "https://www.instagram.com/stories/mudandiron/4029485875473587707",
         "at": "2026-11-13T12:16:17.185Z"
       }
+    },
+    {
+      "id": "reel-wire",
+      "type": "reel",
+      "files": [
+        "reel_wire.mp4"
+      ],
+      "caption": "WIRING PARTY ⛓️ VOLUNTEERS WANTED\n\nEvery night of the war, men crawled out between the trenches. Not to fight. To fix the wire. Coils of barbed wire, iron posts that screw into the mud without a sound. When a flare went up, they dropped flat and lay still until the dark came back.\n\nThe guns on Verdel Ridge have torn the Hegemony wire to pieces. Wire stops a raid before it reaches the trench, and it catches the bullets that cross the line. Without it, every man on the fire step is easier to hit.\n\n🪖 Comment WIRE under this reel and your soldier crawls out tonight to mend the wire in their own sector. Both sides can go.\n👀 A man out on the wire is a man not on watch. The side that stays home keeps its rifles on the parapet.\n⚠️ It is dangerous work. Some volunteers will be hit.\n📰 Results in the Trench Gazette at 13:00 UTC.\n\nNot on the front yet? Comment CONCORD or HEGEMONY to enlist. Link in bio.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
+      "wiring": true,
+      "_note": "Reel wiring party (v2). Schváleno uživatelem 13. 11., vydat v 19:00 CET. Pod reelem se otevřou přihlášky WIRE (vyhodnotí noviny 14. 11.).",
+      "publishAt": "2026-11-13T18:00:00Z"
+    },
+    {
+      "id": "story-reel-wire",
+      "type": "story",
+      "files": [
+        "story_reel-wire.jpg"
+      ],
+      "caption": "",
+      "publishAt": "2026-11-13T18:10:00Z",
+      "_note": "Story k položce reel-wire (pravidlo: ke každé novince i story). "
     }
   ]
 }
