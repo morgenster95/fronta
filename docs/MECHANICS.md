@@ -286,3 +286,7 @@ Když má strana průměrný drát v zemi nikoho pod 50 % (`theme.battle.wiring.
 (dny bombardování z dobyté kóty, jinak déšť, rez a zbloudilé kulky), v kolika úsecích jsou díry (drát < 30 %), proč na drátu záleží (zastaví nájezd, kryje proti palbě, `wire.cover`)
 a výzva k wiring party (vrtací kůly, plazení, při světlici k zemi; komentář WIRE pod rozkazem na IG). Texty v `theme.json`, kód v `engine/battle.js`.
 Podklad o skutečných wiring party: Wikipedia „Wiring party“, firstworldwar.com „Wiring Parties“ (noc 21–3 h, tichý „corkscrew“ kůl místo kladiva, při světlici k zemi, bloudění cestou zpět).
+
+## 2026-11-13: Drát na mapě podle stavu a viditelná wiring party (NASAZENO, vizuál)
+Web kreslí drát každého úseku přední linie podle `battle.sides[f].wire[úsek]` (celý ≥ 0,65 / napůl potrhaný / pod 0,35 potrhaný s dírami) a u úseků,
+kde se někdo přihlásil WIRE nebo byl venku minulou noc, ukazuje vojáky při práci (`roster.battle[f].party`). Mechanika boje se tím nemění, jen zobrazení.

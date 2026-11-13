@@ -205,7 +205,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const outside = new Set(vol.map((s) => s.id));
     const watch = theme.factions.map((_, f) => lineup(state, f, (s) => able(s) && s.line === 'front' && !outside.has(s.id)));
     const wk = WC.weather?.[state.weather] ?? 1;
-    const res = theme.factions.map(() => ({ n: 0, yards: 0, hit: [] }));
+    const res = theme.factions.map(() => ({ n: 0, yards: 0, hit: [], secs: {} }));
     for (const s of vol) {
       const f = s.faction, side = state.battle.sides[f];
       let sec = s.sector;
@@ -217,6 +217,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       const before = side.wire[sec] ?? cfg.wire.start;
       side.wire[sec] = Math.round(Math.min(1, before + add) * 100) / 100;
       res[f].n++;
+      res[f].secs[sec] = (res[f].secs[sec] || 0) + 1;
       res[f].yards += Math.round((side.wire[sec] - before) * 100);
       s.wiring = (s.wiring || 0) + 1;
       gainXp(theme, s, WC.xp || 0);
@@ -245,7 +246,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         wiring: res,
       });
     }
-    state.wiring.nights = [...(state.wiring.nights || []), { day, media: wo.media, ids: wo.ids.length, sides: res.map((r) => ({ n: r.n, yards: r.yards, hit: r.hit.length, bad: r.hit.filter((h) => h.sev !== 'light').length })) }].slice(-60);
+    state.wiring.nights = [...(state.wiring.nights || []), { day, media: wo.media, ids: wo.ids.length, sides: res.map((r) => ({ n: r.n, yards: r.yards, hit: r.hit.length, bad: r.hit.filter((h) => h.sev !== 'light').length, secs: r.secs })) }].slice(-60);
     state.wiring.open = null;
   }
 
@@ -585,6 +586,18 @@ export function battleTick(state, theme, story, day, ctx = {}) {
 }
 
 // pro web: stavby, lůžka a nosítka se jmény, raněnými v zákopu, pokrytí mediky, stav drátu
+function wiringParty(state, f) {
+  const out = {};
+  const add = (sec, n = 1) => { if (sec) out[sec] = (out[sec] || 0) + n; };
+  for (const id of state.wiring?.open?.ids || []) {
+    const s = state.soldiers.find((x) => x.id === id);
+    if (s && s.faction === f && s.status === 'active') add(s.sector);
+  }
+  const last = (state.wiring?.nights || []).at(-1);
+  if (last && last.day >= (state.day ?? 0) - 1) for (const [sec, n] of Object.entries(last.sides?.[f]?.secs || {})) add(sec, n);
+  return out;
+}
+
 export function battlePublic(state, theme) {
   if (!B(theme)) return null;
   // před prvním tahem s bojem: prázdná obvaziště (web je má ukázat hned), stav se tu nemění
@@ -604,6 +617,8 @@ export function battlePublic(state, theme) {
       walking: wnd.filter((s) => s.wound.sev === 'light').length,
       medics: { supply: Math.round(m.supply * 10) / 10, demand: m.demand, cover: Math.round(m.cover * 100) / 100 },
       wire: wire.length ? Math.round((wire.reduce((a, b) => a + b, 0) / wire.length) * 100) / 100 : null,
+      wireBy: side.wire, // úsek → 0..1 (web kreslí drát celý / potrhaný / díru)
+      party: wiringParty(state, f), // úsek → počet lidí z wiring party (přihlášení na příští noc + kdo byl venku minulou noc)
     };
   });
 }

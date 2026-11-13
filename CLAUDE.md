@@ -14,6 +14,14 @@ Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co
 4. **Doména** (Cloudflare) a škálování: viz sekce níže. **`letters-1`** a **`reel-sides`** čekají na čas od uživatele.
 5. **Boj v12** (od vydání Dne 4): zeptat se, jak se chová (padlí, raněni, bombardování).
 
+## ROZDĚLANÉ 2026-11-13 (předávka pro další sezení): drát, wiring party, animace
+- **Drát ve hře podle stavu (NASAZENO, k doladění):** `web/src/wire.js` kreslí v zemi nikoho rekvizity z PixelLabu (`web/public/assets/props/wire_*`, `hedgehog_*`, `screw_picket_*`, `wire_coil_*`; zdroj ve větší velikosti `art/props/wire/`) podle `roster.battle[f].wireBy` (úsek → 0..1: ≥0,65 celý, 0,35–0,65 napůl potrhaný, <0,35 potrhaný s dírami). Terén pak drát nekreslí čarami (`images.noWire` v `terrain.js`).
+  **Wiring party:** `roster.battle[f].party` (úsek → počet: přihlášení WIRE na příští noc + kdo byl venku minulou noc, `wiringParty` v `engine/battle.js`) → u drátu úseku klečí a zatloukají kůl (`work`), plazí se (`crawl`), kůl a svitek vedle. Náhled: `/?party=0:3,1:2&wire=0:0.1` (jen dev). Ukázky: `docs/mockups/wire_*.png`.
+  **Doladit:** velikost/hustota drátu (`STEP` ve wire.js), ježci jen občas, noc a světlice (zatím jen v ukázce), medici obvazující raněné v zákopu (`bandage` + `lying-wounded`), krčení při bombardování (`duck`). Uživatel chce, aby po náboru WIRE bylo vidět opravování a aby drát a ježci byli pěkní.
+- **Animace:** 3. kontrola čeká na uživatele (https://claude.ai/artifact/TTYykLEtUtDxBPnxatFGT1, kolekce `reviews`); předchozí kola: N4uhhXezxy4tKNCW4gQ7WU, Nh5Z5aipwuWyiAqdCqUXyq. Import `tools/import-anim.py` převádí barvy a kůži stran (`RECOLOR`, `SKIN`). Nejlépe funguje pixminimax se startovním snímkem ze schválené herní pózy (styl drží). PixelLab zůstatek ~1 445 generací.
+- **Gazette:** nová zpráva „The wire is down“ s výzvou WIRE (`theme.battle.wiring.news`). Post `wiring-1` vyšel 14:00 UTC 13. 11., přihlášky vyhodnotí noviny 14. 11.
+- **Bombardování (čeká na rozhodnutí):** Den 5 vyšel 2 padlí Hegemonie : 3 Concord (los; průměr ze simulace 2,9 : 1,1). Návrhy: B `battle.shell.kill` 0,5 → 0,75 (~3,7 padlých H/den), C k tomu `battle.shell.hit` 0,5 → 0,65 (~4,7/den). Zkusit: `node tools/sim-edition.mjs --set battle.shell.kill=0.75`. Bez souhlasu neměnit.
+
 ## SEZENÍ 2026-11-12 VEČER (Ko-fi, videa mimo git, poručíci): hotovo, nápady a čeká na rozhodnutí
 **Hotovo:**
 - **Day reel Dne 2** zveřejněn 2026-11-10 17:59 UTC (https://www.instagram.com/reel/Dfkf3GQEy_X/). Titulky denních reelů posunuty pod horní lištu IG (`#rd-sub` top 15,5 %), karta hlasování menší a níž.

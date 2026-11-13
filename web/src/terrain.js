@@ -81,7 +81,7 @@ export function paintChunk(map, cx, cy, images = {}) {
           put(px, py, c);
         }
       }
-      if (t === T.WIRE) drawWire(put, tx * S, ty * S, gx, gy);
+      if (t === T.WIRE && !images.noWire) drawWire(put, tx * S, ty * S, gx, gy); // s rekvizitami (web/src/wire.js) se drát kreslí jako sprity
     }
   }
 
