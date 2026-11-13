@@ -83,7 +83,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   $('ig-link').href = `https://instagram.com/${ig}`;
   $('ig-link').textContent = theme.instagram;
   // dobrovolná podpora (Ko-fi): tlačítko jen když je v tématu adresa
-  if (theme.support?.url) {
+  if (theme.support?.url && theme.support.buttons !== false) { // support.buttons: false = tlačítka Support dočasně skrytá (stužky dárců zůstávají)
     $('support').hidden = false;
     // stálé tlačítko u lupy: na mobilu jen ikona, na počítači i text
     $('support-fab').hidden = false;
