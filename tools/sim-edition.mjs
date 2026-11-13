@@ -1,6 +1,6 @@
 // Ztráty před vydáním novin: odehraje několik dní (výchozí 3 = 3 noci bombardování) na kopii skutečného stavu, mnohokrát s jiným losem,
 // a ukáže padlé a raněné podle stran (průměr, rozptyl, v kolika bězích má poražený strana víc ztrát než vítěz). Nic neukládá.
-//   node tools/sim-edition.mjs [--runs 30] [--days 3] [--state soubor]
+//   node tools/sim-edition.mjs [--runs 30] [--days 3] [--state soubor] [--set battle.shell.kill=0.7 …] (--set jen pro tenhle výpočet, nic se nemění)
 import { execFileSync } from 'node:child_process';
 import { ROOT, loadTheme, loadState, stateFromGit } from './lib.mjs';
 import { dailyTick } from '../engine/roster.js';
@@ -9,6 +9,12 @@ const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
 const RUNS = Number(opt('--runs', 30)), DAYS = Number(opt('--days', 3));
 const { theme, story } = loadTheme();
+args.forEach((a, i) => { // --set cesta=hodnota: zkusmá změna čísla v theme.json jen pro tento výpočet
+  if (args[i - 1] !== '--set') return;
+  const [path, val] = a.split('='); const ks = path.split('.'); let o = theme;
+  for (const k of ks.slice(0, -1)) o = o[k];
+  o[ks.at(-1)] = JSON.parse(val); console.log(`zkusmo: ${path} = ${val}`);
+});
 let base;
 if (opt('--state', null)) base = loadState(theme, opt('--state', null));
 else { execFileSync('git', ['fetch', '-q', 'origin', 'main'], { cwd: ROOT }); base = stateFromGit('origin/main'); }

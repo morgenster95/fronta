@@ -79,3 +79,8 @@
 {"time": "2026-11-13T10:49:06Z", "character": "7426cf4a-3535-479b-96f6-9991c20b37ad", "name": "fire-side5", "direction": "east", "group": "59a3be75-07b5-4af8-ab5d-612238d98851", "cost": 1, "error": null}
 {"time": "2026-11-13T10:49:39Z", "character": "3a323a11-d6a9-42dc-a66f-7e8d9ce0102b", "name": "fire5", "direction": "south", "group": "25950c84-ebd1-4f3b-b73b-9b27da153dfc", "cost": 1, "error": null}
 {"time": "2026-11-13T10:49:42Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "crawl5", "direction": "north", "group": "30bf86d6-c033-4ef7-a8cb-085154156455", "cost": 1, "error": null}
+{"time": "2026-11-13T10:56:52Z", "character": "image_pro", "name": "wire_intact", "direction": "-", "group": "bee88d73-f67b-4fc2-b11e-cf015cb42cef", "cost": 10, "error": null}
+{"time": "2026-11-13T10:56:53Z", "character": "image_pro", "name": "wire_broken", "direction": "-", "group": "301b4351-42eb-4a5e-84d2-a08ef3d204c7", "cost": 10, "error": null}
+{"time": "2026-11-13T10:56:54Z", "character": "image_pro", "name": "hedgehog", "direction": "-", "group": "51776485-e755-4c1a-ac3b-ef07b42e1d40", "cost": 10, "error": null}
+{"time": "2026-11-13T10:56:54Z", "character": "image_pro", "name": "wire_coil", "direction": "-", "group": "089b59d1-6a88-43d4-beb0-e9217116ad59", "cost": 10, "error": null}
+{"time": "2026-11-13T10:56:55Z", "character": "image_pro", "name": "screw_picket", "direction": "-", "group": "07530335-3aa7-4e0f-a1b2-5810afcffecc", "cost": 10, "error": null}
