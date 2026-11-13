@@ -297,3 +297,12 @@ Změny v `theme.json` → `battle.shell`: `hit` 0,5 → 0,65 (zasažený podíl 
 `severity` light 0,7/heavy 0,3 → 0,75/0,4 (víc kritických: 40 % místo 30 %), nové `careCut` 0,5 (medici a nosiči se v ostřelovaném úseku dostanou k raněným jen napůl;
 `engine/battle.js`, péče `g`). Simulace (20 běhů × 3 dny): Hegemonie ~6,8 / 7,2 / 4,0 padlých za den (dřív ~2,9), Concord ~1 za den; poražený má víc padlých ve 20/20 bězích.
 Den 5 podle skutečného stavu: Hegemonie 7 padlých (6 přímým zásahem), Concord 3.
+
+## 2026-11-13 (poledne): Bez umělého limitu padlých, lůžko = operace (NASAZENO na pokyn uživatele, od vydání Dne 5)
+Uživatel: limit padlých (5 % strany za den) nedává smysl, hráči přibývají a padlé nahrazuje nástupce; ztráty mají dávat statistiky, ne pojistka (ale ne 80 % všech).
+Uživatel: na lůžku má těžce raněný být nejvýš 2 dny; kdo přežije noc operace, je v pořádku (jinak jen čeká a hra pro něj není zajímavá).
+- `battle.maxDeaths.share` 0,05 → 0,25 (jen pojistka proti chybě). Dřív se při bombardování limit naplnil a kriticky ranění nad ním „žili“ dny bez konce (63 % kritických H po 10 dnech).
+- `battle.shell.share` 0,3 → 0,4 (podíl ostřelovaných úseků), `careCut` 0,5 → 0,6 a platí jen pro raněné, kteří ještě leží v ostřelovaném zákopu (nosítka jsou na obvazišti).
+- Lůžko: první noc operace (kritický umírá s 0,5 × critRisk: nemocnice 20 %, obvaziště 40 %), přežije-li, je těžce raněný a za 2 dny od uložení se vrací na frontu (`w.operated`).
+Simulace 20 běhů × 3 dny: Hegemonie ~9,3 / 8,0 / 1,5 padlých za den (bombardování končí Dnem 6), Concord ~1/den; za 3 dny H ~19 padlých a ~91 zranění, C ~2 a ~38.
+Osud dnes raněných H (10 dní): těžce raněný padne 40 %, vrátí se 52 % (průměrně za ~5 dní), lehce raněný se vrátí 81 % za ~2 dny. Den 5 podle stavu: H 10 padlých, C 3.

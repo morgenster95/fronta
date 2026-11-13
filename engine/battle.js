@@ -450,7 +450,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       const w = s.wound;
       const rand = rngFor(s.id, 'care', day);
       // pod granáty se medici a nosiči k raněným v ostřelovaném úseku dostanou jen zčásti (battle.shell.careCut)
-      const pinned = barrage?.target === s.faction && shelled.has(s.sector) && w.place !== 'bed' ? 1 - (cfg.shell.careCut || 0) : 1;
+      const pinned = barrage?.target === s.faction && shelled.has(s.sector) && w.place === 'trench' ? 1 - (cfg.shell.careCut || 0) : 1; // jen kdo ještě leží v ostřelovaném zákopu (nosítka už jsou na obvazišti)
       const g = w.place === 'bed' ? 1 : (w.care ?? 0) * pinned;
       const C = cfg.care[w.sev];
       const fresh = w.day === day;
@@ -469,12 +469,14 @@ export function battleTick(state, theme, story, day, ctx = {}) {
           ev(s, 'patched', eventEntry('patched', s, day, theme, story, {}, today));
         }
       } else if (w.place === 'bed') {
-        // na lůžku: plná péče místa (medika nepotřebuje); stejný vzorec jako na nosítkách, jen s lepšími násobky místa
-        if (w.sev === 'crit') {
-          if (rand() < C.dieBase * H.critRisk * (ctx.dieOf?.(s) ?? 1)) { if (die(s, 'diedInBed', 'wounds')) continue; }
-          w.critDays = (w.critDays || 0) + 1;
-          if (w.critDays >= C.stabilizeBed) { w.sev = 'heavy'; ev(s, 'stabilized', eventEntry('stabilized', s, day, theme, story, {}, today)); }
-        } else if (!fresh && day - w.day >= cfg.care.heavy.minDays && rand() < cfg.care.heavy.heal * H.care * (ctx.careOf?.(s) ?? 1) * (ctx.healOf?.(s) ?? 1)) {
+        // na lůžku v nemocnici se operuje (domluveno s uživatelem 13. 11.): první noc na lůžku rozhoduje. Kritický ji přežije s rizikem
+        // dieBase × critRisk místa (nemocnice 0,2, obvaziště 0,4); kdo ji přežije, je z nejhoršího venku a druhý den se vrací na frontu
+        // (na lůžku nejvýš 2 dny, nikdo jen nečeká)
+        if (!w.operated) {
+          if (w.sev === 'crit' && rand() < C.dieBase * H.critRisk * (ctx.dieOf?.(s) ?? 1)) { if (die(s, 'diedInBed', 'wounds')) continue; }
+          w.operated = true;
+          if (w.sev === 'crit') { w.sev = 'heavy'; ev(s, 'stabilized', eventEntry('stabilized', s, day, theme, story, {}, today)); }
+        } else if (day - (w.bedDay ?? day) >= 2) {
           recover(s, 'recovered');
         }
       } else if (w.sev === 'heavy') {

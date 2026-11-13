@@ -556,7 +556,8 @@
         "stabilizeBed": 3
       },
       "triage": 1,
-      "_triage": "triage: kritický bez místa vezme lůžko nebo nosítka těžce raněnému."
+      "_triage": "triage: kritický bez místa vezme lůžko nebo nosítka těžce raněnému.",
+      "_bed": "lůžko = operace: první noc na lůžku kritický umírá s dieBase × critRisk místa, kdo přežije, je těžce raněný a druhý den se vrací na frontu (nejvýš 2 dny na lůžku); engine/battle.js"
     },
     "roles": {
       "_covers": "covers = kolik lidí poblíž jeden voják role pokryje (kulomet: nepřátelské střelce, spojař: vojáky, důstojník/spojka: střelce, kuchař: lehce raněné, kaplan: kriticky raněné na nosítkách). Účinek = plný účinek × min(1, počet role × covers / lidí poblíž): roste s poměrem, nikdy přes plný účinek.",
@@ -674,9 +675,9 @@
       "_": "mult násobí hlavní schopnost role: palbu, práci medika, opravy ženisty"
     },
     "maxDeaths": {
-      "share": 0.05,
+      "share": 0.25,
       "min": 2,
-      "_": "pojistka: nejvýš tolik padlých za den na stranu (podíl strany, nejméně min); kdo by padl navíc, přežije do zítřka"
+      "_": "jen pojistka proti chybě v kódu (25 % strany za den); běžné ztráty dávají statistiky (13. 11. na pokyn uživatele, dřív 5 % a blokovalo to umírání)"
     },
     "wire": {
       "start": 0.6,
@@ -731,7 +732,7 @@
     },
     "shell": {
       "sectors": 4,
-      "share": 0.3,
+      "share": 0.4,
       "hit": 0.65,
       "severity": {
         "light": 0.75,
@@ -740,8 +741,8 @@
       "wire": 0.4,
       "kill": 0.75,
       "_kill": "kill: šance, že kritický zásah granátem zabije na místě (lůžko ani medik nepomůže).",
-      "careCut": 0.5,
-      "_careCut": "careCut: pod granáty dostanou ranění mimo lůžko v ostřelovaném úseku jen tuto část péče mediků a nosičů (0,5 = polovinu); 13. 11. na pokyn uživatele"
+      "careCut": 0.6,
+      "_careCut": "careCut: raněný, který ještě leží v ostřelovaném zákopu (ne na nosítkách ani lůžku), dostane jen 1 − careCut péče mediků (0,6 → 40 %); 13. 11. na pokyn uživatele"
     },
     "aidPost": {
       "name": "Aid post",
