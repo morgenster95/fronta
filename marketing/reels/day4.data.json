@@ -1,7 +1,7 @@
 {
  "day": 4,
  "army": [
-  166,
+  168,
   148
  ],
  "total": 45,
@@ -543,19 +543,19 @@
  "race": {
   "name": "Hill 304",
   "counts": [
-   72,
+   74,
    48
   ],
   "lead": 0,
   "goal": 100
  },
- "letters": 71,
+ "letters": 74,
  "shelled": {
   "side": 0,
   "nights": 2,
   "from": "Verdel Ridge"
  },
- "newSince": 82,
+ "newSince": 84,
  "joined": [
   65,
   39

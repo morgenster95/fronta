@@ -1,5 +1,5 @@
 {
- "seconds": 70.1,
+ "seconds": 76.8,
  "voice": "en-GB-RyanNeural",
  "lines": [
   [
@@ -58,48 +58,54 @@
   ],
   [
    35.01,
-   5.88,
-   "Hegemony seventy-two. Concord forty-eight. First to one hundred takes the hill.",
+   5.9,
+   "Hegemony seventy-four. Concord forty-eight. First to one hundred takes the hill.",
    "raceN"
   ],
   [
-   41.14,
+   41.16,
    4.11,
    "Tonight the guns fire again. Two more nights of shelling for the Hegemony.",
    "tonight"
   ],
   [
-   45.5,
+   45.52,
    1.92,
    "New at the front: a letter from home.",
    "letter"
   ],
   [
-   47.67,
-   8.91,
-   "Open your soldier's card and send one. It keeps your soldier fifteen percent safer for one night. Seventy-one letters are already on the way.",
+   47.69,
+   8.79,
+   "Open your soldier's card and send one. It keeps your soldier fifteen percent safer for one night. Seventy-four letters are already on the way.",
    "letter2"
   ],
   [
-   56.83,
-   2.46,
-   "314 soldiers hold the line now.",
+   56.73,
+   6.73,
+   "Yesterday, 104 new soldiers came up the line. 65 Hegemony, 39 Concord.",
+   "joined"
+  ],
+  [
+   63.71,
+   2.45,
+   "316 soldiers hold the line now.",
    "army"
   ],
   [
-   59.54,
-   1.58,
-   "166 for the Hegemony.",
+   66.41,
+   1.46,
+   "168 for the Hegemony.",
    "armyH"
   ],
   [
-   61.37,
+   68.12,
    1.58,
    "148 for the Concord.",
    "armyC"
   ],
   [
-   63.2,
+   69.95,
    3.41,
    "Comment Concord... or Hegemony. Link in bio.",
    "cta"
