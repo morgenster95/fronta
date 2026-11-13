@@ -31,6 +31,27 @@ const CSS = `${BASE}${FX_CSS}${CINEMA_CSS}
 #rd-side { left: 0; right: 0; top: 66%; text-align: center; }
 #rd-side span { display: inline-block; font-family: 'Silkscreen', monospace; font-size: 30px; background: rgba(14, 13, 12, 0.88); border-bottom: 4px solid currentColor; padding: 6px 16px; text-shadow: 3px 3px 0 #0e0d0c; }
 #rd-side b { font-weight: 400; font-size: 64px; margin-right: 14px; vertical-align: -6px; }
+#rd-fallen { left: 7%; right: 7%; top: 30%; }
+#rd-fallen .paper { --ink: #2a2118; --red: #7a2a1c; padding: 14px 16px 16px; color: var(--ink); background-size: 288px 288px; image-rendering: pixelated; font-size: 23px; }
+#rd-fallen .h { font-family: 'Silkscreen', monospace; font-size: 14px; border-bottom: 2px solid var(--ink); padding-bottom: 4px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+#rd-fallen li { list-style: none; display: flex; justify-content: space-between; gap: 8px; margin: 3px 0; opacity: 0; }
+#rd-fallen ul { margin: 0; padding: 0; }
+#rd-fallen li b { font-weight: 400; color: var(--red); }
+#rd-fallen li span { font-size: 18px; opacity: 0.8; }
+#rd-fallen .heir { font-family: 'Silkscreen', monospace; font-size: 15px; color: var(--red); margin-top: 10px; opacity: 0; }
+#rd-hill { left: 7%; right: 7%; top: 27%; }
+#rd-hill .k { font-family: 'Silkscreen', monospace; font-size: 20px; color: #d98f3f; text-align: center; margin-bottom: 8px; }
+#rd-hill .row { display: grid; grid-template-columns: 1fr auto; align-items: baseline; font-family: 'Silkscreen', monospace; font-size: 24px; margin-top: 8px; }
+#rd-hill .row b { font-weight: 400; font-size: 52px; line-height: 1; }
+#rd-hill .bar { height: 14px; background: #2b2722; border: 2px solid #0e0d0c; margin-top: 4px; position: relative; }
+#rd-hill .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: currentColor; }
+#rd-hill .goal { font-family: 'Silkscreen', monospace; font-size: 15px; color: #a39782; text-align: right; margin-top: 8px; }
+#rd-night { left: 0; right: 0; top: 30%; text-align: center; }
+#rd-night span { display: inline-block; font-family: 'Silkscreen', monospace; font-size: 30px; background: rgba(126,59,42,0.95); padding: 6px 16px; margin: 3px 0; text-shadow: 3px 3px 0 #0e0d0c; opacity: 0; }
+#rd-letter { left: 8%; right: 8%; top: 27%; text-align: center; }
+#rd-letter .btn { display: inline-block; font-family: 'Silkscreen', monospace; font-size: 21px; color: #efe6cf; background: #7e3b2a; border: 4px solid #0e0d0c; box-shadow: 0 0 0 3px #d98f3f, 6px 8px 0 rgba(0,0,0,0.6); padding: 10px 14px; line-height: 1.25; }
+#rd-letter .n { font-family: 'Silkscreen', monospace; font-size: 22px; color: #d98f3f; margin-top: 18px; text-shadow: 3px 3px 0 #0e0d0c; }
+#rd-letter .n b { font-weight: 400; font-size: 64px; display: block; line-height: 1; color: #efe6cf; }
 #rd-vote { left: 17%; right: 17%; top: 25%; }
 #rd-vote img { width: 100%; display: block; image-rendering: pixelated; box-shadow: 0 8px 0 rgba(0,0,0,0.5), 0 16px 28px rgba(0,0,0,0.6); }
 #rd-vote .hl { position: absolute; left: 2.5%; right: 2.5%; border: 4px solid #d98f3f; box-shadow: 0 0 0 3px #0e0d0c, 0 0 22px rgba(217,143,63,0.7); opacity: 0; }
@@ -50,6 +71,10 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const at = (id) => C.at(id);
   const tSh = at('shooter'), tShot = at('shot'), tCount = at('count'), tAid = at('aid'), tStr = at('stretcher');
   const tArmy = at('army'), tArmyH = at('armyH'), tArmyC = at('armyC'), tRaid = at('raid'), tVote = at('vote'), tOpts = at('opts'), tCta = at('cta');
+  const tFallen = at('fallen'), tRace = at('race'), tRaceN = at('raceN'), tNight = at('tonight'), tLetter = at('letter'), tLetter2 = at('letter2');
+  // co následuje po obvazišti (závod, děla, dopis, počty) a po přejezdu po linii (výprava, hlasování, závěr)
+  const tPost = tRace ?? tNight ?? tLetter ?? tArmy ?? tRaid ?? tVote ?? tCta;
+  const tTail = tRaid ?? tVote ?? tCta;
   const tEnd = (id) => at(id) + C.len(id);
 
   const T = map.tile;
@@ -76,6 +101,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   }
   // --- kamera: tvrdé střihy na začátcích vět ---
   const afterShot = tShot ?? tCount;
+  const rearY = (hs[0]?.y ?? mid) - 70; // za první linií Hegemonie (bombardování)
   const K = [
     [0, hx - 200, mid, 1.3],
     [tSh - 0.01, hx - 200, mid, 1.3],
@@ -86,17 +112,22 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     [tAid - 0.01, hx + 120, mid - 20, 1.25],
     [tAid, hosp.x - 30, hosp.y + 2, 3.7, 'cut'],
     [tStr, hosp.x, hosp.y + 4, 4.1],
-    ...(tArmy ? [[Math.min(tStr + C.len('stretcher') + 0.2, tArmy - 0.02), hosp.x + 16, hosp.y + (data.focus === 0 ? 26 : -26), 4.4], [tArmy, hx - 160, mid, 1.15, 'cut'],
-      ...(tArmyH && tArmyC ? [[tArmyH - 0.01, hx - 60, mid, 1.2], ...sweep(real(0), tArmyH, tArmyC - 0.01), ...sweep(real(1), tArmyC, (tRaid ?? tVote) - 0.02)] : [])] : []),
-    tArmy ? [(tRaid ?? tVote) - 0.01, hx + 140, mid, 1.3] : [(tRaid ?? tVote) - 0.01, hosp.x + 16, hosp.y + (data.focus === 0 ? 26 : -26), 4.4],
-    [tRaid ?? tVote, hx - 120, mid, 1.2, 'cut'],
+    [Math.min(tStr + C.len('stretcher') + 0.2, tPost - 0.02), hosp.x + 16, hosp.y + (data.focus === 0 ? 26 : -26), 4.4],
+    ...(tRace ? [[tRace, hx - 220, mid, 1.1, 'cut'], [(tNight ?? tLetter ?? tArmy) - 0.01, hx + 60, mid, 1.2]] : []),
+    ...(tNight ? [[tNight, hx - 140, rearY, 1.7, 'cut'], [(tLetter ?? tArmy) - 0.01, hx + 120, rearY, 2.0]] : []),
+    ...(tLetter ? [[tLetter, hx - 120, mid, 1.2, 'cut'], [tArmy - 0.01, hx - 100, mid, 1.2]] : []),
+    ...(tArmy ? [[tArmy, hx - 160, mid, 1.15, 'cut'],
+      ...(tArmyH && tArmyC ? [[tArmyH - 0.01, hx - 60, mid, 1.2], ...sweep(real(0), tArmyH, tArmyC - 0.01), ...sweep(real(1), tArmyC, tTail - 0.02)] : [])] : []),
+    [tTail - 0.01, hx + 140, mid, 1.3],
+    [tTail, hx - 120, mid, 1.2, 'cut'],
     [END, hx + 260, mid, 1.35],
   ];
   const camAt = camPath(K);
   const sub = subtitles(vo);
   const fx = transitions([
     [tSh, 'flash'], ...(tShot ? [[tShot - 0.12, 'flash'], [tShot, 'whip']] : []), [tCount, 'black', 0.36],
-    [tAid, 'whip'], [tStr, 'black', 0.3], ...(tArmy ? [[tArmy, 'black', 0.36], ...(tArmyH ? [[tArmyH, 'whip'], [tArmyC, 'whip']] : [])] : []), ...(tRaid ? [[tRaid, 'black', 0.4]] : []), [tVote, 'flash'], [tCta, 'black', 0.5],
+    ...(tFallen ? [[tFallen, 'black', 0.4]] : []), [tAid, 'whip'], [tStr, 'black', 0.3], ...(tRace ? [[tRace, 'black', 0.36]] : []), ...(tNight ? [[tNight, 'flash']] : []), ...(tLetter ? [[tLetter, 'black', 0.4]] : []),
+    ...(tArmy ? [[tArmy, 'black', 0.36], ...(tArmyH ? [[tArmyH, 'whip'], [tArmyC, 'whip']] : [])] : []), ...(tRaid ? [[tRaid, 'black', 0.4]] : []), ...(tVote ? [[tVote, 'flash']] : []), [tCta, 'black', 0.5],
     [tSh + 1.2, 'punch'], ...(tShot ? [[tShot - 0.12, 'punch']] : []),
   ]);
   const NIGHT = { flares: [[0.8, 50], [3.2, 120]], flashes: [[0.3, 40], [2.4, 150]], march: 8 };
@@ -107,7 +138,13 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const SFX = [];
   for (const e of EV) if (e[1] === 'shoot' || e[1] === 'shootAt') SFX.push([e[0] + 0.62, 'shoot', 0]);
   SFX.push([0.5, 'type', 0.4], [at('guns'), 'type', 0.9], [tSh, 'reveal', 0], [(tShot ?? tCount) + 0.3, 'stamp', 0], [tCount, 'drum', 0], [tAid, 'bell', 0], ...(tArmy ? [[tArmy, 'drum', 0], ...(tArmyH ? [[tArmyH, 'stamp', 0], [tArmyC, 'stamp', 0]] : [])] : []),
-    ...(tRaid ? [[tRaid, 'whistle', 0]] : []), [tVote, 'drum', 0], ...[0, 1].map((i) => [tOpts + i * 1.1, 'stamp', 0]), [tCta, 'end', 0]);
+    ...(tRaid ? [[tRaid, 'whistle', 0]] : []), ...(tVote ? [[tVote, 'drum', 0], ...[0, 1].map((i) => [tOpts + i * 1.1, 'stamp', 0])] : []), [tCta, 'end', 0],
+    ...(tFallen ? [[tFallen, 'bell', 0]] : []), ...(tRace ? [[tRace, 'drum', 0], [tRaceN + 0.3, 'tick', 2]] : []), ...(tNight ? [[tNight, 'barrage', 5]] : []),
+    ...(tLetter ? [[tLetter + 0.4, 'type', 1.2], [tLetter2 + 0.4, 'stamp', 0]] : []));
+  // dopady granátů za první linií (předem určené, video je vždy stejné)
+  const BOOM = [];
+  if (tNight) { let q = 4242; const rr = () => ((q = (q * 16807) % 2147483647) / 2147483647);
+    for (let t = tNight + 0.2; t < (tLetter ?? tArmy) - 0.3; t += 0.18 + rr() * 0.2) BOOM.push([t, rr() < 0.55, rr(), rr()]); }
 
   // --- DOM ---
   document.body.classList.add('reel');
@@ -116,8 +153,10 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   document.head.appendChild(style);
   const root = document.createElement('div');
   root.id = 'rd';
-  const sevText = { light: 'GRAZED', heavy: 'BADLY WOUNDED', crit: 'GRAVELY WOUNDED' };
-  const placeText = { bed: 'in a bed', stretcher: 'on a stretcher', trench: 'in the trench' };
+  const sevText = { light: 'GRAZED', heavy: 'BADLY WOUNDED', crit: 'GRAVELY WOUNDED', killed: 'KILLED' };
+  const placeText = { bed: 'in a bed', stretcher: 'on a stretcher', trench: 'in the trench', fallen: 'the family sent the next in line' };
+  const hitN = data.hitN || data.hit.map((l) => l.length);
+  const fallenList = (data.fallen || []).slice(0, 6);
   const list = (f) => data.hit[f].slice(0, 3).map((r) => `<li>@${r.handle}<span>${sevText[r.sev].toLowerCase()}</span></li>`).join('')
     + (data.hit[f].length > 3 ? `<li style="border:0">+ ${data.hit[f].length - 3} more<span></span></li>` : '');
   root.innerHTML = `
@@ -130,7 +169,13 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
       <div class="h"><span>FIELD TELEGRAPH</span><span>DAY ${data.day}</span></div>
       <div class="who">@${data.fire.handle}</div>
       <div>${sevText[data.fire.sev]} · shot by @${data.fire.by.handle}</div>
-      <div>now ${placeText[data.fire.place] || 'in the trench'}</div><div class="rk-stamp">HIT</div></div></div>` : ''}
+      <div>${data.fire.sev === 'killed' ? placeText.fallen : `now ${placeText[data.fire.place] || 'in the trench'}`}</div><div class="rk-stamp">${data.fire.sev === 'killed' ? 'FALLEN' : 'HIT'}</div></div></div>` : ''}
+    ${fallenList.length ? `<div id="rd-fallen"><div class="paper" style="background-image:url(${paperTexture(7)});clip-path:${tornClip(7)}">
+      <div class="h"><span>ROLL OF HONOUR</span><span>DAY ${data.day}</span></div><ul>${fallenList.map((x) => `<li><b>† ${x.name}</b><span>${short(x.faction).toLowerCase()} ${roleName(x.role).toLowerCase()}</span></li>`).join('')}</ul>
+      <div class="heir">THE NEXT OF EACH FAMILY TOOK THEIR PLACE</div></div></div>` : ''}
+    ${data.race ? `<div id="rd-hill" class="panel"><div class="k">THE RACE FOR ${data.race.name.toUpperCase()}</div>${[0, 1].map((f) => `<div style="color:${f ? '#c9c26a' : '#a7b4bb'}"><div class="row"><span>${short(f)}</span><b>0</b></div><div class="bar"><i style="width:0"></i></div></div>`).join('')}<div class="goal">FIRST TO ${data.race.goal} TAKES THE HILL</div></div>` : ''}
+    ${data.shelled ? `<div id="rd-night"><span>TONIGHT</span><br><span>${data.shelled.nights > 1 ? 'AND TOMORROW' : 'THE LAST NIGHT'}</span><br><span>ON THE ${short(data.shelled.side)}</span></div>` : ''}
+    ${tLetter ? `<div id="rd-letter"><div class="btn">✉ SEND YOUR SOLDIER A LETTER<br>15% SAFER TONIGHT</div>${data.letters > 1 ? `<div class="n"><b>0</b>LETTERS ON THE WAY</div>` : ''}</div>` : ''}
     <div id="rd-count" class="panel"><span class="k">Day ${data.day} · the wounded</span>
       <div class="side" style="color:#a7b4bb"><span>HEGEMONY</span><b>0</b></div><ul>${list(0)}</ul>
       <div class="side" style="color:#c9c26a"><span>CONCORD</span><b>0</b></div><ul>${list(1)}</ul></div>
@@ -138,7 +183,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
       <div class="m">${data.raid.seats} per side · tonight</div><div class="kw">COMMENT ${data.raid.kw}</div></div>` : ''}
     ${data.army ? `<div id="rd-army" class="panel"><div class="k">ON THE LINE TODAY</div><div class="n">0</div></div>` : ''}
     <div id="rd-side"><span><b></b><em style="font-style:normal"></em></span></div>
-    <div id="rd-vote"><img src="${voteImg}" alt="">${[0, 1].map((i) => `<div class="hl" style="top:${(54 + i * 80) / 2.7}%;height:${72 / 2.7}%"></div>`).join('')}</div>
+    <div id="rd-vote" style="${tVote ? '' : 'display:none'}"><img src="${voteImg}" alt="">${[0, 1].map((i) => `<div class="hl" style="top:${(54 + i * 80) / 2.7}%;height:${72 / 2.7}%"></div>`).join('')}</div>
     <div id="rd-sub"></div>
     <div id="rd-every"><span>EVERY MORNING · 13:00 UTC</span></div>
   `;
@@ -152,7 +197,8 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const outro = pickScene(data.day, ['dawn', 'dawnwire', 'grim'], 1); // dawnwire = Hegemony za úsvitu, grim = Concord v ohni
   const sceneAt = (t) => {
     if (t < tSh && intro !== 'march') return [intro, t];
-    if (t >= tStr && t < (tArmy ?? tRaid ?? tVote)) return ['aidpost', t - tStr];
+    if (t >= tStr && t < tPost) return ['aidpost', t - tStr];
+    if (tLetter && t >= tLetter && t < (tArmy ?? tTail)) return ['letter', t - tLetter];
     if (tRaid && t >= tRaid && t < tVote) return ['church', t - tRaid];
     if (t >= tCta && outro !== 'dawn') return [outro, t - tCta];
     return null;
@@ -161,11 +207,19 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const $ = (s) => root.querySelector(s);
   const show = (sel, o) => { const el = $(sel); if (el) el.style.opacity = o; };
 
-  const fired = new Set();
+  const fired = new Set(), boomed = new Set();
+  let barraged = false;
   function frame(t) {
     const f = fx(t);
     const [x, y, z] = camAt(t);
     cam.set(x, y, z * (1 + 0.035 * f.punch));
+    if (tNight && t >= tNight && !barraged) { barraged = true; life.setBarrage({ faction: data.shelled.side }); }
+    for (const [i, [bt, big, ra, rb]] of BOOM.entries()) {
+      if (boomed.has(i) || t < bt) continue;
+      boomed.add(i);
+      const [cx, cy, cz] = camAt(bt);
+      life.shell(cx + (ra - 0.5) * 540 / cz, cy + (rb - 0.5) * 700 / cz, big);
+    }
     for (const [i, ev] of EV.entries()) {
       if (fired.has(i) || t < ev[0]) continue;
       fired.add(i);
@@ -220,14 +274,14 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     show('#rd-count', win(t, tCount, tAid - 0.05, 0.15));
     root.querySelectorAll('#rd-count b').forEach((el, i) => {
       const a = tCount + 0.25 + i * 0.5;
-      el.textContent = t > a ? data.hit[i].length : 0;
+      el.textContent = t > a ? hitN[i] : 0;
       el.style.transform = `scale(${1 + 0.8 * Math.exp(-Math.max(0, t - a) * 9) * (t > a)})`;
     });
     root.querySelectorAll('#rd-count li').forEach((el, i) => (el.style.opacity = t > tCount + 0.6 + i * 0.18 ? 1 : 0));
     show('#rd-every', win(t, tCount, tAid - 0.05, 0.15));
 
     if (tArmy && data.army) {
-      const tE = tRaid ?? tVote;
+      const tE = tTail;
       show('#rd-army', win(t, tArmy + 0.1, (tArmyH ?? tE) - 0.05, 0.15));
       if (tArmyH && tArmyC) {
         const f = t >= tArmyC ? 1 : 0, a = f ? tArmyC : tArmyH;
@@ -240,7 +294,29 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
       const u = easeOut(clamp01((t - tArmy - 0.2) / 1.1));
       $('#rd-army .n').textContent = Math.round(u * (data.army[0] + data.army[1]));
     }
-    show('#rd-dim', (tShot ? win(t, tShot, tCount, 0.1) * 0.55 : 0) + win(t, tRaid ?? tVote, tCta, 0.2) * 0.9);
+    show('#rd-dim', Math.min(0.95, (tShot ? win(t, tShot, tCount, 0.1) * 0.55 : 0) + (tFallen ? win(t, tFallen, tAid, 0.2) * 0.9 : 0) + (tRace ? win(t, tRace, tNight ?? tLetter ?? tArmy, 0.2) * 0.6 : 0)
+      + ((tRaid || tVote) ? win(t, tRaid ?? tVote, tCta, 0.2) * 0.9 : 0)));
+    if (tFallen) {
+      slam($('#rd-fallen'), t, tFallen + 0.05, tAid - 0.05, 1.2, -2);
+      root.querySelectorAll('#rd-fallen li').forEach((el, i) => (el.style.opacity = t > tFallen + 0.4 + i * 0.3 ? 1 : 0));
+      show('#rd-fallen .heir', t > tFallen + C.len('fallen') * 0.6 ? 1 : 0);
+    }
+    if (tRace) {
+      show('#rd-hill', win(t, tRace + 0.1, (tNight ?? tLetter ?? tArmy) - 0.05, 0.15));
+      root.querySelectorAll('#rd-hill .row b').forEach((el, i) => {
+        const n = Math.round(easeOut(clamp01((t - tRaceN - 0.2 - i * 0.4) / 1.2)) * data.race.counts[i]);
+        el.textContent = n;
+        el.parentNode.nextSibling.firstChild.style.width = `${Math.min(100, n / data.race.goal * 100)}%`;
+      });
+    }
+    if (tNight) root.querySelectorAll('#rd-night span').forEach((el, i) => (el.style.opacity = t > tNight + 0.5 + i * 0.9 && t < (tLetter ?? tArmy) - 0.1 ? 1 : 0));
+    if (tLetter) {
+      const el = $('#rd-letter'), u = easeOut(clamp01((t - tLetter2) / 0.35));
+      el.style.opacity = t < tLetter2 || t > tArmy - 0.05 ? 0 : Math.min(1, u * 1.5, (tArmy - t) / 0.2);
+      el.style.transform = `scale(${1.25 - 0.25 * u})`;
+      const nEl = $('#rd-letter .n b');
+      if (nEl) nEl.textContent = Math.round(easeOut(clamp01((t - tLetter2 - C.len('letter2') * 0.55) / 1.0)) * data.letters);
+    }
     if (tRaid) {
       const el = $('#rd-raid');
       const u = easeOut(clamp01((t - tRaid - 0.1) / 0.35));
@@ -248,6 +324,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
       el.style.transform = `translateX(${(1 - u) * 60}%)`;
     }
     const v = $('#rd-vote');
+    if (tVote) {
     const vu = easeOut(clamp01((t - tVote) / 0.45));
     v.style.opacity = t < tVote || t > tCta ? 0 : Math.min(1, vu * 2, (tCta - t) / 0.2);
     v.style.transform = `rotate(${(1 - vu) * -9}deg) scale(${0.7 + 0.3 * vu})`;
@@ -255,6 +332,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
       const a = tOpts + i * 1.1;
       el.style.opacity = t > a && t < tCta ? (t < a + 1.1 || i === 1 ? 1 : 0.25) : 0;
     });
+    }
   }
 
   window.__reel = { seconds: END, sfx: SFX, frame, ready: true };

@@ -1,0 +1,101 @@
+{
+ "seconds": 90,
+ "auto": true,
+ "lines": [
+  [
+   0.6,
+   "Day four.",
+   "day"
+  ],
+  [
+   1.8,
+   "The guns of Verdel Ridge fired all night. On the Hegemony.",
+   "guns"
+  ],
+  [
+   4.6,
+   "But the Hegemony fired back. One rifleman saw a movement across the wire.",
+   "shooter"
+  ],
+  [
+   0,
+   "One shot. The Concord sapper never got up.",
+   "shot"
+  ],
+  [
+   0,
+   "Forty-five men hit by morning. Twenty-seven Hegemony, eighteen Concord.",
+   "count"
+  ],
+  [
+   0,
+   "Six of them fell. Five Hegemony. Their families sent the next in line.",
+   "fallen"
+  ],
+  [
+   0,
+   "Both hospitals are full. Every bed is taken.",
+   "aid"
+  ],
+  [
+   0,
+   "Nine Hegemony wounded wait on stretchers, in the mud.",
+   "stretcher"
+  ],
+  [
+   0,
+   "And a new race has begun. Hill 304.",
+   "race"
+  ],
+  [
+   0,
+   "Hegemony seventy-two. Concord forty-eight. First to one hundred takes the hill.",
+   "raceN"
+  ],
+  [
+   0,
+   "Tonight the guns fire again. Two more nights of shelling for the Hegemony.",
+   "tonight"
+  ],
+  [
+   0,
+   "New at the front: a letter from home.",
+   "letter"
+  ],
+  [
+   0,
+   "Open your soldier's card and send one. It keeps your soldier fifteen percent safer for one night. Seventy letters are already on the way.",
+   "letter2"
+  ],
+  [
+   0,
+   "314 soldiers hold the line now.",
+   "army"
+  ],
+  [
+   0,
+   "166 for the Hegemony.",
+   "armyH"
+  ],
+  [
+   0,
+   "148 for the Concord.",
+   "armyC"
+  ],
+  [
+   0,
+   "Comment Concord... or Hegemony. Link in bio.",
+   "cta"
+  ]
+ ],
+ "drums": [
+  "shooter",
+  [
+   [
+    "letter",
+    "army"
+   ]
+  ],
+  "army"
+ ]
+}
