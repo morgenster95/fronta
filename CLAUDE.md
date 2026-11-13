@@ -19,7 +19,7 @@ Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co
   **Wiring party:** `roster.battle[f].party` (úsek → [handle] přihlášených WIRE na příští noc, `wiringParty` v `engine/battle.js`) → SKUTEČNÍ vojáci se ve hře přesunou ze zákopu k drátu svého úseku (`placeVolunteers` ve `web/src/wire.js`, před vytvořením spritů, takže karta i výběr je najdou tam; karta: „Out on the wire tonight“), klečí a zatloukají kůl (`work`) nebo se plazí (`crawl`), nestřílí (`s.onWire` v `life.js`). Náhled: `/?party=0:6,1:4&wire=0:0.1` (jen dev). Těžce raněnému bot na WIRE odpoví, že zůstává u mediků (uživatel to tak chce). Ukázky: `docs/mockups/wire_*.png`.
   **Doladit:** velikost/hustota drátu (`STEP` ve wire.js), ježci jen občas, noc a světlice (zatím jen v ukázce), medici obvazující raněné v zákopu (`bandage` + `lying-wounded`), krčení při bombardování (`duck`). Uživatel chce, aby po náboru WIRE bylo vidět opravování a aby drát a ježci byli pěkní.
 - **Animace:** 3. kontrola čeká na uživatele (https://claude.ai/artifact/TTYykLEtUtDxBPnxatFGT1, kolekce `reviews`); předchozí kola: N4uhhXezxy4tKNCW4gQ7WU, Nh5Z5aipwuWyiAqdCqUXyq. Import `tools/import-anim.py` převádí barvy a kůži stran (`RECOLOR`, `SKIN`). Nejlépe funguje pixminimax se startovním snímkem ze schválené herní pózy (styl drží). PixelLab zůstatek ~1 445 generací.
-- **Gazette:** nová zpráva „The wire is down“ s výzvou WIRE (`theme.battle.wiring.news`). Post `wiring-1` vyšel 14:00 UTC 13. 11., přihlášky vyhodnotí noviny 14. 11.
+- **Gazette:** nová zpráva „The wire is down“ s výzvou WIRE (`theme.battle.wiring.news`). Post `wiring-1` ZRUŠEN (uživatel); výzva WIRE je jen v reelu `reel-wire` (13. 11. 18:00 UTC = 19:00 CET, `wiring: true`, story 18:10 UTC, scénář `web/src/reel-wire.js` + `cinema-wire.js`), přihlášky vyhodnotí noviny 14. 11.
 - **Bombardování (čeká na rozhodnutí):** Den 5 vyšel 2 padlí Hegemonie : 3 Concord (los; průměr ze simulace 2,9 : 1,1). Návrhy: B `battle.shell.kill` 0,5 → 0,75 (~3,7 padlých H/den), C k tomu `battle.shell.hit` 0,5 → 0,65 (~4,7/den). Zkusit: `node tools/sim-edition.mjs --set battle.shell.kill=0.75`. Bez souhlasu neměnit.
 
 ## SEZENÍ 2026-11-12 VEČER (Ko-fi, videa mimo git, poručíci): hotovo, nápady a čeká na rozhodnutí
@@ -160,7 +160,7 @@ Výprava a hlasování se přidají jen, když běží (`state.valley.open`, `st
 
 ## Stav a plán (aktualizuj při změnách)
 - **Day reel Dne 4** (`reel-day4`, 77 s): schválen a zařazen 13. 11. ve 12:06 UTC („nasaď hned“), story `story-reel-day4` (dopisová scéna) 12:16 UTC. Čísla v popisku: 45 zasažených, 6 padlých, Hill 304 H 74 : C 48, 74 dopisů, včera +104 (H +65, C +39), na frontě 316 (H 168, C 148).
-  Štáb fronty (Artifact) nešel z cloudového sezení 13. 11. otevřít (artefakt nedostupný); položky `reel-day4` a `story-reel-day4` do něj doplnit v sezení, kde je přístupný.
+  Ve Štábu fronty doplněno (13. 11. odpoledne): `reel-day4`, `story-reel-day4`, `reel-wire`, `story-reel-wire`.
 - Den 1 války = 2026-11-09; každé ranní vydání (denní tah, Gazette, výsledky) je ve 13:00 UTC, večerní reel nebo post ve 23:00 UTC.
 - **Závod o kóty:** kdo první naverbuje 100 vojáků, dobude kótu (teď Verdel Ridge, pak Hill 304…, `theme.race.objectives`). Výhra odemyká dělostřelectvo:
   3 dny bombardování poraženého. Do první dobyté kóty děla mlčí a texty o ostřelování se nepoužijí (`battle.gunsWords`).
