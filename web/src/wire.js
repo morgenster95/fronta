@@ -49,22 +49,22 @@ export function placeVolunteers({ soldiers, roster, map, theme, openX0, openX1 }
       const mid = (openX0 + openX1) / 2;
       handles = soldiers.filter((s) => s.faction === f && s.slot?.line === 'front' && !s.vacant && s.handle).sort((p, q) => Math.abs(p.x - mid) - Math.abs(q.x - mid)).slice(0, devParty[f]).map((s) => s.handle);
     }
-    // nejdřív rozdělit dobrovolníky do úseků (každý ke drátu svého stanoviště), pak je v úseku rozestavit
-    const bySeg = new Map();
-    for (const h of handles) {
-      const s = soldiers.find((x) => x.handle === h && x.slot);
-      if (!s) continue;
-      const g = list.reduce((best, q) => (Math.abs((q.x0 + q.x1) / 2 - s.x) < Math.abs((best.x0 + best.x1) / 2 - s.x) ? q : best), list[0]);
-      if (!g) continue;
-      if (!bySeg.has(g)) bySeg.set(g, []);
-      bySeg.get(g).push(s);
+    // každý jde k drátu svého úseku; v úseku jsou nejvýš CAP lidé v jedné řadě (rozestup GAP), další jdou do nejbližšího úseku,
+    // kde je ještě místo: wiring party se roztáhne podél drátu (vypadá to jako skutečná práce, ne jako dav). Když je plno všude, CAP roste.
+    const open = list.filter((g) => Math.min(g.b, openX1) - Math.max(g.a, openX0) > 20);
+    const mid = (g) => (g.x0 + g.x1) / 2;
+    const vols = handles.map((h) => soldiers.find((x) => x.handle === h && x.slot)).filter(Boolean);
+    const CAP0 = 3, GAP = 34, ROW = 14;
+    const cap = Math.max(CAP0, Math.ceil(vols.length / Math.max(1, open.length)));
+    const bySeg = new Map(open.map((g) => [g, []]));
+    for (const s of vols) {
+      const byDist = [...open].sort((p, q) => Math.abs(mid(p) - s.x) - Math.abs(mid(q) - s.x));
+      const g = byDist.find((q) => bySeg.get(q).length < cap) || byDist[0];
+      if (g) bySeg.get(g).push(s);
     }
-    // v úseku: řady podél drátu v rozestupu GAP px, jen v šířce úseku (nepřelézají do sousedních); další řady o ROW px blíž k vlastnímu zákopu,
-    // posunuté o půl rozestupu, ať se postavy nepřekrývají. Plazící se (každý třetí) se hýbe jen o pár px.
-    const GAP = 24, ROW = 13;
     for (const [g, group] of bySeg) {
       const a = Math.max(g.a, openX0 + 12), b = Math.min(g.b, openX1 - 12);
-      const perRow = Math.max(1, Math.floor((b - a) / GAP));
+      const perRow = Math.max(1, Math.min(CAP0, Math.floor((b - a) / GAP)));
       group.forEach((s, i) => {
         const row = Math.floor(i / perRow), col = i % perRow;
         const inRow = Math.min(perRow, group.length - row * perRow);
