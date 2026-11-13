@@ -64,7 +64,7 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
   Dárce napíše do zprávy na Ko-fi IG jméno, **uživatel mi ho pošle** a já přidám příkaz `{ id: "support-<handle>-<datum>", cmd: "support", handle }` do `data/commands.json` (smyčka do ~5 min:
   stužka u jména a řádek na kartě „War Bonds: supported the making of Mud & Iron“, 🎗 v albu rodu, stužka na obrázku „I ENLISTED“, zápis do deníku „{name} bought War Bonds for the front. The quartermaster pinned the ribbon on personally: 'The front remembers who kept it fed.'“,
   v příštích novinách „The front thanks {names}, who bought War Bonds and kept the guns fed.“). Server na webhook Ko-fi nemáme (Spark), proto ručně.
-  **Dárci:** v01py (Bastian „Lucky“ Vpy, Concord) 2026-11-12; jeho zápis se starým textem byl na výslovný pokyn uživatele přepsán příkazem `rewriteSupport` (jediná výjimka z nedotknutelných deníků).
+  **Dárci:** v01py (Bastian „Lucky“ Vpy, Concord) 2026-11-12; 0__freddie__0 (Wendel „Mole“ Freddie, Hegemonie) a jwessels530 (Ulrich Jwessels, Hegemonie) 2026-11-13; jeho zápis se starým textem byl na výslovný pokyn uživatele přepsán příkazem `rewriteSupport` (jediná výjimka z nedotknutelných deníků).
   Na webu: nenápadné tlačítko **„☕ Support“** u lupy (mobil jen ikona, styl tlačítek +/−; uživatel nechce nic křiklavého) a delší tlačítko s vysvětlením v panelu náboru.
   Post na Ko-fi `support-kofi` je uložený jako návrh (viz výš), čtverec pro stránku Ko-fi `marketing/promo/support_square.jpg` (`marketing/make_support.py`). Texty pro Ko-fi (bio, děkovací zpráva po platbě) jsou nastavené uživatelem.
   **Trench Dog** (pes u vojáka na mapě, jméno psa, zdědí ho nástupce) je nápad pro budoucí **měsíční předplatitele**, nestavět bez souhlasu.
