@@ -63,6 +63,25 @@ function muzzleOf(img, dir) {
   return { ax, ay, mx: bx - ax * c.width, my: by - ay * c.height };
 }
 
+// střed obrysu neprůhledných pixelů textury jako kotva (0..1); výsledek se pamatuje
+const anchorCache = new Map();
+function bodyAnchor(tx) {
+  if (anchorCache.has(tx)) return anchorCache.get(tx);
+  let out = { x: 0.5, y: 0.75 };
+  try {
+    const f = tx.frame, c = document.createElement('canvas');
+    c.width = f.width; c.height = f.height;
+    const g = c.getContext('2d');
+    g.drawImage(tx.source.resource, f.x, f.y, f.width, f.height, 0, 0, f.width, f.height);
+    const d = g.getImageData(0, 0, f.width, f.height).data;
+    let x0 = f.width, x1 = -1, y0 = f.height, y1 = -1;
+    for (let y = 0; y < f.height; y++) for (let x = 0; x < f.width; x++) if (d[(y * f.width + x) * 4 + 3] > 0) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+    if (x1 >= 0) out = { x: (x0 + x1 + 1) / 2 / f.width, y: (y0 + y1 + 1) / 2 / f.height };
+  } catch { /* bez přístupu k pixelům: výchozí kotva */ }
+  anchorCache.set(tx, out);
+  return out;
+}
+
 async function boot() {
   const [theme, roster, manifest] = await Promise.all([
     fetch('/data/theme.json').then((r) => r.json()),
@@ -267,17 +286,17 @@ async function boot() {
     const byHandle = new Map(soldiers.map((s) => [s.handle, s]));
     theme.factions.forEach((_, f) => {
       const mine = H.sites.filter((x) => x.faction === f);
-      const beds = mine.flatMap((x) => x.beds);
+      const beds = mine.flatMap((x) => x.beds.map((b) => ({ ...b, right: b.x > x.x })));
       (pub[f]?.beds || []).forEach((b, i) => {
         const s = byHandle.get(b.handle);
-        if (s && beds[i]) Object.assign(s, { x: beds[i].x, y: beds[i].y, hosp: 'bed', sev: b.sev });
+        if (s && beds[i]) Object.assign(s, { x: beds[i].x, y: beds[i].y, hosp: 'bed', bedRight: beds[i].right, sev: b.sev });
       });
       const st = mine[0]?.stretchers || [];
       (pub[f]?.stretchers || []).forEach((b, i) => {
         const s = byHandle.get(b.handle);
         const p = st[i % st.length];
         if (!s || !p) return;
-        Object.assign(s, { x: p.x, y: p.y + Math.floor(i / st.length) * 14 * (f === 0 ? 1 : -1), hosp: 'stretcher', sev: b.sev });
+        Object.assign(s, { x: p.x, y: p.y + Math.floor(i / st.length) * 20 * (f === 0 ? 1 : -1), hosp: 'stretcher', sev: b.sev }); // řady nosítek před vchodem
         // nosítka pod raněným: dvě tyče a plachtovina
         const g = new Graphics();
         g.rect(Math.round(s.x - 16), Math.round(s.y - 4), 32, 1).fill(0x3d3730);
@@ -325,7 +344,15 @@ async function boot() {
         s.wounded = true;
         sp.texture = fall[fall.length - 1];
         sp.scale.x = 1;
-        if (s.hosp) sp.anchor.set(0.55, 0.6); // leží na lůžku / nosítkách v nemocnici
+        if (s.hosp) {
+          // leží na lůžku / nosítkách: animace „raněný leží“ (vodorovně, hlavou vlevo), střed těla přesně na středu lůžka;
+          // na pravých lůžkách hlavou k polštáři vpravo
+          const lie = anims[theme.factions[s.faction].sprite]?.['lying-wounded']?.east;
+          if (lie?.length) sp.texture = lie[0];
+          const a = bodyAnchor(sp.texture);
+          sp.anchor.set(a.x, a.y);
+          if (s.bedRight) sp.scale.x = -1;
+        }
       } else sp.tint = 0xd8b8a8;
     }
     sp.soldier = s;

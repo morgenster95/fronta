@@ -80,8 +80,8 @@ export function hospitalArt({ beds = 4, faction = 0, entrance = 1 }) {
   g.fillStyle = col(15); g.fillRect(wall + 2, entrance > 0 ? wall + 1 : H - wall - 7, 6, 6);
   // nosítka před vchodem (místa pro raněné, na které nezbylo lůžko)
   const stretchers = [];
-  for (let i = 0; i < 6; i++) {
-    const sx = W / 2 + (i % 2 ? 1 : -1) * (22 + Math.floor(i / 2) * 36) - (i % 2 ? 0 : 0);
+  for (let i = 0; i < 12; i++) { // řada nosítek před vchodem do stran (raněných bez lůžka bývá víc; další řada až po 12)
+    const sx = W / 2 + (i % 2 ? 1 : -1) * (22 + Math.floor(i / 2) * 36);
     stretchers.push({ x: sx, y: entrance > 0 ? H + 12 : -12 });
   }
 
@@ -207,7 +207,7 @@ function dugoutArt({ faction = 0, entrance = 1 }) {
   rect(doorX0 - 9, H - wall - iw - 16, 3, 14, 6); rect(doorX0 - 5, H - wall - iw - 16, 3, 14, 13);
   // nosítka před vchodem (pro raněné bez lůžka)
   const stretchers = [];
-  for (let i = 0; i < 6; i++) stretchers.push({ x: W / 2 + (i % 2 ? 1 : -1) * (30 + Math.floor(i / 2) * 36), y: H + 12 });
+  for (let i = 0; i < 12; i++) stretchers.push({ x: W / 2 + (i % 2 ? 1 : -1) * (30 + Math.floor(i / 2) * 36), y: H + 12 }); // do stran, další řada až po 12
 
   // střecha: zaoblený vlnitý plech, okraje zasypané hlínou a pytli, komín, kříž, pruh plachty v barvě strany
   const R = 10;
