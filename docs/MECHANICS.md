@@ -280,3 +280,9 @@ Noční oprava drátu dobrovolníky obou stran (`engine/wiring.js`, krok 0 v `ba
 - **Oprava:** +15 % drátu (ženista +30 %, násobek zkušeností) ve vlastním úseku, nebo v nejhorším úseku strany, když je vlastní ≥ 95 %. XP 3. Po 3 nocích medaile `wire-party` („⛓ Wire Party“ na kartě). Noviny: blok „Wiring parties in no man's land“ (kolik yardů, kdo zůstal doma, kdo byl zasažen, se jmény).
 - **Simulace** (`node tools/sim-wiring.mjs <H> <C> <běhů>`, 60 běhů, stav po Dni 4, Hegemonie pod bombardováním): sama Hegemonie (20) zasaženo 38 % (těžce/krit. 17 %), sám Concord (20) 36 % (17 %); 20+20 → 34 % / 31 %; 100 H + 50 C → 26 % / 12 % (z Hegemonie zůstalo na hlídce ~38); 50 H + 100 C → 14 % / 24 %. Concord venku riskuje skoro stejně jako bombardovaná Hegemonie, protože naproti má víc zbraní (Hegemonie 19 MG + 19 odstřelovačů, Concord 14 + 11). Padlí v den tahu 0, smrt přichází přes péči v dalších dnech.
 - **První post:** `wiring-1` (`marketing/make_wiring.py`, `wiring_1.jpg`) 13. 11. 14:00 UTC (po Novinách Dne 5, vyhodnocení v Novinách 14. 11.), story 14:10 UTC.
+
+## 2026-11-13: Gazette hlásí stav drátu a volá wiring party (NASAZENO)
+Když má strana průměrný drát v zemi nikoho pod 50 % (`theme.battle.wiring.news.below`), ranní noviny mají zprávu „The wire is down“: kolik procent zbývá, proč
+(dny bombardování z dobyté kóty, jinak déšť, rez a zbloudilé kulky), v kolika úsecích jsou díry (drát < 30 %), proč na drátu záleží (zastaví nájezd, kryje proti palbě, `wire.cover`)
+a výzva k wiring party (vrtací kůly, plazení, při světlici k zemi; komentář WIRE pod rozkazem na IG). Texty v `theme.json`, kód v `engine/battle.js`.
+Podklad o skutečných wiring party: Wikipedia „Wiring party“, firstworldwar.com „Wiring Parties“ (noc 21–3 h, tichý „corkscrew“ kůl místo kladiva, při světlici k zemi, bloudění cestou zpět).

@@ -540,6 +540,21 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         `${bad.length ? `, ${bad.length} of them badly` : ''}. The wire there is in shreds.`,
     });
   }
+  // Gazette: stav drátu v zemi nikoho a výzva k wiring party (texty theme.battle.wiring.news)
+  const WN = cfg.wiring?.news;
+  if (WN) {
+    const sides = theme.factions.map((_, f) => {
+      const v = Object.values(state.battle.sides[f].wire);
+      if (!v.length) return null;
+      const avg = v.reduce((a, b) => a + b, 0) / v.length;
+      if (avg >= (WN.below ?? 0.5)) return null;
+      const shellDays = barrage?.target === f ? Math.max(1, day - (barrage.since ?? day)) : 0;
+      const cause = shellDays ? WN.causeBarrage.replace('{days}', shellDays === 1 ? 'a day' : `${shellDays} days`).replace('{ridge}', barrage.name) : WN.causeWear;
+      return WN.side.replace('{side}', short(theme, f)).replace('{pct}', Math.round(avg * 100)).replace('{cause}', cause)
+        .replace('{gaps}', v.filter((x) => x < 0.3).length).replace('{secs}', v.length);
+    }).filter(Boolean);
+    if (sides.length) out.news.push({ day, kind: 'wire', h: WN.h, text: [...sides, WN.why, WN.call].filter(Boolean).join(' ') });
+  }
   // Gazette: jen čísla ztrát po stranách a jména padlých (každý zásah a každé zranění vidí hráč u svého vojáka)
   {
     const nameOf = (e) => {

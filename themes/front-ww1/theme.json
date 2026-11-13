@@ -685,9 +685,50 @@
       "barrage": 0.12,
       "repair": 0.08
     },
-    "letter": { "cut": 0.15, "_": "dopis z domova (hráč ho na webu pošle svému vojákovi, přihlášený majitel, jednou za den): voják má v příštím tahu o `cut` menší šanci na zásah všeho druhu; neodeslaný dopis = žádný buff (retence)" },
-    "wiring": { "keyword": "WIRE", "base": 0.06, "perFire": 0.22, "max": 0.6, "severity": { "light": 0.5, "heavy": 0.2 }, "weather": { "rain": 0.8, "fog": 0.6, "storm": 0.7, "frost": 1.1, "clear": 1.3 }, "barrage": 1.5, "sapperRisk": 0.7, "repair": 0.15, "sapperRepair": 0.3, "full": 0.95, "xp": 3, "badgeAt": 3, "_": "wiring party: dobrovolníci (komentář WIRE pod postem s wiring: true) v noci opraví drát; riziko = (base + perFire × palba hlídek nepřítele na dostřel, kdo jde ven, nehlídá) × počasí × bombardování × ženista; zásah = běžné zranění (péče jako jinde)" },
-    "mine": { "hit": 0.85, "sectors": 3, "_": "mina (rozkaz TUNNELLERS): šance zásahu každého v zasaženém úseku; závažnost a smrt na místě jako u granátů (shell)" },
+    "letter": {
+      "cut": 0.15,
+      "_": "dopis z domova (hráč ho na webu pošle svému vojákovi, přihlášený majitel, jednou za den): voják má v příštím tahu o `cut` menší šanci na zásah všeho druhu; neodeslaný dopis = žádný buff (retence)"
+    },
+    "wiring": {
+      "keyword": "WIRE",
+      "base": 0.06,
+      "perFire": 0.22,
+      "max": 0.6,
+      "severity": {
+        "light": 0.5,
+        "heavy": 0.2
+      },
+      "weather": {
+        "rain": 0.8,
+        "fog": 0.6,
+        "storm": 0.7,
+        "frost": 1.1,
+        "clear": 1.3
+      },
+      "barrage": 1.5,
+      "sapperRisk": 0.7,
+      "repair": 0.15,
+      "sapperRepair": 0.3,
+      "full": 0.95,
+      "xp": 3,
+      "badgeAt": 3,
+      "_": "wiring party: dobrovolníci (komentář WIRE pod postem s wiring: true) v noci opraví drát; riziko = (base + perFire × palba hlídek nepřítele na dostřel, kdo jde ven, nehlídá) × počasí × bombardování × ženista; zásah = běžné zranění (péče jako jinde)",
+      "news": {
+        "below": 0.5,
+        "h": "The wire is down",
+        "side": "{side} wire in no man's land is down to {pct}% after {cause}. In {gaps} of {secs} sectors there are gaps a man could walk through.",
+        "causeBarrage": "{days} of shelling from {ridge}",
+        "causeWear": "rain, rust and stray bullets",
+        "why": "Wire is what stops a raid before it reaches the trench, and it soaks up the bullets that cross the line. Without it, every post on the fire step is easier to hit.",
+        "call": "So the wiring parties go out after dark. They crawl out with coils of barbed wire and corkscrew posts that twist into the mud without a sound, and when a flare goes up they drop flat and wait for the dark. Volunteers: comment WIRE under the wiring order on Instagram.",
+        "_": "zpráva v Gazette, když má strana průměrný drát pod 'below' (nebo je pod bombardováním a drát má pod 'below'); engine/battle.js"
+      }
+    },
+    "mine": {
+      "hit": 0.85,
+      "sectors": 3,
+      "_": "mina (rozkaz TUNNELLERS): šance zásahu každého v zasaženém úseku; závažnost a smrt na místě jako u granátů (shell)"
+    },
     "shell": {
       "sectors": 4,
       "share": 0.3,
