@@ -218,7 +218,7 @@ async function main() {
         const text = {
           ok: `@${res.handle}, you're on the wiring party tonight. Keep your head down when the flares go up. Results in the Trench Gazette at 13:00 UTC.`,
           notEnlisted: `@${res.handle}, you need a soldier first. Comment ${theme.factions.map((f) => f.keyword).join(' or ')} to enlist, then WIRE again.`,
-          wounded: `@${res.handle}, your soldier is wounded and stays in the trench tonight.`,
+          wounded: `@${res.handle}, your soldier is badly wounded and stays with the medics tonight.`,
           fallen: null, already: null, closed: null,
         }[res.reason];
         if (text && process.env.IG_REPLY === '1' && !process.env.DRY_RUN) await replyOnce(c, text).catch((e) => console.warn(e.message));

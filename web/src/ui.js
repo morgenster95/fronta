@@ -302,7 +302,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     $('card-handle').href = `https://instagram.com/${encodeURIComponent(s.handle)}`;
     $('card-faction').innerHTML = `<span style="color:${f.color}">■</span> ${esc(f.name)}`;
     $('card-role').textContent = s.archetype?.name ?? '';
-    $('card-status').textContent = STATUS[s.status] ?? '';
+    $('card-status').textContent = s.onWire ? 'Out on the wire tonight (wiring party)' : STATUS[s.status] ?? '';
     $('card-unit').textContent = '…';
     $('card-sector').textContent = '…';
     $('card-enlisted').textContent = '…';

@@ -308,6 +308,6 @@ Simulace 20 běhů × 3 dny: Hegemonie ~9,3 / 8,0 / 1,5 padlých za den (bombard
 Osud dnes raněných H (10 dní): těžce raněný padne 40 %, vrátí se 52 % (průměrně za ~5 dní), lehce raněný se vrátí 81 % za ~2 dny. Den 5 podle stavu: H 10 padlých, C 3.
 
 ## 2026-11-13: Wiring party a ranění (NASAZENO)
-Uživatel nechce další odpověď bota „to nejde“. Přihláška WIRE: přijme se každý živý voják (bot odpoví stejně). V noci jde ven i lehce raněný (chodí po zákopu);
-těžce a kriticky raněného nepustí medik: v deníku má „{n} signed up for the wiring party, but the medic would not let {n} leave the aid post. The wire will wait for another night.“
+Přihláška WIRE: lehce raněný se přihlásit může a jde ven (chodí po zákopu); těžce a kriticky raněnému bot odpoví, že zůstává u mediků (uživatel to tak chce).
+Kdo se přihlásil a do noci se těžce zranil, toho nepustí medik: v deníku má „{n} signed up for the wiring party, but the medic would not let {n} leave the aid post. The wire will wait for another night.“
 (`engine/wiring.js` joinWiring, `engine/battle.js` krok 0, text jde přepsat `battle.wiring.keptBack`).

@@ -596,14 +596,12 @@ export function battleTick(state, theme, story, day, ctx = {}) {
 
 // pro web: stavby, lůžka a nosítka se jmény, raněnými v zákopu, pokrytí mediky, stav drátu
 function wiringParty(state, f) {
+  // úsek → [handle]: kdo se přihlásil WIRE na příští noc (a není těžce raněný); web ho ukáže u drátu jeho úseku při práci
   const out = {};
-  const add = (sec, n = 1) => { if (sec) out[sec] = (out[sec] || 0) + n; };
   for (const id of state.wiring?.open?.ids || []) {
     const s = state.soldiers.find((x) => x.id === id);
-    if (s && s.faction === f && s.status === 'active') add(s.sector);
+    if (s && s.faction === f && s.status !== 'fallen' && (!s.wound || s.wound.sev === 'light')) (out[s.sector] ??= []).push(s.handle);
   }
-  const last = (state.wiring?.nights || []).at(-1);
-  if (last && last.day >= (state.day ?? 0) - 1) for (const [sec, n] of Object.entries(last.sides?.[f]?.secs || {})) add(sec, n);
   return out;
 }
 

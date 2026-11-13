@@ -82,7 +82,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     const baseScale = sp.scale.x;
     const phase = Math.random() * 4000;
     sp.animate = (now) => {
-      if (s.nest) return; // kulometčík u hnízda je přikrčený
+      if (s.nest || s.onWire) return; // kulometčík u hnízda je přikrčený; dobrovolníka u drátu animuje web/src/wire.js
       if (s.action) {
         const a = s.action;
         const t = now - a.t0;
@@ -110,7 +110,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
   // --- výstřely ---
   function shoot(candidates, now) {
     // střílí jen ten, kdo má animaci střelby: záblesk a kouř vždy patří k pohybu postavy
-    const pool = candidates.filter((s) => s.aim && !s.action && !s.wounded);
+    const pool = candidates.filter((s) => s.aim && !s.action && !s.wounded && !s.onWire);
     if (!pool.length) return;
     const s = pool[Math.floor(Math.random() * pool.length)];
     // zamíří, chvíli drží, vystřelí, ještě chvíli drží a skloní zbraň
@@ -135,7 +135,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
   // vzdálený výstřel z linie (bez postavy, pro pocit živé fronty)
   let shooters = []; // skuteční vojáci (jen ti smí střílet, i zdálky)
   function distantShot(view) {
-    const pool = shooters.filter((s) => !s.wounded && s.x > view.x0 && s.x < view.x1 && s.y > view.y0 && s.y < view.y1);
+    const pool = shooters.filter((s) => !s.wounded && !s.onWire && s.x > view.x0 && s.x < view.x1 && s.y > view.y0 && s.y < view.y1);
     if (!pool.length) return;
     const s = pool[Math.floor(Math.random() * pool.length)];
     const f = s.faction;
