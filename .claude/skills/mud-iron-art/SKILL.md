@@ -51,6 +51,7 @@ Kreslené rekvizity vedle sprite vojáků (PixelLab, víc stínování a obrysy)
 - Když se zapomene, workflow `atlas` atlas po pushi do `main` přegeneruje sám; `npm test` ale do té doby padá (to je správně, hlídá to).
 
 ## Nástroje v repu
+- **PixelLab (nové sprity a animace):** jen `python tools/pixellab.py` (pojistky proti duplikátům, viz CLAUDE.md), import do hry `python tools/import-anim.py <snímky> <klíč> <animace> <směr> --canvas 64 [--mirror west]`, pak `python tools/make-atlas.py`. Vojáky s puškou animuj ve skeleton-v3 s paletou Trench 24 (šablony přemalují pušku).
 - `python marketing/make_posts.py | make_day.py | make_victory.py | make_letters.py | make_council.py | make_rip.py | make_vote.py` (posty; `make_vote.py` má hotové ilustrace dugouts/doctor/ammo).
 - `node tools/render-cine.mjs <scéna|all> <složka> [--side 0|1 --n N --names A,B --heir X --house Y --fallen Z --gen 2 --day 4]` (filmové záběry march, guns, shelter, ribbon, counter, graves, heir, lineage → mp4 1080×1920).
 - Reely: `marketing/reels/render.json` → workflow `reel`; podklady `tools/ridge-reel.mjs`, `tools/rip-data.mjs`; hlas `marketing/story_vo.py` (profil vypravěče), hudba `marketing/reel_audio.py` (`epic_score`, lament).

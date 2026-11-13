@@ -74,6 +74,7 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
   Při bombardování musí mít poražený strana víc ztrát než vítěz (kontrola je ve výpisu sim-edition); jinak mechaniku neladit potichu, ale nahlásit.
 
 ## Pravidla
+- **PixelLab (generace jsou omezené, duplikáty se NESMÍ stát; pravidlo uživatele 2026-11-13):** generuj jen přes `python tools/pixellab.py anim <postava> <název> <směr> '<json>'` (jeden směr na volání, kontrola existující animace a `art/pixellab/ledger.jsonl`, kontrola plné fronty, žádné automatické opakování). Nikdy nepiš vlastní smyčky „zkus znovu“ kolem `animate_character`: PixelLab při plné frontě přijme část směrů a opakování je pošle znovu (13. 11. tak vzniklo ~230 zbytečných generací). Před větší dávkou řekni uživateli odhad ceny a zůstatek (`python tools/pixellab.py balance`). Klíč je síťové tajemství prostředí (api.pixellab.ai), nikdy ho nevypisuj ani neukládej. Plán spritů: `docs/SPRITE_PLAN.md`, log: `art/pixellab/LOG.md`.
 - **Odpovídej česky.** Texty ve hře a na Instagramu jsou anglicky (publikum USA/UK, ne Praha).
 - **Jen zdarma:** žádné placené služby, Firebase Blaze, Cloud Functions ani placená API. Firebase je na Spark, média na GitHub Pages.
   **Firebase Hosting má limit 360 MB přenosu denně** (po vyčerpání web neodpovídá). Obrázky hry proto běží ze zrcadla na GitHub Pages (`web/src/assets.js`, `tools/asset-base.sh`, `media.yml`);
