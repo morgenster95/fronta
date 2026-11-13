@@ -1,0 +1,108 @@
+{
+ "seconds": 70.1,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.6,
+   0.62,
+   "Day four.",
+   "day"
+  ],
+  [
+   1.8,
+   3.7,
+   "The guns of Verdel Ridge fired all night. On the Hegemony.",
+   "guns"
+  ],
+  [
+   5.75,
+   4.67,
+   "But the Hegemony fired back. One rifleman saw a movement across the wire.",
+   "shooter"
+  ],
+  [
+   10.67,
+   3.1,
+   "One shot. The Concord sapper never got up.",
+   "shot"
+  ],
+  [
+   14.02,
+   4.93,
+   "Forty-five men hit by morning. Twenty-seven Hegemony, eighteen Concord.",
+   "count"
+  ],
+  [
+   19.2,
+   5.31,
+   "Six of them fell. Five Hegemony. Their families sent the next in line.",
+   "fallen"
+  ],
+  [
+   24.76,
+   3.26,
+   "Both hospitals are full. Every bed is taken.",
+   "aid"
+  ],
+  [
+   28.27,
+   2.75,
+   "Nine Hegemony wounded wait on stretchers, in the mud.",
+   "stretcher"
+  ],
+  [
+   31.27,
+   3.49,
+   "And a new race has begun. Hill 304.",
+   "race"
+  ],
+  [
+   35.01,
+   5.88,
+   "Hegemony seventy-two. Concord forty-eight. First to one hundred takes the hill.",
+   "raceN"
+  ],
+  [
+   41.14,
+   4.11,
+   "Tonight the guns fire again. Two more nights of shelling for the Hegemony.",
+   "tonight"
+  ],
+  [
+   45.5,
+   1.92,
+   "New at the front: a letter from home.",
+   "letter"
+  ],
+  [
+   47.67,
+   8.91,
+   "Open your soldier's card and send one. It keeps your soldier fifteen percent safer for one night. Seventy-one letters are already on the way.",
+   "letter2"
+  ],
+  [
+   56.83,
+   2.46,
+   "314 soldiers hold the line now.",
+   "army"
+  ],
+  [
+   59.54,
+   1.58,
+   "166 for the Hegemony.",
+   "armyH"
+  ],
+  [
+   61.37,
+   1.58,
+   "148 for the Concord.",
+   "armyC"
+  ],
+  [
+   63.2,
+   3.41,
+   "Comment Concord... or Hegemony. Link in bio.",
+   "cta"
+  ]
+ ]
+}
