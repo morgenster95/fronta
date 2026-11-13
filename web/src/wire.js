@@ -49,20 +49,31 @@ export function placeVolunteers({ soldiers, roster, map, theme, openX0, openX1 }
       const mid = (openX0 + openX1) / 2;
       handles = soldiers.filter((s) => s.faction === f && s.slot?.line === 'front' && !s.vacant && s.handle).sort((p, q) => Math.abs(p.x - mid) - Math.abs(q.x - mid)).slice(0, devParty[f]).map((s) => s.handle);
     }
-    const perSeg = {};
+    // nejdřív rozdělit dobrovolníky do úseků (každý ke drátu svého stanoviště), pak je v úseku rozestavit
+    const bySeg = new Map();
     for (const h of handles) {
       const s = soldiers.find((x) => x.handle === h && x.slot);
       if (!s) continue;
-      // úsek vojáka: podle stanoviště (nejbližší úsek přední linie strany)
       const g = list.reduce((best, q) => (Math.abs((q.x0 + q.x1) / 2 - s.x) < Math.abs((best.x0 + best.x1) / 2 - s.x) ? q : best), list[0]);
       if (!g) continue;
-      const i = (perSeg[g.label] = (perSeg[g.label] || 0) + 1) - 1;
-      const cx = Math.min(Math.max((g.x0 + g.x1) / 2, openX0 + 20), openX1 - 20);
-      const role = i % 3; // 0 a 2 klečí a zatloukají, 1 se plazí se svitkem
-      s.x = Math.round(cx + Math.ceil(i / 2) * 24 * (i % 2 ? -1 : 1)); // podél drátu: střed, vlevo, vpravo, dál vlevo…
-      s.y = Math.round(rowY + (role === 1 ? -toEnemy * 10 : 3));
-      s.onWire = { anim: role === 1 ? 'crawl' : 'work', dir: role === 1 ? 'east' : toEnemy > 0 ? 'south' : 'north', seg: g.label, t0: (i * 700) % 3000, x0: s.x };
-      out.push(s);
+      if (!bySeg.has(g)) bySeg.set(g, []);
+      bySeg.get(g).push(s);
+    }
+    // v úseku: řady podél drátu v rozestupu GAP px, jen v šířce úseku (nepřelézají do sousedních); další řady o ROW px blíž k vlastnímu zákopu,
+    // posunuté o půl rozestupu, ať se postavy nepřekrývají. Plazící se (každý třetí) se hýbe jen o pár px.
+    const GAP = 24, ROW = 13;
+    for (const [g, group] of bySeg) {
+      const a = Math.max(g.a, openX0 + 12), b = Math.min(g.b, openX1 - 12);
+      const perRow = Math.max(1, Math.floor((b - a) / GAP));
+      group.forEach((s, i) => {
+        const row = Math.floor(i / perRow), col = i % perRow;
+        const inRow = Math.min(perRow, group.length - row * perRow);
+        const role = i % 3; // 0 a 2 klečí a zatloukají, 1 se plazí se svitkem
+        s.x = Math.round((a + b) / 2 + (col - (inRow - 1) / 2) * GAP + (row % 2 ? GAP / 2 : 0));
+        s.y = Math.round(rowY + 3 - toEnemy * row * ROW);
+        s.onWire = { anim: role === 1 ? 'crawl' : 'work', dir: role === 1 ? 'east' : toEnemy > 0 ? 'south' : 'north', seg: g.label, t0: (i * 700) % 3000, x0: s.x };
+        out.push(s);
+      });
     }
   });
   return out;
@@ -126,7 +137,7 @@ export async function initWire({ world, anchor, roster, map, anims, theme, openX
         if (!fr?.length) continue;
         const t = fr[((Math.floor((now + w.t0) / 130) % fr.length) + fr.length) % fr.length]; // i záporný čas (zahřátí reelu)
         if (sp.texture !== t) { sp.texture = t; sp.scale.x = 1; sp.anchor.set(0.5, (30 + (t.width - 32) / 2) / t.height); }
-        if (w.anim === 'crawl') sp.x = Math.round(w.x0 + Math.sin((now + w.t0) / 2200) * 12);
+        if (w.anim === 'crawl') sp.x = Math.round(w.x0 + Math.sin((now + w.t0) / 2200) * 5); // jen kousek, ať nevleze do souseda
       }
     },
   };
