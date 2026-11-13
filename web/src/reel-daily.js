@@ -7,7 +7,8 @@ import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, tagAt, slam, e
 import voteImg from '../../marketing/promo/vote_build_2.jpg';
 import { makeScenes, pickScene, CINEMA_CSS } from './cinema.js';
 
-const files = import.meta.glob('../../marketing/reels/day*.json', { eager: true, import: 'default' });
+// jen podklady scénáře; day*.sfx.json zapisuje natáčení za běhu a jeho sledování by stránku znovu načetlo
+const files = import.meta.glob(['../../marketing/reels/day*.json', '!**/*.sfx.json'], { eager: true, import: 'default' });
 
 const CSS = `${BASE}${FX_CSS}${CINEMA_CSS}
 #rd-count { left: 7%; right: 7%; top: 54%; }

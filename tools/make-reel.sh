@@ -16,7 +16,7 @@ npm run -s data:build
 if [[ "$NAME" =~ ^day[0-9]+$ ]] && [ "$NAME" != "day1" ]; then node tools/day-reel.mjs; [ -f "marketing/reels/$NAME.script.json" ] || { echo "stav hry je v jiném dni než $NAME"; exit 1; }; fi   # denní reel z aktuálního stavu
 if grep -q "\"$NAME\": (" marketing/story_vo.py || [ -f "marketing/reels/$NAME.script.json" ]; then "$PY" marketing/story_vo.py "$NAME"; fi
 
-npx vite --port 5187 --strictPort >/tmp/reel-vite.log 2>&1 &
+REEL=1 npx vite --port 5187 --strictPort >/tmp/reel-vite.log 2>&1 &
 VITE=$!
 trap 'kill $VITE 2>/dev/null || true' EXIT
 for i in $(seq 60); do curl -sf http://localhost:5187/ >/dev/null && break; sleep 1; done
