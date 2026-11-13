@@ -140,7 +140,27 @@ Postup pro nový reel `<name>`:
 6. Až to uživatel **výslovně schválí**: přidat položku do `marketing/queue.json` (vzor: existující položky, `publishAt` v UTC).
    Smyčka ji publikuje v daný čas. Video delší než 60 s jde do IG Stories jen rozdělené (`type: "story"`).
 
+**Day reel (denní shrnutí) jedním příkazem** (od 2026-11-13): `marketing/reels/render.json` = `{"name": "day<N>"}` (N = `state.day`, tedy den posledních novin; po dalších novinách už `day<N>` nevznikne).
+`tools/make-reel.sh` si sám spustí `node tools/day-reel.mjs` (podklady z aktuálního stavu), scénář `web/src/reel-daily.js` skládá části podle toho, co ve stavu je:
+noc a děla → výstřel (smrtelný má přednost: lístek FALLEN) → zasažení po stranách → padlí (Roll of Honour) → obvaziště a nosítka → závod o další kótu (pruhy do 100)
+→ další noci bombardování (dopady na mapě) → dopis z domova (scéna při svíčce, tlačítko jako na kartě, počet dopisů na cestě) → **přírůstek hráčů za včerejšek** → počty hráčů teď (celkem + přejezd po linii obou stran) → výzva.
+Výprava a hlasování se přidají jen, když běží (`state.valley.open`, `state.vote.mediaId`).
+- **Přírůstek za včerejšek = půlnoc–půlnoc UTC** (přání uživatele 2026-11-13; dny hry běží v UTC). Klon v Actions je mělký, proto se počítá předem z gitu a ukládá do `marketing/reels/day<N>.joined.json` (`{"joined": [H, C]}`):
+  stav `data/state.json` z posledního commitu před `<včera>T00:00Z` a před `<dnes>T00:00Z`, rozdíl počtu vojáků po stranách. Bez souboru se věta vynechá.
+- **Čísla:** ztráty, padlí a nemocnice jsou z posledních novin (do dalších se nemění); hráči na frontě, závod a dopisy jsou z doby výroby (aktuální stav). Zasažení po stranách se počítají podle dnešní strany vojáka (po přestupu se může o 1 lišit od Gazette).
+- Náhled bez hlasu: dev server + `/?reel=day<N>&vacant=700` (bez `day<N>.vo.json` se časy odhadnou z délky vět; starý `vo.json` neobsahuje nové věty, při náhledu ho dočasně odsuň).
+
+**Pojistky výroby videa** (2026-11-13; dvě výroby spadly s „Execution context was destroyed … navigation“):
+- Příčina: natáčení (`tools/record-reel.mjs`) zapíše `<scénář>.sfx.json` do `marketing/reels/`; scénář přes `import.meta.glob` sledoval všechny `day*.json`, Vite změnu zachytil a stránku uprostřed natáčení znovu načetl.
+- **`REEL=1`** (nastavuje `tools/make-reel.sh`): `vite.config.js` vypne HMR a nesleduje `marketing/`, `data/`, `dist/`, takže se stránka během natáčení nikdy znovu nenačte. Lokální natáčení vždy spouštěj s `REEL=1 npx vite --port 5187 --strictPort`.
+- Glob scénáře vylučuje `*.sfx.json` (`reel-daily.js`). **Nový scénář:** nesleduj soubory, které natáčení zapisuje (`*.sfx.json`, `_frames_*`), a glob drž co nejužší.
+- Automatické natočení znovu po pádu se NEPOUŽÍVÁ (při zkoušce se místo nového pokusu zaseklo, zaseknutí je horší než pád). Když výroba spadne: log (`gh api repos/<repo>/actions/jobs/<id>/logs`), oprava, nový commit `render.json` (změň např. `"v"`, jinak se workflow nespustí), nebo „Re-run“.
+- Hotové video stáhni z Release `media` přes REST (`gh api repos/<repo>/releases/tags/media` → id → `gh api -H "Accept: application/octet-stream" repos/<repo>/releases/assets/<id>`); `gh release download` jde přes GraphQL a v cloudu nefunguje, GitHub Pages z cloudového sezení nejsou dostupné (proxy).
+- Po výrobě vždy: kontaktní list snímků (ffmpeg `fps=1/3`) → kontrola duchů a čísel → poslat video uživateli → teprve po schválení fronta + `node tools/story-for.mjs <id> --still <čistý snímek 1080×1920>`.
+
 ## Stav a plán (aktualizuj při změnách)
+- **Day reel Dne 4** (`reel-day4`, 77 s): schválen a zařazen 13. 11. ve 12:06 UTC („nasaď hned“), story `story-reel-day4` (dopisová scéna) 12:16 UTC. Čísla v popisku: 45 zasažených, 6 padlých, Hill 304 H 74 : C 48, 74 dopisů, včera +104 (H +65, C +39), na frontě 316 (H 168, C 148).
+  Štáb fronty (Artifact) nešel z cloudového sezení 13. 11. otevřít (artefakt nedostupný); položky `reel-day4` a `story-reel-day4` do něj doplnit v sezení, kde je přístupný.
 - Den 1 války = 2026-11-09; každé ranní vydání (denní tah, Gazette, výsledky) je ve 13:00 UTC, večerní reel nebo post ve 23:00 UTC.
 - **Závod o kóty:** kdo první naverbuje 100 vojáků, dobude kótu (teď Verdel Ridge, pak Hill 304…, `theme.race.objectives`). Výhra odemyká dělostřelectvo:
   3 dny bombardování poraženého. Do první dobyté kóty děla mlčí a texty o ostřelování se nepoužijí (`battle.gunsWords`).
