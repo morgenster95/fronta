@@ -89,3 +89,14 @@ Postavy concord_rifleman_v2 (950a1f6d…) a hegemony_rifleman_v2 (2ee9db43…). 
 | kneel (u hrobu) | skeleton-v3 kneel | V, Z, S | |
 Cena: ~380 generací (z toho ~230 duplikáty kvůli chybě v mé frontě: opakovaný pokus odesílal znovu celou animaci; opraveno odesíláním po směrech). Zbývá 1 618 generací do 13. 12.
 Paleta Trench 24 se předává jako `palette` (skeleton-v3, v3), šablony (template) paletu nepřijmou a přemalují pušku → nepoužívat pro vojáky s puškou.
+
+## Vlna 2 (13. 11. 2026): ranění a role, přes tools/pixellab.py (bez duplikátů)
+| Animace | Postavy | Směry | Režim | Výsledek |
+|---|---|---|---|---|
+| limp (kulhání) | puškař C/H | V, Z, S, J | v3 | ✔ |
+| bandage (obvazovat) | medik C/H | V, Z, J | v3 | ✔ |
+| fire-side (střelba z boku) | kulometčík, odstřelovač C/H | V, Z | v3 | ✔ |
+| sit-wounded (sednout si raněný, drží ruku) | puškař C/H | V, Z | skeleton-v3 sit | ✔ (v3 první pokus jen stál) |
+| lying-wounded (leží a dýchá) | puškař C/H | V, Z, S | pixminimax ze snímku pádu | ✔ jemný pohyb |
+| carry, stretcher, wounded-sit (v3) | | | v3 | ✘ na 32 px nekreslí druhou postavu ani nosítka: nosítka a nesení skládat ve hře ze dvou spritů |
+Cena dávky: 30 + 10 generací.
