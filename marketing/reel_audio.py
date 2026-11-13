@@ -378,7 +378,7 @@ def build_story(name="story"):
     if name == "ridge":
         music = epic_score(dur, cue) * 1.5 + rain(dur) * 0.25
     else:
-        music = (lament(dur) * 1.3 + drone(dur) * 0.35 + rain(dur) * 0.7) if name in ("barrage", "rip") else drone(dur) * 1.1 + rain(dur)
+        music = (lament(dur) * 1.3 + drone(dur) * 0.35 + rain(dur) * 0.7) if name in ("barrage", "rip", "wire") else drone(dur) * 1.1 + rain(dur)
     fx = np.zeros(n)
     beat = 60 / 70
     # bubny: od Hegemonie, ztichnou před půlnocí a po dědicovi se rozjedou ke konci

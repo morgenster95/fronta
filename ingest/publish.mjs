@@ -11,7 +11,7 @@ import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { ROOT, loadTheme, loadState, saveState } from '../tools/lib.mjs';
-import { openWiring } from '../engine/wiring.js';
+import { openWiring, wiringMedia } from '../engine/wiring.js';
 import { fireTriggers, openItemVote } from './triggers.mjs';
 
 const API = `https://${process.env.IG_API_HOST || 'graph.facebook.com'}/${process.env.IG_API_VERSION || 'v23.0'}`;
@@ -159,7 +159,7 @@ async function main() {
       fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
       // kolo se opakovalo (stav z origin/main): hlasování otevřít znovu, jen pokud ještě neběží
       const st = loadState(theme);
-      if (item.wiring && st.wiring?.open?.media !== item.published.id && !(st.wiring?.nights || []).some((n) => n.media === item.published.id)) { openWiring(st, item.published.id, st.day); saveState(st); }
+      if (item.wiring && !wiringMedia(st, item.published.id) && !(st.wiring?.nights || []).some((n) => n.media === item.published.id)) { openWiring(st, item.published.id, st.day); saveState(st); }
       if (item.vote && st.vote?.mediaId !== item.published.id && !(st.events || []).some((e) => e.mediaId === item.published.id)) {
         if (openItemVote(st, item) === 'open') saveState(st);
         fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
@@ -178,7 +178,7 @@ async function main() {
     // wiring party pod tímto postem: přihlášky (WIRE) se sbírají do příštího denního tahu
     if (item.wiring) {
       const st = loadState(theme);
-      if (st.wiring?.open?.media !== item.published.id) { openWiring(st, item.published.id, st.day); saveState(st); }
+      if (!wiringMedia(st, item.published.id)) { openWiring(st, item.published.id, st.day); saveState(st); }
       console.log(`⛓ ${item.id}: wiring party otevřena (heslo ${theme.battle?.wiring?.keyword || 'WIRE'})`);
     }
     // hlasování pod tímto postem (stav se načte znovu: mezitím ho nic jiného neměnilo, ale ať se nepřepíše starší kopií)

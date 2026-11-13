@@ -109,6 +109,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'wire') {
+    // wiring party: historie, nové animace (plazení, světlice, kůl), potrhaný drát ve hře, dobrovolníci u drátu, výzva WIRE (reel-wire.js)
+    return import('./reel-wire.js').then(async ({ startWireReel }) => {
+      await startWireReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'claim') {
     // návod: jak claimnout vojáka + co umí claimnutý voják (reel-claim.js)
     return import('./reel-claim.js').then(({ startClaimReel }) => startClaimReel({ theme, tex, anims }));

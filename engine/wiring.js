@@ -3,15 +3,27 @@
 // vyhodnocení v příštím denním tahu (battleTick, krok 0): riziko jen z palby hlídek nepřítele ze zákopu (kdo jde ven, nehlídá).
 export const W = (theme) => theme.battle?.wiring || null;
 
+// Další post s `wiring: true` téhož dne (např. reel) přihlášky nesmaže: přidá se k otevřené výzvě (open.medias), přihlášky platí pod všemi.
 export function openWiring(state, mediaId, day) {
+  const o = state.wiring?.open;
+  if (o && o.day === day) {
+    if (!wiringMedia(state, mediaId)) o.medias = [...(o.medias || []), mediaId];
+    return o;
+  }
   state.wiring = { ...(state.wiring || {}), open: { day, media: mediaId, ids: [] } };
   return state.wiring.open;
+}
+
+// je post (media id) součástí otevřené výzvy?
+export function wiringMedia(state, mediaId) {
+  const o = state.wiring?.open;
+  return !!o && (o.media === mediaId || (o.medias || []).includes(mediaId));
 }
 
 // komentář pod otevřeným postem s heslem (celé slovo, velikost písmen nevadí)
 export function wiringKeyword(state, theme, comment) {
   const cfg = W(theme), o = state.wiring?.open;
-  if (!cfg || !o || comment.mediaId !== o.media) return false;
+  if (!cfg || !o || !wiringMedia(state, comment.mediaId)) return false;
   return new RegExp(`\\b${cfg.keyword || 'WIRE'}\\b`, 'i').test(comment.text || '');
 }
 

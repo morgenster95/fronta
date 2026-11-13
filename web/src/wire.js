@@ -37,7 +37,9 @@ function segments(map, f) {
 export function placeVolunteers({ soldiers, roster, map, theme, openX0, openX1 }) {
   const pub = roster.battle || [];
   const dev = import.meta.env.DEV ? new URLSearchParams(location.search) : null;
-  const devParty = Object.fromEntries((dev?.get('party') || '').split(',').filter(Boolean).map((x) => x.split(':').map(Number)));
+  // reel „wire“ bez skutečných přihlášek: náhledová skupina (v reelu bez jmen)
+  const anyReal = (roster.battle || []).some((b) => Object.keys(b?.party || {}).length);
+  const devParty = Object.fromEntries((dev?.get('party') || (dev?.get('reel') === 'wire' && !anyReal ? '0:6,1:4' : '')).split(',').filter(Boolean).map((x) => x.split(':').map(Number)));
   const out = [];
   theme.factions.forEach((fac, f) => {
     const { toEnemy, rowY, list } = segments(map, f);
@@ -122,7 +124,7 @@ export async function initWire({ world, anchor, roster, map, anims, theme, openX
         const key = s.texKey && anims[s.texKey]?.[w.anim] ? s.texKey : theme.factions[s.faction].sprite;
         const fr = anims[key]?.[w.anim]?.[w.dir];
         if (!fr?.length) continue;
-        const t = fr[Math.floor((now + w.t0) / 130) % fr.length];
+        const t = fr[((Math.floor((now + w.t0) / 130) % fr.length) + fr.length) % fr.length]; // i záporný čas (zahřátí reelu)
         if (sp.texture !== t) { sp.texture = t; sp.scale.x = 1; sp.anchor.set(0.5, (30 + (t.width - 32) / 2) / t.height); }
         if (w.anim === 'crawl') sp.x = Math.round(w.x0 + Math.sin((now + w.t0) / 2200) * 12);
       }
