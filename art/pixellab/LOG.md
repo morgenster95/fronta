@@ -116,3 +116,13 @@ Cena dávky: 30 + 10 generací.
 | fire, fire-prone | hegemony_machinegunner J, V/Z | | skeleton-v3 shoot, v3 (snímky 4–8) | ✔ |
 Ručně: `concord_machinegunner` fire-side → **fire-prone** (je to střelba vleže), `hegemony_machinegunner` fire-side nahrazeno fire-prone; barvy: import (`tools/import-anim.py`, `RECOLOR`) vrací Concordu teplou olivovou původních spritů a Hegemonii světlou kůži (dřív paleta dělala zelenou a oranžovou); hegemony fire jihovýchod bez pušky trčící za ramenem.
 Cena: ~52 generací (1 neúspěšné odeslání při restartu se ověřilo přes get_character, duplikát nevznikl).
+
+## Oprava 3 (13. 11. 2026): VÝCHOZÍ POSTUP, uživatel: „pohyby lepší než v 1 a 2, opravdu kvalitní“
+pixminimax, `custom_start_frame` = schválený herní snímek (ořez 48×48), krátký popis pohybu + `subject_description`, 8 snímků, 1 generace/směr.
+Příkaz: `python tools/pixellab.py pm <postava> <název> <směr> <snímek> "<pohyb>" "<kdo>"`. Příklady, které prošly:
+- hegemony duck jih: start `hegemony@grenade_south_0.png` (bez pušky), „crouches low under shellfire, both hands pressed on top of the helmet, then slowly looks up“
+- hegemony run/duck/grenade sever: start `hegemony@walk_north_0.png` (puška na zádech), „running away from the viewer, arms pumping, rifle stays slung on the back the whole time“
+- hegemony work jih: start `hegemony@grenade_south_0.png`, „kneels down on one knee and hammers a wooden stake into the ground with a mallet, repeated“
+- plazení zepředu: start ze snímku lehnutí (`*@prone_south_8.png`), „crawling on the belly toward the viewer, left and right elbows pulling forward in turn, both arms always visible“
+- odstřelovač z boku: start `concord_sniper_east.png` (statická herní póza), „raises the rifle to the shoulder, aims to the right and fires one shot with recoil, then lowers it“
+- kulometčík: start `hegemony_machinegunner@crouch_south_0.png`, „fires the machine gun held in both hands at the hip toward the viewer, the gun shakes with rapid recoil“

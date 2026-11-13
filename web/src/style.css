@@ -422,3 +422,4 @@ body.reel #card { bottom: 18%; width: 86%; }
 .hosp-ptr .arr { position: absolute; left: 50%; top: 50%; width: 0; height: 0; margin: -7px 0 0 -6px; border-left: 12px solid var(--c, #c4b8a0); border-top: 7px solid transparent; border-bottom: 7px solid transparent; transform-origin: 6px 7px; }
 .hosp-ptr:hover, .hosp-ptr:focus-visible { background: rgba(43, 39, 34, 0.95); outline: none; }
 body.reel:not(.show-nav) .hosp-ptr { display: none; }
+#card-letter.sent { opacity: 0.8; }

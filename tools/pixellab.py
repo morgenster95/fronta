@@ -3,6 +3,12 @@
   python tools/pixellab.py balance
   python tools/pixellab.py anim <character_id> <název> <směr> '<json dalších parametrů>' [--max-cost N]
   python tools/pixellab.py wait
+  python tools/pixellab.py pm <character_id> <název> <směr> <herní snímek .png> "<pohyb>" "<kdo to je>"   ← VÝCHOZÍ POSTUP (oprava 3)
+
+VÝCHOZÍ POSTUP (schválil uživatel 13. 11.: „pohyby jsou lepší a opravdu kvalitní“): pixminimax se startovním snímkem ze SCHVÁLENÉHO
+herního spritu (web/public/assets/soldiers/…, ořez 48×48 kolem postavy), krátký popis pohybu, subject_description, 8 snímků, 1 generace.
+Styl, barvy a výbava zůstanou jako ve hře. Zbraň řídí startovní snímek: bez pušky → start z pózy bez pušky (granát), puška na zádech →
+start z chůze zezadu. Pak import: python tools/import-anim.py <stažené snímky> <klíč> <animace> <směr> --canvas 64 (barvy a kůže stran).
 
 POJISTKY PROTI DUPLIKÁTŮM (pravidlo uživatele 13. 11. 2026, generace jsou omezené):
 1. Vždy jen JEDEN směr na volání. Animace s více směry = víc volání za sebou (další směry do stejné skupiny: animation_group_id).
@@ -98,6 +104,18 @@ if __name__ == "__main__":
         print(call("get_balance", {}))
     elif a[0] == "wait":
         print(call("wait_for_jobs", {"timeout_seconds": 540}))
+    elif a[0] == "pm":
+        import base64, io
+        from PIL import Image
+        ch, name, d, start, motion, subj = a[1:7]
+        p = start if os.path.exists(start) else os.path.join(ROOT, "web", "public", "assets", "soldiers", start)
+        im = Image.open(p).convert("RGBA")
+        if im.width > 48:
+            bb = im.getbbox(); cx, cy = (bb[0] + bb[2]) // 2, (bb[1] + bb[3]) // 2
+            im = im.crop((cx - 24, cy - 24, cx + 24, cy + 24))
+        b = io.BytesIO(); im.save(b, "PNG")
+        anim(ch, name, d, {"mode": "pixminimax", "action_description": motion, "frame_count": 8,
+                           "custom_start_frame_base64": base64.b64encode(b.getvalue()).decode(), "subject_description": subj}, 4)
     elif a[0] == "anim":
         mc = int(a[a.index("--max-cost") + 1]) if "--max-cost" in a else 4
         anim(a[1], a[2], a[3], json.loads(a[4]) if len(a) > 4 and not a[4].startswith("--") else {}, mc)

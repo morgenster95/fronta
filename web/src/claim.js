@@ -70,7 +70,9 @@ export async function myAccount() {
     const { getFirestore, doc, getDoc } = await import('firebase/firestore');
     const c = await getDoc(doc(getFirestore(app), 'claims', user.uid));
     const d = c.exists() ? c.data() : null;
-    const account = { email: user.email || 'Google account', handle: d?.status === 'done' ? d.handle : null, pending: d?.status === 'pending' ? d.handle : null };
+    // dopis domů: den posledního odeslaného dopisu z profilu (platí na všech zařízeních)
+    const pr = d?.status === 'done' ? await getDoc(doc(getFirestore(app), 'profiles', user.uid)).catch(() => null) : null;
+    const account = { email: user.email || 'Google account', handle: d?.status === 'done' ? d.handle : null, pending: d?.status === 'pending' ? d.handle : null, letterDay: pr?.exists() ? pr.data().letterDay ?? null : null };
     mine = { known: true, account };
     return account;
   } catch (e) {
@@ -147,6 +149,7 @@ export async function sendTransfer(owner, role) {
 export async function sendLetter(owner, day) {
   const { getFirestore, doc, setDoc, serverTimestamp } = await import('firebase/firestore');
   await setDoc(doc(getFirestore(owner.app), 'profiles', owner.user.uid), { letterDay: day, updatedAt: serverTimestamp() }, { merge: true });
+  if (mine.account) mine.account.letterDay = day;
   return true;
 }
 

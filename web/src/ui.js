@@ -394,19 +394,37 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     const L = $('card-letter'), mine = !!(h && h === s.handle && s.status !== 'fallen');
     L.hidden = !mine;
     if (mine) {
-      let sent = false;
-      try { sent = localStorage.getItem(`letter:${s.handle}`) === String(roster.day); } catch { /* bez úložiště */ }
-      L.disabled = sent;
-      L.textContent = sent ? '✉ Letter sent. 15% safer tonight' : '✉ Send your soldier a letter (15% safer tonight)';
+      // jeden dopis na noc: odeslaný dnes (den vydání) platí v příštím tahu; další jde poslat po ranním vydání ve 13:00 UTC
+      let sent = a?.letterDay === roster.day;
+      try { sent ||= localStorage.getItem(`letter:${s.handle}`) === String(roster.day); } catch { /* bez úložiště */ }
+      const nextIn = () => {
+        const now = new Date(), t = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 13, 0));
+        if (t <= now) t.setUTCDate(t.getUTCDate() + 1);
+        const m = Math.max(1, Math.round((t - now) / 60000));
+        return m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`;
+      };
+      const show = () => {
+        L.disabled = false; // i po odeslání jde kliknout: řekne, kdy půjde poslat další
+        L.classList.toggle('sent', sent);
+        L.textContent = sent ? `\u2709 Letter sent. Next one after the 13:00 UTC edition (in ${nextIn()})` : '\u2709 Send your soldier a letter (15% safer tonight)';
+      };
+      show();
       L.onclick = async () => {
+        if (sent) {
+          toast(`You already sent a letter today. It reaches your soldier tonight. You can send the next one after the morning edition at 13:00 UTC, in ${nextIn()}.`);
+          show();
+          return;
+        }
         L.disabled = true;
+        L.textContent = '\u2709 Sending\u2026';
         const owner = await signInAsOwner(s, toast).catch(() => null);
-        if (!owner) { L.disabled = false; return; }
+        if (!owner) { show(); return; }
         const ok = await sendLetter(owner, roster.day).catch(() => false);
-        if (!ok) { toast('The letter could not be sent. Try again.'); L.disabled = false; return; }
+        if (!ok) { toast('The letter could not be sent. Try again.'); show(); return; }
         try { localStorage.setItem(`letter:${s.handle}`, String(roster.day)); } catch { /* bez úložiště */ }
-        L.textContent = '✉ Letter sent. 15% safer tonight';
-        toast('Letter sent. Your soldier is 15% less likely to be hurt tonight.');
+        sent = true;
+        show();
+        toast(`Letter sent. Your soldier is 15% less likely to be hurt tonight. Next letter after the 13:00 UTC edition, in ${nextIn()}.`);
       };
     }
     // kdo už vojáka má (nebo na něj čeká), nemá u cizích karet nabízené převzetí
