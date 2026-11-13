@@ -12,15 +12,20 @@ export function makeWireScenes(tex, anims = {}) {
   canvas.id = 'rw-cine';
   const g = canvas.getContext('2d');
   g.imageSmoothingEnabled = false;
-  const side = anims.hegemony?.crawl ? 'hegemony' : 'concord';
-  const A = anims[side] || {};
+  // sady snímků pro obě strany; scéna kreslí vždy jen jednu (o.side), strany se na jednom snímku nemíchají
   // snímky v nočním a ve světle světlice (tint jen barvou, plné krytí: žádní duchové)
   const frames = (list, tint) => (list || []).map((tx) => lit(tx, tint)).filter(Boolean);
   const NIGHT = 'rgba(14,18,40,0.5)', FLARE = 'rgba(255,228,170,0.14)', MOON = 'rgba(20,26,54,0.38)';
-  const crawlN = frames(A.crawl?.east, NIGHT), crawlF = frames(A.crawl?.east, FLARE);
-  const proneN = frames(A.prone?.east, NIGHT), proneF = frames(A.prone?.east, FLARE);
-  const work = frames(A.work?.east, MOON);
-  const crawl2 = frames(A.crawl?.east, MOON);
+  const SETS = {};
+  for (const k of ['hegemony', 'concord']) {
+    const A = anims[k] || {};
+    SETS[k] = {
+      crawlN: frames(A.crawl?.east, NIGHT), crawlF: frames(A.crawl?.east, FLARE),
+      proneN: frames(A.prone?.east, NIGHT), proneF: frames(A.prone?.east, FLARE),
+      work: frames(A.work?.east, MOON), crawl2: frames(A.crawl?.east, MOON),
+    };
+  }
+  const setOf = (o) => SETS[o?.side] || SETS.hegemony;
   const P = { coil: img('/assets/props/wire_coil_0.png'), picket: img('/assets/props/screw_picket_0.png'), broken: img('/assets/props/wire_broken_0.png'), broken2: img('/assets/props/wire_broken_3.png'), hog: img('/assets/props/hedgehog_1.png') };
 
   // --- statické vrstvy ---
@@ -70,6 +75,7 @@ export function makeWireScenes(tex, anims = {}) {
 
   const scenes = {
     nml(t, o = {}) {
+      const { crawlN, crawlF, proneN, proneF } = setOf(o);
       g.drawImage(L.nml, 0, 0);
       // světlice: vystoupá, visí a pomalu klesá; light = jak moc svítí
       let light = 0, fx = 0, fy = 0;
@@ -106,7 +112,8 @@ export function makeWireScenes(tex, anims = {}) {
       propAt(P.broken, 120, 300, 3); propAt(P.broken2, 40, 312, 3); propAt(P.hog, 168, 318, 3);
       rain(t, 60, 0.22 + 0.15 * light);
     },
-    stake(t) {
+    stake(t, o = {}) {
+      const { work, crawl2 } = setOf(o);
       g.drawImage(L.stake, 0, 0);
       // nový drát: od kůlu doprava se natahuje (3 prameny s ostny)
       const px = 112, base = 262;
@@ -123,7 +130,7 @@ export function makeWireScenes(tex, anims = {}) {
       propAt(P.picket, 172, base + 2, 3);
       // voják klečí a zatlouká kůl (nová animace work), za ním druhý se plazí se svitkem
       const cyc = (list, dt) => list[((Math.floor(t / dt) % list.length) + list.length) % list.length];
-      if (crawl2.length) drawSp(cyc(crawl2, 0.14), -60 + t * 4, base - 92 + 18);
+      if (crawl2.length) drawSp(cyc(crawl2, 0.14), -84 + t * 3, base - 138 + 4, 3); // stejné měřítko jako voják u kůlu (×3), plazí se za ním
       if (work.length) drawSp(cyc(work, 0.13), 84 - 96, base - 138 + 2, 3); // klečí, kladivo dopadá na kůl vpravo
       propAt(P.coil, 150, base + 14, 3);
       rain(t, 70, 0.28);
@@ -132,6 +139,6 @@ export function makeWireScenes(tex, anims = {}) {
   return {
     canvas,
     draw(name, t, o) { g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, W, H); scenes[name]?.(t, o); },
-    strikeEvery: (A.work?.east?.length || 9) * 0.13, // jeden úder kladiva na cyklus animace (zvuk)
+    strikeEvery: (anims.hegemony?.work?.east?.length || 9) * 0.13, // jeden úder kladiva na cyklus animace (zvuk)
   };
 }

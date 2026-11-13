@@ -127,11 +127,11 @@ export async function startWireReel({ cam, life, map, theme, soldiers, tex, anim
     const wOn = t < tBroken, sOn = t >= tRisk && t < tCta;
     if (t < tHist) cineW.draw('nml', t - tHook);
     else if (t < tFlare) cineW.draw('stake', t - tHist);
-    else if (t < tBroken) cineW.draw('nml', t - tFlare + 2.5, { flareAt: 2.7 });
+    else if (t < tBroken) cineW.draw('nml', t - tFlare + 2.5, { flareAt: 2.7, side: 'concord' }); // světlice: Concord (strany se střídají po scénách, nikdy spolu)
     if (sOn) scenes.draw('flare', t - tRisk + 1.2);
     show('#rw-cine', wOn ? 1 : 0);
     show('#rd-cine2', sOn ? 1 : 0);
-    show('#rw-night', !isCine(t) ? (t >= tHow ? 0.85 : 0.35) : 0);
+    show('#rw-night', !isCine(t) ? (t >= tHow ? 0.6 : 0.35) : 0);
     paint({ ...f, black: Math.max(f.black, t < 0.3 ? 1 - t / 0.3 : 0, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) });
 
     show('#rw-title', win(t, 0.5, tHist - 0.1, 0.25));
