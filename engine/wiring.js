@@ -20,7 +20,7 @@ export function joinWiring(state, s) {
   const o = state.wiring?.open;
   if (!o) return 'closed';
   if (s.status === 'fallen') return 'fallen';
-  if (s.wound || s.status !== 'active') return 'wounded';
+  // ranění se přihlásit můžou (bot jim neodpovídá zamítnutím): lehce raněný jde v noci ven, těžce raněného nepustí medik (zápis v deníku, engine/battle.js)
   if (o.ids.includes(s.id)) return 'already';
   o.ids.push(s.id);
   return 'ok';

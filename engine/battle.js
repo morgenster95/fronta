@@ -201,7 +201,10 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   // riziko dává jen palba hlídek nepřítele na dostřel (kdo z nepřátel šel ven, nehlídá) × počasí × bombardování × ženista; zásah = běžné zranění
   const WC = cfg.wiring, wo = state.wiring?.open;
   if (WC && wo && wo.day < day) {
-    const vol = wo.ids.map((id) => state.soldiers.find((s) => s.id === id)).filter((s) => s && able(s));
+    const signed = wo.ids.map((id) => state.soldiers.find((s) => s.id === id)).filter((s) => s && s.status !== 'fallen' && !busy.has(s.id));
+    const fit = (s) => !s.wound || s.wound.sev === 'light'; // lehce raněný chodí, jde taky
+    const vol = signed.filter(fit);
+    for (const s of signed.filter((x) => !fit(x))) ev(s, 'wiring', (WC.keptBack || '{n} signed up for the wiring party, but the medic would not let {n} leave the aid post. The wire will wait for another night.').replaceAll('{n}', s.name));
     const outside = new Set(vol.map((s) => s.id));
     const watch = theme.factions.map((_, f) => lineup(state, f, (s) => able(s) && s.line === 'front' && !outside.has(s.id)));
     const wk = WC.weather?.[state.weather] ?? 1;

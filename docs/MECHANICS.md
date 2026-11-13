@@ -306,3 +306,8 @@ Uživatel: na lůžku má těžce raněný být nejvýš 2 dny; kdo přežije no
 - Lůžko: první noc operace (kritický umírá s 0,5 × critRisk: nemocnice 20 %, obvaziště 40 %), přežije-li, je těžce raněný a za 2 dny od uložení se vrací na frontu (`w.operated`).
 Simulace 20 běhů × 3 dny: Hegemonie ~9,3 / 8,0 / 1,5 padlých za den (bombardování končí Dnem 6), Concord ~1/den; za 3 dny H ~19 padlých a ~91 zranění, C ~2 a ~38.
 Osud dnes raněných H (10 dní): těžce raněný padne 40 %, vrátí se 52 % (průměrně za ~5 dní), lehce raněný se vrátí 81 % za ~2 dny. Den 5 podle stavu: H 10 padlých, C 3.
+
+## 2026-11-13: Wiring party a ranění (NASAZENO)
+Uživatel nechce další odpověď bota „to nejde“. Přihláška WIRE: přijme se každý živý voják (bot odpoví stejně). V noci jde ven i lehce raněný (chodí po zákopu);
+těžce a kriticky raněného nepustí medik: v deníku má „{n} signed up for the wiring party, but the medic would not let {n} leave the aid post. The wire will wait for another night.“
+(`engine/wiring.js` joinWiring, `engine/battle.js` krok 0, text jde přepsat `battle.wiring.keptBack`).
