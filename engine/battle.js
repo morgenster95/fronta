@@ -579,7 +579,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   }
   const lines = theme.factions.map((_, f) => {
     const H = hospital(state, theme, f), st = stats[f];
-    return `${short(theme, f)}: ${H.dugout ? 'hospital' : 'aid post'} ${st.beds}/${H.beds} beds, ${st.stretchers}/${H.stretchers} stretchers` +
+    return `${short(theme, f)}: ${H.dugout ? 'hospital' : 'aid post'} ${st.beds}/${H.beds} beds, ${st.stretchers} on stretchers` +
       `${st.trench ? `, ${st.trench} badly wounded still lying in the trench` : ''}, medics covering ${Math.round(st.cover * 100)}% of the wounded.`;
   });
   const hosp = theme.factions.map((_, f) => hospital(state, theme, f).dugout);
