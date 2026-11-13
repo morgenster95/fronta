@@ -532,27 +532,6 @@
       }
     },
     {
-      "id": "wiring-1",
-      "type": "image",
-      "files": [
-        "wiring_1.jpg"
-      ],
-      "wiring": true,
-      "caption": "WIRING PARTY ⛓️ VOLUNTEERS WANTED\n\nThe artillery tore the wire to pieces. Tonight we fix it.\n\nComment WIRE under this post and your soldier crawls out into no man's land after dark with stakes and a roll of barbed wire. Both sides can go.\n\n⚠️ It is dangerous work. Out there you have no trench to hide in. When a flare goes up, the enemy machine guns and snipers fire at anything that moves. Some volunteers will be hit.\n\n✅ Every volunteer mends the wire in their own sector, and better wire means fewer hits for the whole side.\n👀 Every soldier who goes out is not on watch. If one side stays home, they have more rifles on the parapet.\n🎖️ Three nights on the wire earn the Wire Party medal.\n\nResults in the Trench Gazette tomorrow at 13:00 UTC, with names.\n\nNo soldier yet? Comment CONCORD or HEGEMONY first, then WIRE.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
-      "publishAt": "2026-11-13T14:00:00Z",
-      "_note": "Wiring party (náborový post, komentář WIRE). Po novinách Dne 5, aby se přihlášky vyhodnotily v Novinách 14. 11. Uživatel řekl dát ráno pro USA (9:00 ET = 15:00 Praha)."
-    },
-    {
-      "id": "story-wiring-1",
-      "type": "story",
-      "files": [
-        "story_wiring-1.jpg"
-      ],
-      "caption": "",
-      "publishAt": "2026-11-13T14:10:00Z",
-      "_note": "Story k položce wiring-1 (pravidlo: ke každé novince i story). "
-    },
-    {
       "id": "reel-day4",
       "type": "reel",
       "files": [
