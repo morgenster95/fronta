@@ -91,6 +91,356 @@
      "concord@idle_north_2.png",
      "concord@idle_north_3.png"
     ]
+   },
+   "crawl": {
+    "east": [
+     "concord@crawl_east_0.png",
+     "concord@crawl_east_1.png",
+     "concord@crawl_east_2.png",
+     "concord@crawl_east_3.png",
+     "concord@crawl_east_4.png",
+     "concord@crawl_east_5.png",
+     "concord@crawl_east_6.png",
+     "concord@crawl_east_7.png",
+     "concord@crawl_east_8.png"
+    ],
+    "west": [
+     "concord@crawl_west_0.png",
+     "concord@crawl_west_1.png",
+     "concord@crawl_west_2.png",
+     "concord@crawl_west_3.png",
+     "concord@crawl_west_4.png",
+     "concord@crawl_west_5.png",
+     "concord@crawl_west_6.png",
+     "concord@crawl_west_7.png",
+     "concord@crawl_west_8.png"
+    ],
+    "north": [
+     "concord@crawl_north_0.png",
+     "concord@crawl_north_1.png",
+     "concord@crawl_north_2.png",
+     "concord@crawl_north_3.png",
+     "concord@crawl_north_4.png",
+     "concord@crawl_north_5.png",
+     "concord@crawl_north_6.png",
+     "concord@crawl_north_7.png",
+     "concord@crawl_north_8.png"
+    ],
+    "south": [
+     "concord@crawl_south_0.png",
+     "concord@crawl_south_1.png",
+     "concord@crawl_south_2.png",
+     "concord@crawl_south_3.png",
+     "concord@crawl_south_4.png",
+     "concord@crawl_south_5.png",
+     "concord@crawl_south_6.png",
+     "concord@crawl_south_7.png",
+     "concord@crawl_south_8.png"
+    ]
+   },
+   "prone": {
+    "east": [
+     "concord@prone_east_0.png",
+     "concord@prone_east_1.png",
+     "concord@prone_east_2.png",
+     "concord@prone_east_3.png",
+     "concord@prone_east_4.png",
+     "concord@prone_east_5.png",
+     "concord@prone_east_6.png"
+    ],
+    "west": [
+     "concord@prone_west_0.png",
+     "concord@prone_west_1.png",
+     "concord@prone_west_2.png",
+     "concord@prone_west_3.png",
+     "concord@prone_west_4.png",
+     "concord@prone_west_5.png",
+     "concord@prone_west_6.png"
+    ],
+    "north": [
+     "concord@prone_north_0.png",
+     "concord@prone_north_1.png",
+     "concord@prone_north_2.png",
+     "concord@prone_north_3.png",
+     "concord@prone_north_4.png",
+     "concord@prone_north_5.png",
+     "concord@prone_north_6.png",
+     "concord@prone_north_7.png"
+    ],
+    "south": [
+     "concord@prone_south_0.png",
+     "concord@prone_south_1.png",
+     "concord@prone_south_2.png",
+     "concord@prone_south_3.png",
+     "concord@prone_south_4.png",
+     "concord@prone_south_5.png",
+     "concord@prone_south_6.png",
+     "concord@prone_south_7.png"
+    ]
+   },
+   "run": {
+    "east": [
+     "concord@run_east_0.png",
+     "concord@run_east_1.png",
+     "concord@run_east_2.png",
+     "concord@run_east_3.png",
+     "concord@run_east_4.png",
+     "concord@run_east_5.png",
+     "concord@run_east_6.png",
+     "concord@run_east_7.png"
+    ],
+    "west": [
+     "concord@run_west_0.png",
+     "concord@run_west_1.png",
+     "concord@run_west_2.png",
+     "concord@run_west_3.png",
+     "concord@run_west_4.png",
+     "concord@run_west_5.png",
+     "concord@run_west_6.png",
+     "concord@run_west_7.png"
+    ],
+    "north": [
+     "concord@run_north_0.png",
+     "concord@run_north_1.png",
+     "concord@run_north_2.png",
+     "concord@run_north_3.png",
+     "concord@run_north_4.png",
+     "concord@run_north_5.png",
+     "concord@run_north_6.png",
+     "concord@run_north_7.png"
+    ],
+    "south": [
+     "concord@run_south_0.png",
+     "concord@run_south_1.png",
+     "concord@run_south_2.png",
+     "concord@run_south_3.png",
+     "concord@run_south_4.png",
+     "concord@run_south_5.png",
+     "concord@run_south_6.png",
+     "concord@run_south_7.png"
+    ]
+   },
+   "duck": {
+    "east": [
+     "concord@duck_east_0.png",
+     "concord@duck_east_1.png",
+     "concord@duck_east_2.png",
+     "concord@duck_east_3.png",
+     "concord@duck_east_4.png",
+     "concord@duck_east_5.png",
+     "concord@duck_east_6.png",
+     "concord@duck_east_7.png"
+    ],
+    "west": [
+     "concord@duck_west_0.png",
+     "concord@duck_west_1.png",
+     "concord@duck_west_2.png",
+     "concord@duck_west_3.png",
+     "concord@duck_west_4.png",
+     "concord@duck_west_5.png",
+     "concord@duck_west_6.png",
+     "concord@duck_west_7.png"
+    ],
+    "north": [
+     "concord@duck_north_0.png",
+     "concord@duck_north_1.png",
+     "concord@duck_north_2.png",
+     "concord@duck_north_3.png",
+     "concord@duck_north_4.png",
+     "concord@duck_north_5.png",
+     "concord@duck_north_6.png",
+     "concord@duck_north_7.png"
+    ],
+    "south": [
+     "concord@duck_south_0.png",
+     "concord@duck_south_1.png",
+     "concord@duck_south_2.png",
+     "concord@duck_south_3.png",
+     "concord@duck_south_4.png",
+     "concord@duck_south_5.png",
+     "concord@duck_south_6.png",
+     "concord@duck_south_7.png"
+    ]
+   },
+   "grenade": {
+    "east": [
+     "concord@grenade_east_0.png",
+     "concord@grenade_east_1.png",
+     "concord@grenade_east_2.png",
+     "concord@grenade_east_3.png",
+     "concord@grenade_east_4.png",
+     "concord@grenade_east_5.png",
+     "concord@grenade_east_6.png",
+     "concord@grenade_east_7.png"
+    ],
+    "west": [
+     "concord@grenade_west_0.png",
+     "concord@grenade_west_1.png",
+     "concord@grenade_west_2.png",
+     "concord@grenade_west_3.png",
+     "concord@grenade_west_4.png",
+     "concord@grenade_west_5.png",
+     "concord@grenade_west_6.png",
+     "concord@grenade_west_7.png"
+    ],
+    "north": [
+     "concord@grenade_north_0.png",
+     "concord@grenade_north_1.png",
+     "concord@grenade_north_2.png",
+     "concord@grenade_north_3.png",
+     "concord@grenade_north_4.png",
+     "concord@grenade_north_5.png",
+     "concord@grenade_north_6.png",
+     "concord@grenade_north_7.png"
+    ],
+    "south": [
+     "concord@grenade_south_0.png",
+     "concord@grenade_south_1.png",
+     "concord@grenade_south_2.png",
+     "concord@grenade_south_3.png",
+     "concord@grenade_south_4.png",
+     "concord@grenade_south_5.png",
+     "concord@grenade_south_6.png",
+     "concord@grenade_south_7.png"
+    ]
+   },
+   "work": {
+    "east": [
+     "concord@work_east_0.png",
+     "concord@work_east_1.png",
+     "concord@work_east_2.png",
+     "concord@work_east_3.png",
+     "concord@work_east_4.png",
+     "concord@work_east_5.png",
+     "concord@work_east_6.png",
+     "concord@work_east_7.png"
+    ],
+    "west": [
+     "concord@work_west_0.png",
+     "concord@work_west_1.png",
+     "concord@work_west_2.png",
+     "concord@work_west_3.png",
+     "concord@work_west_4.png",
+     "concord@work_west_5.png",
+     "concord@work_west_6.png",
+     "concord@work_west_7.png"
+    ],
+    "north": [
+     "concord@work_north_0.png",
+     "concord@work_north_1.png",
+     "concord@work_north_2.png",
+     "concord@work_north_3.png",
+     "concord@work_north_4.png",
+     "concord@work_north_5.png",
+     "concord@work_north_6.png",
+     "concord@work_north_7.png"
+    ],
+    "south": [
+     "concord@work_south_0.png",
+     "concord@work_south_1.png",
+     "concord@work_south_2.png",
+     "concord@work_south_3.png",
+     "concord@work_south_4.png",
+     "concord@work_south_5.png",
+     "concord@work_south_6.png",
+     "concord@work_south_7.png"
+    ]
+   },
+   "die": {
+    "east": [
+     "concord@die_east_0.png",
+     "concord@die_east_1.png",
+     "concord@die_east_2.png",
+     "concord@die_east_3.png",
+     "concord@die_east_4.png",
+     "concord@die_east_5.png",
+     "concord@die_east_6.png",
+     "concord@die_east_7.png"
+    ],
+    "west": [
+     "concord@die_west_0.png",
+     "concord@die_west_1.png",
+     "concord@die_west_2.png",
+     "concord@die_west_3.png",
+     "concord@die_west_4.png",
+     "concord@die_west_5.png",
+     "concord@die_west_6.png",
+     "concord@die_west_7.png"
+    ],
+    "north": [
+     "concord@die_north_0.png",
+     "concord@die_north_1.png",
+     "concord@die_north_2.png",
+     "concord@die_north_3.png",
+     "concord@die_north_4.png",
+     "concord@die_north_5.png",
+     "concord@die_north_6.png",
+     "concord@die_north_7.png"
+    ]
+   },
+   "salute": {
+    "east": [
+     "concord@salute_east_0.png",
+     "concord@salute_east_1.png",
+     "concord@salute_east_2.png",
+     "concord@salute_east_3.png",
+     "concord@salute_east_4.png",
+     "concord@salute_east_5.png",
+     "concord@salute_east_6.png",
+     "concord@salute_east_7.png"
+    ],
+    "west": [
+     "concord@salute_west_0.png",
+     "concord@salute_west_1.png",
+     "concord@salute_west_2.png",
+     "concord@salute_west_3.png",
+     "concord@salute_west_4.png",
+     "concord@salute_west_5.png",
+     "concord@salute_west_6.png",
+     "concord@salute_west_7.png"
+    ],
+    "south": [
+     "concord@salute_south_0.png",
+     "concord@salute_south_1.png",
+     "concord@salute_south_2.png",
+     "concord@salute_south_3.png",
+     "concord@salute_south_4.png",
+     "concord@salute_south_5.png",
+     "concord@salute_south_6.png",
+     "concord@salute_south_7.png"
+    ]
+   },
+   "kneel": {
+    "east": [
+     "concord@kneel_east_0.png",
+     "concord@kneel_east_1.png",
+     "concord@kneel_east_2.png",
+     "concord@kneel_east_3.png",
+     "concord@kneel_east_4.png",
+     "concord@kneel_east_5.png",
+     "concord@kneel_east_6.png",
+     "concord@kneel_east_7.png"
+    ],
+    "west": [
+     "concord@kneel_west_0.png",
+     "concord@kneel_west_1.png",
+     "concord@kneel_west_2.png",
+     "concord@kneel_west_3.png",
+     "concord@kneel_west_4.png",
+     "concord@kneel_west_5.png",
+     "concord@kneel_west_6.png",
+     "concord@kneel_west_7.png"
+    ],
+    "north": [
+     "concord@kneel_north_0.png",
+     "concord@kneel_north_1.png",
+     "concord@kneel_north_2.png",
+     "concord@kneel_north_3.png",
+     "concord@kneel_north_4.png",
+     "concord@kneel_north_5.png",
+     "concord@kneel_north_6.png",
+     "concord@kneel_north_7.png"
+    ]
    }
   }
  },
@@ -185,6 +535,352 @@
      "hegemony@fall_south_4.png",
      "hegemony@fall_south_5.png",
      "hegemony@fall_south_6.png"
+    ]
+   },
+   "crawl": {
+    "east": [
+     "hegemony@crawl_east_0.png",
+     "hegemony@crawl_east_1.png",
+     "hegemony@crawl_east_2.png",
+     "hegemony@crawl_east_3.png",
+     "hegemony@crawl_east_4.png",
+     "hegemony@crawl_east_5.png",
+     "hegemony@crawl_east_6.png"
+    ],
+    "west": [
+     "hegemony@crawl_west_0.png",
+     "hegemony@crawl_west_1.png",
+     "hegemony@crawl_west_2.png",
+     "hegemony@crawl_west_3.png",
+     "hegemony@crawl_west_4.png",
+     "hegemony@crawl_west_5.png",
+     "hegemony@crawl_west_6.png"
+    ],
+    "north": [
+     "hegemony@crawl_north_0.png",
+     "hegemony@crawl_north_1.png",
+     "hegemony@crawl_north_2.png",
+     "hegemony@crawl_north_3.png",
+     "hegemony@crawl_north_4.png",
+     "hegemony@crawl_north_5.png",
+     "hegemony@crawl_north_6.png",
+     "hegemony@crawl_north_7.png",
+     "hegemony@crawl_north_8.png"
+    ],
+    "south": [
+     "hegemony@crawl_south_0.png",
+     "hegemony@crawl_south_1.png",
+     "hegemony@crawl_south_2.png",
+     "hegemony@crawl_south_3.png",
+     "hegemony@crawl_south_4.png",
+     "hegemony@crawl_south_5.png",
+     "hegemony@crawl_south_6.png",
+     "hegemony@crawl_south_7.png",
+     "hegemony@crawl_south_8.png"
+    ]
+   },
+   "prone": {
+    "east": [
+     "hegemony@prone_east_0.png",
+     "hegemony@prone_east_1.png",
+     "hegemony@prone_east_2.png",
+     "hegemony@prone_east_3.png",
+     "hegemony@prone_east_4.png",
+     "hegemony@prone_east_5.png",
+     "hegemony@prone_east_6.png"
+    ],
+    "west": [
+     "hegemony@prone_west_0.png",
+     "hegemony@prone_west_1.png",
+     "hegemony@prone_west_2.png",
+     "hegemony@prone_west_3.png",
+     "hegemony@prone_west_4.png",
+     "hegemony@prone_west_5.png",
+     "hegemony@prone_west_6.png"
+    ],
+    "north": [
+     "hegemony@prone_north_0.png",
+     "hegemony@prone_north_1.png",
+     "hegemony@prone_north_2.png",
+     "hegemony@prone_north_3.png",
+     "hegemony@prone_north_4.png",
+     "hegemony@prone_north_5.png",
+     "hegemony@prone_north_6.png",
+     "hegemony@prone_north_7.png"
+    ],
+    "south": [
+     "hegemony@prone_south_0.png",
+     "hegemony@prone_south_1.png",
+     "hegemony@prone_south_2.png",
+     "hegemony@prone_south_3.png",
+     "hegemony@prone_south_4.png",
+     "hegemony@prone_south_5.png",
+     "hegemony@prone_south_6.png",
+     "hegemony@prone_south_7.png"
+    ]
+   },
+   "run": {
+    "east": [
+     "hegemony@run_east_0.png",
+     "hegemony@run_east_1.png",
+     "hegemony@run_east_2.png",
+     "hegemony@run_east_3.png",
+     "hegemony@run_east_4.png",
+     "hegemony@run_east_5.png",
+     "hegemony@run_east_6.png",
+     "hegemony@run_east_7.png"
+    ],
+    "west": [
+     "hegemony@run_west_0.png",
+     "hegemony@run_west_1.png",
+     "hegemony@run_west_2.png",
+     "hegemony@run_west_3.png",
+     "hegemony@run_west_4.png",
+     "hegemony@run_west_5.png",
+     "hegemony@run_west_6.png",
+     "hegemony@run_west_7.png"
+    ],
+    "north": [
+     "hegemony@run_north_0.png",
+     "hegemony@run_north_1.png",
+     "hegemony@run_north_2.png",
+     "hegemony@run_north_3.png",
+     "hegemony@run_north_4.png",
+     "hegemony@run_north_5.png",
+     "hegemony@run_north_6.png",
+     "hegemony@run_north_7.png"
+    ],
+    "south": [
+     "hegemony@run_south_0.png",
+     "hegemony@run_south_1.png",
+     "hegemony@run_south_2.png",
+     "hegemony@run_south_3.png",
+     "hegemony@run_south_4.png",
+     "hegemony@run_south_5.png",
+     "hegemony@run_south_6.png",
+     "hegemony@run_south_7.png"
+    ]
+   },
+   "duck": {
+    "east": [
+     "hegemony@duck_east_0.png",
+     "hegemony@duck_east_1.png",
+     "hegemony@duck_east_2.png",
+     "hegemony@duck_east_3.png",
+     "hegemony@duck_east_4.png",
+     "hegemony@duck_east_5.png",
+     "hegemony@duck_east_6.png",
+     "hegemony@duck_east_7.png"
+    ],
+    "west": [
+     "hegemony@duck_west_0.png",
+     "hegemony@duck_west_1.png",
+     "hegemony@duck_west_2.png",
+     "hegemony@duck_west_3.png",
+     "hegemony@duck_west_4.png",
+     "hegemony@duck_west_5.png",
+     "hegemony@duck_west_6.png",
+     "hegemony@duck_west_7.png"
+    ],
+    "north": [
+     "hegemony@duck_north_0.png",
+     "hegemony@duck_north_1.png",
+     "hegemony@duck_north_2.png",
+     "hegemony@duck_north_3.png",
+     "hegemony@duck_north_4.png",
+     "hegemony@duck_north_5.png",
+     "hegemony@duck_north_6.png",
+     "hegemony@duck_north_7.png"
+    ],
+    "south": [
+     "hegemony@duck_south_0.png",
+     "hegemony@duck_south_1.png",
+     "hegemony@duck_south_2.png",
+     "hegemony@duck_south_3.png",
+     "hegemony@duck_south_4.png",
+     "hegemony@duck_south_5.png",
+     "hegemony@duck_south_6.png",
+     "hegemony@duck_south_7.png"
+    ]
+   },
+   "grenade": {
+    "east": [
+     "hegemony@grenade_east_0.png",
+     "hegemony@grenade_east_1.png",
+     "hegemony@grenade_east_2.png",
+     "hegemony@grenade_east_3.png",
+     "hegemony@grenade_east_4.png",
+     "hegemony@grenade_east_5.png",
+     "hegemony@grenade_east_6.png",
+     "hegemony@grenade_east_7.png"
+    ],
+    "west": [
+     "hegemony@grenade_west_0.png",
+     "hegemony@grenade_west_1.png",
+     "hegemony@grenade_west_2.png",
+     "hegemony@grenade_west_3.png",
+     "hegemony@grenade_west_4.png",
+     "hegemony@grenade_west_5.png",
+     "hegemony@grenade_west_6.png",
+     "hegemony@grenade_west_7.png"
+    ],
+    "north": [
+     "hegemony@grenade_north_0.png",
+     "hegemony@grenade_north_1.png",
+     "hegemony@grenade_north_2.png",
+     "hegemony@grenade_north_3.png",
+     "hegemony@grenade_north_4.png",
+     "hegemony@grenade_north_5.png",
+     "hegemony@grenade_north_6.png",
+     "hegemony@grenade_north_7.png"
+    ],
+    "south": [
+     "hegemony@grenade_south_0.png",
+     "hegemony@grenade_south_1.png",
+     "hegemony@grenade_south_2.png",
+     "hegemony@grenade_south_3.png",
+     "hegemony@grenade_south_4.png",
+     "hegemony@grenade_south_5.png",
+     "hegemony@grenade_south_6.png",
+     "hegemony@grenade_south_7.png"
+    ]
+   },
+   "work": {
+    "east": [
+     "hegemony@work_east_0.png",
+     "hegemony@work_east_1.png",
+     "hegemony@work_east_2.png",
+     "hegemony@work_east_3.png",
+     "hegemony@work_east_4.png",
+     "hegemony@work_east_5.png",
+     "hegemony@work_east_6.png",
+     "hegemony@work_east_7.png"
+    ],
+    "west": [
+     "hegemony@work_west_0.png",
+     "hegemony@work_west_1.png",
+     "hegemony@work_west_2.png",
+     "hegemony@work_west_3.png",
+     "hegemony@work_west_4.png",
+     "hegemony@work_west_5.png",
+     "hegemony@work_west_6.png",
+     "hegemony@work_west_7.png"
+    ],
+    "north": [
+     "hegemony@work_north_0.png",
+     "hegemony@work_north_1.png",
+     "hegemony@work_north_2.png",
+     "hegemony@work_north_3.png",
+     "hegemony@work_north_4.png",
+     "hegemony@work_north_5.png",
+     "hegemony@work_north_6.png",
+     "hegemony@work_north_7.png"
+    ],
+    "south": [
+     "hegemony@work_south_0.png",
+     "hegemony@work_south_1.png",
+     "hegemony@work_south_2.png",
+     "hegemony@work_south_3.png",
+     "hegemony@work_south_4.png",
+     "hegemony@work_south_5.png",
+     "hegemony@work_south_6.png",
+     "hegemony@work_south_7.png"
+    ]
+   },
+   "die": {
+    "east": [
+     "hegemony@die_east_0.png",
+     "hegemony@die_east_1.png",
+     "hegemony@die_east_2.png",
+     "hegemony@die_east_3.png",
+     "hegemony@die_east_4.png",
+     "hegemony@die_east_5.png",
+     "hegemony@die_east_6.png",
+     "hegemony@die_east_7.png"
+    ],
+    "west": [
+     "hegemony@die_west_0.png",
+     "hegemony@die_west_1.png",
+     "hegemony@die_west_2.png",
+     "hegemony@die_west_3.png",
+     "hegemony@die_west_4.png",
+     "hegemony@die_west_5.png",
+     "hegemony@die_west_6.png",
+     "hegemony@die_west_7.png"
+    ],
+    "north": [
+     "hegemony@die_north_0.png",
+     "hegemony@die_north_1.png",
+     "hegemony@die_north_2.png",
+     "hegemony@die_north_3.png",
+     "hegemony@die_north_4.png",
+     "hegemony@die_north_5.png",
+     "hegemony@die_north_6.png",
+     "hegemony@die_north_7.png"
+    ]
+   },
+   "salute": {
+    "east": [
+     "hegemony@salute_east_0.png",
+     "hegemony@salute_east_1.png",
+     "hegemony@salute_east_2.png",
+     "hegemony@salute_east_3.png",
+     "hegemony@salute_east_4.png",
+     "hegemony@salute_east_5.png",
+     "hegemony@salute_east_6.png",
+     "hegemony@salute_east_7.png"
+    ],
+    "west": [
+     "hegemony@salute_west_0.png",
+     "hegemony@salute_west_1.png",
+     "hegemony@salute_west_2.png",
+     "hegemony@salute_west_3.png",
+     "hegemony@salute_west_4.png",
+     "hegemony@salute_west_5.png",
+     "hegemony@salute_west_6.png",
+     "hegemony@salute_west_7.png"
+    ],
+    "south": [
+     "hegemony@salute_south_0.png",
+     "hegemony@salute_south_1.png",
+     "hegemony@salute_south_2.png",
+     "hegemony@salute_south_3.png",
+     "hegemony@salute_south_4.png",
+     "hegemony@salute_south_5.png",
+     "hegemony@salute_south_6.png",
+     "hegemony@salute_south_7.png"
+    ]
+   },
+   "kneel": {
+    "east": [
+     "hegemony@kneel_east_0.png",
+     "hegemony@kneel_east_1.png",
+     "hegemony@kneel_east_2.png",
+     "hegemony@kneel_east_3.png",
+     "hegemony@kneel_east_4.png",
+     "hegemony@kneel_east_5.png",
+     "hegemony@kneel_east_6.png",
+     "hegemony@kneel_east_7.png"
+    ],
+    "west": [
+     "hegemony@kneel_west_0.png",
+     "hegemony@kneel_west_1.png",
+     "hegemony@kneel_west_2.png",
+     "hegemony@kneel_west_3.png",
+     "hegemony@kneel_west_4.png",
+     "hegemony@kneel_west_5.png",
+     "hegemony@kneel_west_6.png",
+     "hegemony@kneel_west_7.png"
+    ],
+    "north": [
+     "hegemony@kneel_north_0.png",
+     "hegemony@kneel_north_1.png",
+     "hegemony@kneel_north_2.png",
+     "hegemony@kneel_north_3.png",
+     "hegemony@kneel_north_4.png",
+     "hegemony@kneel_north_5.png",
+     "hegemony@kneel_north_6.png",
+     "hegemony@kneel_north_7.png"
     ]
    }
   }

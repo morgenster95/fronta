@@ -73,3 +73,19 @@ na změřeném ústí + ráz 1 px → zpět). Kulometná hnízda dočasně vypnu
 |---|---|---|---|
 | aim/heg_aim_v1.png → soldiers/aim_hegemony_south.png (míří přímo na diváka, ústí 0/−20) | create_image_pro_flash + style_image | f7c8e749… | 5 |
 | aim/con_aim_v1.png → soldiers/aim_concord_north.png (zezadu, hlaveň nahoru, ústí +3/−26, pata srovnána) | create_image_pro_flash + style_image | c174cdfa… | 5 |
+
+## Vlna 1 animací pro videa a hru (13. 11. 2026, docs/SPRITE_PLAN.md)
+Postavy concord_rifleman_v2 (950a1f6d…) a hegemony_rifleman_v2 (2ee9db43…). Import `tools/import-anim.py` (plátno 64, chodidla na řádku 46, paleta Trench 24), západ zrcadlením.
+| Animace (manifest) | Režim | Směry | Poznámka |
+|---|---|---|---|
+| crawl | v3 / pixminimax (start = ležící póza) | V, Z, S, J | z boku jemný cyklus (pohyb dopředu dělá engine), z výšky viditelné lokty a nohy |
+| prone (k zemi) | v3 (bok), skeleton-v3 lie_down (S, J) | V, Z, S, J | |
+| run | skeleton-v3 run + ruce s puškou na prsou | V, Z, S, J | |
+| duck (krčení pod palbou) | skeleton-v3 cover | V, Z, S, J | |
+| die (pád dozadu) | skeleton-v3 fall_back | V, Z, S | jih = stará `fall` |
+| grenade | skeleton-v3 throw | V, Z, S, J | |
+| work (klečet, zatloukat kůl) | skeleton-v3 kneel_work | V, Z, S, J | |
+| salute | skeleton-v3 salute | V, Z, J | |
+| kneel (u hrobu) | skeleton-v3 kneel | V, Z, S | |
+Cena: ~380 generací (z toho ~230 duplikáty kvůli chybě v mé frontě: opakovaný pokus odesílal znovu celou animaci; opraveno odesíláním po směrech). Zbývá 1 618 generací do 13. 12.
+Paleta Trench 24 se předává jako `palette` (skeleton-v3, v3), šablony (template) paletu nepřijmou a přemalují pušku → nepoužívat pro vojáky s puškou.

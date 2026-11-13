@@ -7,7 +7,7 @@ Pravidla platí z `docs/PIXELLAB_BRIEF.md`: plátno 32×32, postava 30 px, pata 
 Hegemonie šedomodrá s hlubokou přilbou. Nové snímky patří do `web/public/assets/soldiers/<postava>@<animace>_<směr>_<n>.png`
 a do `manifest.json` (`anims`). Atlas se přegeneruje sám (workflow `atlas`), ve filmových scénách je hned k dispozici `pose(key, anim, dir, t)`.
 
-**Pozor na termín:** předplacené generace PixelLabu propadají **13. 11. 2026**. Co se má udělat levně, je potřeba vygenerovat do té doby, nejdřív Vlna 1.
+**Stav (13. 11.):** předplatné PixelLabu je aktivní (2 000 generací měsíčně, obnova 13. 12.). **Vlna 1 je hotová a ve hře** (`crawl`, `prone`, `run`, `duck`, `die`, `grenade`, `work`, `salute`, `kneel` pro Concord i Hegemonii, viz `art/pixellab/LOG.md`). Klíč PixelLabu je uložený jako síťové tajemství prostředí (api.pixellab.ai), MCP se volá přes HTTPS.
 
 ## Co máme dnes
 
