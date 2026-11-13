@@ -756,7 +756,8 @@
      "hegemony@run_north_4.png",
      "hegemony@run_north_5.png",
      "hegemony@run_north_6.png",
-     "hegemony@run_north_7.png"
+     "hegemony@run_north_7.png",
+     "hegemony@run_north_8.png"
     ],
     "south": [
      "hegemony@run_south_0.png",
@@ -798,7 +799,8 @@
      "hegemony@duck_north_4.png",
      "hegemony@duck_north_5.png",
      "hegemony@duck_north_6.png",
-     "hegemony@duck_north_7.png"
+     "hegemony@duck_north_7.png",
+     "hegemony@duck_north_8.png"
     ],
     "south": [
      "hegemony@duck_south_0.png",
@@ -808,7 +810,8 @@
      "hegemony@duck_south_4.png",
      "hegemony@duck_south_5.png",
      "hegemony@duck_south_6.png",
-     "hegemony@duck_south_7.png"
+     "hegemony@duck_south_7.png",
+     "hegemony@duck_south_8.png"
     ]
    },
    "grenade": {
@@ -839,8 +842,7 @@
      "hegemony@grenade_north_3.png",
      "hegemony@grenade_north_4.png",
      "hegemony@grenade_north_5.png",
-     "hegemony@grenade_north_6.png",
-     "hegemony@grenade_north_7.png"
+     "hegemony@grenade_north_6.png"
     ],
     "south": [
      "hegemony@grenade_south_0.png",
@@ -892,7 +894,8 @@
      "hegemony@work_south_4.png",
      "hegemony@work_south_5.png",
      "hegemony@work_south_6.png",
-     "hegemony@work_south_7.png"
+     "hegemony@work_south_7.png",
+     "hegemony@work_south_8.png"
     ]
    },
    "die": {
@@ -1331,7 +1334,8 @@
      "hegemony_machinegunner@fire_south_4.png",
      "hegemony_machinegunner@fire_south_5.png",
      "hegemony_machinegunner@fire_south_6.png",
-     "hegemony_machinegunner@fire_south_7.png"
+     "hegemony_machinegunner@fire_south_7.png",
+     "hegemony_machinegunner@fire_south_8.png"
     ]
    },
    "fire-prone": {
@@ -1555,7 +1559,8 @@
      "concord_sniper@fire-side_east_4.png",
      "concord_sniper@fire-side_east_5.png",
      "concord_sniper@fire-side_east_6.png",
-     "concord_sniper@fire-side_east_7.png"
+     "concord_sniper@fire-side_east_7.png",
+     "concord_sniper@fire-side_east_8.png"
     ],
     "west": [
      "concord_sniper@fire-side_west_0.png",
@@ -1565,7 +1570,8 @@
      "concord_sniper@fire-side_west_4.png",
      "concord_sniper@fire-side_west_5.png",
      "concord_sniper@fire-side_west_6.png",
-     "concord_sniper@fire-side_west_7.png"
+     "concord_sniper@fire-side_west_7.png",
+     "concord_sniper@fire-side_west_8.png"
     ]
    }
   }

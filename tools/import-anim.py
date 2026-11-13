@@ -31,7 +31,18 @@ def nearest(c):
     return min(PAL, key=lambda p: (p[0] - c[0]) ** 2 + (p[1] - c[1]) ** 2 + (p[2] - c[2]) ** 2)
 
 
-def quantize(im):
+# kůže: světlé teplé pixely z PixelLabu se převedou na odstíny kůže původních spritů strany (Trench 24 z nich dělal žlutou a oranžovou)
+SKIN = {
+    "hegemony": [H(x) for x in ("ebbf98", "e5aa7c", "c8865f", "b67653", "9e5d43")],
+    "concord": [H(x) for x in ("db9b71", "bc8e69", "ad6d4f", "935a3f")],
+}
+
+
+def is_skin(r, g, b):
+    return r > g > b and r - b >= 50 and r >= 150 and r - g >= 20
+
+
+def quantize(im, skin=None):
     im = im.convert("RGBA")
     px = im.load()
     cache = {}
@@ -43,7 +54,7 @@ def quantize(im):
             else:
                 k = (r, g, b)
                 if k not in cache:
-                    cache[k] = nearest(k)
+                    cache[k] = min(skin, key=lambda p: sum((p[i] - k[i]) ** 2 for i in range(3))) if skin and is_skin(r, g, b) else nearest(k)
                 px[x, y] = cache[k] + (255,)
     return im
 
@@ -67,7 +78,7 @@ def main():
     for f in frames:
         c = Image.new("RGBA", (canvas, canvas), (0, 0, 0, 0))
         c.alpha_composite(f, (max(0, dx), max(0, dy)), (max(0, -dx), max(0, -dy)))
-        c = quantize(c)
+        c = quantize(c, SKIN.get(key.split("_")[0]))
         remap = RECOLOR.get(key.split("_")[0], {})
         if remap:  # barvy uniformy a kůže jako u původních spritů strany (recenze 13. 11.)
             px = c.load()

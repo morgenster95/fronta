@@ -69,3 +69,13 @@
 {"time": "2026-11-13T10:34:15Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "crawl4", "direction": "south", "group": "838dc318-28e1-48de-a4b2-152b69715484", "cost": 1, "error": null}
 {"time": "2026-11-13T10:34:19Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "crawl4", "direction": "north", "group": "bee03b0f-4b2d-47cc-b162-a11eebc8b43d", "cost": 1, "error": null}
 {"time": "2026-11-13T10:35:47Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "work5", "direction": "north", "group": "7efa20a6-922f-4f49-9953-d17f984c9faf", "cost": 1, "error": null}
+{"time": "2026-11-13T10:48:45Z", "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4", "name": "duck5", "direction": "south", "group": "3bd14817-7d56-453e-8011-591ebe932639", "cost": 1, "error": null}
+{"time": "2026-11-13T10:48:48Z", "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4", "name": "duck5", "direction": "north", "group": "1c7d79db-8655-41f0-bdb8-1aa75d6c58ed", "cost": 1, "error": null}
+{"time": "2026-11-13T10:48:51Z", "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4", "name": "run5", "direction": "north", "group": "3ebc545e-6cc5-49a6-8557-c53f9ef4ef81", "cost": 1, "error": null}
+{"time": "2026-11-13T10:48:54Z", "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4", "name": "grenade5", "direction": "north", "group": "657cf145-7635-4eb6-a83a-2d7adba61973", "cost": 1, "error": null}
+{"time": "2026-11-13T10:48:57Z", "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4", "name": "work5", "direction": "south", "group": "c9b0f82d-b595-42d9-a3a9-b5c72920b320", "cost": 1, "error": null}
+{"time": "2026-11-13T10:48:59Z", "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4", "name": "crawl5", "direction": "south", "group": "7d9527ce-92ca-435b-bc12-771502ad5558", "cost": 1, "error": null}
+{"time": "2026-11-13T10:49:02Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "crawl5", "direction": "south", "group": "5d6c4447-b830-40b6-8be8-b16cffd3eb5d", "cost": 1, "error": null}
+{"time": "2026-11-13T10:49:06Z", "character": "7426cf4a-3535-479b-96f6-9991c20b37ad", "name": "fire-side5", "direction": "east", "group": "59a3be75-07b5-4af8-ab5d-612238d98851", "cost": 1, "error": null}
+{"time": "2026-11-13T10:49:39Z", "character": "3a323a11-d6a9-42dc-a66f-7e8d9ce0102b", "name": "fire5", "direction": "south", "group": "25950c84-ebd1-4f3b-b73b-9b27da153dfc", "cost": 1, "error": null}
+{"time": "2026-11-13T10:49:42Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "crawl5", "direction": "north", "group": "30bf86d6-c033-4ef7-a8cb-085154156455", "cost": 1, "error": null}
