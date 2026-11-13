@@ -383,6 +383,26 @@ async function main() {
   } catch (e) {
     console.warn('Firestore:', e.message);
   }
+  // oprava (jednorázová): voják je ve hře převzatý, ale claims/{uid} zůstal „pending“ (web pak nenabízí převelení ani dopis)
+  if (db && !process.env.DRY_RUN && (state.claimSyncV || 0) < 1) try {
+    const own = state.soldiers.filter((s) => s.claimed && s.ownerUid);
+    let fixed = 0;
+    for (let i = 0; i < own.length; i += 100) {
+      const part = own.slice(i, i + 100);
+      const docs = await db.getAll(...part.map((s) => db.collection('claims').doc(s.ownerUid)));
+      for (const [k, d] of docs.entries()) {
+        if (d.exists && d.get('handle') === part[k].handle && d.get('status') === 'pending') {
+          await d.ref.update({ status: 'done', verifiedAt: new Date() });
+          fixed++;
+          console.log(`✓ převzetí dopsáno do Firestore @${part[k].handle}`);
+        }
+      }
+    }
+    console.log(`kontrola převzetí: ${own.length} vojáků, opraveno ${fixed}`);
+    state.claimSyncV = 1;
+  } catch (e) {
+    console.warn('claim sync:', e.message);
+  }
   for (const s of applyTransfers(state, theme, story)) console.log(`⇄ @${s.handle} převelen: ${s.archetype}`);
 
   for (const mid of voteMedia) if (posts.some((p) => p.id === mid)) { (voices.scanned ??= {})[mid] = true; voicesDirty = true; }
