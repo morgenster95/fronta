@@ -164,6 +164,8 @@ export function applyComment(state, comment, theme, story, map) {
 
 // Jednorázový přepis textu War Bonds u dárce (příkaz rewriteSupport { handle, old }), výjimka z pravidla „deníky se nepřepisují“
 // na výslovný pokyn uživatele 2026-11-12: starý text odměny v deníku nahradí aktuálním theme.support.entry a poděkování v novinách
+// jména do věty: „A“, „A and B“, „A, B and C“
+const andList = (n) => (n.length < 2 ? n.join('') : `${n.slice(0, -1).join(', ')} and ${n.at(-1)}`);
 // přepočítá podle aktuálního theme.support.newsText. Vrací počet změněných zápisů.
 export function rewriteSupport(state, theme, handle, old) {
   const sup = theme.support;
@@ -172,7 +174,7 @@ export function rewriteSupport(state, theme, handle, old) {
   const from = old.replaceAll('{name}', s.name), to = sup.entry.replaceAll('{name}', s.name);
   let n = 0;
   for (const r of s.record || []) if (typeof r[1] === 'string' && r[1].includes(from)) { r[1] = r[1].replace(from, to); n++; }
-  for (const t of state.news || []) if (t.kind === 'thanks' && t.names) t.text = sup.newsText.replace('{names}', t.names.join(', '));
+  for (const t of state.news || []) if (t.kind === 'thanks' && t.names) t.text = sup.newsText.replace('{names}', andList(t.names));
   return n;
 }
 
@@ -279,7 +281,8 @@ export function grantSupport(state, theme, handle) {
   if (n) n.names.push(s.name);
   else state.news.push({ day: state.day, kind: 'thanks', routine: true, h: sup.newsHead, names: [s.name] });
   const t = state.news.find((x) => x.kind === 'thanks' && x.day === state.day);
-  t.text = sup.newsText.replace('{names}', t.names.join(', '));
+  t.h = sup.newsHead; // nadpis i text vždy podle aktuálního tématu
+  t.text = sup.newsText.replace('{names}', andList(t.names));
   return { handle: s.handle, name: s.name };
 }
 

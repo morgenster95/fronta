@@ -817,8 +817,8 @@
     "name": "War Bonds",
     "line": "supported the making of Mud & Iron",
     "entry": "{name} bought War Bonds for the front. The quartermaster pinned the ribbon on personally: 'The front remembers who kept it fed.'",
-    "newsHead": "The front thanks",
-    "newsText": "{names}, who bought War Bonds and kept the guns fed."
+    "newsHead": "The front stands in their debt",
+    "newsText": "{names} bought War Bonds and put their own money behind the line. Every man in the trenches owes them. The guns stay fed and the front will not forget it."
   },
   "officerBalance": true,
   "_officerBalance": "Vyrovnání poručíků (2026-11-12): nováček bez přání role ze strany s méně poručíky je poručík, strana s víc poručíky žádného nedostane, při rovnosti běžné losování. false = jen losování."

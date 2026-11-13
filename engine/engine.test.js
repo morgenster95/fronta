@@ -1143,7 +1143,7 @@ test('grantSupport: War Bonds medaile, zápis, jedna řádka poděkování za de
   assert.equal(st.soldiers[0].record.length, 1);
   const t = st.news.filter((n) => n.kind === 'thanks');
   assert.equal(t.length, 1);
-  assert.equal(t[0].text, 'Ann Lee, Bob Ray. Thanks.');
+  assert.equal(t[0].text, 'Ann Lee and Bob Ray. Thanks.');
 });
 
 import { balanceOfficer } from './roster.js';
