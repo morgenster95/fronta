@@ -536,11 +536,13 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   if (shelled.size) {
     const f = barrage.target;
     const bad = shellHits.filter((s) => s.wound && s.wound.sev !== 'light').map((s) => `@${s.handle}`);
+    const killed = stats[f].deaths.shell || 0; // přímé zásahy granátem (zabiti na místě)
     out.news.push({
       day, kind: 'barrage', sectors: [...shelled], h: `Hell on the ${short(theme, f)} lines, night ${Math.max(1, day - (barrage.since ?? day))}: the guns of ${barrage.name} are firing`,
       text: `All day the ${short(theme, barrage.by)} guns on ${barrage.name} pounded the ${short(theme, f)} lines, sectors ${[...shelled].slice(0, 6).join(', ')}${shelled.size > 6 ? ` and ${shelled.size - 6} more` : ''}. ` +
         `${shellHits.length ? `${shellHits.length} ${shellHits.length === 1 ? 'man was' : 'men were'} hit` : 'By some miracle nobody was hit'}` +
-        `${bad.length ? `, ${bad.length} of them badly` : ''}. The wire there is in shreds.`,
+        `${bad.length ? `, ${bad.length} of them badly` : ''}` +
+        `${killed ? `. ${killed} ${killed === 1 ? 'man was' : 'men were'} killed where they stood, and the bearers could not reach every stretcher under the shells` : ''}. The wire there is in shreds.`,
     });
   }
   // Gazette: stav drátu v zemi nikoho a výzva k wiring party (texty theme.battle.wiring.news)
