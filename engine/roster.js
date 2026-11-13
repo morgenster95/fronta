@@ -125,7 +125,7 @@ export function applyComment(state, comment, theme, story, map) {
   // wiring party (engine/wiring.js): heslo WIRE pod otevřeným postem = přihláška dobrovolníka na noc
   if (wiringKeyword(state, theme, comment)) {
     if (!existing) return { type: 'wiring', handle, soldier: { handle }, reason: 'notEnlisted' };
-    return { type: 'wiring', handle, soldier: existing, reason: joinWiring(state, existing) };
+    return { type: 'wiring', handle, soldier: existing, reason: joinWiring(state, existing, theme) };
   }
   // heslo otevřené výpravy (např. CHURCH): přihláška dobrovolníka
   const raid = raidKeyword(state, theme, comment.text);

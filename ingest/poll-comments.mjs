@@ -15,6 +15,7 @@ import path from 'node:path';
 import { ROOT, loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
 import { switchFaction, grantSupport, rewriteSupport, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
+import { wiringReturns } from '../engine/wiring.js';
 import { deathReply } from '../engine/house.js';
 
 // Nové aplikace Meta: Unified login + systémový token z firemního portfolia → graph.facebook.com (token nevyprší).
@@ -216,10 +217,11 @@ async function main() {
       if (res.type === 'wiring') {
         console.log(`⛓ wiring party @${res.handle}: ${res.reason}`);
         const text = {
+          returned: `@${res.handle}, ${res.soldier.name} just walked back into the trench and is on the wiring party tonight. Keep your head down when the flares go up. Results in the Trench Gazette at 13:00 UTC.`,
           ok: `@${res.handle}, you're on the wiring party tonight. Keep your head down when the flares go up. Results in the Trench Gazette at 13:00 UTC.`,
           notEnlisted: `@${res.handle}, you need a soldier first. Comment ${theme.factions.map((f) => f.keyword).join(' or ')} to enlist, then WIRE again.`,
           wounded: `@${res.handle}, your soldier is badly wounded and stays with the medics tonight.`,
-          fallen: null, already: null, closed: null,
+          fallen: null, already: null, closed: null, captured: null,
         }[res.reason];
         if (text && process.env.IG_REPLY === '1' && !process.env.DRY_RUN) await replyOnce(c, text).catch((e) => console.warn(e.message));
       }
@@ -403,6 +405,7 @@ async function main() {
   } catch (e) {
     console.warn('claim sync:', e.message);
   }
+  for (const s of wiringReturns(state, theme)) console.log(`⛓ nezvěstný se vrátil na wiring party @${s.handle}`);
   for (const s of applyTransfers(state, theme, story)) console.log(`⇄ @${s.handle} převelen: ${s.archetype}`);
 
   for (const mid of voteMedia) if (posts.some((p) => p.id === mid)) { (voices.scanned ??= {})[mid] = true; voicesDirty = true; }

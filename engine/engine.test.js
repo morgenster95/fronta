@@ -1208,3 +1208,21 @@ test('wiring party: přihláška WIRE jen pod otevřeným postem, oprava drátu,
   assert.ok(vol.every((x) => x.record.some((e) => /wir/i.test(e[1]))), 'zápis v deníku');
   void side;
 });
+
+test('wiring party: nezvěstný se přihláškou WIRE vrátí do zákopu (zápis se přidá), dřívější přihláška se dorovná', async () => {
+  const { wiringReturns } = await import('./wiring.js');
+  const s = emptyState(theme);
+  enlist(s, 40, 'M_');
+  openWiring(s, 'wp', s.day);
+  const [a, b] = s.soldiers.filter((x) => x.faction === 0);
+  for (const x of [a, b]) { x.status = 'missing'; x.missingDay = s.day; }
+  const n = a.record.length;
+  const r = applyComment(s, { id: 'm1', text: 'WIRE', username: a.handle, userId: a.id, mediaId: 'wp' }, theme, story, map);
+  assert.equal(r.reason, 'returned');
+  assert.equal(a.status, 'active');
+  assert.equal(a.missingDay, undefined);
+  assert.ok(a.record.length >= n && /missing list/.test(a.record.at(-1)[1]), 'zápis o návratu');
+  s.wiring.open.ids.push(b.id); // přihlášený dřív, ještě nezvěstný
+  assert.deepEqual(wiringReturns(s, theme).map((x) => x.id), [b.id]);
+  assert.equal(b.status, 'active');
+});

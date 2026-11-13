@@ -713,6 +713,7 @@
       "full": 0.95,
       "xp": 3,
       "badgeAt": 3,
+      "returned": "At dusk {name} walked back into {sector}, covered in mud, and asked for a place on the wiring party. The sergeant crossed the name off the missing list.",
       "_": "wiring party: dobrovolníci (komentář WIRE pod postem s wiring: true) v noci opraví drát; riziko = (base + perFire × palba hlídek nepřítele na dostřel, kdo jde ven, nehlídá) × počasí × bombardování × ženista; zásah = běžné zranění (péče jako jinde)",
       "news": {
         "below": 0.5,

@@ -311,3 +311,8 @@ Osud dnes raněných H (10 dní): těžce raněný padne 40 %, vrátí se 52 % (
 Přihláška WIRE: lehce raněný se přihlásit může a jde ven (chodí po zákopu); těžce a kriticky raněnému bot odpoví, že zůstává u mediků (uživatel to tak chce).
 Kdo se přihlásil a do noci se těžce zranil, toho nepustí medik: v deníku má „{n} signed up for the wiring party, but the medic would not let {n} leave the aid post. The wire will wait for another night.“
 (`engine/wiring.js` joinWiring, `engine/battle.js` krok 0, text jde přepsat `battle.wiring.keptBack`).
+
+## 2026-11-13 (večer): Nezvěstný se přihláškou na wiring party vrátí (NASAZENO, uživatel nechal na mně)
+- Proč: hráčka (převzatý voják, nezvěstný od Dne 3) napsala WIRE, přihláška se přijala, ale nezvěstný se na mapě nekreslí, takže u drátu nebyla. Hráč, který komentuje, je zjevně „tady“.
+- Jak: `joinWiring` (engine/wiring.js) u nezvěstného → status active, zápis do deníku `theme.battle.wiring.returned` (jen se přidá), odpověď bota „… just walked back into the trench and is on the wiring party tonight“.
+  Pojistka `wiringReturns` ve smyčce vrátí nezvěstné, kteří už mezi přihlášenými jsou. Zajatý (`captured`) se přihlásit nemůže (bez odpovědi; výpravy jsou vypnuté).
