@@ -1,0 +1,60 @@
+{
+ "seconds": 58.8,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.8,
+   6.46,
+   "Every night of the war, men crawled out between the trenches. Not to fight. To fix the wire.",
+   "hook"
+  ],
+  [
+   7.51,
+   6.49,
+   "They were called wiring parties. Coils of barbed wire, and iron posts that screw into the mud without a sound.",
+   "hist"
+  ],
+  [
+   14.25,
+   3.74,
+   "When a flare went up, they dropped flat and lay still until the dark came back.",
+   "flare"
+  ],
+  [
+   18.24,
+   3.33,
+   "Now the guns on Verdel Ridge have torn the Hegemony wire to pieces.",
+   "broken"
+  ],
+  [
+   21.82,
+   8.41,
+   "Wire stops a raid before it reaches the trench, and it catches the bullets that cross the line. Without it, every man on the fire step is easier to hit.",
+   "why"
+  ],
+  [
+   30.48,
+   5.4,
+   "Tonight both sides can send a wiring party. Your soldier mends the wire in their own sector.",
+   "how"
+  ],
+  [
+   36.13,
+   9.13,
+   "But a man out on the wire is a man not on watch. The side that stays home keeps its rifles on the parapet, and the other side's wiring party feels every one of them.",
+   "risk"
+  ],
+  [
+   45.51,
+   6.55,
+   "Comment WIRE under this post. Your soldier crawls out after dark. Results in the morning Gazette.",
+   "cta"
+  ],
+  [
+   52.31,
+   3.01,
+   "Mud and Iron. Every follower is a soldier.",
+   "cta2"
+  ]
+ ]
+}
