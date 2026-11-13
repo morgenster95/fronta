@@ -34,3 +34,12 @@
 {"time": "2026-11-13T08:43:59Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "lying-wounded", "direction": "north", "group": "389161e5-86d6-41e9-b7de-f975c6342dd5", "cost": 1, "error": null}
 {"time": "2026-11-13T08:44:02Z", "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4", "name": "lying-wounded", "direction": "east", "group": "d09aa4c6-dce0-4a53-81f2-1d4c221e0899", "cost": 1, "error": null}
 {"time": "2026-11-13T08:44:05Z", "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4", "name": "lying-wounded", "direction": "north", "group": "4810c3eb-9c2b-4f59-9fa1-d32af32be712", "cost": 1, "error": null}
+{"time": "2026-11-13T09:43:16Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "walk2", "direction": "south", "group": "2c214d5e-6def-410e-8b69-5e157589dd49", "cost": 3, "error": null}
+{"time": "2026-11-13T09:43:18Z", "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4", "name": "walk2", "direction": "north", "group": "c530080e-a55b-41e4-9e07-505656be87fe", "cost": 3, "error": null}
+{"time": "2026-11-13T09:43:21Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "run2", "direction": "east", "group": "de59c400-6900-41db-97a9-60bf2522f947", "cost": 1, "error": null}
+{"time": "2026-11-13T09:43:24Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "work2", "direction": "north", "group": "b6e9a86c-0fde-4971-ba87-4c37b7e2e294", "cost": 1, "error": null}
+{"time": "2026-11-13T09:43:27Z", "character": "f7a54b6c-d1b8-4ed1-b634-2074bcb72938", "name": "crouch2", "direction": "north", "group": "9b6c1ff5-c529-4723-8fea-80dfe475b58e", "cost": 1, "error": null}
+{"time": "2026-11-13T09:43:30Z", "character": "f7a54b6c-d1b8-4ed1-b634-2074bcb72938", "name": "fire2", "direction": "north", "group": "56d97015-1736-4927-aa1a-b57a8b1789ef", "cost": 1, "error": null}
+{"time": "2026-11-13T09:43:32Z", "character": "3a323a11-d6a9-42dc-a66f-7e8d9ce0102b", "name": "fire-side2", "direction": "east", "group": "415a06b9-910c-4781-9549-2808143e24e8", "cost": 1, "error": null}
+{"time": "2026-11-13T09:43:35Z", "character": "3a323a11-d6a9-42dc-a66f-7e8d9ce0102b", "name": "fire2", "direction": "south", "group": "a3ecaf83-3f0a-4e28-8b21-d59c2744c3ce", "cost": 1, "error": null}
+{"time": "2026-11-13T09:44:35Z", "character": "7426cf4a-3535-479b-96f6-9991c20b37ad", "name": "fire-side2", "direction": "east", "group": "9f2365e9-6e0f-4e5a-a009-21209b281043", "cost": 3, "error": null}

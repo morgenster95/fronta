@@ -67,7 +67,9 @@
      "concord@walk_south_2.png",
      "concord@walk_south_3.png",
      "concord@walk_south_4.png",
-     "concord@walk_south_5.png"
+     "concord@walk_south_5.png",
+     "concord@walk_south_6.png",
+     "concord@walk_south_7.png"
     ],
     "north": [
      "concord@walk_north_0.png",
@@ -180,24 +182,20 @@
    },
    "run": {
     "east": [
-     "concord@run_east_0.png",
-     "concord@run_east_1.png",
-     "concord@run_east_2.png",
      "concord@run_east_3.png",
      "concord@run_east_4.png",
      "concord@run_east_5.png",
      "concord@run_east_6.png",
-     "concord@run_east_7.png"
+     "concord@run_east_7.png",
+     "concord@run_east_8.png"
     ],
     "west": [
-     "concord@run_west_0.png",
-     "concord@run_west_1.png",
-     "concord@run_west_2.png",
      "concord@run_west_3.png",
      "concord@run_west_4.png",
      "concord@run_west_5.png",
      "concord@run_west_6.png",
-     "concord@run_west_7.png"
+     "concord@run_west_7.png",
+     "concord@run_west_8.png"
     ],
     "north": [
      "concord@run_north_0.png",
@@ -332,8 +330,7 @@
      "concord@work_north_3.png",
      "concord@work_north_4.png",
      "concord@work_north_5.png",
-     "concord@work_north_6.png",
-     "concord@work_north_7.png"
+     "concord@work_north_6.png"
     ],
     "south": [
      "concord@work_south_0.png",
@@ -554,8 +551,7 @@
      "hegemony@fire_south-east_4.png",
      "hegemony@fire_south-east_5.png",
      "hegemony@fire_south-east_6.png",
-     "hegemony@fire_south-east_7.png",
-     "hegemony@fire_south-east_8.png"
+     "hegemony@fire_south-east_7.png"
     ],
     "south": [
      "hegemony@fire_south_0.png",
@@ -590,7 +586,9 @@
      "hegemony@walk_north_2.png",
      "hegemony@walk_north_3.png",
      "hegemony@walk_north_4.png",
-     "hegemony@walk_north_5.png"
+     "hegemony@walk_north_5.png",
+     "hegemony@walk_north_6.png",
+     "hegemony@walk_north_7.png"
     ],
     "south": [
      "hegemony@walk_south_0.png",
@@ -1179,9 +1177,7 @@
      "concord_machinegunner@fire_north_3.png",
      "concord_machinegunner@fire_north_4.png",
      "concord_machinegunner@fire_north_5.png",
-     "concord_machinegunner@fire_north_6.png",
-     "concord_machinegunner@fire_north_7.png",
-     "concord_machinegunner@fire_north_8.png"
+     "concord_machinegunner@fire_north_6.png"
     ]
    },
    "fire-side": {
@@ -1189,19 +1185,13 @@
      "concord_machinegunner@fire-side_east_0.png",
      "concord_machinegunner@fire-side_east_1.png",
      "concord_machinegunner@fire-side_east_2.png",
-     "concord_machinegunner@fire-side_east_3.png",
-     "concord_machinegunner@fire-side_east_4.png",
-     "concord_machinegunner@fire-side_east_5.png",
-     "concord_machinegunner@fire-side_east_6.png"
+     "concord_machinegunner@fire-side_east_3.png"
     ],
     "west": [
      "concord_machinegunner@fire-side_west_0.png",
      "concord_machinegunner@fire-side_west_1.png",
      "concord_machinegunner@fire-side_west_2.png",
-     "concord_machinegunner@fire-side_west_3.png",
-     "concord_machinegunner@fire-side_west_4.png",
-     "concord_machinegunner@fire-side_west_5.png",
-     "concord_machinegunner@fire-side_west_6.png"
+     "concord_machinegunner@fire-side_west_3.png"
     ]
    }
   }
@@ -1318,9 +1308,7 @@
      "hegemony_machinegunner@fire_south_3.png",
      "hegemony_machinegunner@fire_south_4.png",
      "hegemony_machinegunner@fire_south_5.png",
-     "hegemony_machinegunner@fire_south_6.png",
-     "hegemony_machinegunner@fire_south_7.png",
-     "hegemony_machinegunner@fire_south_8.png"
+     "hegemony_machinegunner@fire_south_6.png"
     ]
    },
    "fire-side": {
@@ -1328,19 +1316,13 @@
      "hegemony_machinegunner@fire-side_east_0.png",
      "hegemony_machinegunner@fire-side_east_1.png",
      "hegemony_machinegunner@fire-side_east_2.png",
-     "hegemony_machinegunner@fire-side_east_3.png",
-     "hegemony_machinegunner@fire-side_east_4.png",
-     "hegemony_machinegunner@fire-side_east_5.png",
-     "hegemony_machinegunner@fire-side_east_6.png"
+     "hegemony_machinegunner@fire-side_east_3.png"
     ],
     "west": [
      "hegemony_machinegunner@fire-side_west_0.png",
      "hegemony_machinegunner@fire-side_west_1.png",
      "hegemony_machinegunner@fire-side_west_2.png",
-     "hegemony_machinegunner@fire-side_west_3.png",
-     "hegemony_machinegunner@fire-side_west_4.png",
-     "hegemony_machinegunner@fire-side_west_5.png",
-     "hegemony_machinegunner@fire-side_west_6.png"
+     "hegemony_machinegunner@fire-side_west_3.png"
     ]
    }
   }
@@ -1548,8 +1530,7 @@
      "concord_sniper@fire-side_east_4.png",
      "concord_sniper@fire-side_east_5.png",
      "concord_sniper@fire-side_east_6.png",
-     "concord_sniper@fire-side_east_7.png",
-     "concord_sniper@fire-side_east_8.png"
+     "concord_sniper@fire-side_east_7.png"
     ],
     "west": [
      "concord_sniper@fire-side_west_0.png",
@@ -1559,8 +1540,7 @@
      "concord_sniper@fire-side_west_4.png",
      "concord_sniper@fire-side_west_5.png",
      "concord_sniper@fire-side_west_6.png",
-     "concord_sniper@fire-side_west_7.png",
-     "concord_sniper@fire-side_west_8.png"
+     "concord_sniper@fire-side_west_7.png"
     ]
    }
   }
