@@ -732,14 +732,16 @@
     "shell": {
       "sectors": 4,
       "share": 0.3,
-      "hit": 0.5,
+      "hit": 0.65,
       "severity": {
-        "light": 0.7,
-        "heavy": 0.3
+        "light": 0.75,
+        "heavy": 0.4
       },
       "wire": 0.4,
-      "kill": 0.5,
-      "_kill": "kill: šance, že kritický zásah granátem zabije na místě (lůžko ani medik nepomůže)."
+      "kill": 0.75,
+      "_kill": "kill: šance, že kritický zásah granátem zabije na místě (lůžko ani medik nepomůže).",
+      "careCut": 0.5,
+      "_careCut": "careCut: pod granáty dostanou ranění mimo lůžko v ostřelovaném úseku jen tuto část péče mediků a nosičů (0,5 = polovinu); 13. 11. na pokyn uživatele"
     },
     "aidPost": {
       "name": "Aid post",

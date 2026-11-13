@@ -290,3 +290,10 @@ Podklad o skutečných wiring party: Wikipedia „Wiring party“, firstworldwar
 ## 2026-11-13: Drát na mapě podle stavu a viditelná wiring party (NASAZENO, vizuál)
 Web kreslí drát každého úseku přední linie podle `battle.sides[f].wire[úsek]` (celý ≥ 0,65 / napůl potrhaný / pod 0,35 potrhaný s dírami) a u úseků,
 kde se někdo přihlásil WIRE nebo byl venku minulou noc, ukazuje vojáky při práci (`roster.battle[f].party`). Mechanika boje se tím nemění, jen zobrazení.
+
+## 2026-11-13: Silnější bombardování (NASAZENO na výslovný pokyn uživatele, od vydání Dne 5)
+Uživatel: „musí umřít mnohem více Hegemonie, jsou bombardovaní a mají méně ztrát, to je blbost“. Náhled Dne 5 dával Hegemonii 2–3 padlé, Concordu 3.
+Změny v `theme.json` → `battle.shell`: `hit` 0,5 → 0,65 (zasažený podíl lidí v ostřelovaném úseku), `kill` 0,5 → 0,75 (kritický zásah granátem zabije na místě),
+`severity` light 0,7/heavy 0,3 → 0,75/0,4 (víc kritických: 40 % místo 30 %), nové `careCut` 0,5 (medici a nosiči se v ostřelovaném úseku dostanou k raněným jen napůl;
+`engine/battle.js`, péče `g`). Simulace (20 běhů × 3 dny): Hegemonie ~6,8 / 7,2 / 4,0 padlých za den (dřív ~2,9), Concord ~1 za den; poražený má víc padlých ve 20/20 bězích.
+Den 5 podle skutečného stavu: Hegemonie 7 padlých (6 přímým zásahem), Concord 3.

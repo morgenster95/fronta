@@ -449,7 +449,9 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     for (const s of mine()) {
       const w = s.wound;
       const rand = rngFor(s.id, 'care', day);
-      const g = w.place === 'bed' ? 1 : (w.care ?? 0);
+      // pod granáty se medici a nosiči k raněným v ostřelovaném úseku dostanou jen zčásti (battle.shell.careCut)
+      const pinned = barrage?.target === s.faction && shelled.has(s.sector) && w.place !== 'bed' ? 1 - (cfg.shell.careCut || 0) : 1;
+      const g = w.place === 'bed' ? 1 : (w.care ?? 0) * pinned;
       const C = cfg.care[w.sev];
       const fresh = w.day === day;
       if (w.sev === 'light') {
