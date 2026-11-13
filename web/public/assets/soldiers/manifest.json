@@ -85,13 +85,21 @@
      "concord@idle_south_0.png",
      "concord@idle_south_1.png",
      "concord@idle_south_2.png",
-     "concord@idle_south_3.png"
+     "concord@idle_south_3.png",
+     "concord@idle_south_4.png",
+     "concord@idle_south_5.png",
+     "concord@idle_south_6.png",
+     "concord@idle_south_7.png"
     ],
     "north": [
      "concord@idle_north_0.png",
      "concord@idle_north_1.png",
      "concord@idle_north_2.png",
-     "concord@idle_north_3.png"
+     "concord@idle_north_3.png",
+     "concord@idle_north_4.png",
+     "concord@idle_north_5.png",
+     "concord@idle_north_6.png",
+     "concord@idle_north_7.png"
     ]
    },
    "crawl": {
@@ -177,7 +185,8 @@
      "concord@prone_south_4.png",
      "concord@prone_south_5.png",
      "concord@prone_south_6.png",
-     "concord@prone_south_7.png"
+     "concord@prone_south_7.png",
+     "concord@prone_south_8.png"
     ]
    },
    "run": {
@@ -330,7 +339,9 @@
      "concord@work_north_3.png",
      "concord@work_north_4.png",
      "concord@work_north_5.png",
-     "concord@work_north_6.png"
+     "concord@work_north_6.png",
+     "concord@work_north_7.png",
+     "concord@work_north_8.png"
     ],
     "south": [
      "concord@work_south_0.png",
@@ -588,7 +599,8 @@
      "hegemony@walk_north_4.png",
      "hegemony@walk_north_5.png",
      "hegemony@walk_north_6.png",
-     "hegemony@walk_north_7.png"
+     "hegemony@walk_north_7.png",
+     "hegemony@walk_north_8.png"
     ],
     "south": [
      "hegemony@walk_south_0.png",
@@ -596,7 +608,9 @@
      "hegemony@walk_south_2.png",
      "hegemony@walk_south_3.png",
      "hegemony@walk_south_4.png",
-     "hegemony@walk_south_5.png"
+     "hegemony@walk_south_5.png",
+     "hegemony@walk_south_6.png",
+     "hegemony@walk_south_7.png"
     ],
     "west": [
      "hegemony@walk_west_0.png",
@@ -634,7 +648,9 @@
      "hegemony@crawl_east_3.png",
      "hegemony@crawl_east_4.png",
      "hegemony@crawl_east_5.png",
-     "hegemony@crawl_east_6.png"
+     "hegemony@crawl_east_6.png",
+     "hegemony@crawl_east_7.png",
+     "hegemony@crawl_east_8.png"
     ],
     "west": [
      "hegemony@crawl_west_0.png",
@@ -643,7 +659,9 @@
      "hegemony@crawl_west_3.png",
      "hegemony@crawl_west_4.png",
      "hegemony@crawl_west_5.png",
-     "hegemony@crawl_west_6.png"
+     "hegemony@crawl_west_6.png",
+     "hegemony@crawl_west_7.png",
+     "hegemony@crawl_west_8.png"
     ],
     "north": [
      "hegemony@crawl_north_0.png",
@@ -705,7 +723,8 @@
      "hegemony@prone_south_4.png",
      "hegemony@prone_south_5.png",
      "hegemony@prone_south_6.png",
-     "hegemony@prone_south_7.png"
+     "hegemony@prone_south_7.png",
+     "hegemony@prone_south_8.png"
     ]
    },
    "run": {
@@ -1166,7 +1185,10 @@
      "concord_machinegunner@crouch_north_1.png",
      "concord_machinegunner@crouch_north_2.png",
      "concord_machinegunner@crouch_north_3.png",
-     "concord_machinegunner@crouch_north_4.png"
+     "concord_machinegunner@crouch_north_4.png",
+     "concord_machinegunner@crouch_north_5.png",
+     "concord_machinegunner@crouch_north_6.png",
+     "concord_machinegunner@crouch_north_7.png"
     ]
    },
    "fire": {
@@ -1180,18 +1202,18 @@
      "concord_machinegunner@fire_north_6.png"
     ]
    },
-   "fire-side": {
+   "fire-prone": {
     "east": [
-     "concord_machinegunner@fire-side_east_0.png",
-     "concord_machinegunner@fire-side_east_1.png",
-     "concord_machinegunner@fire-side_east_2.png",
-     "concord_machinegunner@fire-side_east_3.png"
+     "concord_machinegunner@fire-prone_east_0.png",
+     "concord_machinegunner@fire-prone_east_1.png",
+     "concord_machinegunner@fire-prone_east_2.png",
+     "concord_machinegunner@fire-prone_east_3.png"
     ],
     "west": [
-     "concord_machinegunner@fire-side_west_0.png",
-     "concord_machinegunner@fire-side_west_1.png",
-     "concord_machinegunner@fire-side_west_2.png",
-     "concord_machinegunner@fire-side_west_3.png"
+     "concord_machinegunner@fire-prone_west_0.png",
+     "concord_machinegunner@fire-prone_west_1.png",
+     "concord_machinegunner@fire-prone_west_2.png",
+     "concord_machinegunner@fire-prone_west_3.png"
     ]
    }
   }
@@ -1308,21 +1330,24 @@
      "hegemony_machinegunner@fire_south_3.png",
      "hegemony_machinegunner@fire_south_4.png",
      "hegemony_machinegunner@fire_south_5.png",
-     "hegemony_machinegunner@fire_south_6.png"
+     "hegemony_machinegunner@fire_south_6.png",
+     "hegemony_machinegunner@fire_south_7.png"
     ]
    },
-   "fire-side": {
+   "fire-prone": {
     "east": [
-     "hegemony_machinegunner@fire-side_east_0.png",
-     "hegemony_machinegunner@fire-side_east_1.png",
-     "hegemony_machinegunner@fire-side_east_2.png",
-     "hegemony_machinegunner@fire-side_east_3.png"
+     "hegemony_machinegunner@fire-prone_east_0.png",
+     "hegemony_machinegunner@fire-prone_east_1.png",
+     "hegemony_machinegunner@fire-prone_east_2.png",
+     "hegemony_machinegunner@fire-prone_east_3.png",
+     "hegemony_machinegunner@fire-prone_east_4.png"
     ],
     "west": [
-     "hegemony_machinegunner@fire-side_west_0.png",
-     "hegemony_machinegunner@fire-side_west_1.png",
-     "hegemony_machinegunner@fire-side_west_2.png",
-     "hegemony_machinegunner@fire-side_west_3.png"
+     "hegemony_machinegunner@fire-prone_west_0.png",
+     "hegemony_machinegunner@fire-prone_west_1.png",
+     "hegemony_machinegunner@fire-prone_west_2.png",
+     "hegemony_machinegunner@fire-prone_west_3.png",
+     "hegemony_machinegunner@fire-prone_west_4.png"
     ]
    }
   }

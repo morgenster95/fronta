@@ -100,3 +100,19 @@ Paleta Trench 24 se předává jako `palette` (skeleton-v3, v3), šablony (templ
 | lying-wounded (leží a dýchá) | puškař C/H | V, Z, S | pixminimax ze snímku pádu | ✔ jemný pohyb |
 | carry, stretcher, wounded-sit (v3) | | | v3 | ✘ na 32 px nekreslí druhou postavu ani nosítka: nosítka a nesení skládat ve hře ze dvou spritů |
 Cena dávky: 30 + 10 generací.
+
+## Recenze 2 (13. 11. 2026): přegenerování zamítnutých, přes tools/pixellab.py
+| Animace | Postava | Směr | Režim | Výsledek |
+|---|---|---|---|---|
+| idle (dýchání) | concord | S, J | skeleton-v3 idle | ✔ |
+| duck | concord J; hegemony S, J | | skeleton-v3 cover | ✔ |
+| prone (k zemi) | concord J, hegemony J | | pixminimax z rotace | ✔ (skeleton lie_down dělal „T-pózu“ ✘) |
+| crawl | concord S, J (shora, bez pušky); hegemony V/Z | | pixminimax ze startovní ležící pózy | ✔ (v3/skeleton ✘) |
+| work | concord S | | pixminimax z klečící pózy | ✔ (skeleton kneel_work a v3 ✘) |
+| run, walk | hegemony S (run, walk), J (walk) | | skeleton-v3 / v3 | ✔ |
+| grenade | hegemony J | | skeleton-v3 throw | ✔ |
+| crouch | concord_machinegunner S | | skeleton-v3 crouch | ✔ |
+| fire-side | concord_sniper V/Z | | skeleton-v3 shoot | ✔ |
+| fire, fire-prone | hegemony_machinegunner J, V/Z | | skeleton-v3 shoot, v3 (snímky 4–8) | ✔ |
+Ručně: `concord_machinegunner` fire-side → **fire-prone** (je to střelba vleže), `hegemony_machinegunner` fire-side nahrazeno fire-prone; barvy: import (`tools/import-anim.py`, `RECOLOR`) vrací Concordu teplou olivovou původních spritů a Hegemonii světlou kůži (dřív paleta dělala zelenou a oranžovou); hegemony fire jihovýchod bez pušky trčící za ramenem.
+Cena: ~52 generací (1 neúspěšné odeslání při restartu se ověřilo přes get_character, duplikát nevznikl).

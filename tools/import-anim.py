@@ -19,6 +19,14 @@ SOLD = os.path.join(ROOT, "web", "public", "assets", "soldiers")
 PAL = [tuple(int(h[i:i + 2], 16) for i in (0, 2, 4)) for h in open(os.path.join(ROOT, "art", "palette", "trench24.hex")).read().split()]
 
 
+H = lambda h: tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+# Paleta Trench 24 dělá z olivové zelenou a z kůže oranžovou; vrátíme odstíny původních spritů
+RECOLOR = {
+    "hegemony": {H("d98f3f"): H("e5aa7c")},
+    "concord": {H("3a3b2c"): H("383225"), H("545639"): H("4d442f"), H("6f7148"): H("5e5437"), H("8c8a5c"): H("82714d"), H("d98f3f"): H("db9b71")},
+}
+
+
 def nearest(c):
     return min(PAL, key=lambda p: (p[0] - c[0]) ** 2 + (p[1] - c[1]) ** 2 + (p[2] - c[2]) ** 2)
 
@@ -59,7 +67,15 @@ def main():
     for f in frames:
         c = Image.new("RGBA", (canvas, canvas), (0, 0, 0, 0))
         c.alpha_composite(f, (max(0, dx), max(0, dy)), (max(0, -dx), max(0, -dy)))
-        out.append(quantize(c))
+        c = quantize(c)
+        remap = RECOLOR.get(key.split("_")[0], {})
+        if remap:  # barvy uniformy a kůže jako u původních spritů strany (recenze 13. 11.)
+            px = c.load()
+            for y in range(c.height):
+                for x in range(c.width):
+                    if px[x, y][3] and px[x, y][:3] in remap:
+                        px[x, y] = remap[px[x, y][:3]] + (255,)
+        out.append(c)
     man_p = os.path.join(SOLD, "manifest.json")
     man = json.load(open(man_p))
     for direction, ims in [(d, out)] + ([(mirror, [i.transpose(Image.FLIP_LEFT_RIGHT) for i in out])] if mirror else []):
