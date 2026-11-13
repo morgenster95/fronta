@@ -556,6 +556,10 @@
   "from": "Verdel Ridge"
  },
  "newSince": 82,
+ "joined": [
+  65,
+  39
+ ],
  "seconds": 90,
  "t2": null,
  "silent": false

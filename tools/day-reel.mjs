@@ -41,6 +41,9 @@ const vic = (state.victories || []).at(-1);
 const shelled = vic && vic.barrageTo >= day + 1 ? { side: 1 - vic.faction, nights: vic.barrageTo - day, from: vic.name } : null;
 const newSince = state.soldiers.filter((s) => s.enlisted === day).length;
 const voteOpen = !!state.vote?.mediaId;
+// přírůstek hráčů za včerejší den (půlnoc–půlnoc UTC), spočtený předem z gitu: marketing/reels/day<N>.joined.json
+const jf = path.join(ROOT, 'marketing', 'reels', `day${day}.joined.json`);
+const joined = fs.existsSync(jf) ? JSON.parse(fs.readFileSync(jf, 'utf8')).joined : null;
 const beds = state.battle.sides.map((side) => side.beds.map((id) => state.soldiers.find((s) => s.id === id)?.handle).filter(Boolean));
 const stretchers = [0, 1].map((f) => state.soldiers.filter((s) => s.faction === f && s.wound?.place === 'stretcher').map((s) => s.handle));
 // obvaziště do záběru: strana s plnějšími lůžky
@@ -78,6 +81,7 @@ const lines = [
   ...(shelled ? [[0, `Tonight the guns fire again. ${say(shelled.nights)} more ${shelled.nights === 1 ? 'night' : 'nights'} of shelling for the ${short(shelled.side)}.`.replace(/(\. )([a-z])/, (m, a, c) => a + c.toUpperCase()), 'tonight']] : []),
   [0, 'New at the front: a letter from home.', 'letter'],
   [0, `Open your soldier's card and send one. It keeps your soldier fifteen percent safer for one night.${letters > 1 ? ` ${cap(numWord(letters))} letters are already on the way.` : ''}`, 'letter2'],
+  ...(joined ? [[0, `Yesterday, ${joined[0] + joined[1]} new soldiers came up the line. ${joined[0]} Hegemony, ${joined[1]} Concord.`, 'joined']] : []),
   [0, `${army[0] + army[1]} soldiers hold the line now.`, 'army'],
   [0, `${army[0]} for the Hegemony.`, 'armyH'],
   [0, `${army[1]} for the Concord.`, 'armyC'],
@@ -88,7 +92,7 @@ const lines = [
 const seconds = 90; // horní odhad; skutečnou délku určí hlas (story_vo.py, auto)
 const t2 = null;
 
-const data = { day, army, total, hitN, hit, fire, fallen, fallBy: fallBy.map((l) => l.length), beds, stretchers, focus, raid, race, letters, shelled, newSince, seconds, t2, silent: gunsSilent(state, theme) };
+const data = { day, army, total, hitN, hit, fire, fallen, fallBy: fallBy.map((l) => l.length), beds, stretchers, focus, raid, race, letters, shelled, newSince, joined, seconds, t2, silent: gunsSilent(state, theme) };
 const name = `day${day}`;
 const dir = path.join(ROOT, 'marketing', 'reels');
 fs.writeFileSync(path.join(dir, `${name}.data.json`), JSON.stringify(data, null, 1));

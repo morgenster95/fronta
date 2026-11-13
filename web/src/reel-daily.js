@@ -52,6 +52,11 @@ const CSS = `${BASE}${FX_CSS}${CINEMA_CSS}
 #rd-letter .btn { display: inline-block; font-family: 'Silkscreen', monospace; font-size: 21px; color: #efe6cf; background: #7e3b2a; border: 4px solid #0e0d0c; box-shadow: 0 0 0 3px #d98f3f, 6px 8px 0 rgba(0,0,0,0.6); padding: 10px 14px; line-height: 1.25; }
 #rd-letter .n { font-family: 'Silkscreen', monospace; font-size: 22px; color: #d98f3f; margin-top: 18px; text-shadow: 3px 3px 0 #0e0d0c; }
 #rd-letter .n b { font-weight: 400; font-size: 64px; display: block; line-height: 1; color: #efe6cf; }
+#rd-joined { left: 10%; right: 10%; top: 30%; text-align: center; }
+#rd-joined .k { font-family: 'Silkscreen', monospace; font-size: 20px; color: #d98f3f; }
+#rd-joined .n { font-family: 'Silkscreen', monospace; font-size: 96px; line-height: 1; text-shadow: 5px 5px 0 #0e0d0c; }
+#rd-joined .s { display: flex; justify-content: space-around; font-family: 'Silkscreen', monospace; font-size: 20px; margin-top: 6px; }
+#rd-joined .s b { font-weight: 400; font-size: 34px; display: block; }
 #rd-vote { left: 17%; right: 17%; top: 25%; }
 #rd-vote img { width: 100%; display: block; image-rendering: pixelated; box-shadow: 0 8px 0 rgba(0,0,0,0.5), 0 16px 28px rgba(0,0,0,0.6); }
 #rd-vote .hl { position: absolute; left: 2.5%; right: 2.5%; border: 4px solid #d98f3f; box-shadow: 0 0 0 3px #0e0d0c, 0 0 22px rgba(217,143,63,0.7); opacity: 0; }
@@ -71,9 +76,10 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const at = (id) => C.at(id);
   const tSh = at('shooter'), tShot = at('shot'), tCount = at('count'), tAid = at('aid'), tStr = at('stretcher');
   const tArmy = at('army'), tArmyH = at('armyH'), tArmyC = at('armyC'), tRaid = at('raid'), tVote = at('vote'), tOpts = at('opts'), tCta = at('cta');
-  const tFallen = at('fallen'), tRace = at('race'), tRaceN = at('raceN'), tNight = at('tonight'), tLetter = at('letter'), tLetter2 = at('letter2');
+  const tFallen = at('fallen'), tRace = at('race'), tRaceN = at('raceN'), tNight = at('tonight'), tLetter = at('letter'), tLetter2 = at('letter2'), tJoined = at('joined');
   // co následuje po obvazišti (závod, děla, dopis, počty) a po přejezdu po linii (výprava, hlasování, závěr)
-  const tPost = tRace ?? tNight ?? tLetter ?? tArmy ?? tRaid ?? tVote ?? tCta;
+  const tPost = tRace ?? tNight ?? tLetter ?? tJoined ?? tArmy ?? tRaid ?? tVote ?? tCta;
+  const tLetEnd = tJoined ?? tArmy; // konec dopisové scény
   const tTail = tRaid ?? tVote ?? tCta;
   const tEnd = (id) => at(id) + C.len(id);
 
@@ -115,7 +121,8 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     [Math.min(tStr + C.len('stretcher') + 0.2, tPost - 0.02), hosp.x + 16, hosp.y + (data.focus === 0 ? 26 : -26), 4.4],
     ...(tRace ? [[tRace, hx - 220, mid, 1.1, 'cut'], [(tNight ?? tLetter ?? tArmy) - 0.01, hx + 60, mid, 1.2]] : []),
     ...(tNight ? [[tNight, hx - 140, rearY, 1.7, 'cut'], [(tLetter ?? tArmy) - 0.01, hx + 120, rearY, 2.0]] : []),
-    ...(tLetter ? [[tLetter, hx - 120, mid, 1.2, 'cut'], [tArmy - 0.01, hx - 100, mid, 1.2]] : []),
+    ...(tLetter ? [[tLetter, hx - 120, mid, 1.2, 'cut'], [tLetEnd - 0.01, hx - 100, mid, 1.2]] : []),
+    ...(tJoined ? [[tJoined, hx - 260, mid + 120, 1.3, 'cut'], [tArmy - 0.01, hx - 120, mid + 120, 1.3]] : []),
     ...(tArmy ? [[tArmy, hx - 160, mid, 1.15, 'cut'],
       ...(tArmyH && tArmyC ? [[tArmyH - 0.01, hx - 60, mid, 1.2], ...sweep(real(0), tArmyH, tArmyC - 0.01), ...sweep(real(1), tArmyC, tTail - 0.02)] : [])] : []),
     [tTail - 0.01, hx + 140, mid, 1.3],
@@ -126,7 +133,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const sub = subtitles(vo);
   const fx = transitions([
     [tSh, 'flash'], ...(tShot ? [[tShot - 0.12, 'flash'], [tShot, 'whip']] : []), [tCount, 'black', 0.36],
-    ...(tFallen ? [[tFallen, 'black', 0.4]] : []), [tAid, 'whip'], [tStr, 'black', 0.3], ...(tRace ? [[tRace, 'black', 0.36]] : []), ...(tNight ? [[tNight, 'flash']] : []), ...(tLetter ? [[tLetter, 'black', 0.4]] : []),
+    ...(tFallen ? [[tFallen, 'black', 0.4]] : []), [tAid, 'whip'], [tStr, 'black', 0.3], ...(tRace ? [[tRace, 'black', 0.36]] : []), ...(tNight ? [[tNight, 'flash']] : []), ...(tLetter ? [[tLetter, 'black', 0.4]] : []), ...(tJoined ? [[tJoined, 'black', 0.36]] : []),
     ...(tArmy ? [[tArmy, 'black', 0.36], ...(tArmyH ? [[tArmyH, 'whip'], [tArmyC, 'whip']] : [])] : []), ...(tRaid ? [[tRaid, 'black', 0.4]] : []), ...(tVote ? [[tVote, 'flash']] : []), [tCta, 'black', 0.5],
     [tSh + 1.2, 'punch'], ...(tShot ? [[tShot - 0.12, 'punch']] : []),
   ]);
@@ -140,7 +147,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   SFX.push([0.5, 'type', 0.4], [at('guns'), 'type', 0.9], [tSh, 'reveal', 0], [(tShot ?? tCount) + 0.3, 'stamp', 0], [tCount, 'drum', 0], [tAid, 'bell', 0], ...(tArmy ? [[tArmy, 'drum', 0], ...(tArmyH ? [[tArmyH, 'stamp', 0], [tArmyC, 'stamp', 0]] : [])] : []),
     ...(tRaid ? [[tRaid, 'whistle', 0]] : []), ...(tVote ? [[tVote, 'drum', 0], ...[0, 1].map((i) => [tOpts + i * 1.1, 'stamp', 0])] : []), [tCta, 'end', 0],
     ...(tFallen ? [[tFallen, 'bell', 0]] : []), ...(tRace ? [[tRace, 'drum', 0], [tRaceN + 0.3, 'tick', 2]] : []), ...(tNight ? [[tNight, 'barrage', 5]] : []),
-    ...(tLetter ? [[tLetter + 0.4, 'type', 1.2], [tLetter2 + 0.4, 'stamp', 0]] : []));
+    ...(tLetter ? [[tLetter + 0.4, 'type', 1.2], [tLetter2 + 0.4, 'stamp', 0]] : []), ...(tJoined ? [[tJoined + 0.3, 'tick', 2.5]] : []));
   // dopady granátů za první linií (předem určené, video je vždy stejné)
   const BOOM = [];
   if (tNight) { let q = 4242; const rr = () => ((q = (q * 16807) % 2147483647) / 2147483647);
@@ -175,6 +182,8 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
       <div class="heir">THE NEXT OF EACH FAMILY TOOK THEIR PLACE</div></div></div>` : ''}
     ${data.race ? `<div id="rd-hill" class="panel"><div class="k">THE RACE FOR ${data.race.name.toUpperCase()}</div>${[0, 1].map((f) => `<div style="color:${f ? '#c9c26a' : '#a7b4bb'}"><div class="row"><span>${short(f)}</span><b>0</b></div><div class="bar"><i style="width:0"></i></div></div>`).join('')}<div class="goal">FIRST TO ${data.race.goal} TAKES THE HILL</div></div>` : ''}
     ${data.shelled ? `<div id="rd-night"><span>TONIGHT</span><br><span>${data.shelled.nights > 1 ? 'AND TOMORROW' : 'THE LAST NIGHT'}</span><br><span>ON THE ${short(data.shelled.side)}</span></div>` : ''}
+    ${data.joined ? `<div id="rd-joined" class="panel"><div class="k">YESTERDAY · NEW SOLDIERS</div><div class="n">+0</div>
+      <div class="s"><span style="color:#a7b4bb">HEGEMONY <b>+0</b></span><span style="color:#c9c26a">CONCORD <b>+0</b></span></div></div>` : ''}
     ${tLetter ? `<div id="rd-letter"><div class="btn">✉ SEND YOUR SOLDIER A LETTER<br>15% SAFER TONIGHT</div>${data.letters > 1 ? `<div class="n"><b>0</b>LETTERS ON THE WAY</div>` : ''}</div>` : ''}
     <div id="rd-count" class="panel"><span class="k">Day ${data.day} · the wounded</span>
       <div class="side" style="color:#a7b4bb"><span>HEGEMONY</span><b>0</b></div><ul>${list(0)}</ul>
@@ -198,7 +207,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const sceneAt = (t) => {
     if (t < tSh && intro !== 'march') return [intro, t];
     if (t >= tStr && t < tPost) return ['aidpost', t - tStr];
-    if (tLetter && t >= tLetter && t < (tArmy ?? tTail)) return ['letter', t - tLetter];
+    if (tLetter && t >= tLetter && t < (tLetEnd ?? tTail)) return ['letter', t - tLetter];
     if (tRaid && t >= tRaid && t < tVote) return ['church', t - tRaid];
     if (t >= tCta && outro !== 'dawn') return [outro, t - tCta];
     return null;
@@ -280,6 +289,12 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     root.querySelectorAll('#rd-count li').forEach((el, i) => (el.style.opacity = t > tCount + 0.6 + i * 0.18 ? 1 : 0));
     show('#rd-every', win(t, tCount, tAid - 0.05, 0.15));
 
+    if (tJoined) {
+      show('#rd-joined', win(t, tJoined + 0.1, tArmy - 0.05, 0.15));
+      const j = data.joined, u = easeOut(clamp01((t - tJoined - 0.2) / 1.2));
+      $('#rd-joined .n').textContent = `+${Math.round(u * (j[0] + j[1]))}`;
+      root.querySelectorAll('#rd-joined .s b').forEach((el, i) => (el.textContent = `+${Math.round(easeOut(clamp01((t - tJoined - 1.0 - i * 0.6) / 0.8)) * j[i])}`));
+    }
     if (tArmy && data.army) {
       const tE = tTail;
       show('#rd-army', win(t, tArmy + 0.1, (tArmyH ?? tE) - 0.05, 0.15));
@@ -294,7 +309,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
       const u = easeOut(clamp01((t - tArmy - 0.2) / 1.1));
       $('#rd-army .n').textContent = Math.round(u * (data.army[0] + data.army[1]));
     }
-    show('#rd-dim', Math.min(0.95, (tShot ? win(t, tShot, tCount, 0.1) * 0.55 : 0) + (tFallen ? win(t, tFallen, tAid, 0.2) * 0.9 : 0) + (tRace ? win(t, tRace, tNight ?? tLetter ?? tArmy, 0.2) * 0.6 : 0)
+    show('#rd-dim', Math.min(0.95, (tShot ? win(t, tShot, tCount, 0.1) * 0.55 : 0) + (tFallen ? win(t, tFallen, tAid, 0.2) * 0.9 : 0) + (tRace ? win(t, tRace, tNight ?? tLetter ?? tArmy, 0.2) * 0.6 : 0) + (tJoined ? win(t, tJoined, tArmy, 0.2) * 0.5 : 0)
       + ((tRaid || tVote) ? win(t, tRaid ?? tVote, tCta, 0.2) * 0.9 : 0)));
     if (tFallen) {
       slam($('#rd-fallen'), t, tFallen + 0.05, tAid - 0.05, 1.2, -2);
@@ -312,7 +327,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     if (tNight) root.querySelectorAll('#rd-night span').forEach((el, i) => (el.style.opacity = t > tNight + 0.5 + i * 0.9 && t < (tLetter ?? tArmy) - 0.1 ? 1 : 0));
     if (tLetter) {
       const el = $('#rd-letter'), u = easeOut(clamp01((t - tLetter2) / 0.35));
-      el.style.opacity = t < tLetter2 || t > tArmy - 0.05 ? 0 : Math.min(1, u * 1.5, (tArmy - t) / 0.2);
+      el.style.opacity = t < tLetter2 || t > tLetEnd - 0.05 ? 0 : Math.min(1, u * 1.5, (tLetEnd - t) / 0.2);
       el.style.transform = `scale(${1.25 - 0.25 * u})`;
       const nEl = $('#rd-letter .n b');
       if (nEl) nEl.textContent = Math.round(easeOut(clamp01((t - tLetter2 - C.len('letter2') * 0.55) / 1.0)) * data.letters);
