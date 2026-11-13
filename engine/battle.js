@@ -476,9 +476,9 @@ export function battleTick(state, theme, story, day, ctx = {}) {
           if (w.sev === 'crit' && rand() < C.dieBase * H.critRisk * (ctx.dieOf?.(s) ?? 1)) { if (die(s, 'diedInBed', 'wounds')) continue; }
           w.operated = true;
           if (w.sev === 'crit') { w.sev = 'heavy'; ev(s, 'stabilized', eventEntry('stabilized', s, day, theme, story, {}, today)); }
-        } else if (day - (w.bedDay ?? day) >= 2) {
-          recover(s, 'recovered');
         }
+        // 2 dny od uložení: zpět na frontu (i kdo ležel déle podle starých pravidel, odchází hned)
+        if (day - (w.bedDay ?? day) >= 2) recover(s, 'recovered');
       } else if (w.sev === 'heavy') {
         const trench = w.place === 'trench';
         const newbie = day - (s.enlisted ?? day) < cfg.newbieDays && !w.shell;
