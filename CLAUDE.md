@@ -140,6 +140,10 @@ Postup pro nový reel `<name>`:
 6. Až to uživatel **výslovně schválí**: přidat položku do `marketing/queue.json` (vzor: existující položky, `publishAt` v UTC).
    Smyčka ji publikuje v daný čas. Video delší než 60 s jde do IG Stories jen rozdělené (`type: "story"`).
 
+**ČÍSLO DNE V DAY REELU (pravidlo uživatele 14. 11., chyba se nesmí opakovat):** Day reel ukazuje **včerejší den podle kalendáře** (Den 1 = 9. 11., `theme.warStart`): reel z 13. 11. = Day 4, ze 14. 11. = **Day 5**, z 15. 11. = **Day 6**, a tak dál, i když je vyrobený po ranních novinách (pak už `state.day` ukazuje o 1 víc; 14. 11. tak omylem vyšel „Day 6“).
+Titulek počítá `reelDay()` v `tools/day-reel.mjs` (`data.label`, přepis `--label N`), stejné číslo patří do popisku a do story (`--title "DAY N"`).
+**Každé denní video musí začínat titulkem „DAY N“** (velký psaný titulek v noci, `#rd-day` v `web/src/reel-daily.js`), i vlastní denní reel mimo šablonu (jako `reel-night6`, kde chyběl). Před odesláním videa uživateli zkontroluj titulek i číslo dne.
+
 **Day reel (denní shrnutí) jedním příkazem** (od 2026-11-13): `marketing/reels/render.json` = `{"name": "day<N>"}` (N = `state.day`, tedy den posledních novin; po dalších novinách už `day<N>` nevznikne).
 `tools/make-reel.sh` si sám spustí `node tools/day-reel.mjs` (podklady z aktuálního stavu), scénář `web/src/reel-daily.js` skládá části podle toho, co ve stavu je:
 noc a děla → výstřel (smrtelný má přednost: lístek FALLEN) → zasažení po stranách → padlí (Roll of Honour) → obvaziště a nosítka → závod o další kótu (pruhy do 100)

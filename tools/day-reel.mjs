@@ -13,6 +13,13 @@ const opt = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : nu
 const state = JSON.parse(fs.readFileSync(opt('--state') || path.join(ROOT, 'data', 'state.json'), 'utf8'));
 const { theme } = loadTheme();
 const day = state.day;
+// číslo dne v titulku Day reelu = včerejší den podle kalendáře (Den 1 = theme.warStart); reel z 14. 11. je Day 5, z 15. 11. Day 6.
+// Stav (state.day) po ranních novinách už ukazuje další den, proto se na něj titulek nespoléhá (14. 11. tak vyšel omylem „Day 6“).
+export function reelDay(theme, now = Date.now()) {
+  const start = Date.parse(`${theme.warStart || '2026-11-09'}T00:00:00Z`);
+  return Math.max(1, Math.floor((now - start) / 86400e3)); // dnes = den (n+1), reel ukazuje včerejší den n
+}
+const label = Number(opt('--label')) || reelDay(theme);
 const short = (f) => theme.factions[f].name.replace(/^The /, '');
 const role = (id) => (theme.archetypes.find((a) => a.id === id)?.name || id).toLowerCase();
 const words = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
@@ -66,7 +73,7 @@ const cap = (t) => t.replace(/(^|\. )([a-z])/g, (m, a, c) => a + c.toUpperCase()
 const nb = beds[focus].length;
 // [nejdřív v s, věta, id]; story_vo.py (auto) je řadí hned za sebe podle skutečné délky hlasu, reel si časy bere podle id
 const lines = [
-  [0.6, `Day ${say(day)}.`, 'day'],
+  [0.6, `Day ${numWord(label)}.`, 'day'],
   [1.8, shelled ? `The guns of ${shelled.from} fired all night. On the ${short(shelled.side)}.` : gunsSilent(state, theme) ? 'The big guns are silent. The rifles are not.' : 'The guns spoke all night.', 'guns'],
   ...(fire ? [
     [4.6, shelled && fire.by.faction === shelled.side ? `But the ${short(fire.by.faction)} fired back. One ${role(fire.by.role)} saw a movement across the wire.` : `A ${short(fire.by.faction)} ${role(fire.by.role)} saw a movement across the wire.`, 'shooter'],
@@ -94,7 +101,7 @@ const lines = [
 const seconds = 90; // horní odhad; skutečnou délku určí hlas (story_vo.py, auto)
 const t2 = null;
 
-const data = { day, army, total, hitN, hit, fire, fallen, fallBy: fallBy.map((l) => l.length), beds, stretchers, focus, raid, race, letters, shelled, newSince, joined, seconds, t2, silent: gunsSilent(state, theme) };
+const data = { day, label, army, total, hitN, hit, fire, fallen, fallBy: fallBy.map((l) => l.length), beds, stretchers, focus, raid, race, letters, shelled, newSince, joined, seconds, t2, silent: gunsSilent(state, theme) };
 const name = `day${day}`;
 const dir = path.join(ROOT, 'marketing', 'reels');
 fs.writeFileSync(path.join(dir, `${name}.data.json`), JSON.stringify(data, null, 1));

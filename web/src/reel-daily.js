@@ -174,19 +174,19 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     <div class="rd-tag" id="rd-tag-sh">@${data.fire?.by.handle ?? ''}<span>${data.fire ? `${short(data.fire.by.faction)} ${roleName(data.fire.by.role)}` : ''}</span></div>
     ${bedded.map((s, i) => `<div class="rd-tag" id="rd-bed${i}">@${s.handle}<span>${(sevText[s.sev] || '').toLowerCase()}</span></div>`).join('')}
     ${data.fire ? `<div id="rd-shot"><div class="paper" style="background-image:url(${paperTexture(5)});clip-path:${tornClip(5)}">
-      <div class="h"><span>FIELD TELEGRAPH</span><span>DAY ${data.day}</span></div>
+      <div class="h"><span>FIELD TELEGRAPH</span><span>DAY ${data.label ?? data.day}</span></div>
       <div class="who">@${data.fire.handle}</div>
       <div>${sevText[data.fire.sev]} · shot by @${data.fire.by.handle}</div>
       <div>${data.fire.sev === 'killed' ? placeText.fallen : `now ${placeText[data.fire.place] || 'in the trench'}`}</div><div class="rk-stamp">${data.fire.sev === 'killed' ? 'FALLEN' : 'HIT'}</div></div></div>` : ''}
     ${fallenList.length ? `<div id="rd-fallen"><div class="paper" style="background-image:url(${paperTexture(7)});clip-path:${tornClip(7)}">
-      <div class="h"><span>ROLL OF HONOUR</span><span>DAY ${data.day}</span></div><ul>${fallenList.map((x) => `<li><b>† ${x.name}</b><span>${short(x.faction).toLowerCase()} ${roleName(x.role).toLowerCase()}</span></li>`).join('')}</ul>
+      <div class="h"><span>ROLL OF HONOUR</span><span>DAY ${data.label ?? data.day}</span></div><ul>${fallenList.map((x) => `<li><b>† ${x.name}</b><span>${short(x.faction).toLowerCase()} ${roleName(x.role).toLowerCase()}</span></li>`).join('')}</ul>
       <div class="heir">THE NEXT OF EACH FAMILY TOOK THEIR PLACE</div></div></div>` : ''}
     ${data.race ? `<div id="rd-hill" class="panel"><div class="k">THE RACE FOR ${data.race.name.toUpperCase()}</div>${[0, 1].map((f) => `<div style="color:${f ? '#c9c26a' : '#a7b4bb'}"><div class="row"><span>${short(f)}</span><b>0</b></div><div class="bar"><i style="width:0"></i></div></div>`).join('')}<div class="goal">FIRST TO ${data.race.goal} TAKES THE HILL</div></div>` : ''}
     ${data.shelled ? `<div id="rd-night"><span>TONIGHT</span><br><span>${data.shelled.nights > 1 ? 'AND TOMORROW' : 'THE LAST NIGHT'}</span><br><span>ON THE ${short(data.shelled.side)}</span></div>` : ''}
     ${data.joined ? `<div id="rd-joined" class="panel"><div class="k">YESTERDAY · NEW SOLDIERS</div><div class="n">+0</div>
       <div class="s"><span style="color:#a7b4bb">HEGEMONY <b>+0</b></span><span style="color:#c9c26a">CONCORD <b>+0</b></span></div></div>` : ''}
     ${tLetter ? `<div id="rd-letter"><div class="btn">✉ SEND YOUR SOLDIER A LETTER<br>15% SAFER TONIGHT</div>${data.letters > 1 ? `<div class="n"><b>0</b>LETTERS ON THE WAY</div>` : ''}</div>` : ''}
-    <div id="rd-count" class="panel"><span class="k">Day ${data.day} · the wounded</span>
+    <div id="rd-count" class="panel"><span class="k">Day ${data.label ?? data.day} · the wounded</span>
       <div class="side" style="color:#a7b4bb"><span>HEGEMONY</span><b>0</b></div><ul>${list(0)}</ul>
       <div class="side" style="color:#c9c26a"><span>CONCORD</span><b>0</b></div><ul>${list(1)}</ul></div>
     ${data.raid ? `<div id="rd-raid"><img src="/assets/locations/church.png" alt=""><div class="title">VOLUNTEERS WANTED<br>${data.raid.short.toUpperCase()}</div>
@@ -256,7 +256,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     paint({ ...f, black: Math.max(f.black, t < 0.4 ? 1 - t / 0.4 : 0, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) });
 
     show('#rd-day', night ? Math.min(1, t / 0.3) : 0);
-    $('#rd-day .big').textContent = typed(`DAY ${data.day}`, t, 0.4, 12);
+    $('#rd-day .big').textContent = typed(`DAY ${data.label ?? data.day}`, t, 0.4, 12);
     $('#rd-day .sub').textContent = t > at('guns') ? typed(data.silent ? 'THE GUNS ARE SILENT' : 'THE GUNS SPOKE ALL NIGHT', t, at('guns'), 30) : '';
 
     const logo = t >= tCta + 0.4;
