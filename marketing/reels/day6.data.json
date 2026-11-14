@@ -1,0 +1,801 @@
+{
+ "day": 6,
+ "army": [
+  191,
+  179
+ ],
+ "total": 71,
+ "hitN": [
+  55,
+  16
+ ],
+ "hit": [
+  [
+   {
+    "handle": "acakostic11",
+    "sev": "heavy",
+    "place": "stretcher",
+    "by": null,
+    "role": "rifleman"
+   },
+   {
+    "handle": "carlingiti",
+    "sev": "heavy",
+    "place": "stretcher",
+    "by": null,
+    "role": "machinegunner"
+   },
+   {
+    "handle": "varsikasikranaatti",
+    "sev": "heavy",
+    "place": "bed",
+    "by": null,
+    "role": "sniper"
+   },
+   {
+    "handle": "miguell.jacob",
+    "sev": "heavy",
+    "place": "trench",
+    "by": null,
+    "role": "runner"
+   },
+   {
+    "handle": "julio.menezes921",
+    "sev": "heavy",
+    "place": "trench",
+    "by": null,
+    "role": "medic"
+   },
+   {
+    "handle": "civo_mat",
+    "sev": "heavy",
+    "place": "trench",
+    "by": {
+     "handle": "vl.tsanev",
+     "name": "Clement Tsanev",
+     "role": "machinegunner",
+     "faction": 1
+    },
+    "role": "sapper"
+   },
+   {
+    "handle": "franek.szymanski.376",
+    "sev": "heavy",
+    "place": "trench",
+    "by": null,
+    "role": "machinegunner"
+   },
+   {
+    "handle": "zgeorges11",
+    "sev": "heavy",
+    "place": "trench",
+    "by": null,
+    "role": "sniper"
+   },
+   {
+    "handle": "cornkkob",
+    "sev": "heavy",
+    "place": "trench",
+    "by": {
+     "handle": "majormalpractice_626",
+     "name": "Emil Majormalprac",
+     "role": "machinegunner",
+     "faction": 1
+    },
+    "role": "machinegunner"
+   },
+   {
+    "handle": "thebaileeblanks",
+    "sev": "heavy",
+    "place": "trench",
+    "by": {
+     "handle": "warhamster4",
+     "name": "Albin Warhamster",
+     "role": "sniper",
+     "faction": 1
+    },
+    "role": "medic"
+   },
+   {
+    "handle": "mitaylor_1776",
+    "sev": "heavy",
+    "place": "trench",
+    "by": {
+     "handle": "kamdensipple",
+     "name": "Otto \"Saint\" Kamdensipple",
+     "role": "sniper",
+     "faction": 1
+    },
+    "role": "signaller"
+   },
+   {
+    "handle": "dick_j0b",
+    "sev": "heavy",
+    "place": "bed",
+    "by": null,
+    "role": "sapper"
+   },
+   {
+    "handle": "wiwiwib3",
+    "sev": "heavy",
+    "place": "trench",
+    "by": null,
+    "role": "rifleman"
+   },
+   {
+    "handle": "jwger87",
+    "sev": "heavy",
+    "place": "trench",
+    "by": null,
+    "role": "machinegunner"
+   },
+   {
+    "handle": "some_random_helldiver",
+    "sev": "heavy",
+    "place": "trench",
+    "by": null,
+    "role": "sapper"
+   },
+   {
+    "handle": "calin._av",
+    "sev": "heavy",
+    "place": "trench",
+    "by": {
+     "handle": "ay.den0707",
+     "name": "Arno \"Smokes\" Den",
+     "role": "rifleman",
+     "faction": 1
+    },
+    "role": "machinegunner"
+   },
+   {
+    "handle": "jennyschrader",
+    "sev": "heavy",
+    "place": "trench",
+    "by": null,
+    "role": "chaplain"
+   },
+   {
+    "handle": "hodnepijumaloctu",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "k4a.gr",
+     "name": "Felix Kagr",
+     "role": "rifleman",
+     "faction": 1
+    },
+    "role": "sapper"
+   },
+   {
+    "handle": "deadeyesimulacrum",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "rifleman"
+   },
+   {
+    "handle": "masis_xiii",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "sniper"
+   },
+   {
+    "handle": "vis.acquillae",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "selfie_and_mugs_every_day2.0",
+     "name": "Wendel \"Mole\" Day",
+     "role": "rifleman",
+     "faction": 1
+    },
+    "role": "signaller"
+   },
+   {
+    "handle": "jozifanderson",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "rifleman"
+   },
+   {
+    "handle": "heheheha1939",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "sniper"
+   },
+   {
+    "handle": "elitecelebs_",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "rifleman"
+   },
+   {
+    "handle": "arch_izu",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "voktor__crack",
+     "name": "Edmund Crack",
+     "role": "rifleman",
+     "faction": 1
+    },
+    "role": "machinegunner"
+   },
+   {
+    "handle": "shadowizard__",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "steini10.02",
+     "name": "Jonas Steini",
+     "role": "rifleman",
+     "faction": 1
+    },
+    "role": "sniper"
+   },
+   {
+    "handle": "josiascouper",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "olie300",
+     "name": "Arno Olie",
+     "role": "machinegunner",
+     "faction": 1
+    },
+    "role": "sniper"
+   },
+   {
+    "handle": "rylan_45h",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "spring_7398",
+     "name": "Yann Spring",
+     "role": "rifleman",
+     "faction": 1
+    },
+    "role": "machinegunner"
+   },
+   {
+    "handle": "theramblingbot",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "henri.hakkinen.566",
+     "name": "Arno \"Crow\" Hakkinen",
+     "role": "rifleman",
+     "faction": 1
+    },
+    "role": "cook"
+   },
+   {
+    "handle": "colt.d.ramsey",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "archiegregorysmith",
+     "name": "Bram Archiegregor",
+     "role": "rifleman",
+     "faction": 1
+    },
+    "role": "rifleman"
+   },
+   {
+    "handle": "danielmcmenamy",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "sniper"
+   },
+   {
+    "handle": "carlos_lilsaint_",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "big_fat_buddy",
+     "name": "Marek \"Brick\" Buddy",
+     "role": "machinegunner",
+     "faction": 1
+    },
+    "role": "rifleman"
+   },
+   {
+    "handle": "brandon_marc_beck",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "machinegunner"
+   },
+   {
+    "handle": "calderthebald",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "gavinlordofpugs",
+     "name": "Rafael \"Shadow\" Gavinlordofp",
+     "role": "sniper",
+     "faction": 1
+    },
+    "role": "officer"
+   },
+   {
+    "handle": "ringwraith1212",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "medic"
+   },
+   {
+    "handle": "grz_zag420",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "rifleman"
+   },
+   {
+    "handle": "wubbarn",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "joshgentile80",
+     "name": "Quentin Joshgentile",
+     "role": "rifleman",
+     "faction": 1
+    },
+    "role": "sapper"
+   },
+   {
+    "handle": "cbeattie.1770",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "officer"
+   },
+   {
+    "handle": "max_latsch",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "rifleman"
+   },
+   {
+    "handle": "halo_of_cheese",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "vitocarcioppolo",
+     "name": "Casimir \"Mole\" Vitocarciopp",
+     "role": "medic",
+     "faction": 1
+    },
+    "role": "sapper"
+   },
+   {
+    "handle": "ryder_miller11",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "autistic_monkey3",
+     "name": "Florian Monkey",
+     "role": "rifleman",
+     "faction": 1
+    },
+    "role": "rifleman"
+   },
+   {
+    "handle": "ssprinklez_",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "signaller"
+   },
+   {
+    "handle": "jakub.prokes",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "officer"
+   },
+   {
+    "handle": "carpet.floooring",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "davidsonmarshall",
+     "name": "Rafael Davidsonmars",
+     "role": "sniper",
+     "faction": 1
+    },
+    "role": "machinegunner"
+   },
+   {
+    "handle": "autism_enjoyer_08",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "sapper"
+   },
+   {
+    "handle": "zanetaylor_8",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "machinegunner"
+   }
+  ],
+  [
+   {
+    "handle": "johnrant21",
+    "sev": "heavy",
+    "place": "stretcher",
+    "by": {
+     "handle": "haydnburrell_9thky",
+     "name": "Dietrich Thky",
+     "role": "machinegunner",
+     "faction": 0
+    },
+    "role": "rifleman"
+   },
+   {
+    "handle": "alexanderbathfalamorthethird",
+    "sev": "heavy",
+    "place": "stretcher",
+    "by": null,
+    "role": "signaller"
+   },
+   {
+    "handle": "khattabka_",
+    "sev": "heavy",
+    "place": "bed",
+    "by": {
+     "handle": "slade_2233",
+     "name": "Cyril \"Ash\" Slade",
+     "role": "sniper",
+     "faction": 0
+    },
+    "role": "machinegunner"
+   },
+   {
+    "handle": "actual.red",
+    "sev": "heavy",
+    "place": "stretcher",
+    "by": {
+     "handle": "bo.perry._",
+     "name": "Oskar Perry",
+     "role": "machinegunner",
+     "faction": 0
+    },
+    "role": "rifleman"
+   },
+   {
+    "handle": "lucas_davis1775",
+    "sev": "heavy",
+    "place": "stretcher",
+    "by": null,
+    "role": "machinegunner"
+   },
+   {
+    "handle": "eduard._.eddie",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "hayden.dt",
+     "name": "Pavel \"Crow\" Hayden",
+     "role": "machinegunner",
+     "faction": 0
+    },
+    "role": "medic"
+   },
+   {
+    "handle": "samhatespeace",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "ditrih_88",
+     "name": "Marek Ditrih",
+     "role": "rifleman",
+     "faction": 0
+    },
+    "role": "medic"
+   },
+   {
+    "handle": "_smokey_adams_",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "jozifanderson",
+     "name": "Nils \"Hollow\" Jozifanderso",
+     "role": "rifleman",
+     "faction": 0
+    },
+    "role": "medic"
+   },
+   {
+    "handle": "sus.danny2.0",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "beyond_dusky_skies",
+     "name": "Cyril \"Mole\" Skies",
+     "role": "sniper",
+     "faction": 0
+    },
+    "role": "sniper"
+   },
+   {
+    "handle": "jasmandeep_singh999",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "sniper"
+   },
+   {
+    "handle": "someonenamedmiguel",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "rifleman"
+   },
+   {
+    "handle": "localfilipinoboi",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "d4rth_bao",
+     "name": "Gideon Bao",
+     "role": "sniper",
+     "faction": 0
+    },
+    "role": "officer"
+   },
+   {
+    "handle": "frankly_franz",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "malakaicripps",
+     "name": "Walter \"Hollow\" Malakaicripp",
+     "role": "sniper",
+     "faction": 0
+    },
+    "role": "rifleman"
+   },
+   {
+    "handle": "t_camper_13",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "w0lfer2210",
+     "name": "Benedikt \"Smokes\" Lfer",
+     "role": "machinegunner",
+     "faction": 0
+    },
+    "role": "medic"
+   },
+   {
+    "handle": "hi.its.guy",
+    "sev": "light",
+    "place": "trench",
+    "by": {
+     "handle": "wiwiwib3",
+     "name": "Oskar \"Whistle\" Wiwiwib",
+     "role": "rifleman",
+     "faction": 0
+    },
+    "role": "sniper"
+   },
+   {
+    "handle": "christianbarefoot3440",
+    "sev": "light",
+    "place": "trench",
+    "by": null,
+    "role": "medic"
+   }
+  ]
+ ],
+ "fire": {
+  "handle": "coletonmartin",
+  "sev": "killed",
+  "place": "fallen",
+  "role": "sapper",
+  "by": {
+   "handle": "owenhart247",
+   "name": "Edmund Owenhart",
+   "role": "rifleman",
+   "faction": 1
+  }
+ },
+ "fallen": [
+  {
+   "handle": "axebozo",
+   "faction": 0,
+   "name": "Oskar Axebozo",
+   "role": "chaplain",
+   "cause": {
+    "kind": "shell",
+    "shell": true,
+    "sector": "S-F13"
+   },
+   "heir": "Nils Axebozo"
+  },
+  {
+   "handle": "coletonmartin",
+   "faction": 0,
+   "name": "Dorian Coletonmarti",
+   "role": "sapper",
+   "cause": {
+    "kind": "shot",
+    "sector": "S-F15",
+    "by": "owenhart247"
+   },
+   "heir": "Gustav Coletonmarti"
+  },
+  {
+   "handle": "88forn",
+   "faction": 0,
+   "name": "Quentin Forn",
+   "role": "signaller",
+   "cause": {
+    "kind": "shell",
+    "shell": true,
+    "sector": "R-F8"
+   },
+   "heir": "Matthias Forn"
+  },
+  {
+   "handle": "sugar_cubes745",
+   "faction": 0,
+   "name": "Zeno Cubes",
+   "role": "rifleman",
+   "cause": {
+    "kind": "wounds",
+    "sector": "R-F18"
+   },
+   "heir": "Gideon Cubes"
+  },
+  {
+   "handle": "slade_2233",
+   "faction": 0,
+   "name": "Cyril Slade",
+   "role": "sniper",
+   "cause": {
+    "kind": "shell",
+    "shell": true,
+    "sector": "S-F3"
+   },
+   "heir": "Dietrich Slade"
+  },
+  {
+   "handle": "broadshoulderedbastard",
+   "faction": 0,
+   "name": "Hugo Broadshoulde",
+   "role": "rifleman",
+   "cause": {
+    "kind": "shell",
+    "shell": true,
+    "sector": "S-F20"
+   },
+   "heir": "Rafael Broadshoulde"
+  },
+  {
+   "handle": "phs_jrotc_drill_team",
+   "faction": 0,
+   "name": "Emil Team",
+   "role": "officer",
+   "cause": {
+    "kind": "shell",
+    "shell": true,
+    "sector": "S-S9"
+   },
+   "heir": "Florian Team"
+  },
+  {
+   "handle": "broeringluke",
+   "faction": 0,
+   "name": "Roland Broeringluke",
+   "role": "rifleman",
+   "cause": {
+    "kind": "shell",
+    "shell": true,
+    "sector": "S-S10"
+   },
+   "heir": "Quentin Broeringluke"
+  },
+  {
+   "handle": "ethanbay_23",
+   "faction": 0,
+   "name": "Wendel Ethanbay",
+   "role": "machinegunner",
+   "cause": {
+    "kind": "shell",
+    "shell": true,
+    "sector": "S-S9"
+   },
+   "heir": "Hugo Ethanbay"
+  }
+ ],
+ "fallBy": [
+  9,
+  0
+ ],
+ "beds": [
+  [
+   "hay_ant_hud",
+   "varsikasikranaatti",
+   "dick_j0b",
+   "matteozrybak"
+  ],
+  [
+   "spencerbonthoux",
+   "jameson.308",
+   "yurboixav",
+   "khattabka_"
+  ]
+ ],
+ "stretchers": [
+  [
+   "_milan_kvasnicka_",
+   "acakostic11",
+   "carlingiti",
+   "reza_zdsh",
+   "vic_jul11",
+   "lowelleast08",
+   "anabelen.serreno",
+   "blopa_4_you",
+   "ebrrrvole",
+   "mateorekon",
+   "smiridisnick",
+   "tom_ua_",
+   "jimmysparrow17",
+   "trey15jameson",
+   "iron__from__ice_",
+   "rei0_shi4",
+   "gunpla_monster",
+   "ma.rley5115",
+   "jake_the_snake6424",
+   "travismac78",
+   "marksebastion",
+   "solyommadar11",
+   "dinhdong234",
+   "dependentkink_____"
+  ],
+  [
+   "ghai.gpt",
+   "miked8903",
+   "csllgaks",
+   "johnrant21",
+   "alexanderbathfalamorthethird",
+   "living_with_wild_wolves",
+   "actual.red",
+   "lucas_davis1775"
+  ]
+ ],
+ "focus": 0,
+ "raid": null,
+ "race": {
+  "name": "Hill 304",
+  "counts": [
+   97,
+   79
+  ],
+  "lead": 0,
+  "goal": 100,
+  "type": "recruits"
+ },
+ "letters": 10,
+ "shelled": null,
+ "newSince": 9,
+ "joined": [
+  24,
+  35
+ ],
+ "seconds": 90,
+ "t2": null,
+ "silent": false
+}
