@@ -723,7 +723,8 @@
         "causeWear": "rain, rust and stray bullets",
         "why": "Wire is what stops a raid before it reaches the trench, and it soaks up the bullets that cross the line. Without it, every post on the fire step is easier to hit.",
         "call": "So the wiring parties go out after dark. They crawl out with coils of barbed wire and corkscrew posts that twist into the mud without a sound, and when a flare goes up they drop flat and wait for the dark. Volunteers: comment WIRE under the wiring order on Instagram.",
-        "_": "zpráva v Gazette, když má strana průměrný drát pod 'below' (nebo je pod bombardováním a drát má pod 'below'); engine/battle.js"
+        "_": "zpráva v Gazette, když má strana průměrný drát pod 'below' (nebo je pod bombardováním a drát má pod 'below'); engine/battle.js",
+        "mendedShelled": "In the night {n} volunteers crawled out and put up {yards} yards of new wire. Then the last shells came down and tore much of it apart again. Without the wiring parties it would be down to {without}%."
       }
     },
     "mine": {

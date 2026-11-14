@@ -316,3 +316,8 @@ Kdo se přihlásil a do noci se těžce zranil, toho nepustí medik: v deníku m
 - Proč: hráčka (převzatý voják, nezvěstný od Dne 3) napsala WIRE, přihláška se přijala, ale nezvěstný se na mapě nekreslí, takže u drátu nebyla. Hráč, který komentuje, je zjevně „tady“.
 - Jak: `joinWiring` (engine/wiring.js) u nezvěstného → status active, zápis do deníku `theme.battle.wiring.returned` (jen se přidá), odpověď bota „… just walked back into the trench and is on the wiring party tonight“.
   Pojistka `wiringReturns` ve smyčce vrátí nezvěstné, kteří už mezi přihlášenými jsou. Zajatý (`captured`) se přihlásit nemůže (bez odpovědi; výpravy jsou vypnuté).
+
+## 2026-11-14: Gazette u drátu: opraveno, ale ostřelování to zase zničilo (NASAZENO)
+Wiring party se vyhodnocuje před ostřelováním téhož tahu, takže drát pod bombardováním může skončit níž než ráno (Den 6: 24 % → 22 % i po 577 yardech oprav).
+Zpráva „The wire is down“ pak u strany pod granáty dodá: „In the night {n} volunteers crawled out and put up {yards} yards of new wire. Then the last shells came down and tore much of it apart again.
+Without the wiring parties it would be down to {without}%.“ (`theme.battle.wiring.news.mendedShelled`, `engine/battle.js`). Mechanika se nemění, jen vysvětlení v novinách.

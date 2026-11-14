@@ -200,10 +200,13 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   // 0) wiring party (theme.battle.wiring, engine/wiring.js): dobrovolníci v noci opraví drát svého úseku (nebo nejhoršího, když je jejich celý);
   // riziko dává jen palba hlídek nepřítele na dostřel (kdo z nepřátel šel ven, nehlídá) × počasí × bombardování × ženista; zásah = běžné zranění
   const WC = cfg.wiring, wo = state.wiring?.open;
+  const wireAvg = (f) => { const v = Object.values(state.battle.sides[f].wire); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; };
+  const mended = theme.factions.map(() => null); // { before, after, yards } po nočních opravách (Gazette: co z nich zbylo po ostřelování)
   if (WC && wo && wo.day < day) {
     const signed = wo.ids.map((id) => state.soldiers.find((s) => s.id === id)).filter((s) => s && s.status !== 'fallen' && !busy.has(s.id));
     const fit = (s) => !s.wound || s.wound.sev === 'light'; // lehce raněný chodí, jde taky
     const vol = signed.filter(fit);
+    const wireBefore = theme.factions.map((_, f) => wireAvg(f));
     for (const s of signed.filter((x) => !fit(x))) ev(s, 'wiring', (WC.keptBack || '{n} signed up for the wiring party, but the medic would not let {n} leave the aid post. The wire will wait for another night.').replaceAll('{n}', s.name));
     const outside = new Set(vol.map((s) => s.id));
     const watch = theme.factions.map((_, f) => lineup(state, f, (s) => able(s) && s.line === 'front' && !outside.has(s.id)));
@@ -249,6 +252,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         wiring: res,
       });
     }
+    theme.factions.forEach((_, f) => { if (res[f].n) mended[f] = { before: wireBefore[f], after: wireAvg(f), yards: res[f].yards, n: res[f].n }; });
     state.wiring.nights = [...(state.wiring.nights || []), { day, media: wo.media, ids: wo.ids.length, sides: res.map((r) => ({ n: r.n, yards: r.yards, hit: r.hit.length, bad: r.hit.filter((h) => h.sev !== 'light').length, secs: r.secs })) }].slice(-60);
     state.wiring.open = null;
   }
@@ -560,8 +564,12 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       if (avg >= (WN.below ?? 0.5)) return null;
       const shellDays = barrage?.target === f ? Math.max(1, day - (barrage.since ?? day)) : 0;
       const cause = shellDays ? WN.causeBarrage.replace('{days}', shellDays === 1 ? 'a day' : `${shellDays} days`).replace('{ridge}', barrage.name) : WN.causeWear;
-      return WN.side.replace('{side}', short(theme, f)).replace('{pct}', Math.round(avg * 100)).replace('{cause}', cause)
+      const line = WN.side.replace('{side}', short(theme, f)).replace('{pct}', Math.round(avg * 100)).replace('{cause}', cause)
         .replace('{gaps}', v.filter((x) => x < 0.3).length).replace('{secs}', v.length);
+      const m = mended[f];
+      if (!m || !WN.mendedShelled || !(shellDays && m.after > avg)) return line;
+      const without = Math.max(0, Math.round((avg - (m.after - m.before)) * 100));
+      return `${line} ${WN.mendedShelled.replace('{n}', m.n).replace('{yards}', m.yards).replace('{without}', without)}`;
     }).filter(Boolean);
     if (sides.length) out.news.push({ day, kind: 'wire', h: WN.h, text: [...sides, WN.why, WN.call].filter(Boolean).join(' ') });
   }
