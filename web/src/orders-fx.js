@@ -136,7 +136,7 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
         d.sp.x = Math.round(x); d.sp.y = Math.round(d.y);
         const dir = east ? 'east' : 'west';
         const fr = d.walk[dir];
-        d.sp.texture = pause || !fr?.length ? d.idle[dir] ?? d.idle.south : fr[Math.floor(now / 110) % fr.length];
+        d.sp.texture = pause || !fr?.length ? d.idle[dir] ?? d.idle.south : fr[((Math.floor(now / 110) % fr.length) + fr.length) % fr.length];
         d.cross.x = d.sp.x; d.cross.y = d.sp.y + (pause ? -1 : -Math.abs(Math.sin(now / 160)));
       }
     },

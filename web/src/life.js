@@ -251,7 +251,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
       a.sp.y = Math.round(a.y);
       if (dir) {
         const frames = a.walk[dir] || a.walk.east;
-        setTex(a.sp, frames[Math.floor(now / 110) % frames.length]);
+        setTex(a.sp, frames[((Math.floor(now / 110) % frames.length) + frames.length) % frames.length] /* i záporný čas (zahřátí natáčení) */);
       }
       if (a.i >= a.route.length - 1) {
         if (a.phase === 'go') { a.phase = 'tend'; a.t0 = now; }
