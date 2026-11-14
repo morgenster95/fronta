@@ -290,6 +290,64 @@ def thanks():
     save(im, "post_thank_you.jpg", 5)
 
 
+def post_launch():
+    """oznámení Patreonu 1080×1350 (mřížka 216×270): důstojníci se hvězdou nahoře, dole tři úrovně"""
+    W, H = 216, 270
+    im = Image.new("RGBA", (W, H), P["dark"] + (255,))
+    planks(im, (0, 0, W, 132), seed=11, vertical=True)
+    sandbag_wall(im, (0, 0, W, 12), seed=4)
+    planks(im, (0, 112, W, 132), seed=5, vertical=False)
+    d = ImageDraw.Draw(im)
+    d.line((0, 112, W, 112), fill=P["ink"])
+    lamp(im, 108, 50, top=12)
+    im.alpha_composite(up(sprite("hegemony_officer_east.png"), 2), (20, 52))
+    im.alpha_composite(up(sprite("concord_officer_west.png"), 2), (132, 52))
+    d = ImageDraw.Draw(im)
+    d.rectangle((72, 92, 144, 96), fill=P["mud3"], outline=P["ink"])
+    d.rectangle((76, 97, 79, 116), fill=P["mud1"])
+    d.rectangle((137, 97, 140, 116), fill=P["mud1"])
+    d.rectangle((82, 88, 112, 91), fill=P["pale"])
+    d.line((86, 89, 108, 90), fill=P["rust"])
+    d.rectangle((120, 83, 121, 91), fill=P["white"])
+    d.point((120, 82), fill=P["gold"])
+    mug(d, 126, 85, 0)
+    light(im, 120, 84, 70, strength=1.0, steps=3)
+    shade(im, (0, 0, W, 132), strength=0.6)
+    d = ImageDraw.Draw(im)
+    star(d, 50, 46)
+    star(d, 164, 46)
+    # titulek
+    d.rectangle((0, 14, W, 40), fill=P["ink"])
+    text_c(d, W // 2, 16, "THE FRONT HAS A", font(8, True), P["white"])
+    text_c(d, W // 2, 27, "SUPPLY LINE", font(8, True), P["gold"])
+    # tři úrovně
+    d.rectangle((0, 132, W, H), fill=P["dark"])
+    d.line((0, 132, W, 132), fill=P["gold"])
+    text_c(d, W // 2, 137, "SUPPORT MUD & IRON ON PATREON", font(8, True), P["white"])
+    rows = [("$3", "WAR BONDS", "A RIBBON FOR YOUR SOLDIER"),
+            ("$5", "FIELD POST", "BEHIND THE SCENES, WHAT'S NEXT"),
+            ("$10", "OFFICERS' MESS", "A GOLD STAR OVER YOUR SOLDIER")]
+    for i, (price, name, what) in enumerate(rows):
+        y = 152 + i * 28
+        d.rectangle((8, y, W - 9, y + 23), fill=P["mud0"], outline=P["mud2"])
+        # ikona
+        if i == 0:
+            ribbon(d, 14, y + 8, scale=0.4, h=7)
+        elif i == 1:
+            d.rectangle((16, y + 6, 29, y + 15), fill=P["white"], outline=P["sand"])
+            d.line((16, y + 6, 22, y + 11), fill=P["sand"])
+            d.line((29, y + 6, 23, y + 11), fill=P["sand"])
+            d.rectangle((22, y + 11, 23, y + 12), fill=P["rust"])
+        else:
+            star(d, 22, y + 11, r=6)
+        d.text((40, y + 3), price, font=font(8, True), fill=P["gold"])
+        d.text((70, y + 3), name, font=font(8, True), fill=P["white"])
+        d.text((40, y + 13), what, font=font(8), fill=P["pale"])
+    text_c(d, W // 2, 238, "FREE GAME. NO ADS. NO PAY-TO-WIN.", font(8), P["pale"])
+    text_c(d, W // 2, 250, "PATREON.COM/MUDANDIRON", font(8, True), P["gold"])
+    save(im, "post_patreon_launch.jpg", 5)
+
+
 if __name__ == "__main__":
     portrait("hegemony_south.png", "profile_hegemony.jpg")
     portrait("concord_south.png", "profile_concord.jpg")
@@ -303,3 +361,4 @@ if __name__ == "__main__":
     tier_mess()
     tier_dog()
     thanks()
+    post_launch()
