@@ -1,0 +1,17 @@
+{
+ "seconds": 52,
+ "auto": true,
+ "drums": ["shells", [["hook", "flare"]], "race"],
+ "lines": [
+  [0.8, "Last night, sixty-seven volunteers crawled out into no man's land.", "hook"],
+  [0, "Thirty-five Hegemony. Thirty-two Concord. Over a thousand yards of new wire.", "sides"],
+  [0, "Then the flares went up.", "flare"],
+  [0, "Sixteen were hit out on the wire. Their names are in the Gazette.", "names"],
+  [0, "At dawn, the last shells from Verdel Ridge came down on the Hegemony, and tore much of the new wire apart again.", "shells"],
+  [0, "Without the wiring parties, almost nothing would be left.", "without"],
+  [0, "Seventy-one men hit by morning. Nine fell, all of them Hegemony.", "count"],
+  [0, "Hill 304. Hegemony ninety-seven. Three more, and the hill is theirs.", "race"],
+  [0, "Three hundred and seventy soldiers hold the front now. Comment Concord or Hegemony to join them.", "cta"],
+  [0, "Mud and Iron. Every follower is a soldier.", "cta2"]
+ ]
+}

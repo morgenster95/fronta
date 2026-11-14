@@ -118,6 +118,35 @@ export function makeWireScenes(tex, anims = {}) {
   };
 
   const scenes = {
+    flarewire(t, o = {}) {
+      // nízký záběr zblízka: přes ostnatý drát v popředí voják přitisknutý k zemi, nad ním světlice, v dálce záblesky pušek a stopovky
+      g.drawImage(L.nml, 0, -40);
+      const u = t, light = u < 0.9 ? u / 0.9 : clamp01((8 - u) / 2);
+      const fx = 120 + Math.sin(u * 1.3) * 4, fy = u < 0.9 ? 160 - u * 100 : 70 + (u - 0.9) * 6;
+      glow(g, fx, fy, 130, '#2f2c38', 1.2 * light, 1.2);
+      glow(g, fx, fy, 70, '#5a5240', 1.0 * light, 1.2);
+      glow(g, fx - 30, 250, 120, '#3d352a', 0.9 * light, 0.35);
+      g.fillStyle = '#fff4d6'; g.fillRect(Math.round(fx), Math.round(fy), 2, 2);
+      // vzdálené záblesky z nepřátelského valu (~y 150) a stopovky směrem ke kameře
+      for (const [bt, bx] of [[1.1, 40], [1.6, 132], [2.3, 86], [2.9, 156], [3.5, 24], [4.2, 110], [4.8, 62]]) {
+        const k = u - bt;
+        if (k > 0 && k < 0.12) { g.fillStyle = '#fff2c0'; g.fillRect(bx, 146, 3, 2); }
+        if (k > 0 && k < 0.35) { g.fillStyle = 'rgba(255,220,150,0.8)'; const yy = 148 + k * 380, xx = bx + (90 - bx) * k * 1.6; g.fillRect(Math.round(xx), Math.round(yy), 1, 4); }
+      }
+      // voják v bahně (Hegemonie: pod světlicí přitisknutý), stejně velký ×3
+      const pr = setOf(o).proneF.length ? setOf(o).proneF : setOf(o).proneN;
+      if (pr.length) { const fr = pr[pr.length - 1]; drawSp(fr, 40, 268 - (30 + (fr.height - 32) / 2) * 3, 3); } // pata (řádek 30+off) na y 268
+      // drát v popředí: tři prameny přes celý záběr, ostny, kůl vlevo i vpravo (blízko = velké)
+      g.fillStyle = '#0c0a0b';
+      for (const px of [10, 166]) { g.fillRect(px, 196, 4, 124); g.fillRect(px - 2, 196, 8, 2); }
+      for (let k = 0; k < 3; k++) for (let x = 0; x < W; x++) {
+        const y = 230 + k * 22 + Math.round(4 * Math.sin((x / W) * Math.PI) + Math.sin(x * 0.2 + k) * 1.2);
+        g.fillStyle = (x + k * 3) % 9 === 0 && light > 0.3 ? '#8a8270' : '#0c0a0b';
+        g.fillRect(x, y, 1, 2);
+        if ((x + k * 5) % 7 === 0) { g.fillRect(x - 1, y - 2, 3, 1); g.fillRect(x - 1, y + 3, 3, 1); g.fillRect(x, y - 3, 1, 7); }
+      }
+      rain(t, 70, 0.22 + 0.15 * light);
+    },
     factory(t) {
       // Hegemonie dobývá továrnu na kopci: skupina běží zleva nahoru po svahu (všichni stejně velcí, ×2), výbuchy, záblesky z oken,
       // obránce v okně padá, jeden útočník hází granát, nakonec vlaje prapor Hegemonie na komíně

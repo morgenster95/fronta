@@ -109,6 +109,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'night6') {
+    // Den 6: noc wiring party (skuteční dobrovolníci, světlice, jména zasažených), poslední granáty, krátké shrnutí (reel-night6.js)
+    return import('./reel-night6.js').then(async ({ startNightReel }) => {
+      await startNightReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'hill304') {
     // vítězství Hegemonie na Hill 304: kopec, stužka, pozorovací strom, záběr ve hře, nový závod (cíl 200), výzva (reel-hill304.js)
     return import('./reel-hill304.js').then(async ({ startHillReel }) => {

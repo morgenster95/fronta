@@ -328,6 +328,12 @@ async function boot() {
   const orderFx = initOrderFx({ world, anchor: terrainLayer, roster, map, tex, anims, hospitals, theme, openX0, openX1 });
   // drát podle stavu úseků a wiring party (web/src/wire.js); když se rekvizity načtou, terén už drát nekreslí čarami
   // wiring party: přihlášení dobrovolníci jdou ze zákopu k drátu svého úseku (před vytvořením spritů, ať je karta i výběr najdou tam)
+  // reel o noci wiring party (/?reel=nightN): skuteční dobrovolníci té noci z marketing/reels/nightN.volunteers.json (po tahu už ve stavu nejsou)
+  if (import.meta.env.DEV) {
+    const rn = new URLSearchParams(location.search).get('reel');
+    const vf = import.meta.glob('../../marketing/reels/night*.volunteers.json', { eager: true, import: 'default' })[`../../marketing/reels/${rn}.volunteers.json`];
+    if (vf && roster.battle) vf.party.forEach((hs, f) => { if (roster.battle[f]) roster.battle[f].party = { all: hs }; });
+  }
   const volunteers = placeVolunteers({ soldiers, roster, map, theme, openX0, openX1 });
   const wireFx = await initWire({ world, anchor: terrainLayer, roster, map, anims, theme, openX0, openX1, V, volunteers });
   if (wireFx) propImages.noWire = true;
