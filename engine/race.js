@@ -9,6 +9,10 @@ const short = (theme, f) => theme.factions[f].name.replace(/^The /, '');
 
 // kolik nových vojáků je třeba na kótu (objectives[].need, jinak race.need); další kóty můžou být větší
 export const raceNeed = (theme, idx) => raceObjective(theme, idx)?.need || theme.race.need;
+// věta o cíli závodu („the first side to …“)
+export const raceGoal = (theme, idx) => (raceObjective(theme, idx)?.type === 'kills'
+  ? `the first side to kill ${raceNeed(theme, idx)} enemy soldiers takes it`
+  : `the first side to bring ${raceNeed(theme, idx)} new soldiers takes it`);
 
 export function raceObjective(theme, idx) {
   const list = theme.race?.objectives || [];
@@ -21,20 +25,46 @@ export function raceObjective(theme, idx) {
 // počty narukovaných podle frakcí (nástupci padlých se nepočítají znovu – jsou to stejní hráči)
 const counts = (state, theme) => theme.factions.map((_, f) => state.soldiers.filter((s) => s.faction === f).length);
 
+// zabití: padlí soupeře od začátku závodu (záznamy rodů s.fallen, den padnutí > začátek závodu); recruits: noví vojáci
+function killCounts(state, theme) {
+  const from = state.race.startDay ?? Infinity;
+  return theme.factions.map((_, f) => state.soldiers.reduce((a, s) => a + (s.faction !== f ? (s.fallen || []).filter((r) => (r.day ?? -1) > from).length : 0), 0));
+}
+
 export function raceStatus(state, theme) {
   if (!theme.race) return null;
   state.race ??= { idx: 0, base: theme.factions.map(() => 0) };
   const o = raceObjective(theme, state.race.idx);
-  const c = counts(state, theme);
-  return { id: o.id, name: o.name, need: o.need || theme.race.need, counts: c.map((n, f) => n - state.race.base[f]), reward: o.rewardText || theme.race.reward, rewardKind: o.reward || 'barrage' };
+  const type = o.type || 'recruits';
+  const cnt = type === 'kills' ? killCounts(state, theme) : counts(state, theme).map((n, f) => n - state.race.base[f]);
+  return { id: o.id, name: o.name, type, need: o.need || theme.race.need, counts: cnt, reward: o.rewardText || theme.race.reward, rewardKind: o.reward || 'barrage' };
 }
 
 // Volá se po každém narukování. Vrací vítězství nebo null.
 export function checkRace(state, theme, story, recruit) {
   const st = raceStatus(state, theme);
   if (!st) return null;
+  if (st.type === 'kills') return null; // závod o zabití se vyhodnocuje po boji (checkKillRace)
   const f = recruit.faction;
   if (st.counts[f] < st.need) return null;
+  return winRace(state, theme, story, st, f, recruit);
+}
+
+// Závod „kdo první zabije N nepřátel“ (objectives[].type = 'kills'): po denním boji. Při shodě vyhrává ten, kdo má víc.
+// Hrdina = voják vítězné strany, který od začátku závodu zabil nejvíc (s.kills; při shodě kdo střílel naposled).
+export function checkKillRace(state, theme, story) {
+  const st = raceStatus(state, theme);
+  if (!st || st.type !== 'kills') return null;
+  const ok = st.counts.map((n) => n >= st.need);
+  if (!ok.some(Boolean)) return null;
+  const f = ok[0] && ok[1] ? (st.counts[0] >= st.counts[1] ? 0 : 1) : ok[0] ? 0 : 1;
+  const from = state.race.killsFrom || {};
+  const alive = state.soldiers.filter((s) => s.faction === f && s.status !== 'fallen');
+  const hero = alive.sort((a, b) => ((b.kills || 0) - (from[b.handle] || 0)) - ((a.kills || 0) - (from[a.handle] || 0)) || (b.order || 0) - (a.order || 0))[0];
+  return hero ? winRace(state, theme, story, st, f, hero) : null;
+}
+
+function winRace(state, theme, story, st, f, recruit) {
   const R = theme.race;
   const day = state.day;
   const v = {
@@ -64,13 +94,14 @@ export function checkRace(state, theme, story, recruit) {
   state.news = [...(state.news || []), {
     day,
     h: `${short(theme, f)} took ${st.name}`,
-    text: `The ${short(theme, f)} reached ${st.need} soldiers first (${st.counts[f]} against ${st.counts[1 - f]}) and took ${st.name}. ` +
-      `The deciding rifle belonged to @${recruit.handle}. ${v.reward === 'observation'
+    text: (st.type === 'kills'
+      ? `The ${short(theme, f)} killed ${st.need} enemy soldiers first (${st.counts[f]} against ${st.counts[1 - f]}) and took ${st.name}. The deadliest rifle belonged to @${recruit.handle}. `
+      : `The ${short(theme, f)} reached ${st.need} soldiers first (${st.counts[f]} against ${st.counts[1 - f]}) and took ${st.name}. The deciding rifle belonged to @${recruit.handle}. `) + `${v.reward === 'observation'
         ? `${(R.observation?.victory || '').replace('{days}', R.observation?.days || 3).replace('{objective}', st.name).replace('{them}', short(theme, 1 - f)).replace('{us}', short(theme, f))}, `
         : `For ${R.barrageDays} days the guns on the heights will pound the ${short(theme, 1 - f)} lines, `}` +
-      `and for ${R.days} days the high ground keeps the ${short(theme, f)} safer. The race for ${raceObjective(theme, state.race.idx + 1).name} begins now: the first side to bring ${raceNeed(theme, state.race.idx + 1)} new soldiers takes it.`,
+      `and for ${R.days} days the high ground keeps the ${short(theme, f)} safer. The race for ${raceObjective(theme, state.race.idx + 1).name} begins now: ${raceGoal(theme, state.race.idx + 1)}.`,
   }];
-  state.race = { idx: state.race.idx + 1, base: counts(state, theme) };
+  state.race = { idx: state.race.idx + 1, base: counts(state, theme), startDay: day, killsFrom: Object.fromEntries(state.soldiers.filter((s) => s.kills).map((s) => [s.handle, s.kills])) };
   return v;
 }
 

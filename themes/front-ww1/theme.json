@@ -267,7 +267,9 @@
       {
         "id": "canal",
         "name": "Blackwater Canal",
-        "need": 200
+        "need": 100,
+        "type": "kills",
+        "rewardText": "The first side to kill 100 enemy soldiers takes Blackwater Canal: a safer week for its soldiers, a ribbon for everyone on the winning side, and the title of hero for its deadliest soldier."
       },
       {
         "id": "mill",
@@ -299,7 +301,7 @@
         "Tonight the spotters climb down for the last time."
       ]
     },
-    "_need": "need: výchozí počet nových vojáků na kótu; jednotlivá kóta může mít vlastní objectives[].need (Blackwater Canal 200: uživatel 14. 11. chce větší závody, 100 se naplní rychle)"
+    "_need": "need: výchozí cíl závodu; objectives[].type 'kills' = vyhrává, kdo první zabije `need` nepřátel (padlí soupeře od začátku závodu); Blackwater Canal: kills 100 (uživatel 14. 11.: místo nových vojáků rozhodují zabití)"
   },
   "honors": {},
   "schedule": {

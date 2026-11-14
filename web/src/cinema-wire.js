@@ -2,7 +2,7 @@
 //   nml   – noc v zemi nikoho: tři vojáci se plazí k potrhanému drátu; s volbou flareAt vystoupá světlice a vojáci se přitisknou k zemi
 //   stake – detail: voják klečí a zatlouká kůl, vedle svitek drátu, nový drát se natahuje od kůlu
 // Použití: const c = makeWireScenes(tex, anims); root.prepend(c.canvas); c.draw('nml', t, { flareAt: 1.2 });
-import { sky, glow, lit, stakeWire, clamp01, CW as W, CH as H } from './cinema.js';
+import { sky, glow, lit, stakeWire, blast, clamp01, CW as W, CH as H } from './cinema.js';
 
 const off = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
 const img = (src) => { const i = new Image(); i.src = src; return i; };
@@ -74,6 +74,35 @@ export function makeWireScenes(tex, anims = {}) {
     sky(cg, 236, H, ['#2a221e', '#30271f', '#362b22']);
     L.tree = c;
   }
+  // útok na továrnu na kopci (Hill 304): běh (run east), hod granátem (grenade east), pád obránce (concord die west); všichni ×2
+  const ASSAULT = {
+    run: frames(anims.hegemony?.run?.east, 'rgba(60,30,20,0.18)'),
+    nade: frames(anims.hegemony?.grenade?.east, 'rgba(60,30,20,0.18)'),
+    duck: frames(anims.hegemony?.duck?.east, 'rgba(60,30,20,0.18)'),
+    foeDie: frames(anims.concord?.die?.west, 'rgba(60,30,20,0.25)'),
+  };
+  {
+    const c = off(W, H), cg = c.getContext('2d');
+    sky(cg, 0, 190, ['#1a1420', '#3a2230', '#6e3428', '#a8502c', '#d07a3c', '#e8a050']); // ráno v kouři a ohni
+    cg.fillStyle = '#2a1c1c'; cg.fillRect(0, 186, W, H - 186); // celé pozadí neprůhledné (pod oblohou nesmí prosvítat hra)
+    // vzdálené kopce
+    cg.fillStyle = '#2a1c1c';
+    for (let x = 0; x < W; x++) cg.fillRect(x, Math.round(168 + 8 * Math.sin(x * 0.03 + 1) + 3 * Math.sin(x * 0.11)), 1, 60);
+    // svah: zleva dole (útočníci) doprava nahoru (továrna)
+    const slope = (x) => Math.round(292 - x * 0.62);
+    for (let x = 0; x < W; x++) { cg.fillStyle = '#2e2420'; cg.fillRect(x, slope(x), 1, H); cg.fillStyle = '#3d3028'; cg.fillRect(x, slope(x), 1, 2); }
+    for (const [cx, rr] of [[30, 10], [74, 13], [118, 8], [146, 11]]) { const cy = slope(cx) + 8; cg.fillStyle = '#1c1614'; cg.beginPath(); cg.ellipse(cx, cy, rr, rr / 3.2, -0.55, 0, Math.PI * 2); cg.fill(); }
+    // továrna na vrcholu: cihlové zdi s dírami, rozbitá střecha, komín
+    const fx = 112, fb = slope(150) - 2;
+    const brick = (x, y, w, h) => { for (let yy = 0; yy < h; yy++) for (let xx = 0; xx < w; xx++) { const by_ = Math.floor(yy / 3), bx = Math.floor((xx + (by_ % 2) * 3) / 6); cg.fillStyle = (yy % 3 === 2 || (xx + (by_ % 2) * 3) % 6 === 5) ? '#2a1814' : (bx + by_) % 3 ? '#5c2a22' : '#6e3428'; cg.fillRect(x + xx, y + yy, 1, 1); } };
+    brick(fx, fb - 46, 64, 46);
+    cg.fillStyle = '#140e0c';
+    for (const [wx, wy] of [[fx + 6, fb - 38], [fx + 22, fb - 38], [fx + 38, fb - 38], [fx + 54, fb - 38], [fx + 6, fb - 20], [fx + 38, fb - 20]]) cg.fillRect(wx, wy, 8, 10); // okna
+    cg.fillRect(fx + 20, fb - 20, 12, 20); // vrata
+    for (let x = fx - 2; x < fx + 66; x++) { const r = Math.abs(Math.sin(x * 0.7)) * 6 + (x > fx + 30 && x < fx + 46 ? 10 : 0); cg.fillStyle = '#1a1210'; cg.fillRect(x, fb - 46 - 6 + Math.round(r), 1, 6 - Math.round(Math.min(6, r))); } // rozbitá střecha
+    brick(fx + 8, fb - 86, 9, 40); cg.fillStyle = '#140e0c'; cg.fillRect(fx + 8, fb - 88, 9, 2); // komín
+    L.factory = c; L.fx = fx; L.fb = fb; L.slope = slope;
+  }
   const spotN = (k) => lit(tex[`${k}_sniper`]?.south || tex[k]?.south, 'rgba(230,140,80,0.14)');
   const SPOT = { hegemony: spotN('hegemony'), concord: spotN('concord') };
 
@@ -89,6 +118,43 @@ export function makeWireScenes(tex, anims = {}) {
   };
 
   const scenes = {
+    factory(t) {
+      // Hegemonie dobývá továrnu na kopci: skupina běží zleva nahoru po svahu (všichni stejně velcí, ×2), výbuchy, záblesky z oken,
+      // obránce v okně padá, jeden útočník hází granát, nakonec vlaje prapor Hegemonie na komíně
+      g.drawImage(L.factory, 0, 0);
+      const { fx, fb, slope } = L;
+      // oheň a záře v oknech, záblesky výstřelů obránců do 3,5 s
+      glow(g, fx + 32, fb - 24, 40, '#7e3b2a', 0.6 + 0.2 * Math.sin(t * 8));
+      if (t < 3.5) for (const [wx, wy, ph] of [[fx + 10, fb - 33, 0], [fx + 42, fb - 33, 0.7], [fx + 58, fb - 33, 1.3]]) if (((t + ph) % 1.1) < 0.12) { g.fillStyle = '#fff2c0'; g.fillRect(wx - 3, wy, 3, 2); }
+      // výbuchy na svahu
+      for (const [bt, bx] of [[0.6, 70], [1.7, 120], [2.6, 40], [3.8, 96]]) blast(g, bx, slope(bx) - 2, t - bt, 0.7, ['#5c2a22', '#3a2622', '#241c1c', '#1c1816'], 0);
+      // útočníci (pevný rozestup, stejná velikost)
+      const SQUAD = [[6, 0], [-16, 0.3], [-38, 0.6], [-60, 0.15], [-82, 0.45], [-104, 0.75]];
+      const K = 2, SPEED = 30;
+      SQUAD.forEach(([x0, ph], i) => {
+        const x = Math.min(fx - 18 - (i % 3) * 10, x0 + t * SPEED);
+        const yFoot = slope(x + 16) + 1;
+        const atWall = x >= fx - 18 - (i % 3) * 10 - 0.5;
+        let fr;
+        if (i === 1 && t > 2.2 && t < 3.3 && ASSAULT.nade.length) fr = ASSAULT.nade[Math.min(ASSAULT.nade.length - 1, Math.floor((t - 2.2) / 0.13))];
+        else if (atWall && ASSAULT.duck.length) fr = ASSAULT.duck[0];
+        else if (ASSAULT.run.length) fr = ASSAULT.run[((Math.floor((t + ph) / 0.1) % ASSAULT.run.length) + ASSAULT.run.length) % ASSAULT.run.length];
+        if (fr) g.drawImage(fr, Math.round(x - (fr.width * K) / 2 + 16), Math.round(yFoot - fr.height * K + (fr.height - 32) * K / 2 + 2 * K), fr.width * K, fr.height * K);
+      });
+      // granát do okna → výbuch v továrně, obránce padá
+      if (t > 3.1) blast(g, fx + 42, fb - 30, t - 3.1, 0.9, ['#d98f3f', '#7e3b2a', '#3a2622', '#241c1c'], 0);
+      // (padající obránce vynechán: v okně by byl větší než útočníci; výbuch v okně stačí)
+      // prapor Hegemonie na komíně od 4,3 s (vlaje)
+      if (t > 5.4) {
+        const px = fx + 12, py = fb - 104, w = 18, h = 10, up = clamp01((t - 5.4) / 0.6);
+        g.fillStyle = '#0e0d0c'; g.fillRect(px, py + 2, 1, 18);
+        for (let x = 0; x < w; x++) { const dy = Math.round(Math.sin(t * 5 + x * 0.5) * 1.5); g.fillStyle = x < 3 ? '#4a4f52' : '#666d70'; g.fillRect(px + 1 + x, py + 2 + dy + Math.round((1 - up) * 14), 1, h); }
+        g.fillStyle = '#8a9295'; g.fillRect(px + 6, py + 6 + Math.round((1 - up) * 14), 6, 2);
+      }
+      // kouř a popel
+      g.fillStyle = 'rgba(30,24,22,0.5)';
+      for (let i = 0; i < 18; i++) { const x = ((i * 53 + t * 9) % (W + 30)) - 15, y = 120 + ((i * 37) % 120) - t * 4; g.fillRect(Math.round(x), Math.round(y), 2, 2); }
+    },
     tree(t, o = {}) {
       // pozorovací strom na vrcholu: zvětšený ×4, pozorovatel u paty kouká k nepříteli, telefonní drát dolů ze svahu, vítr cuchá trávu
       g.drawImage(L.tree, 0, 0);

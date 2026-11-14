@@ -1,6 +1,6 @@
 // Reel „vítězství na Hill 304“ (/?reel=hill304&vacant=700, jen vývojový server): Hegemonie dobyla kótu, hrdina (bez jména: vyrábí se předem),
 // odměna pozorovatelna (falešný ocelový strom se spotterem, 3 dny přesnější odstřelovači a kulometčíci), záběr ve hře na strom a linii Concordu,
-// nový závod o Blackwater Canal (cíl 200) a výzva. Hlas: marketing/reels/hill304.script.json (auto časování).
+// nový závod o Blackwater Canal (kdo první zabije 100 nepřátel) a výzva. Hlas: marketing/reels/hill304.script.json (auto časování).
 // Vychází z fronty automaticky po dobytí (trigger race: hill304, varianta jen pro Hegemonii), čísla ve videu proto nejsou konečné skóre.
 import { CSS as BASE } from './reel-day1.js';
 import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, slam, clamp01, win, typed, easeOut } from './reel-kit.js';
@@ -12,14 +12,14 @@ const files = import.meta.glob('../../marketing/reels/hill304.vo.json', { eager:
 
 const CSS = `${BASE}${FX_CSS}
 #rh-race, #rh-wire { inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
-#rh-title { left: 0; right: 0; top: 18%; text-align: center; }
+#rh-title { left: 0; right: 0; top: 24%; text-align: center; }
 #rh-title .a { font-family: 'Silkscreen', monospace; font-size: 24px; color: #d98f3f; letter-spacing: 0.12em; text-shadow: 3px 3px 0 #0e0d0c; min-height: 30px; }
 #rh-title .b { font-family: 'Silkscreen', monospace; font-size: 62px; line-height: 1.05; text-shadow: 4px 4px 0 #0e0d0c; min-height: 66px; }
 .rh-stamp { left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
 .rh-stamp span { font-family: 'Silkscreen', monospace; font-size: 40px; line-height: 1.05; background: rgba(126, 59, 42, 0.95); padding: 6px 14px; text-shadow: 3px 3px 0 #0e0d0c; }
 .rh-stamp span + span { font-size: 26px; background: rgba(14, 13, 12, 0.85); }
 #rh-reward { top: 30%; } #rh-warn { top: 34%; }
-#rh-race2 { left: 7%; right: 7%; top: 36%; }
+#rh-race2 { left: 7%; right: 7%; top: 27%; }
 #rh-race2 .t { font-family: 'Silkscreen', monospace; font-size: 26px; margin-bottom: 4px; text-align: center; text-shadow: 3px 3px 0 #0e0d0c; }
 #rh-race2 .g { font-family: 'Silkscreen', monospace; font-size: 54px; text-align: center; color: #d98f3f; text-shadow: 4px 4px 0 #0e0d0c; margin-bottom: 8px; }
 #rh-race2 .row { margin: 10px 0; }
@@ -56,12 +56,14 @@ export async function startHillReel({ cam, life, map, theme, soldiers, tex, anim
   const camAt = camPath(K);
   const sub = subtitles(vo);
   const isGame = (t) => (t >= tGame && t < tNext) || t >= tNext;
-  const fx = transitions([[tWin, 'flash'], [tTree, 'black', 0.3], [tGame, 'whip'], [tWarn, 'flash'], [tNext, 'black', 0.35], [tCta, 'flash']]);
+  const fx = transitions([[tTree, 'black', 0.3], [tGame, 'whip'], [tWarn, 'flash'], [tNext, 'black', 0.35], [tCta, 'flash']]);
 
   // zvuk: výstřely odstřelovačů při záběru na linii Concordu, buben a zvon na konci
   const SFX = [];
   for (let t = tWarn + 0.4; t < tNext - 0.3; t += 0.9) SFX.push([+t.toFixed(2), 'shoot', 0]);
-  SFX.push([tWin + 0.3, 'medal', 0], [tNext + 0.2, 'drum', 0], [END - 1.6, 'end', 0]);
+  for (const [bt, v] of [[0.6, 0.5], [1.7, 0.45], [2.6, 0.5], [3.2, 0.6], [3.8, 0.45]]) SFX.push([+(tHook + bt).toFixed(2), 'boomv', v]); // výbuchy útoku na továrnu
+  for (let u = 0.3; u < 3.4; u += 0.55) SFX.push([+(tHook + u).toFixed(2), 'shoot', 0]);
+  SFX.push([tHook + 5.5, 'medal', 0], [tNext + 0.2, 'drum', 0], [END - 1.6, 'end', 0]);
 
   document.body.classList.add('reel');
   const style = document.createElement('style');
@@ -73,8 +75,8 @@ export async function startHillReel({ cam, life, map, theme, soldiers, tex, anim
     <div id="rh-title"><div class="a"></div><div class="b"></div></div>
     <div id="rh-reward" class="rh-stamp"><span>THE OBSERVATION<br>TREE</span><span>3 DAYS: SHARPER SNIPERS AND GUNS</span></div>
     <div id="rh-warn" class="rh-stamp"><span>CONCORD,<br>HEADS DOWN</span></div>
-    <div id="rh-race2" class="panel"><div class="t">THE RACE FOR BLACKWATER CANAL</div><div class="g">FIRST TO 200</div>
-      ${[W, LOSE].map((f) => `<div class="row"><div class="n"><span>${short(f).toUpperCase()}</span><span class="c" data-f="${f}">0 / 200</span></div><div class="bar"><i data-f="${f}" style="background:${f === 0 ? '#8f8a82' : '#8a8a52'}"></i></div></div>`).join('')}</div>
+    <div id="rh-race2" class="panel"><div class="t">THE RACE FOR BLACKWATER CANAL</div><div class="g">FIRST TO 100 KILLS</div>
+      ${[W, LOSE].map((f) => `<div class="row"><div class="n"><span>${short(f).toUpperCase()}</span><span class="c" data-f="${f}">0 / 100</span></div><div class="bar"><i data-f="${f}" style="background:${f === 0 ? '#8f8a82' : '#8a8a52'}"></i></div></div>`).join('')}</div>
     <div id="rh-cta"><span>COMMENT<br><b>HEGEMONY</b> or <b>CONCORD</b><br>TO ENLIST</span></div>
     <div id="rd-big"></div>
     <div id="rd-sub"></div>
@@ -96,17 +98,16 @@ export async function startHillReel({ cam, life, map, theme, soldiers, tex, anim
     const [x, y, z] = camAt(t);
     cam.set(x, y, z * (1 + 0.03 * f.punch));
     // filmové záběry: kopec s praporem Hegemonie (hook), stužka hrdinovi (win), pozorovací strom (tree + první půlka reward)
-    const rOn = t < tTree, wOn = t >= tTree && t < tGame;
-    if (t < tWin) race.draw('march', t - tHook, { side: W });
-    else if (t < tTree) race.draw('ribbon', t - tWin, { side: W });
-    if (wOn) wire.draw('tree', t - tTree, { side: W });
+    const rOn = false, wOn = t < tGame;
+    if (t < tTree) wire.draw('factory', t - tHook); // útok na továrnu na kopci (nový záběr, stejně velcí vojáci)
+    if (t >= tTree && t < tGame) wire.draw('tree', t - tTree, { side: W });
     show('#rh-race', rOn ? 1 : 0);
     show('#rh-wire', wOn ? 1 : 0);
     paint({ ...f, black: Math.max(f.black, t < 0.3 ? 1 - t / 0.3 : 0, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) });
 
-    show('#rh-title', win(t, 0.5, tWin - 0.1, 0.25));
-    $('#rh-title .a').textContent = typed('THE HEGEMONY TAKES', t, 0.6, 24);
-    $('#rh-title .b').textContent = typed('HILL 304', t, 1.3, 10);
+    show('#rh-title', win(t, tHook + 5.4, tTree - 0.1, 0.25)); // titulek až po vztyčení praporu
+    $('#rh-title .a').textContent = typed('THE HEGEMONY TAKES', t, tHook + 5.5, 24);
+    $('#rh-title .b').textContent = typed('HILL 304', t, tHook + 6.0, 10);
     slam($('#rh-reward'), t, tReward + 0.3, tGame - 0.05, 1.4, -4);
     slam($('#rh-warn'), t, tWarn + 0.2, tNext - 0.1, 1.4, 3);
     show('#rh-race2', win(t, tNext + 0.3, tCta - 0.05, 0.25));
@@ -121,7 +122,7 @@ export async function startHillReel({ cam, life, map, theme, soldiers, tex, anim
     const subEl = $('#rd-sub');
     if (s && !logo) {
       subEl.style.opacity = 1;
-      subEl.style.top = !isGame(t) ? '13%' : '69%';
+      subEl.style.top = t < tTree ? '13%' : !isGame(t) ? '13%' : '69%'; // u útoku dole (nahoře je titulek a prapor)
       if (subEl.dataset.text !== s) { subEl.dataset.text = s; subEl.innerHTML = `<span>${s}</span>`; }
     } else subEl.style.opacity = 0;
   }

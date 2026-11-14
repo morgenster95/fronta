@@ -2,6 +2,7 @@
 //   node tools/day-reel.mjs [--state soubor]   → marketing/reels/day<N>.data.json (jména, počty, lůžka, výprava)
 //                                                 a marketing/reels/day<N>.script.json (věty voiceoveru s časy)
 // Výroba videa: bash tools/make-reel.sh day<N> (nebo workflow reel s name=day<N>). Nic nepublikuje.
+import { raceStatus } from '../engine/race.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, loadTheme } from './lib.mjs';
@@ -34,8 +35,9 @@ const fire = kill ? { handle: kill.handle, sev: 'killed', place: 'fallen', role:
   : hit.flat().filter((x) => x.by).sort((a, b) => sevRank[a.sev] - sevRank[b.sev])[0] || null;
 // závod o další kótu (počty od začátku závodu), dopisy na dnešní noc, bombardování, nováčci od vydání
 const obj = theme.race?.objectives?.[state.race?.idx ?? 0];
-const raceN = [0, 1].map((f) => state.soldiers.filter((s) => s.faction === f).length - (state.race?.base?.[f] ?? 0));
-const race = obj && state.race?.idx > 0 ? { name: obj.name, counts: raceN, lead: raceN[0] >= raceN[1] ? 0 : 1, goal: obj.need || theme.race.need || 100 } : null;
+const rs = raceStatus(state, theme); // počty podle typu závodu (noví vojáci, nebo zabití)
+const raceN = rs ? rs.counts : [0, 0];
+const race = obj && state.race?.idx > 0 ? { name: obj.name, counts: raceN, lead: raceN[0] >= raceN[1] ? 0 : 1, goal: rs?.need || 100, type: rs?.type || 'recruits' } : null;
 const letters = state.soldiers.filter((s) => s.letter === day && s.status !== 'fallen').length;
 const vic = (state.victories || []).at(-1);
 const shelled = vic && vic.barrageTo >= day + 1 ? { side: 1 - vic.faction, nights: vic.barrageTo - day, from: vic.name } : null;

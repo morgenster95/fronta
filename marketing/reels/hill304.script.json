@@ -1,15 +1,56 @@
 {
  "seconds": 50,
  "auto": true,
- "drums": ["hook", [["tree", "reward"]], "next"],
+ "drums": [
+  "hook",
+  [
+   [
+    "tree",
+    "reward"
+   ]
+  ],
+  "next"
+ ],
  "lines": [
-  [0.8, "Hill 304 belongs to the Hegemony.", "hook"],
-  [0, "One hundred new soldiers came up the line, and the last of them took the hill.", "win"],
-  [0, "On the top stands a dead tree. It is not a tree. It is steel, painted like bark, and a spotter sits inside it.", "tree"],
-  [0, "For three days he watches every move in the Concord trenches. Hegemony snipers and machine gunners will shoot straighter for it.", "reward"],
-  [0, "Concord, keep your heads down.", "warn"],
-  [0, "Now the race for Blackwater Canal begins. This one is bigger. The first side to bring two hundred new soldiers takes it.", "next"],
-  [0, "Comment HEGEMONY or CONCORD to enlist. Bring your friends to the front.", "cta"],
-  [0, "Mud and Iron. Every follower is a soldier.", "cta2"]
+  [
+   0.8,
+   "Hill 304 belongs to the Hegemony.",
+   "hook"
+  ],
+  [
+   0,
+   "Wave after wave they ran up the slope, through the fire, and took the factory on the top.",
+   "win"
+  ],
+  [
+   0,
+   "On the top stands a dead tree. It is not a tree. It is steel, painted like bark, and a spotter sits inside it.",
+   "tree"
+  ],
+  [
+   0,
+   "For three days he watches every move in the Concord trenches. Hegemony snipers and machine gunners will shoot straighter for it.",
+   "reward"
+  ],
+  [
+   0,
+   "Concord, keep your heads down.",
+   "warn"
+  ],
+  [
+   0,
+   "Now the race for Blackwater Canal begins. This time it is not about recruits. The first side to kill one hundred enemy soldiers takes it.",
+   "next"
+  ],
+  [
+   0,
+   "Comment HEGEMONY or CONCORD to enlist. Every rifle counts.",
+   "cta"
+  ],
+  [
+   0,
+   "Mud and Iron. Every follower is a soldier.",
+   "cta2"
+  ]
  ]
 }

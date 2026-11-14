@@ -3,7 +3,7 @@
 import { createSoldier, tickSoldier, heir, selectForStory, addEntry } from './soldier.js';
 import { enlistEntry, weatherFor, eventEntry, tplKey, makeBackground, backgroundLine, silenceGuns } from './story.js';
 import { writeChronicle } from './chronicle.js';
-import { checkRace, raceStatus, raceDanger, activeBarrage, activeObservation, awardHonors } from './race.js';
+import { checkRace, checkKillRace, raceStatus, raceDanger, activeBarrage, activeObservation, awardHonors } from './race.js';
 import { pick, weighted, rngFor } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
@@ -451,6 +451,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
   const exposedOf = (s) => orderExposed(state, s.faction, day) * letterOf(s);
   const dieOf = (s) => orderDie(state, s.faction, day);
   const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf, shellOf, fireOf, healOf, exposedOf, dieOf }) : { events: [], news: [], ids: new Set() };
+  if (theme.race) checkKillRace(state, theme, story); // závod „kdo první zabije N“: zpráva o dobytí jde do state.news (níž se přidá do novin)
   const events = [...raid.events, ...fight.events];
   const today = new Set(); // šablony použité dnes (rozmanitost mezi vojáky)
   for (const s of state.soldiers) s.bg ??= makeBackground(s, story);

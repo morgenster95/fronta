@@ -338,3 +338,9 @@ po tahu už nepadají granáty ani na mapě. Krátery po něm se „hojí“: pr
 `theme.race.objectives[].need` (jinak `race.need` = 100). **Blackwater Canal = 200** (uživatel: 100 se naplní rychle, další závod má být větší).
 Po dobytí se hned přepne počítadlo na webu (`roster.race` z `raceStatus`) i v novinách a Day reelu; zpráva o vítězství říká i nový cíl („the first side to bring 200 new soldiers takes it“).
 Ověřeno simulací: 5 rekrutů Hegemonie → vítězství hill304 (pozorovatelna), počítadlo Blackwater Canal 0/200.
+
+## 2026-11-14: Závod o Blackwater Canal = kdo první zabije 100 nepřátel (NASAZENO)
+Uživatel: další závod nemá být o nových vojácích, ale o tom, kdo dřív zabije 100. `objectives[].type = 'kills'` (`engine/race.js` `killCounts`, `checkKillRace`):
+počítají se padlí soupeře od začátku závodu (záznamy rodů `s.fallen`, den padnutí > `state.race.startDay`), vyhodnocuje se po denním boji; při shodě vyhrává ten, kdo má víc.
+Hrdina = voják vítězné strany, který od začátku závodu zabil nejvíc (`s.kills` minus stav na začátku, `state.race.killsFrom`). Web, noviny („Hegemony 12/100 enemy dead“) a Day reel berou počty z `raceStatus`.
+Simulace (4 losy, od vítězství na Hill 304): po 7 dnech Hegemonie 4–9 / Concord 17–54, po 14 dnech 7–15 / 21–92 → Concord vede (Hegemonii umírají ranění kvůli nedostatku mediků) a závod trvá ~2–3 týdny.

@@ -1,3 +1,4 @@
+import { raceStatus } from './race.js';
 // Kronika dne: automatický zápis do Deníku fronty po každém denním tahu.
 // Jmenuje skutečné hráče (@handle → na webu odkaz na kartu vojáka). Deterministická: stejný stav + den = stejný text.
 
@@ -86,12 +87,11 @@ export function writeChronicle(state, day, { theme, story, weather, events = [],
 
   // stav závodu o kótu
   const race = theme.race && state.race ? (() => {
-    const need = (theme.race.objectives[state.race.idx % theme.race.objectives.length] || {}).need || theme.race.need;
-    const c = theme.factions.map((_, f) => state.soldiers.filter((s) => s.faction === f).length - state.race.base[f]);
+    const st = raceStatus(state, theme), need = st.need, c = st.counts, name = st.name;
     const lead = c[0] === c[1] ? null : c[0] > c[1] ? 0 : 1;
-    const name = (theme.race.objectives[state.race.idx % theme.race.objectives.length] || {}).name;
-    return { h: `The race for ${name}`, text: `${theme.factions.map((_, f) => `${short(f)} ${c[f]}/${need}`).join(' · ')}. ` +
-      (lead == null ? 'Dead level. One recruit could change everything.' : `The ${short(lead)} lead by ${Math.abs(c[0] - c[1])}. ${need - c[lead]} more and the heights are theirs.`) };
+    const unit = st.type === 'kills' ? ' enemy dead' : '';
+    return { h: `The race for ${name}`, text: `${theme.factions.map((_, f) => `${short(f)} ${c[f]}/${need}${unit}`).join(' · ')}. ` +
+      (lead == null ? (st.type === 'kills' ? 'Dead level.' : 'Dead level. One recruit could change everything.') : `The ${short(lead)} lead by ${Math.abs(c[0] - c[1])}. ${need - c[lead]} more and the heights are theirs.`) };
   })() : null;
   if (race) blocks.splice(blocks.length - 1, 0, race);
 

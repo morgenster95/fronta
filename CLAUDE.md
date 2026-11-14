@@ -163,7 +163,8 @@ Výprava a hlasování se přidají jen, když běží (`state.valley.open`, `st
   Ve Štábu fronty doplněno (13. 11. odpoledne): `reel-day4`, `story-reel-day4`, `reel-wire`, `story-reel-wire`.
 - Den 1 války = 2026-11-09; každé ranní vydání (denní tah, Gazette, výsledky) je ve 13:00 UTC, večerní reel nebo post ve 23:00 UTC.
 - **Závod o kóty:** kdo první naverbuje 100 vojáků, dobude kótu (Verdel Ridge dobyl Concord Den 3, teď Hill 304…, `theme.race.objectives`). **Odměna podle kóty** (`reward`): Verdel Ridge = dělostřelectvo,
-  3 dny bombardování poraženého; **Hill 304 = pozorovatelna** (3 dny přesnější odstřelovači a kulometčíci vítěze, strom na mapě, ranní hlášení „Eyes on Hill 304“; uživatel nechtěl opakované bombardování, `docs/MECHANICS.md`). Do první dobyté kóty děla mlčí a texty o ostřelování se nepoužijí (`battle.gunsWords`).
+  3 dny bombardování poraženého; **Hill 304 = pozorovatelna** (3 dny přesnější odstřelovači a kulometčíci vítěze, 5 stromů na mapě, ranní hlášení „Eyes on Hill 304“; uživatel nechtěl opakované bombardování, `docs/MECHANICS.md`).
+  **Blackwater Canal: vyhrává, kdo první zabije 100 nepřátel** (`type: 'kills'`, ne noví vojáci). Reel o vítězství Hegemonie na Hill 304 (`web/src/reel-hill304.js`, útok na továrnu na kopci) čeká na schválení; vyjde přes frontu s `trigger: {race: 'hill304'}`. Do první dobyté kóty děla mlčí a texty o ostřelování se nepoužijí (`battle.gunsWords`).
 - **Výpravy jsou VYPNUTÉ** (`theme.valley.enabled = false`, od 2026-11-10 na pokyn uživatele): výzva CHURCH z Dne 2 zrušena. Zapnout až s výslovným souhlasem uživatele.
   Dokud jsou vypnuté, příběhy se slovy `theme.valley.words` („raid“) se nepoužijí; stejně tak místa kót, o které se ještě nebojuje (`storyFor` v `engine/roster.js`).
 - **Hlasování o stavbách** (post `vote-build-d2`, zveřejněn 2026-11-10 12:46 UTC, HOSPITAL / SANDBAGS po frakcích): vyhodnocení ve vydání Dne 3 (2026-11-11 13:00 UTC).

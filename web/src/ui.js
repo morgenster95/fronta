@@ -118,7 +118,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     $('wr-vote').innerHTML = `<p class="muted">No open decision right now. The next one comes with the next reel on ${esc(theme.instagram)}.</p>`;
   }
   $('wr-unlocks').innerHTML = race
-    ? `<p>The first side to bring <b>${race.need}</b> new soldiers to the front takes <b>${esc(race.name)}</b>. ${esc(race.reward || '')}</p>${raceBars(race)}` +
+    ? `<p>${race.type === 'kills' ? `The first side to kill <b>${race.need}</b> enemy soldiers takes <b>${esc(race.name)}</b>.` : `The first side to bring <b>${race.need}</b> new soldiers to the front takes <b>${esc(race.name)}</b>.`} ${esc(race.reward || '')}</p>${raceBars(race)}` +
       `<p class="muted">Every friend who comments ${theme.factions.map((x) => `<b>${esc(x.keyword)}</b>`).join(' or ')} on ${esc(theme.instagram)} counts. After the battle, a new race begins.</p>` +
       ((roster.victories || []).length ? `<ol class="history">${roster.victories.map((v) => `<li><span class="d">Day ${v.day} · ${esc(theme.factions[v.faction].name.replace('The ', ''))}</span>took ${esc(v.name)} · deciding rifle: @${esc(v.hero)}</li>`).join('')}</ol>` : '')
     : '<p class="muted">—</p>';
