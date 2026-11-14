@@ -1,5 +1,5 @@
 {
- "seconds": 42.3,
+ "seconds": 43.7,
  "voice": "en-GB-RyanNeural",
  "lines": [
   [
@@ -10,42 +10,42 @@
   ],
   [
    2.88,
-   3.53,
-   "One hundred new soldiers came up the line, and the last of them took the hill.",
+   4.18,
+   "Wave after wave they ran up the slope, through the fire, and took the factory on the top.",
    "win"
   ],
   [
-   6.66,
+   7.31,
    7.8,
    "On the top stands a dead tree. It is not a tree. It is steel, painted like bark, and a spotter sits inside it.",
    "tree"
   ],
   [
-   14.71,
+   15.36,
    6.7,
    "For three days he watches every move in the Concord trenches. Hegemony snipers and machine gunners will shoot straighter for it.",
    "reward"
   ],
   [
-   21.66,
+   22.31,
    1.76,
    "Concord, keep your heads down.",
    "warn"
   ],
   [
-   23.67,
-   7.58,
-   "Now the race for Blackwater Canal begins. This one is bigger. The first side to bring two hundred new soldiers takes it.",
+   24.32,
+   8.41,
+   "Now the race for Blackwater Canal begins. This time it is not about recruits. The first side to kill one hundred enemy soldiers takes it.",
    "next"
   ],
   [
-   31.5,
-   4.14,
-   "Comment HEGEMONY or CONCORD to enlist. Bring your friends to the front.",
+   32.98,
+   4.02,
+   "Comment HEGEMONY or CONCORD to enlist. Every rifle counts.",
    "cta"
   ],
   [
-   35.89,
+   37.25,
    3.01,
    "Mud and Iron. Every follower is a soldier.",
    "cta2"
