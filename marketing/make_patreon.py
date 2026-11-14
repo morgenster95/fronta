@@ -186,6 +186,58 @@ def tier_dog():
 
 
 # ---------------- uvítací příspěvek (216×216 → 1080) ----------------
+def dugout(seed=7):
+    """kryt z fošen s podlahou (216×94), společné pozadí úrovní"""
+    im = Image.new("RGBA", (TW, TH), P["dark"] + (255,))
+    planks(im, (0, 0, TW, TH), seed=seed, vertical=True)
+    sandbag_wall(im, (0, 0, TW, 12), seed=seed + 1)
+    planks(im, (0, 72, TW, TH), seed=seed + 2, vertical=False)
+    d = ImageDraw.Draw(im)
+    d.line((0, 72, TW, 72), fill=P["ink"])
+    return im
+
+
+def tier_tea():
+    """1 USD: plecháček čaje pro frontu (jen podpora)"""
+    im = dugout(21)
+    lamp(im, 40, 30, top=12)
+    im.alpha_composite(up(sprite("hegemony_cook_east.png"), 2), (50, 16))
+    im.alpha_composite(up(sprite("concord_west.png"), 2), (100, 16))
+    d = ImageDraw.Draw(im)
+    crate(d, 156, 54, 52, 18)
+    for i in range(4):
+        mug(d, 161 + i * 11, 47, i)
+    light(im, 110, 50, 70, strength=0.9, steps=2)
+    shade(im, (0, 0, TW, TH), strength=0.6)
+    label(im, "TIN OF TEA")
+    save(im, "tier_tin_of_tea.jpg", 5)
+
+
+def tier_post():
+    """5 USD: polní pošta (videa a novinky dřív)"""
+    im = dugout(31)
+    lamp(im, 170, 30, top=12)
+    im.alpha_composite(up(sprite("hegemony_runner_east.png"), 2), (40, 16))
+    im.alpha_composite(up(sprite("concord_signaller_west.png"), 2), (128, 16))
+    d = ImageDraw.Draw(im)
+    # stůl s dopisy a pytel s poštou
+    d.rectangle((82, 58, 130, 61), fill=P["mud3"], outline=P["ink"])
+    d.rectangle((86, 62, 88, 80), fill=P["mud1"])
+    d.rectangle((124, 62, 126, 80), fill=P["mud1"])
+    for i, (x, y) in enumerate(((88, 54), (97, 55), (106, 53), (115, 55))):
+        d.rectangle((x, y, x + 7, y + 4), fill=P["white"] if i % 2 else P["pale"], outline=P["sand"])
+        d.line((x, y, x + 3, y + 2), fill=P["sand"])
+        d.line((x + 7, y, x + 4, y + 2), fill=P["sand"])
+    d.rectangle((110, 52, 112, 53), fill=P["rust"])  # pečeť
+    d.ellipse((24, 60, 44, 82), fill=P["khaki"], outline=P["ink"])  # pytel s poštou
+    d.rectangle((30, 57, 38, 61), fill=P["olive"], outline=P["ink"])
+    d.rectangle((28, 70, 40, 74), fill=P["pale"])
+    light(im, 170, 34, 70, strength=0.9, steps=2)
+    shade(im, (0, 0, TW, TH), strength=0.6)
+    label(im, "FIELD POST")
+    save(im, "tier_field_post.jpg", 5)
+
+
 def thanks():
     S = 216
     im = Image.new("RGBA", (S, S), P["dark"] + (255,))
@@ -216,6 +268,8 @@ if __name__ == "__main__":
     duo()
     logo()
     tier_recruit()
+    tier_tea()
+    tier_post()
     tier_bonds()
     tier_mess()
     tier_dog()
