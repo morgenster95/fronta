@@ -352,5 +352,5 @@ Nasycení palby (`roles.saturation` = 1) zůstává: když má střelec u sebe v
 ### 2026-11-14: podpora přechází z Ko-fi na Patreon (NASAZENO, tlačítka zatím skrytá)
 Ko-fi zamítlo platby (problém s účtem Stripe). War Bonds zůstávají stejné (stužka, zápis, poděkování v novinách, jen čest), mění se jen služba:
 `theme.support.url` = https://www.patreon.com/mudandiron, `theme.support.platform` = "Patreon" (texty na webu: „Support the front on Patreon“).
-Úrovně (schváleno 14. 11.): War Bonds 3 USD, Field Post 5 USD (videa dřív, zákulisí), Officers' Mess 10 USD (ankety patronů); stužka od 3 USD, zůstává i po zrušení. Patron pošle na Patreonu IG jméno, udělení dál ručně příkazem `support`.
+Úrovně (schváleno 14. 11.): War Bonds 3 USD, Field Post 5 USD (exkluzivní příspěvky ze zákulisí a chystané věci), Officers' Mess 10 USD (zlatá hvězda nad vojákem na mapě, vidět při každém přiblížení; příkaz `star`/`unstar`, `theme.support.star`, `grantStar` v `engine/roster.js`); stužka od 3 USD, zůstává i po zrušení. Patron pošle na Patreonu IG jméno, udělení dál ručně příkazem `support`.
 Texty stránky, úrovně a uvítací zprávy: `marketing/patreon.md`; grafika `marketing/make_support.py` (patreon_cover/avatar/tier). Tlačítka na webu zapnout (`buttons: true`) až po ověření stránky.

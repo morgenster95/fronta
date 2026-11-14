@@ -1,6 +1,6 @@
 """Grafika pro stránku Patreonu (MUD & IRON, texty v marketing/patreon.md).
 Profilové obrázky 512×512 (mřížka 64×64 ×8, Patreon je ořízne do kruhu: důležité věci drž uprostřed),
-obrázky úrovní 1080×470 (mřížka 216×94 ×5) a obrázek k uvítacímu příspěvku 1080×1080.
+obrázky úrovní 460×200 (mřížka 230×100 ×2, doporučená velikost Patreonu) a obrázek k uvítacímu příspěvku 1080×1080.
 Sprity vojáků jsou ze hry (web/public/assets/soldiers), paleta Trench-24 (make_posts.P).
 Použití: python marketing/make_patreon.py  → marketing/promo/patreon/*.jpg
 """
@@ -100,8 +100,9 @@ def logo():
     save(im, "profile_logo.jpg", 8)
 
 
-# ---------------- obrázky úrovní (216×94 → 1080×470) ----------------
-TW, TH = 216, 94
+# ---------------- obrázky úrovní (230×100 → 460×200, doporučení Patreonu) ----------------
+TW, TH = 230, 100
+TK = 2
 
 
 def label(im, text):
@@ -123,16 +124,30 @@ def tier_recruit():
     for i, n in enumerate(["hegemony_south", "concord_medic_south", "hegemony_machinegunner_south", "concord_south", "hegemony_runner_south"]):
         im.alpha_composite(up(sprite(n + ".png"), 2), (-8 + i * 43, 18))
     label(im, "RECRUIT")
-    save(im, "tier_recruit.jpg", 5)
+    save(im, "tier_recruit.jpg", TK)
 
 
 def tier_bonds():
-    import make_support
-    make_support.make()  # nakreslí i promo/patreon_tier.jpg (kuchyně, sprity ×2)
-    im = Image.open(os.path.join(ROOT, "marketing", "promo", "patreon_tier.jpg")).convert("RGBA")
-    im = im.resize((TW, TH), Image.NEAREST)
+    """3 USD: polní kuchyně, příděly a stužka War Bonds"""
+    im = dugout(7)
+    lamp(im, 20, 30, top=12)
+    im.alpha_composite(up(sprite("hegemony_east.png"), 2), (6, 16))
+    im.alpha_composite(up(sprite("concord_cook_south.png"), 2), (86, 16))
+    im.alpha_composite(up(sprite("concord_west.png"), 2), (122, 16))
+    d = ImageDraw.Draw(im)
+    d.rectangle((54, 54, 80, 80), fill=P["ink"])  # kamna s kotlem
+    d.rectangle((56, 56, 78, 79), fill=P["mud0"])
+    d.rectangle((61, 66, 73, 74), fill=P["fire"])
+    d.rectangle((63, 68, 71, 72), fill=P["gold"])
+    d.ellipse((50, 46, 84, 58), fill=P["steel"], outline=P["ink"])
+    crate(d, 172, 54, 52, 18)
+    ribbon(d, 178, 66, scale=0.78, h=4)
+    mug(d, 180, 47, 0)
+    mug(d, 200, 47, 1)
+    light(im, 67, 66, 70, strength=1.0, steps=3, keep=(P["steel"], P["grey"]))
+    shade(im, (0, 0, TW, TH), strength=0.6)
     label(im, "WAR BONDS")
-    save(im, "tier_war_bonds.jpg", 5)
+    save(im, "tier_war_bonds.jpg", TK)
 
 
 def tier_mess():
@@ -160,8 +175,11 @@ def tier_mess():
     mug(d, 127, 49, 0)
     light(im, 122, 48, 60, strength=1.0, steps=3)
     shade(im, (0, 0, TW, TH), strength=0.7)
+    d = ImageDraw.Draw(im)
+    for cx in (52, 160):  # zlatá hvězda nad důstojníkem, jako ve hře
+        star(d, cx, 10)
     label(im, "OFFICERS' MESS")
-    save(im, "tier_officers_mess.jpg", 5)
+    save(im, "tier_officers_mess.jpg", TK)
 
 
 def tier_dog():
@@ -182,12 +200,23 @@ def tier_dog():
     im.alpha_composite(up(pets, 2), (68, 58))
     shade(im, (0, 0, TW, TH), strength=0.5)
     label(im, "TRENCH DOG")
-    save(im, "tier_trench_dog.jpg", 5)
+    save(im, "tier_trench_dog.jpg", TK)
 
 
 # ---------------- uvítací příspěvek (216×216 → 1080) ----------------
+def star(d, cx, cy, r=5):
+    import math
+    pts = []
+    for i in range(10):
+        a = -math.pi / 2 + i * math.pi / 5
+        rr = r if i % 2 == 0 else r * 0.45
+        pts.append((cx + math.cos(a) * rr, cy + math.sin(a) * rr))
+    d.polygon([(x + 1, y + 1) for x, y in pts], fill=P["ink"])
+    d.polygon(pts, fill=P["gold"])
+
+
 def dugout(seed=7):
-    """kryt z fošen s podlahou (216×94), společné pozadí úrovní"""
+    """kryt z fošen s podlahou (230×100), společné pozadí úrovní"""
     im = Image.new("RGBA", (TW, TH), P["dark"] + (255,))
     planks(im, (0, 0, TW, TH), seed=seed, vertical=True)
     sandbag_wall(im, (0, 0, TW, 12), seed=seed + 1)
@@ -210,7 +239,7 @@ def tier_tea():
     light(im, 110, 50, 70, strength=0.9, steps=2)
     shade(im, (0, 0, TW, TH), strength=0.6)
     label(im, "TIN OF TEA")
-    save(im, "tier_tin_of_tea.jpg", 5)
+    save(im, "tier_tin_of_tea.jpg", TK)
 
 
 def tier_post():
@@ -235,7 +264,7 @@ def tier_post():
     light(im, 170, 34, 70, strength=0.9, steps=2)
     shade(im, (0, 0, TW, TH), strength=0.6)
     label(im, "FIELD POST")
-    save(im, "tier_field_post.jpg", 5)
+    save(im, "tier_field_post.jpg", TK)
 
 
 def thanks():

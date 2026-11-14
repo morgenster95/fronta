@@ -883,6 +883,13 @@
     "entry": "{name} bought War Bonds for the front. The quartermaster pinned the ribbon on personally: 'The front remembers who kept it fed.'",
     "newsHead": "The front stands in their debt",
     "newsText": "{names} bought War Bonds and put their own money behind the line. Every man in the trenches owes them. The guns stay fed and the front will not forget it.",
+    "star": {
+      "_note": "Patreon Officers' Mess (10 USD): zlatá hvězda nad vojákem na mapě, vidět při každém přiblížení (web/src/main.js). Udělení příkazem star, odebrání unstar (když patron odejde); stužka War Bonds zůstává.",
+      "medal": "officers-star",
+      "name": "Officers' Mess",
+      "line": "a star over their head on the front",
+      "entry": "{name} was invited to the Officers' Mess. From today a gold star hangs over the trench where {name} stands."
+    },
     "buttons": false,
     "_buttons": "buttons: false = tlačítka Support na webu skrytá (od 13. 11.; Ko-fi zamítlo platby). Zapnout true, až bude stránka Patreonu hotová a url ověřená."
   },

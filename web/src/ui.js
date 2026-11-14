@@ -298,6 +298,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     $('card-share').textContent = 'Share';
     $('card-rank').textContent = theme.ranks[s.rank];
     $('card-name').textContent = s.name;
+    if (theme.support?.star && s.medals?.includes(theme.support.star.medal)) $('card-name').insertAdjacentHTML('beforeend', ` <span title="${esc(theme.support.star.name)}" style="color:#e8b84a">★</span>`);
     if (theme.support && s.medals?.includes(theme.support.medal)) $('card-name').insertAdjacentHTML('beforeend', ` <span class="ribbon" title="${esc(theme.support.name)}"></span>`);
     $('card-handle').textContent = `@${s.handle}`;
     $('card-handle').href = `https://instagram.com/${encodeURIComponent(s.handle)}`;
@@ -335,6 +336,8 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     if (rec.background) fam.unshift(`<span class="bg">${esc(rec.background)}</span>`);
     if (s.medals?.includes('wire-party')) fam.unshift(`<span class="medal">\u26d3 Wire Party</span> ${rec.wiring || 3} nights mending the wire`);
     if (s.medals?.includes('first-wave')) fam.unshift('<span class="medal">🎖 First Wave</span> one of the first 100 to enlist');
+    const star = theme.support?.star;
+    if (star && s.medals?.includes(star.medal)) fam.unshift(`<span class="medal" style="color:#e8b84a">★ ${esc(star.name)}</span> ${esc(star.line)}`);
     if (theme.support && s.medals?.includes(theme.support.medal)) fam.unshift(`<span class="ribbon sm"></span> <span class="medal">${esc(theme.support.name)}</span> ${esc(theme.support.line)}`);
     if (s.medals?.includes('raiders-cross')) fam.unshift(`<span class="medal">✠ Raider's Cross</span> ${rec.raids || 3} night raids`);
     else if (rec.raids) fam.push(`Night raids: ${rec.raids}`);

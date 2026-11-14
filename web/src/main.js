@@ -189,6 +189,10 @@ async function boot() {
   world.addChild(dots);
   const marker = new Graphics();
   world.addChild(marker);
+  // hvězdy Officers' Mess (Patreon 10 USD): zlatá hvězda nad vojákem, stejně velká na obrazovce při každém přiblížení (i v přehledu s tečkami)
+  const starLayer = new Graphics();
+  world.addChild(starLayer);
+  const devStar = import.meta.env.DEV ? Number(new URLSearchParams(location.search).get('stars')) || 0 : 0; // náhled: /?stars=20
   // neprozkoumané sektory po stranách: tma a mlha
   const uncharted = new Graphics();
   uncharted.rect(openX0 - sectorPx * 2, 0, sectorPx * 2, worldH).fill({ color: 0x0e0d0c, alpha: 0.75 });
@@ -388,6 +392,8 @@ async function boot() {
     }
     chunkSoldiers.get(k).addChild(sp);
   }
+  const starMedal = theme.support?.star?.medal;
+  const starred = soldiers.filter((q, i) => q.slot && !q.vacant && ((starMedal && q.medals?.includes(starMedal)) || (devStar && i % Math.max(1, Math.floor(soldiers.length / devStar)) === 0)));
   // efekty z PixelLab VFX workbench: spritesheet (TexturePacker JSON) → snímky v pořadí + kotva + fps
   const fxSheets = {};
   await Promise.all(['shell-blast', 'shell-small', 'smoke-small'].map(async (name) => {
@@ -722,6 +728,20 @@ async function boot() {
       const sz = Math.max(1, 2 / Math.min(z, 2));
       marker.poly([mx - 4 * sz, my - 5 * sz, mx + 4 * sz, my - 5 * sz, mx, my]).fill({ color: 0x0e0d0c });
       marker.poly([mx - 3 * sz, my - 4.5 * sz, mx + 3 * sz, my - 4.5 * sz, mx, my - sz]).fill({ color: col });
+    }
+
+    starLayer.clear();
+    if (starred.length) {
+      const k = 1 / z, r = 7 * k;
+      for (const q of starred) {
+        if (q.status === 2 || q.x < view.x0 - 20 || q.x > view.x1 + 20 || q.y < view.y0 - 60 || q.y > view.y1 + 20) continue;
+        const bob = Math.sin(now / 400 + q.x) * 1.5 * k;
+        const cx = q.x, cy = q.y - (showSprites ? 34 : 4) - 10 * k + bob;
+        const pts = [];
+        for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + (i * Math.PI) / 5, rr = i % 2 ? r * 0.45 : r; pts.push(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); }
+        starLayer.poly(pts.map((v) => v + k)).fill({ color: 0x0e0d0c });
+        starLayer.poly(pts).fill({ color: 0xe8b84a });
+      }
     }
 
     // déšť

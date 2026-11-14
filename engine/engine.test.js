@@ -1235,3 +1235,15 @@ test('odměna kóty: pozorovatelna místo bombardování (Hill 304), 3 dny, jen 
   assert.equal(activeObservation(st, 10), null, 'po 3 dnech konec');
   assert.ok(activeObservation(st, 6, true), 'web ji ukáže už v den dobytí');
 });
+
+import { grantStar, revokeStar } from './roster.js';
+test('grantStar: hvězda Officers\' Mess dá i stužku, zápis; revokeStar sundá jen hvězdu', () => {
+  const theme = { support: { medal: 'war-bonds', name: 'War Bonds', entry: 'Bonds for {name}.', newsHead: 'Thanks', newsText: '{names}.', star: { medal: 'officers-star', entry: 'Star for {name}.' } } };
+  const st = { day: 5, news: [], soldiers: [{ handle: 'ann', name: 'Ann', status: 0, record: [] }] };
+  assert.ok(grantStar(st, theme, '@Ann'));
+  assert.deepEqual(st.soldiers[0].medals, ['war-bonds', 'officers-star']);
+  assert.equal(grantStar(st, theme, 'ann'), null, 'hvězda jen jednou');
+  assert.ok(revokeStar(st, theme, 'ann'));
+  assert.deepEqual(st.soldiers[0].medals, ['war-bonds']);
+  assert.equal(revokeStar(st, theme, 'ann'), null);
+});

@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
-import { switchFaction, grantSupport, rewriteSupport, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
+import { switchFaction, grantSupport, grantStar, revokeStar, rewriteSupport, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 import { wiringReturns } from '../engine/wiring.js';
 import { deathReply } from '../engine/house.js';
@@ -147,6 +147,14 @@ async function main() {
       if (c.cmd === 'support') {
         const r = grantSupport(state, theme, c.handle);
         console.log(r ? `🎗 War Bonds: @${r.handle} (${r.name})` : `🎗 příkaz ${c.id}: voják nenalezen nebo medaili už má`);
+      }
+      if (c.cmd === 'star') {
+        const r = grantStar(state, theme, c.handle);
+        console.log(r ? `★ Officers' Mess: @${r.handle} (${r.name})` : `★ příkaz ${c.id}: voják nenalezen nebo hvězdu už má`);
+      }
+      if (c.cmd === 'unstar') {
+        const r = revokeStar(state, theme, c.handle);
+        console.log(r ? `★ hvězda odebrána: @${r.handle}` : `★ příkaz ${c.id}: nic k odebrání`);
       }
       state.commandsDone.push(c.id);
     }

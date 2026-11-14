@@ -286,6 +286,25 @@ export function grantSupport(state, theme, handle) {
   return { handle: s.handle, name: s.name };
 }
 
+// Patreon Officers' Mess: hvězda nad vojákem (jen vzhled). Dá i stužku War Bonds, pokud ji voják nemá. Odebrání (patron odešel) nechá stužku i deník.
+export function grantStar(state, theme, handle) {
+  const st = theme.support?.star;
+  const h = String(handle || '').toLowerCase().replace(/^@/, '');
+  const s = state.soldiers.find((x) => x.handle === h);
+  if (!st || !s || (s.medals || []).includes(st.medal)) return null;
+  if (!(s.medals || []).includes(theme.support.medal)) grantSupport(state, theme, h);
+  s.medals = [...(s.medals || []), st.medal];
+  if (s.status !== 'fallen' && st.entry) addEntry(s, state.day, st.entry.replaceAll('{name}', s.name));
+  return { handle: s.handle, name: s.name };
+}
+export function revokeStar(state, theme, handle) {
+  const st = theme.support?.star;
+  const s = state.soldiers.find((x) => x.handle === String(handle || '').toLowerCase().replace(/^@/, ''));
+  if (!st || !s || !(s.medals || []).includes(st.medal)) return null;
+  s.medals = s.medals.filter((m) => m !== st.medal);
+  return { handle: s.handle, name: s.name };
+}
+
 const ORD = (n) => n + (['th', 'st', 'nd', 'rd'][((n % 100) - 20) % 10] || ['th', 'st', 'nd', 'rd'][n % 100] || 'th');
 export function unitName(order) {
   const company = Math.floor(order / 120) + 1;

@@ -52,15 +52,15 @@ Not on the front yet? Comment HEGEMONY or CONCORD under any post on @mudandiron 
 Image: `tier_field_post.jpg`
 
 **Description**
-The mail from the front reaches you first.
-🎬 Watch the daily reels here before they go up on Instagram
-🗺️ Behind the scenes: new sprites, new animations, new maps and mechanics before they reach the front
+Exclusive mail from the front, only for patrons.
+🗺️ Behind the scenes: how the front is made, new sprites and animations
+🔭 Sneak peeks at what's coming next: new hills, new roles, new events
 🎗️ Everything in War Bonds: the ribbon, the Gazette thanks and the diary line
 Still honour only. Your soldier fights like everyone else.
 
 **Welcome note**
-Welcome to the Field Post, soldier. The mail bag comes to you first.
-Reply to this message with your Instagram handle and your soldier gets the War Bonds ribbon within a day. New reels and plans land here before anyone else sees them. Keep them between us until they go public.
+Welcome to the Field Post, soldier. The mail bag is yours.
+Reply to this message with your Instagram handle and your soldier gets the War Bonds ribbon within a day. Patron-only posts from behind the lines land here. Keep them between us until they go public.
 
 ---
 
@@ -68,15 +68,14 @@ Reply to this message with your Instagram handle and your soldier gets the War B
 Image: `tier_officers_mess.jpg`
 
 **Description**
-A seat at the table where the war is planned.
-🗳️ Patron polls: help pick what gets built next (new hills, new roles, new events)
-📬 Everything in Field Post: early reels and behind the scenes
-🎗️ Everything in War Bonds: the ribbon, the Gazette thanks and the diary line
-The polls shape the game for everyone. They never give your own soldier an edge.
+A star over your soldier.
+⭐ A gold star hangs over your soldier on the front map, so you can always find them, even zoomed all the way out
+🎗️ Everything in Field Post and War Bonds
+Looks only. The star never makes your soldier harder to hit.
 
 **Welcome note**
 Welcome to the Officers' Mess. Pull up a crate.
-Reply to this message with your Instagram handle and your soldier gets the War Bonds ribbon within a day. Each month we put the next plans on the table here, and you vote on what gets built.
+Reply to this message with your Instagram handle. Within a day your soldier gets the War Bonds ribbon and a gold star over their head on the front.
 
 ---
 
@@ -98,4 +97,4 @@ Free WW1 trench war in the comments ⚔️ Comment HEGEMONY or CONCORD to enlist
 
 <!-- Provoz (pro Claude): stužku uděluje příkaz { "id": "support-<handle>-<datum>", "cmd": "support", "handle": "<ig>" } v data/commands.json.
 Po založení stránky: ověřit adresu (theme.support.url, URL v make_support.py), zapnout theme.support.buttons: true.
-Úrovně schválené uživatelem 14. 11.: 3 / 5 / 10 USD. Tin of Tea (1 USD) a Trench Dog (pes ve hře není) zatím ne; obrázky zůstávají připravené. -->
+Úrovně schválené uživatelem 14. 11.: 3 / 5 / 10 USD. 10 USD: hvězda nad vojákem, příkaz { "id": "star-<handle>-<datum>", "cmd": "star", "handle": "<ig>" } (dá i stužku); když patron odejde, "cmd": "unstar" (stužka zůstane). Tin of Tea (1 USD) a Trench Dog (pes ve hře není) zatím ne; obrázky zůstávají připravené. -->
