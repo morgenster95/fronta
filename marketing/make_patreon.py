@@ -344,7 +344,7 @@ def post_launch():
         d.text((70, y + 3), name, font=font(8, True), fill=P["white"])
         d.text((40, y + 13), what, font=font(8), fill=P["pale"])
     text_c(d, W // 2, 238, "FREE GAME. NO ADS. NO PAY-TO-WIN.", font(8), P["pale"])
-    text_c(d, W // 2, 250, "PATREON.COM/MUDANDIRON", font(8, True), P["gold"])
+    text_c(d, W // 2, 250, "PATREON.COM/CW/MUDANDIRON", font(8, True), P["gold"])
     save(im, "post_patreon_launch.jpg", 5)
 
 
@@ -404,7 +404,7 @@ def post_launch_wide():
         d.text((X0 + 28, y + 14), what, font=font(8), fill=P["pale"])
     d.text((X0, 136), "FREE GAME. NO ADS.", font=font(8), fill=P["pale"])
     d.text((X0, 146), "NO PAY-TO-WIN.", font=font(8), fill=P["pale"])
-    d.text((X0, 160), "PATREON.COM/MUDANDIRON", font=font(8, True), fill=P["gold"])
+    d.text((X0, 160), "PATREON.COM/CW/MUDANDIRON", font=font(8, True), fill=P["gold"])
     save(im, "post_patreon_1500x900.jpg", 5)
 
 

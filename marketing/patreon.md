@@ -93,7 +93,7 @@ Thank you for keeping the front fed.
 Ribbon pinned. Your soldier {soldier name} wears the War Bonds from today, and the Gazette will thank you at 13:00 UTC. The front remembers.
 
 ## Instagram bio line
-Free WW1 trench war in the comments ⚔️ Comment HEGEMONY or CONCORD to enlist · Support: patreon.com/mudandiron
+Free WW1 trench war in the comments ⚔️ Comment HEGEMONY or CONCORD to enlist · Support: patreon.com/cw/MudandIron
 
 <!-- Provoz (pro Claude): stužku uděluje příkaz { "id": "support-<handle>-<datum>", "cmd": "support", "handle": "<ig>" } v data/commands.json.
 Po založení stránky: ověřit adresu (theme.support.url, URL v make_support.py), zapnout theme.support.buttons: true.

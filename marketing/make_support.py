@@ -15,7 +15,7 @@ from day_art import planks, light, shade, sandbag_wall, lamp  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROMO = os.path.join(ROOT, "marketing", "promo")
-URL = "PATREON.COM/MUDANDIRON"  # adresa stránky podpory (theme.support.url)
+URL = "PATREON.COM/CW/MUDANDIRON"  # adresa stránky podpory (theme.support.url)
 
 # pruhy stužky War Bonds (stejné jako na webu: .ribbon ve web/src/style.css)
 STRIPES = ["rust", "gold", "white", "gold", "olive", "gold", "white", "gold", "rust"]
