@@ -1,6 +1,6 @@
 # Patreon: Mud & Iron
 
-Page: https://www.patreon.com/mudandiron
+Page: https://www.patreon.com/cw/MudandIron
 Images: `marketing/promo/patreon/` (made by `python marketing/make_patreon.py`)
 
 - Profile picture: `profile_duo.jpg` (or `profile_hegemony.jpg`, `profile_concord.jpg`, `profile_officer.jpg`, `profile_logo.jpg`)

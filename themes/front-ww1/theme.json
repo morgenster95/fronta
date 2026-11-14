@@ -875,7 +875,7 @@
   "_storyShare": "Podíl vojáků, kteří dostanou každý den zápis do deníku (1 = každý, jeden zápis za den; dřív 0,25). Při velkém počtu hráčů roste stav (data/state.json) o ~220 B na vojáka a den.",
   "support": {
     "_note": "Dobrovolná podpora přes Patreon (Ko-fi zamítlo platby 14. 11.): medaile bez herní výhody. url = stránka Patreonu (prázdné = tlačítko na webu se neukáže), platform = název služby v textech webu.",
-    "url": "https://www.patreon.com/mudandiron",
+    "url": "https://www.patreon.com/cw/MudandIron",
     "platform": "Patreon",
     "medal": "war-bonds",
     "name": "War Bonds",
@@ -890,8 +890,8 @@
       "line": "a star over their head on the front",
       "entry": "{name} was invited to the Officers' Mess. From today a gold star hangs over the trench where {name} stands."
     },
-    "buttons": false,
-    "_buttons": "buttons: false = tlačítka Support na webu skrytá (od 13. 11.; Ko-fi zamítlo platby). Zapnout true, až bude stránka Patreonu hotová a url ověřená."
+    "buttons": true,
+    "_buttons": "buttons: false = tlačítka Support na webu skrytá (13.–14. 11. byla skrytá, Ko-fi zamítlo platby); od 14. 11. zapnuto s odkazem na Patreon."
   },
   "officerBalance": true,
   "_officerBalance": "Vyrovnání poručíků (2026-11-12): nováček bez přání role ze strany s méně poručíky je poručík, strana s víc poručíky žádného nedostane, při rovnosti běžné losování. false = jen losování."
