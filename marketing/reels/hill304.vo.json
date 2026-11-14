@@ -1,0 +1,54 @@
+{
+ "seconds": 42.3,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.8,
+   1.83,
+   "Hill 304 belongs to the Hegemony.",
+   "hook"
+  ],
+  [
+   2.88,
+   3.53,
+   "One hundred new soldiers came up the line, and the last of them took the hill.",
+   "win"
+  ],
+  [
+   6.66,
+   7.8,
+   "On the top stands a dead tree. It is not a tree. It is steel, painted like bark, and a spotter sits inside it.",
+   "tree"
+  ],
+  [
+   14.71,
+   6.7,
+   "For three days he watches every move in the Concord trenches. Hegemony snipers and machine gunners will shoot straighter for it.",
+   "reward"
+  ],
+  [
+   21.66,
+   1.76,
+   "Concord, keep your heads down.",
+   "warn"
+  ],
+  [
+   23.67,
+   7.58,
+   "Now the race for Blackwater Canal begins. This one is bigger. The first side to bring two hundred new soldiers takes it.",
+   "next"
+  ],
+  [
+   31.5,
+   4.14,
+   "Comment HEGEMONY or CONCORD to enlist. Bring your friends to the front.",
+   "cta"
+  ],
+  [
+   35.89,
+   3.01,
+   "Mud and Iron. Every follower is a soldier.",
+   "cta2"
+  ]
+ ]
+}
