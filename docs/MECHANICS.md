@@ -329,3 +329,7 @@ Zůstává: bezpečnější týden pro vítěze (`winDanger`/`loseDanger`), stu�
 Noviny: při dobytí věta o pozorovatelně (`observation.victory`), pak každé ráno „Eyes on Hill 304“ (kolik mužů trefili odstřelovači a kulometčíci, kolik dní zbývá).
 Web: falešný ocelový strom se štěrbinou (PixelLab, `web/public/assets/props/observation_tree.png`, zdroj `art/props/observation/`) mezi valem a drátem vítěze, pozorovatel (sprite odstřelovače) a telefonní drát (`web/src/observation.js`, `roster.observation`, náhled `/?obs=0`).
 Historie: falešné „pozorovací stromy“ (Francouzi od 1915, Britové), dutá ocelová kopie skutečného stromu vyměněná v noci; skutečná Côte 304 u Verdunu byla klíčová kvůli výhledu.
+
+## 2026-11-14: Konec bombardování i na mapě (NASAZENO)
+Bombardování z Verdel Ridge má poslední noc v tahu Dne 6 (14. 11. 13:00 UTC). Web (`activeBarrage(..., visual)`) ho teď ukazuje jen do dne PŘED posledním tahem,
+po tahu už nepadají granáty ani na mapě. Krátery po něm se „hojí“: první den po konci zůstane ~40 % (při bombardování až ~100 %), pak o 8 % méně denně, nejméně 15 % (`web/src/main.js`).

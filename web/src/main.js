@@ -96,14 +96,22 @@ async function boot() {
   const sectorPx = map.sectorW * map.tile;
   const openX0 = openFrom * sectorPx, openX1 = openTo * sectorPx;
   // bombardování: na straně poraženého přibývají krátery s každou nocí (pseudonáhoda podle kóty, takže je vidí všichni stejně)
-  if (roster.barrage) {
-    const v = (roster.victories || []).find((x) => x.name === roster.barrage.name);
+  // krátery z dělostřelectva kóty: během bombardování přibývají každou nocí; po jeho konci (bez roster.barrage) se země pomalu „zahojí“:
+  // první den po konci zůstane ~40 % kráterů, pak o 8 % méně za den, nejméně 15 % (pokyn uživatele 14. 11.: uber rozbombardované země)
+  const lastShelled = roster.barrage
+    ? { v: (roster.victories || []).find((x) => x.name === roster.barrage.name), target: roster.barrage.target, on: true }
+    : (() => { const v = (roster.victories || []).find((x) => x.barrageTo != null && x.barrageTo <= roster.day); return v ? { v, target: 1 - v.faction, on: false } : null; })();
+  if (lastShelled) {
+    const v = lastShelled.v;
     const nights = Math.max(0, Math.min(3, roster.day - (v?.day ?? roster.day)));
-    const tiles = (openX1 - openX0) / map.tile, tgt = roster.barrage.target, dir = tgt === 0 ? -1 : 1;
+    const tiles = (openX1 - openX0) / map.tile, tgt = lastShelled.target, dir = tgt === 0 ? -1 : 1;
     let seed = 2166136261;
     for (const ch of `${v?.id || 'x'}:${tgt}`) seed = Math.imul(seed ^ ch.charCodeAt(0), 16777619) >>> 0;
     const rr = () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
-    const total = Math.round(tiles * 3.2), shown = Math.round(total * (0.45 + 0.18 * nights)); // první den hned hustě, pak přibývá
+    const total = Math.round(tiles * 3.2);
+    const since = lastShelled.on ? 0 : Math.max(0, roster.day - (v?.barrageTo ?? roster.day)); // dny od posledního tahu s granáty
+    const share = lastShelled.on ? 0.45 + 0.18 * nights : Math.max(0.15, 0.4 - 0.08 * since);
+    const shown = Math.round(total * share); // první den hned hustě, pak přibývá; po konci ubývá
     for (let i = 0; i < total; i++) {
       const x = Math.floor(openX0 / map.tile + rr() * tiles), y = Math.round(map.front[tgt] + dir * (rr() * rr() * 34 - 14)), q = rr();
       if (i < shown) map.craters.push({ x, y, r: q < 0.3 ? 1 : q < 0.6 ? 2 : q < 0.82 ? 3 : 4 });

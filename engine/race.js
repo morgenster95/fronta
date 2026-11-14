@@ -83,7 +83,9 @@ export function raceDanger(state, theme, faction, day) {
 
 // aktivní dělostřelectvo: cílová frakce, nebo null. visual = pro web už v den dobytí (palba je vidět hned, zásahy počítá boj až od dalšího dne)
 export function activeBarrage(state, day, visual = false) {
-  const v = (state.victories || []).filter((x) => x.barrageTo != null && day >= (visual ? x.day : x.from) && day <= x.barrageTo).at(-1);
+  // boj: dny from..barrageTo (poslední noc je tah dne barrageTo); web (visual): od dne dobytí do dne PŘED posledním tahem,
+  // po posledním tahu už děla mlčí i na mapě (pokyn uživatele 14. 11.)
+  const v = (state.victories || []).filter((x) => x.barrageTo != null && (visual ? day >= x.day && day < x.barrageTo : day >= x.from && day <= x.barrageTo)).at(-1);
   return v ? { target: 1 - v.faction, by: v.faction, name: v.name, since: v.day } : null;
 }
 
