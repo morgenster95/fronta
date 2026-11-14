@@ -1,7 +1,8 @@
-"""Post „Keep the front running“ (1080×1350): výzva k dobrovolné podpoře hry na Ko-fi (https://ko-fi.com/mudandiron).
+"""Post „Keep the front running“ (1080×1350): výzva k dobrovolné podpoře hry na Patreonu (dřív Ko-fi, to platby zamítlo 14. 11.).
+K tomu grafika pro stránku Patreonu: obálka 1600×400, obrázek úrovně 920×400, avatar 512×512.
 Polní kuchyně v krytu: kuchař rozdává horké plecháčky vojákům obou stran, na bedně s příděly visí stužka War Bonds.
 Dole: hra je zdarma, bez reklam a bez pay-to-win; za ration dostane voják stužku War Bonds (jen čest).
-Použití: python marketing/make_support.py  → marketing/promo/support_1.jpg
+Použití: python marketing/make_support.py  → marketing/promo/support_1.jpg (+ support_square.jpg, patreon_cover.jpg, patreon_tier.jpg, patreon_avatar.jpg)
 """
 import os
 import sys
@@ -14,6 +15,7 @@ from day_art import planks, light, shade, sandbag_wall, lamp  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROMO = os.path.join(ROOT, "marketing", "promo")
+URL = "PATREON.COM/MUDANDIRON"  # adresa stránky podpory (theme.support.url)
 
 # pruhy stužky War Bonds (stejné jako na webu: .ribbon ve web/src/style.css)
 STRIPES = ["rust", "gold", "white", "gold", "olive", "gold", "white", "gold", "rust"]
@@ -121,7 +123,8 @@ def make():
     d.rectangle((0, 22, W, 62), fill=P["ink"])
     text_c(d, W // 2, 26, "KEEP THE FRONT", font(16, True), P["gold"])
     text_c(d, W // 2, 44, "RUNNING", font(16, True), P["white"])
-    # čtvercová verze pro Ko-fi (1080×1080): scéna s titulkem a dole jeden řádek
+    patreon(im)
+    # čtvercová verze (1080×1080): scéna s titulkem a dole jeden řádek
     sq = im.crop((0, 0, W, W))
     ds = ImageDraw.Draw(sq)
     ds.rectangle((0, W - 18, W, W), fill=P["dark"])
@@ -142,10 +145,43 @@ def make():
     ribbon(d, x0, 246, scale=0.5, h=6)
     d.text((x0 + 31 + 1, 243 + 1), t, font=f, fill=P["ink"])
     d.text((x0 + 31, 243), t, font=f, fill=P["gold"])
-    text_c(d, W // 2, 255, "KO-FI.COM/MUDANDIRON", font(8, True), P["white"])
+    text_c(d, W // 2, 255, URL, font(8, True), P["white"])
     out = os.path.join(PROMO, "support_1.jpg")
     up(im, K).convert("RGB").save(out, quality=95, subsampling=0)
     print(out)
+
+
+def save(img, name, k=K):
+    out = os.path.join(PROMO, name)
+    up(img, k).convert("RGB").save(out, quality=95, subsampling=0)
+    print(out)
+
+
+def patreon(scene):
+    """grafika pro stránku Patreonu ze stejné scény (kryt s polní kuchyní)"""
+    from PIL import Image
+    # obálka 1600×400 (mřížka 320×80): vlevo název a heslo, vpravo kuchyně s vojáky obou stran
+    cov = Image.new("RGBA", (320, 80), P["ink"])
+    band = scene.crop((0, 104, W, 184))
+    cov.alpha_composite(band, (320 - W, 0))
+    d = ImageDraw.Draw(cov)
+    d.line((320 - W, 0, 320 - W, 79), fill=P["gold"])
+    text_c(d, 52, 4, "MUD", font(16, True), P["gold"])
+    text_c(d, 52, 21, "& IRON", font(16, True), P["white"])
+    text_c(d, 52, 42, "KEEP THE FRONT", font(8), P["pale"])
+    text_c(d, 52, 52, "RUNNING", font(8), P["pale"])
+    ribbon(d, 26, 66, scale=1, h=7)
+    save(cov, "patreon_cover.jpg")
+    # obrázek úrovně War Bonds 1080×470 (mřížka 216×94): celá kuchyně, vojáci obou stran, bedna se stužkou
+    tier = scene.crop((0, 92, W, 186)).copy()
+    save(tier, "patreon_tier.jpg")
+    # avatar 512×512 (mřížka 64×64 ×8): stužka War Bonds a název na tmavém poli (Patreon ho ořízne do kruhu)
+    av = Image.new("RGBA", (64, 64), P["dark"])
+    d = ImageDraw.Draw(av)
+    text_c(d, 32, 14, "MUD", font(8, True), P["gold"])
+    text_c(d, 32, 24, "& IRON", font(8, True), P["white"])
+    ribbon(d, 6, 40, scale=1, h=8)
+    save(av, "patreon_avatar.jpg", 8)
 
 
 if __name__ == "__main__":

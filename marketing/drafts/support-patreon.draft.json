@@ -1,0 +1,7 @@
+{
+  "_note": "Návrh postu na podporu přes Patreon (War Bonds; dřív Ko-fi, to platby zamítlo 14. 11.). Uložen na později: do marketing/queue.json až s výslovným souhlasem a časem a až bude stránka Patreonu hotová; k tomu story (node tools/story-for.mjs support-patreon). Obrázek kreslí python marketing/make_support.py.",
+  "id": "support-patreon",
+  "type": "image",
+  "files": ["support_1.jpg"],
+  "caption": "KEEP THE FRONT RUNNING 🎗️\n\nMud & Iron is free. No ads, no pay-to-win, made by one person, every day.\nIf you want to help keep it going, you can now support the front on Patreon. It's completely optional.\n\n🎗️ Send us your Instagram handle on Patreon and your soldier gets the War Bonds ribbon: on the front, on the card and on the share image. It's honour only, never an advantage.\n📰 The Trench Gazette thanks every supporter in the next morning edition.\n\npatreon.com/mudandiron (link in bio)\n\n#pixelart #ww1 #indiegame #gamedev #trenchwarfare #instagramgame #mudandiron"
+}

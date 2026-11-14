@@ -82,14 +82,15 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   const ig = theme.instagram.replace('@', '');
   $('ig-link').href = `https://instagram.com/${ig}`;
   $('ig-link').textContent = theme.instagram;
-  // dobrovolná podpora (Ko-fi): tlačítko jen když je v tématu adresa
+  // dobrovolná podpora (Patreon, theme.support.platform): tlačítko jen když je v tématu adresa
   if (theme.support?.url && theme.support.buttons !== false) { // support.buttons: false = tlačítka Support dočasně skrytá (stužky dárců zůstávají)
     $('support').hidden = false;
     // stálé tlačítko u lupy: na mobilu jen ikona, na počítači i text
     $('support-fab').hidden = false;
     $('support-fab').href = theme.support.url;
     $('support-link').href = theme.support.url;
-    $('support-note').textContent = `A one-time gift, if you want to. Write your Instagram handle in the message and your soldier gets the ${theme.support.name} ribbon. Honour only, never an advantage.`;
+    $('support-note').textContent = `Optional, if you want to help. Join on ${theme.support.platform || 'our page'} and send us your Instagram handle there: your soldier gets the ${theme.support.name} ribbon. Honour only, never an advantage.`;
+    if (theme.support.platform) $('support-link').textContent = `Support the front on ${theme.support.platform}`;
   }
   $('enlist-factions').innerHTML = '';
   for (const f of theme.factions) {
