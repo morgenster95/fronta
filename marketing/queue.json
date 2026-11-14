@@ -597,6 +597,40 @@
         "permalink": "https://www.instagram.com/stories/mudandiron/4029666516396388127",
         "at": "2026-11-13T18:15:17.317Z"
       }
+    },
+    {
+      "id": "reel-hill304",
+      "type": "reel",
+      "trigger": {
+        "race": "hill304"
+      },
+      "_note": "Schváleno uživatelem 14. 11.: vyjde samo do ~5 min od dobytí Hill 304, jen když vyhraje Hegemonie (varianta 0).",
+      "variants": [
+        {
+          "type": "reel",
+          "files": [
+            "reel_hill304.mp4"
+          ],
+          "caption": "🩶 HILL 304 HAS FALLEN TO THE HEGEMONY\n\nWave after wave they ran up the slope, through the fire, and took the factory on the top. The Hegemony reached 100 new soldiers first ({win} against {lose}). The deciding rifle belonged to {hero}, now Hero of Hill 304. 🎖️\n\n🌳 THE OBSERVATION TREE: on the hill stands a dead tree that is not a tree. It is steel, painted like bark, and a spotter sits inside. For 3 days Hegemony snipers and machine gunners shoot straighter. Concord, keep your heads down.\n\n⚔️ NEXT: THE RACE FOR BLACKWATER CANAL. This time it is not about recruits. The first side to kill 100 enemy soldiers takes it.\n\nComment HEGEMONY or CONCORD to enlist. Every rifle counts. Link in bio.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron"
+        }
+      ]
+    },
+    {
+      "id": "story-reel-hill304",
+      "type": "story",
+      "trigger": {
+        "race": "hill304"
+      },
+      "_note": "Schváleno uživatelem 14. 11.: vyjde samo do ~5 min od dobytí Hill 304, jen když vyhraje Hegemonie (varianta 0). Story hned po reelu.",
+      "variants": [
+        {
+          "type": "story",
+          "files": [
+            "story_reel-hill304.jpg"
+          ],
+          "caption": ""
+        }
+      ]
     }
   ]
 }
