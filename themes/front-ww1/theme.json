@@ -266,7 +266,8 @@
       },
       {
         "id": "canal",
-        "name": "Blackwater Canal"
+        "name": "Blackwater Canal",
+        "need": 200
       },
       {
         "id": "mill",
@@ -297,7 +298,8 @@
         "The tree keeps watching for one more day.",
         "Tonight the spotters climb down for the last time."
       ]
-    }
+    },
+    "_need": "need: výchozí počet nových vojáků na kótu; jednotlivá kóta může mít vlastní objectives[].need (Blackwater Canal 200: uživatel 14. 11. chce větší závody, 100 se naplní rychle)"
   },
   "honors": {},
   "schedule": {

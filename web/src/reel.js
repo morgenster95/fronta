@@ -109,6 +109,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'hill304') {
+    // vítězství Hegemonie na Hill 304: kopec, stužka, pozorovací strom, záběr ve hře, nový závod (cíl 200), výzva (reel-hill304.js)
+    return import('./reel-hill304.js').then(async ({ startHillReel }) => {
+      await startHillReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'wire') {
     // wiring party: historie, nové animace (plazení, světlice, kůl), potrhaný drát ve hře, dobrovolníci u drátu, výzva WIRE (reel-wire.js)
     return import('./reel-wire.js').then(async ({ startWireReel }) => {

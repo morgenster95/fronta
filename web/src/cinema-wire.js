@@ -26,7 +26,7 @@ export function makeWireScenes(tex, anims = {}) {
     };
   }
   const setOf = (o) => SETS[o?.side] || SETS.hegemony;
-  const P = { coil: img('/assets/props/wire_coil_0.png'), picket: img('/assets/props/screw_picket_0.png'), broken: img('/assets/props/wire_broken_0.png'), broken2: img('/assets/props/wire_broken_3.png'), hog: img('/assets/props/hedgehog_1.png') };
+  const P = { tree: img('/assets/props/observation_tree.png'), coil: img('/assets/props/wire_coil_0.png'), picket: img('/assets/props/screw_picket_0.png'), broken: img('/assets/props/wire_broken_0.png'), broken2: img('/assets/props/wire_broken_3.png'), hog: img('/assets/props/hedgehog_1.png') };
 
   // --- statické vrstvy ---
   const L = {};
@@ -62,6 +62,21 @@ export function makeWireScenes(tex, anims = {}) {
     L.stake = c;
   }
 
+  {
+    // svítání nad Hill 304: nebe do teplé, vrchol kopce vlevo, v dálce val nepřítele (pozorovací strom)
+    const c = off(W, H), cg = c.getContext('2d');
+    sky(cg, 0, 200, ['#141a30', '#2a2c48', '#5a4458', '#a0644c', '#d8925a', '#ecb878']);
+    cg.fillStyle = '#2a2220';
+    for (let x = 0; x < W; x++) cg.fillRect(x, Math.round(176 + 3 * Math.sin(x * 0.05 + 2)), 1, 30); // vzdálená země
+    cg.fillStyle = '#1e1816';
+    for (let x = 4; x < W; x += 9) cg.fillRect(x, 174 + (x % 3), 8, 3); // val nepřítele na obzoru
+    for (let x = 0; x < W; x++) { cg.fillStyle = '#231c1a'; cg.fillRect(x, Math.round(214 - 34 * Math.exp(-(((x - 40) / 70) ** 2))), 1, 140); } // svah kopce
+    sky(cg, 236, H, ['#2a221e', '#30271f', '#362b22']);
+    L.tree = c;
+  }
+  const spotN = (k) => lit(tex[`${k}_sniper`]?.south || tex[k]?.south, 'rgba(230,140,80,0.14)');
+  const SPOT = { hegemony: spotN('hegemony'), concord: spotN('concord') };
+
   const drawSp = (cv, x, y, k = 2) => { if (cv) g.drawImage(cv, Math.round(x), Math.round(y), cv.width * k, cv.height * k); };
   const propAt = (im, x, yb, k = 2) => { if (im.complete && im.naturalWidth) g.drawImage(im, Math.round(x - (im.naturalWidth * k) / 2), Math.round(yb - im.naturalHeight * k), im.naturalWidth * k, im.naturalHeight * k); };
   const rain = (t, n = 70, a = 0.3) => {
@@ -74,6 +89,23 @@ export function makeWireScenes(tex, anims = {}) {
   };
 
   const scenes = {
+    tree(t, o = {}) {
+      // pozorovací strom na vrcholu: zvětšený ×4, pozorovatel u paty kouká k nepříteli, telefonní drát dolů ze svahu, vítr cuchá trávu
+      g.drawImage(L.tree, 0, 0);
+      glow(g, 150, 150, 70, '#e8a060', 0.6, 0.8);
+      const k = 4, tx = 64, base = 236;
+      // telefonní drát: od stromu doleva dolů ze svahu
+      g.fillStyle = '#120e0c';
+      for (let x = tx - 6; x > -4; x -= 2) g.fillRect(x, Math.round(base - 6 + (tx - x) * 0.35 + Math.sin(x / 7) * 1.5), 2, 1);
+      propAt(P.tree, tx, base + 4, k);
+      const sp = SPOT[o.side === 1 ? 'concord' : 'hegemony'];
+      if (sp) drawSp(sp, tx + 24, base - 30 * 3 + 6, 3);
+      // záblesk dalekohledu (každé ~2 s)
+      if (Math.floor(t / 2) % 2 === 0 && (t % 2) < 0.25) { g.fillStyle = '#fff6dc'; g.fillRect(tx + 24 + 44, base - 78, 2, 1); }
+      // zrnka prachu ve vzduchu
+      g.fillStyle = 'rgba(236,184,120,0.5)';
+      for (let i = 0; i < 26; i++) { const x = ((i * 47 + t * (6 + (i % 5))) % (W + 20)) - 10, y = 60 + ((i * 83) % 160) + Math.sin(t + i) * 3; g.fillRect(Math.round(x), Math.round(y), 1, 1); }
+    },
     nml(t, o = {}) {
       const { crawlN, crawlF, proneN, proneF } = setOf(o);
       g.drawImage(L.nml, 0, 0);

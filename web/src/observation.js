@@ -6,7 +6,8 @@ import { loadTexture } from './assets.js';
 
 export async function initObservation({ world, anchor, over, roster, map, theme, tex, openX0, openX1, V = '' }) {
   const dev = import.meta.env.DEV ? new URLSearchParams(location.search).get('obs') : null;
-  const obs = roster.observation || (dev != null && dev !== '' ? { by: Number(dev), name: 'Hill 304' } : null);
+  const reel = import.meta.env.DEV ? new URLSearchParams(location.search).get('reel') : null;
+  const obs = roster.observation || (dev != null && dev !== '' ? { by: Number(dev), name: 'Hill 304' } : reel === 'hill304' ? { by: 0, name: 'Hill 304' } : null); // reel o vítězství se vyrábí předem
   if (!obs) return null;
   let treeTex;
   try { treeTex = await loadTexture(`/assets/props/observation_tree.png${V}`); } catch { return null; }

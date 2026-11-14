@@ -86,7 +86,7 @@ export function writeChronicle(state, day, { theme, story, weather, events = [],
 
   // stav závodu o kótu
   const race = theme.race && state.race ? (() => {
-    const need = theme.race.need;
+    const need = (theme.race.objectives[state.race.idx % theme.race.objectives.length] || {}).need || theme.race.need;
     const c = theme.factions.map((_, f) => state.soldiers.filter((s) => s.faction === f).length - state.race.base[f]);
     const lead = c[0] === c[1] ? null : c[0] > c[1] ? 0 : 1;
     const name = (theme.race.objectives[state.race.idx % theme.race.objectives.length] || {}).name;

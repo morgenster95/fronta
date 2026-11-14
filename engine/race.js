@@ -7,6 +7,9 @@ import { addEntry } from './soldier.js';
 
 const short = (theme, f) => theme.factions[f].name.replace(/^The /, '');
 
+// kolik nových vojáků je třeba na kótu (objectives[].need, jinak race.need); další kóty můžou být větší
+export const raceNeed = (theme, idx) => raceObjective(theme, idx)?.need || theme.race.need;
+
 export function raceObjective(theme, idx) {
   const list = theme.race?.objectives || [];
   if (!list.length) return null;
@@ -23,7 +26,7 @@ export function raceStatus(state, theme) {
   state.race ??= { idx: 0, base: theme.factions.map(() => 0) };
   const o = raceObjective(theme, state.race.idx);
   const c = counts(state, theme);
-  return { id: o.id, name: o.name, need: theme.race.need, counts: c.map((n, f) => n - state.race.base[f]), reward: o.rewardText || theme.race.reward, rewardKind: o.reward || 'barrage' };
+  return { id: o.id, name: o.name, need: o.need || theme.race.need, counts: c.map((n, f) => n - state.race.base[f]), reward: o.rewardText || theme.race.reward, rewardKind: o.reward || 'barrage' };
 }
 
 // Volá se po každém narukování. Vrací vítězství nebo null.
@@ -65,7 +68,7 @@ export function checkRace(state, theme, story, recruit) {
       `The deciding rifle belonged to @${recruit.handle}. ${v.reward === 'observation'
         ? `${(R.observation?.victory || '').replace('{days}', R.observation?.days || 3).replace('{objective}', st.name).replace('{them}', short(theme, 1 - f)).replace('{us}', short(theme, f))}, `
         : `For ${R.barrageDays} days the guns on the heights will pound the ${short(theme, 1 - f)} lines, `}` +
-      `and for ${R.days} days the high ground keeps the ${short(theme, f)} safer. The race for ${raceObjective(theme, state.race.idx + 1).name} begins now.`,
+      `and for ${R.days} days the high ground keeps the ${short(theme, f)} safer. The race for ${raceObjective(theme, state.race.idx + 1).name} begins now: the first side to bring ${raceNeed(theme, state.race.idx + 1)} new soldiers takes it.`,
   }];
   state.race = { idx: state.race.idx + 1, base: counts(state, theme) };
   return v;

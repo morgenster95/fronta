@@ -375,7 +375,7 @@ def build_story(name="story"):
     n = int(dur * SR)
     vo = json.load(open(os.path.join(REELS, f"{name}.vo.json"))) if os.path.exists(os.path.join(REELS, f"{name}.vo.json")) else {"lines": []}
     cue = {l[3]: l[0] for l in vo["lines"] if len(l) > 3}
-    if name == "ridge":
+    if name in ("ridge", "hill304"):  # vítězství na kótě: slavnostní hudba
         music = epic_score(dur, cue) * 1.5 + rain(dur) * 0.25
     else:
         music = (lament(dur) * 1.3 + drone(dur) * 0.35 + rain(dur) * 0.7) if name in ("barrage", "rip", "wire") else drone(dur) * 1.1 + rain(dur)
@@ -383,7 +383,7 @@ def build_story(name="story"):
     beat = 60 / 70
     # bubny: od Hegemonie, ztichnou před půlnocí a po dědicovi se rozjedou ke konci
     t = start
-    while t < dur - 3 and name != "ridge":  # ridge má bubny přímo v hudbě (epic_score)
+    while t < dur - 3 and name not in ("ridge", "hill304"):  # ridge má bubny přímo v hudbě (epic_score)
         quiet = any(a < t < b for a, b in quiet_parts)
         if not quiet:
             strength = 0.3 + 0.7 * min(1, (t - start) / (dur - start - 10))

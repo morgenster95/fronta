@@ -98,6 +98,12 @@ async function boot() {
   // bombardování: na straně poraženého přibývají krátery s každou nocí (pseudonáhoda podle kóty, takže je vidí všichni stejně)
   // krátery z dělostřelectva kóty: během bombardování přibývají každou nocí; po jeho konci (bez roster.barrage) se země pomalu „zahojí“:
   // první den po konci zůstane ~40 % kráterů, pak o 8 % méně za den, nejméně 15 % (pokyn uživatele 14. 11.: uber rozbombardované země)
+  // reel o vítězství na Hill 304 se vyrábí předem: bombardování z Verdel Ridge v něm už neběží (po vítězství už skončilo)
+  if (import.meta.env.DEV && new URLSearchParams(location.search).get('reel') === 'hill304' && roster.barrage) {
+    const v = (roster.victories || []).find((x) => x.name === roster.barrage.name);
+    if (v) v.barrageTo = roster.day;
+    roster.barrage = null;
+  }
   const lastShelled = roster.barrage
     ? { v: (roster.victories || []).find((x) => x.name === roster.barrage.name), target: roster.barrage.target, on: true }
     : (() => { const v = (roster.victories || []).find((x) => x.barrageTo != null && x.barrageTo <= roster.day); return v ? { v, target: 1 - v.faction, on: false } : null; })();

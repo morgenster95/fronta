@@ -333,3 +333,8 @@ Historie: falešné „pozorovací stromy“ (Francouzi od 1915, Britové), dut�
 ## 2026-11-14: Konec bombardování i na mapě (NASAZENO)
 Bombardování z Verdel Ridge má poslední noc v tahu Dne 6 (14. 11. 13:00 UTC). Web (`activeBarrage(..., visual)`) ho teď ukazuje jen do dne PŘED posledním tahem,
 po tahu už nepadají granáty ani na mapě. Krátery po něm se „hojí“: první den po konci zůstane ~40 % (při bombardování až ~100 %), pak o 8 % méně denně, nejméně 15 % (`web/src/main.js`).
+
+## 2026-11-14: Větší závody: cíl podle kóty (NASAZENO)
+`theme.race.objectives[].need` (jinak `race.need` = 100). **Blackwater Canal = 200** (uživatel: 100 se naplní rychle, další závod má být větší).
+Po dobytí se hned přepne počítadlo na webu (`roster.race` z `raceStatus`) i v novinách a Day reelu; zpráva o vítězství říká i nový cíl („the first side to bring 200 new soldiers takes it“).
+Ověřeno simulací: 5 rekrutů Hegemonie → vítězství hill304 (pozorovatelna), počítadlo Blackwater Canal 0/200.

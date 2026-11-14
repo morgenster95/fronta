@@ -35,7 +35,7 @@ const fire = kill ? { handle: kill.handle, sev: 'killed', place: 'fallen', role:
 // závod o další kótu (počty od začátku závodu), dopisy na dnešní noc, bombardování, nováčci od vydání
 const obj = theme.race?.objectives?.[state.race?.idx ?? 0];
 const raceN = [0, 1].map((f) => state.soldiers.filter((s) => s.faction === f).length - (state.race?.base?.[f] ?? 0));
-const race = obj && state.race?.idx > 0 ? { name: obj.name, counts: raceN, lead: raceN[0] >= raceN[1] ? 0 : 1, goal: theme.race.goal ?? 100 } : null;
+const race = obj && state.race?.idx > 0 ? { name: obj.name, counts: raceN, lead: raceN[0] >= raceN[1] ? 0 : 1, goal: obj.need || theme.race.need || 100 } : null;
 const letters = state.soldiers.filter((s) => s.letter === day && s.status !== 'fallen').length;
 const vic = (state.victories || []).at(-1);
 const shelled = vic && vic.barrageTo >= day + 1 ? { side: 1 - vic.faction, nights: vic.barrageTo - day, from: vic.name } : null;
