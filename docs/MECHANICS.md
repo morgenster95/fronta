@@ -344,3 +344,7 @@ Uživatel: další závod nemá být o nových vojácích, ale o tom, kdo dřív
 počítají se padlí soupeře od začátku závodu (záznamy rodů `s.fallen`, den padnutí > `state.race.startDay`), vyhodnocuje se po denním boji; při shodě vyhrává ten, kdo má víc.
 Hrdina = voják vítězné strany, který od začátku závodu zabil nejvíc (`s.kills` minus stav na začátku, `state.race.killsFrom`). Web, noviny („Hegemony 12/100 enemy dead“) a Day reel berou počty z `raceStatus`.
 Simulace (4 losy, od vítězství na Hill 304): po 7 dnech Hegemonie 4–9 / Concord 17–54, po 14 dnech 7–15 / 21–92 → Concord vede (Hegemonii umírají ranění kvůli nedostatku mediků) a závod trvá ~2–3 týdny.
+
+## 2026-11-14: Bez denních mezí raněných (NASAZENO na pokyn uživatele)
+`battle.daily` (aspoň 1 a pod granáty nejvýš 30 raněných na 80 vojáků strany) odstraněno, ztráty dává jen náhoda. Simulace (20 běhů × 3 dny) s mezemi i bez nich vyšla stejně (H 13,3 padlých / 73 raněných, C 2,3 / 41): meze se dnes neuplatňovaly.
+Nasycení palby (`roles.saturation` = 1) zůstává: když má střelec u sebe víc vlastních střelců než nepřátel na dostřel, každý trefí méně (střílí po stejných cílech).

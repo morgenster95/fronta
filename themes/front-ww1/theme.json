@@ -528,13 +528,6 @@
     "gunsAfterVictory": true,
     "gunsWords": "\\bshell(?!\\s*holes?\\b)|shrapnel|bombard|barrage|artillery|near miss|splinter|mortar|howitzer|whizz",
     "_guns": "Dělostřelectvo střílí až po první výhře v závodě o kótu (pak 3 dny bombardování). Do té doby se texty se slovy gunsWords nepoužijí a zásahy z pozadí jsou kulky, granáty, drát.",
-    "daily": {
-      "_": "Nových raněných na stranu za den: za klidu aspoň min a nejvýš max (z pozadí; palba hráčů se do max počítá), pod granáty nejvýš shellMax. Meze jsou na per vojáků strany a rostou s její velikostí (strana 160 vojáků = 2×).",
-      "min": 1,
-      "max": 99,
-      "shellMax": 30,
-      "per": 80
-    },
     "_hit": "pozadí: dělostřelectvo, granáty, miny (~60 % zásahů). Pásmo 0.008–0.03",
     "line": {
       "front": 1,
@@ -800,7 +793,8 @@
         "done": "ran new belts of wire across no-man's land",
         "wire": 0.5
       }
-    }
+    },
+    "_daily": "Denní meze raněných (min 1 / max 30 na 80 vojáků) odstraněny 14. 11. na pokyn uživatele: ztráty dává jen náhoda (v simulaci se meze stejně neuplatnily). Engine je umí, kdyby byly potřeba: battle.daily { min, max, shellMax, per }."
   },
   "house": {
     "_note": "Odznaky rodu (engine/house.js): udělí se jednou a zůstávají v rodu napříč generacemi. Rodinné album na webu ukazuje i medaile a tituly všech generací.",
