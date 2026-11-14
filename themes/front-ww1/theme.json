@@ -260,7 +260,9 @@
       },
       {
         "id": "hill304",
-        "name": "Hill 304"
+        "name": "Hill 304",
+        "reward": "observation",
+        "rewardText": "Takes the high ground and its observation tree: for 3 days the winner's snipers and machine gunners shoot straighter, a safer week for its soldiers, a ribbon for everyone on the winning side, and the title of hero for the soldier who tips the balance."
       },
       {
         "id": "canal",
@@ -278,7 +280,24 @@
         "id": "orchard",
         "name": "the Weeping Orchard"
       }
-    ]
+    ],
+    "observation": {
+      "days": 3,
+      "fire": 0.3,
+      "roles": [
+        "sniper",
+        "machinegunner"
+      ],
+      "_": "odměna kóty s reward 'observation' (Hill 304; místo bombardování, pokyn uživatele 14. 11.): `days` dní od příštího dne mají odstřelovači a kulometčíci vítěze palbu ×(1+fire); web ukáže falešný strom-pozorovatelnu za linií vítěze; noviny každé ráno hlášení",
+      "victory": "For {days} days the spotters in the observation tree on {objective} will watch every move in the {them} trenches, and the {us} snipers and machine gunners will shoot straighter for it",
+      "h": "Eyes on {objective}",
+      "text": "From the observation tree on {objective} the {us} spotters watched the {them} line all day and called out every head that showed. {us} snipers and machine gunners hit {hits} men. {left}",
+      "left": [
+        "The tree keeps watching for {n} more days.",
+        "The tree keeps watching for one more day.",
+        "Tonight the spotters climb down for the last time."
+      ]
+    }
   },
   "honors": {},
   "schedule": {

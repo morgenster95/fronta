@@ -3,7 +3,7 @@
 import { createSoldier, tickSoldier, heir, selectForStory, addEntry } from './soldier.js';
 import { enlistEntry, weatherFor, eventEntry, tplKey, makeBackground, backgroundLine, silenceGuns } from './story.js';
 import { writeChronicle } from './chronicle.js';
-import { checkRace, raceStatus, raceDanger, activeBarrage, awardHonors } from './race.js';
+import { checkRace, raceStatus, raceDanger, activeBarrage, activeObservation, awardHonors } from './race.js';
 import { pick, weighted, rngFor } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
@@ -443,7 +443,10 @@ export function dailyTick(state, theme, story, ctx = {}) {
   const letterCut = theme.battle?.letter?.cut ?? 0.15;
   const letterOf = (s) => (s.letter === day - 1 ? 1 - letterCut : 1);
   const shellOf = (s) => orderShell(state, s.faction, day) * letterOf(s);
-  const fireOf = (s) => orderFire(state, s.faction, day, s.archetype);
+  // pozorovatelna na kótě (theme.race.observation): odstřelovači a kulometčíci strany, která ji drží, střílí přesněji
+  const obs = theme.race?.observation && activeObservation(state, day);
+  const obsOf = (s) => (obs && s.faction === obs.by && (theme.race.observation.roles || []).includes(s.archetype) ? 1 + (theme.race.observation.fire || 0) : 1);
+  const fireOf = (s) => orderFire(state, s.faction, day, s.archetype) * obsOf(s);
   const healOf = (s) => orderHeal(state, s.faction, day);
   const exposedOf = (s) => orderExposed(state, s.faction, day) * letterOf(s);
   const dieOf = (s) => orderDie(state, s.faction, day);
@@ -582,6 +585,7 @@ export function buildPublic(state, theme) {
     race: raceStatus(state, theme),
     victories: (state.victories || []).slice(-10).reverse(),
     barrage: activeBarrage(state, state.day, true),
+    observation: activeObservation(state, state.day, true), // pozorovatelna na kótě (web: falešný strom za linií vítěze)
     history: (state.events || []).slice(-30).reverse(),
     valley: valley.roster,
     vote: state.vote ? {

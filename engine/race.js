@@ -23,7 +23,7 @@ export function raceStatus(state, theme) {
   state.race ??= { idx: 0, base: theme.factions.map(() => 0) };
   const o = raceObjective(theme, state.race.idx);
   const c = counts(state, theme);
-  return { id: o.id, name: o.name, need: theme.race.need, counts: c.map((n, f) => n - state.race.base[f]), reward: theme.race.reward };
+  return { id: o.id, name: o.name, need: theme.race.need, counts: c.map((n, f) => n - state.race.base[f]), reward: o.rewardText || theme.race.reward, rewardKind: o.reward || 'barrage' };
 }
 
 // Volá se po každém narukování. Vrací vítězství nebo null.
@@ -36,9 +36,12 @@ export function checkRace(state, theme, story, recruit) {
   const day = state.day;
   const v = {
     id: st.id, name: st.name, faction: f, day, hero: recruit.handle,
-    from: day + 1, to: day + R.days, barrageTo: day + R.barrageDays,
-    counts: st.counts,
+    from: day + 1, to: day + R.days, counts: st.counts,
+    reward: st.rewardKind || 'barrage',
   };
+  // odměna kóty: dělostřelectvo (výchozí) nebo pozorovatelna (theme.race.observation) na pár dní
+  if (v.reward === 'observation') v.obsTo = day + (R.observation?.days || 3);
+  else v.barrageTo = day + R.barrageDays;
   state.victories = [...(state.victories || []), v];
   // stuha všem vojákům vítězné strany, titul hrdinovi, zápis každému vojákovi obou stran
   const vars = (s) => ({ objective: st.name, us: short(theme, s.faction), them: short(theme, 1 - s.faction), day: String(day) });
@@ -59,7 +62,9 @@ export function checkRace(state, theme, story, recruit) {
     day,
     h: `${short(theme, f)} took ${st.name}`,
     text: `The ${short(theme, f)} reached ${st.need} soldiers first (${st.counts[f]} against ${st.counts[1 - f]}) and took ${st.name}. ` +
-      `The deciding rifle belonged to @${recruit.handle}. For ${R.barrageDays} days the guns on the heights will pound the ${short(theme, 1 - f)} lines, ` +
+      `The deciding rifle belonged to @${recruit.handle}. ${v.reward === 'observation'
+        ? `${(R.observation?.victory || '').replace('{days}', R.observation?.days || 3).replace('{objective}', st.name).replace('{them}', short(theme, 1 - f)).replace('{us}', short(theme, f))}, `
+        : `For ${R.barrageDays} days the guns on the heights will pound the ${short(theme, 1 - f)} lines, `}` +
       `and for ${R.days} days the high ground keeps the ${short(theme, f)} safer. The race for ${raceObjective(theme, state.race.idx + 1).name} begins now.`,
   }];
   state.race = { idx: state.race.idx + 1, base: counts(state, theme) };
@@ -78,8 +83,14 @@ export function raceDanger(state, theme, faction, day) {
 
 // aktivní dělostřelectvo: cílová frakce, nebo null. visual = pro web už v den dobytí (palba je vidět hned, zásahy počítá boj až od dalšího dne)
 export function activeBarrage(state, day, visual = false) {
-  const v = (state.victories || []).filter((x) => day >= (visual ? x.day : x.from) && day <= x.barrageTo).at(-1);
+  const v = (state.victories || []).filter((x) => x.barrageTo != null && day >= (visual ? x.day : x.from) && day <= x.barrageTo).at(-1);
   return v ? { target: 1 - v.faction, by: v.faction, name: v.name, since: v.day } : null;
+}
+
+// aktivní pozorovatelna (odměna kóty 'observation'): kdo vidí do zákopů soupeře, nebo null. visual = pro web už v den dobytí
+export function activeObservation(state, day, visual = false) {
+  const v = (state.victories || []).filter((x) => x.obsTo != null && day >= (visual ? x.day : x.from) && day <= x.obsTo).at(-1);
+  return v ? { by: v.faction, target: 1 - v.faction, name: v.name, since: v.day, to: v.obsTo } : null;
 }
 
 // Čestné tituly: první narukovaný každé frakce + ruční tituly z tématu (theme.honors: { handle: "titul" }).

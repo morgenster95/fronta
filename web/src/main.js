@@ -11,6 +11,7 @@ import { buildHospitals, roofAlpha, hospitalSize } from './hospital.js';
 import { hospitalNav } from './hospital-nav.js';
 import { initOrderFx } from './orders-fx.js';
 import { initWire, placeVolunteers } from './wire.js';
+import { initObservation } from './observation.js';
 import { getJson, loadTexture, loadImage, loadAtlas } from './assets.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
@@ -316,6 +317,7 @@ async function boot() {
   const volunteers = placeVolunteers({ soldiers, roster, map, theme, openX0, openX1 });
   const wireFx = await initWire({ world, anchor: terrainLayer, roster, map, anims, theme, openX0, openX1, V, volunteers });
   if (wireFx) propImages.noWire = true;
+  const obsFx = await initObservation({ world, anchor: terrainLayer, over: overLayer, roster, map, theme, tex, openX0, openX1, V }); // pozorovatelna na kótě (odměna)
 
   const placed = soldiers.filter((s) => s.slot && s.status !== 4 && s.status !== 2 && s.status !== 3);
   const TINT = [0xffffff, 0xf0ece4, 0xe6e2da, 0xfff4e8];
@@ -632,7 +634,7 @@ async function boot() {
   const hospNav = hospitalNav({ world, cam, sites: hospitals?.sites, theme, soldiers, hidden: !!reelParam && reelParam !== 'news' });
 
   // --- smyčka ---
-  if (import.meta.env.DEV) window.__front = { life, cam, soldiers, tex, anims, hospitals, orderFx, open: (s) => ui.openSoldier(s) }; // ladění v konzoli
+  if (import.meta.env.DEV) window.__front = { obsFx, life, cam, soldiers, tex, anims, hospitals, orderFx, open: (s) => ui.openSoldier(s) }; // ladění v konzoli
   const visibleSoldiers = [];
   // ?slow=N zpomalí animace a efekty N× (jen pro kontrolu výstřelů na snímcích obrazovky)
   const slow = Math.max(1, Number(new URLSearchParams(location.search).get('slow')) || 1);

@@ -321,3 +321,11 @@ Kdo se přihlásil a do noci se těžce zranil, toho nepustí medik: v deníku m
 Wiring party se vyhodnocuje před ostřelováním téhož tahu, takže drát pod bombardováním může skončit níž než ráno (Den 6: 24 % → 22 % i po 577 yardech oprav).
 Zpráva „The wire is down“ pak u strany pod granáty dodá: „In the night {n} volunteers crawled out and put up {yards} yards of new wire. Then the last shells came down and tore much of it apart again.
 Without the wiring parties it would be down to {without}%.“ (`theme.battle.wiring.news.mendedShelled`, `engine/battle.js`). Mechanika se nemění, jen vysvětlení v novinách.
+
+## 2026-11-14: Odměna za Hill 304 = pozorovatelna (NASAZENO na pokyn uživatele; bombardování se opakovalo)
+Každá kóta má vlastní odměnu (`theme.race.objectives[].reward`, výchozí `barrage`). Hill 304: `observation` (`theme.race.observation`):
+3 dny od příštího dne (uživatel: 7 dní je moc) mají **odstřelovači a kulometčíci vítěze palbu ×1,3** (simulace 3 dny: jejich zásahy 22,5 → 29,7, padlí poraženého ~+0,5).
+Zůstává: bezpečnější týden pro vítěze (`winDanger`/`loseDanger`), stužka, hrdina. Bez bombardování (`activeBarrage` bere jen vítězství s `barrageTo`).
+Noviny: při dobytí věta o pozorovatelně (`observation.victory`), pak každé ráno „Eyes on Hill 304“ (kolik mužů trefili odstřelovači a kulometčíci, kolik dní zbývá).
+Web: falešný ocelový strom se štěrbinou (PixelLab, `web/public/assets/props/observation_tree.png`, zdroj `art/props/observation/`) mezi valem a drátem vítěze, pozorovatel (sprite odstřelovače) a telefonní drát (`web/src/observation.js`, `roster.observation`, náhled `/?obs=0`).
+Historie: falešné „pozorovací stromy“ (Francouzi od 1915, Britové), dutá ocelová kopie skutečného stromu vyměněná v noci; skutečná Côte 304 u Verdunu byla klíčová kvůli výhledu.

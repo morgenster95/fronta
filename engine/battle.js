@@ -18,7 +18,7 @@
 
 import { rngFor } from './rng.js';
 import { eventEntry } from './story.js';
-import { activeBarrage } from './race.js';
+import { activeBarrage, activeObservation } from './race.js';
 import { orderStretchers, orderMedics, orderGuns, orderBarrage } from './orders.js';
 import { fallSoldier, addEntry } from './soldier.js';
 
@@ -553,6 +553,15 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         `${bad.length ? `, ${bad.length} of them badly` : ''}` +
         `${killed ? `. ${killed} ${killed === 1 ? 'man was' : 'men were'} killed where they stood, and the bearers could not reach every stretcher under the shells` : ''}. The wire there is in shreds.`,
     });
+  }
+  // Gazette: hlášení z pozorovatelny na kótě (odměna 'observation'): kolik mužů trefili odstřelovači a kulometčíci, kolik dní zbývá
+  const OB = theme.race?.observation, obs = OB && activeObservation(state, day);
+  if (obs && day >= (obs.since ?? day) + 1) {
+    const hits = (OB.roles || []).reduce((a, r) => a + (stats[obs.by].hits.fire[r] || 0), 0);
+    const n = obs.to - day, L = OB.left || [];
+    const left = (n > 1 ? L[0] : n === 1 ? L[1] : L[2] || '').replace('{n}', n);
+    const fill = (x) => x.replaceAll('{objective}', obs.name).replaceAll('{us}', short(theme, obs.by)).replaceAll('{them}', short(theme, obs.target)).replace('{hits}', hits).replace('{left}', left);
+    out.news.push({ day, kind: 'observation', h: fill(OB.h), text: fill(OB.text) });
   }
   // Gazette: stav drátu v zemi nikoho a výzva k wiring party (texty theme.battle.wiring.news)
   const WN = cfg.wiring?.news;

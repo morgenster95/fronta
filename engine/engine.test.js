@@ -1226,3 +1226,12 @@ test('wiring party: nezvěstný se přihláškou WIRE vrátí do zákopu (zápis
   assert.deepEqual(wiringReturns(s, theme).map((x) => x.id), [b.id]);
   assert.equal(b.status, 'active');
 });
+
+test('odměna kóty: pozorovatelna místo bombardování (Hill 304), 3 dny, jen přesnější palba odstřelovačů a kulometčíků vítěze', async () => {
+  const { activeBarrage, activeObservation } = await import('./race.js');
+  const st = { victories: [{ id: 'hill304', name: 'Hill 304', faction: 0, day: 6, from: 7, to: 13, reward: 'observation', obsTo: 9 }] };
+  assert.equal(activeBarrage(st, 7), null, 'pozorovatelna nebombarduje');
+  assert.deepEqual(activeObservation(st, 7), { by: 0, target: 1, name: 'Hill 304', since: 6, to: 9 });
+  assert.equal(activeObservation(st, 10), null, 'po 3 dnech konec');
+  assert.ok(activeObservation(st, 6, true), 'web ji ukáže už v den dobytí');
+});
