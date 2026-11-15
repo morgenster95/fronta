@@ -1,0 +1,18 @@
+{
+  "_note": "Návrh hlasování (15. 11.): rozšíření nemocnice / nový drát / munice. Obrázek: python marketing/make_vote.py build. Do marketing/queue.json až se souhlasem uživatele a časem (publishAt), k tomu story (node tools/story-for.mjs vote-build).",
+  "id": "vote-build",
+  "type": "image",
+  "files": ["vote_build_1.jpg"],
+  "caption": "THE FRONT DECIDES ⚔️\n\nThe hospitals are full and men are dying on the stretchers. The Hegemony wire is in shreds. Now each side picks what it needs most.\n\nComment ONE word:\n🏥 HOSPITAL: a bigger hospital. 4 more beds and 4 more stretchers. Fewer men die waiting.\n⛓️ WIRE: new belts of wire across your whole front. Fewer of your men get hit.\n📦 AMMO: an ammunition train. Your shooters fire 40% more for 3 days.\n\nYour soldier is your vote: we know which side you serve, so no need to write it. Each side counts its own votes, so the two sides can choose differently. Not enlisted yet? Comment CONCORD or HEGEMONY together with your choice.\n\nThe winner for each side is announced in the Trench Gazette at 13:00 UTC.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
+  "vote": {
+    "question": "What does your side need most?",
+    "perFaction": true,
+    "minHours": 8,
+    "note": "Comment one word under our latest post. Each side votes for itself; your soldier is your ballot.",
+    "options": [
+      { "kw": "HOSPITAL", "label": "A bigger hospital: 4 more beds and 4 more stretchers", "build": "dugout", "outcome": "The {side} dug a second hospital dugout: more beds, more stretchers." },
+      { "kw": "WIRE", "label": "New wire belts across the whole front: fewer men hit", "build": "wire", "outcome": "The {side} ran new belts of wire across no man's land." },
+      { "kw": "AMMO", "label": "Ammunition train: your shooters fire 40% more for 3 days", "fire": 1.4, "days": 3, "outcome": "An ammunition train reached the {side} line: the shooters fire more." }
+    ]
+  }
+}

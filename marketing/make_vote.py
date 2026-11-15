@@ -1,5 +1,6 @@
 """Post hlasování o rozkazech (1080×1350): jedno hlasování, tři volby pro všechny (DUGOUTS, DOCTOR, AMMO), každá s ilustrací ze hry.
 Použití: python marketing/make_vote.py  → marketing/promo/vote_orders_1.jpg
+        python marketing/make_vote.py build → marketing/promo/vote_build_1.jpg (HOSPITAL / WIRE / AMMO, 15. 11.)
 """
 import math
 import os
@@ -16,6 +17,18 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROMO = os.path.join(ROOT, "marketing", "promo")
 AW, AH = 70, 50  # ilustrace (x, y rozměr)
 
+VARIANTS = {
+    "orders": ("vote_orders_1.jpg", "THREE ORDERS. PICK ONE.", ("dugouts", "doctor", "ammo"), [
+        ("DUGOUTS", "DEEP SHELTERS", "FEWER HITS TAKEN"),
+        ("DOCTOR", "A SURGEON ARRIVES", "FEWER DEAD, HEALS FAST"),
+        ("AMMO", "AMMUNITION TRAIN", "SHOOTERS FIRE 40% MORE"),
+    ]),
+    "build": ("vote_build_1.jpg", "WHAT DOES YOUR SIDE NEED?", ("hospital", "wire", "ammo"), [
+        ("HOSPITAL", "A BIGGER HOSPITAL", "MORE BEDS, FEWER DEAD"),
+        ("WIRE", "NEW WIRE BELTS", "FEWER MEN HIT"),
+        ("AMMO", "AMMUNITION TRAIN", "40% MORE FIRE, 3 DAYS"),
+    ]),
+}
 OPTIONS = [
     ("DUGOUTS", "DEEP SHELTERS", "FEWER HITS TAKEN"),
     ("DOCTOR", "A SURGEON ARRIVES", "FEWER DEAD, HEALS FAST"),
@@ -148,13 +161,15 @@ def ammo_art():
     return im
 
 
-def make():
+def make(variant="orders"):
+    global OPTIONS
+    fname, sub, shots, OPTIONS = VARIANTS[variant]
     im = canvas()
     grad(im, (0, 0, W, H), [P["ink"], P["dark"], P["mud0"]])
     shade(im, (0, 0, W, H), strength=0.4)
     d = ImageDraw.Draw(im)
     text_c(d, W // 2, 8, "THE FRONT DECIDES", font(14, True), P["gold"])
-    text_c(d, W // 2, 27, "THREE ORDERS. PICK ONE.", font(8), P["pale"])
+    text_c(d, W // 2, 27, sub, font(8), P["pale"])
     arts = (dugout_art(), doctor_art(), ammo_art())
     for i, ((kw, title, line), art) in enumerate(zip(OPTIONS, arts)):
         y = 42 + i * 60
@@ -171,10 +186,10 @@ def make():
     text_c(d, W // 2, 239, "YOUR SOLDIER IS YOUR VOTE.", font(8), P["pale"])
     text_c(d, W // 2, 248, "THE WINNER IS ANNOUNCED IN THE GAZETTE.", font(8), P["gold"])
     footer(d, H - 11)
-    out = os.path.join(PROMO, "vote_orders_1.jpg")
+    out = os.path.join(PROMO, fname)
     big = up(im, K).convert("RGB")
     # ilustrace přímo ze hry (tools/shoot-game.mjs: stejné sprity a terén, zoom 5 = 1 pixel hry = 1 pixel mřížky postu); jinak kreslené náhrady
-    for i, name in enumerate(("dugouts", "doctor", "ammo")):
+    for i, name in enumerate(shots):
         f = os.path.join(ROOT, "marketing", "art", f"vote_{name}.png")
         if os.path.exists(f):
             shot = Image.open(f).convert("RGB").resize((AW * K, AH * K), Image.NEAREST)
@@ -184,4 +199,4 @@ def make():
 
 
 if __name__ == "__main__":
-    make()
+    make(sys.argv[1] if len(sys.argv) > 1 else "orders")
