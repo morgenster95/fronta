@@ -685,6 +685,26 @@
     "at": "2026-11-15T09:43:14+0000",
     "likes": 0,
     "reply": false
+   },
+   {
+    "id": "18125835275058459",
+    "handle": "ewalters120",
+    "faction": 1,
+    "kw": "AMMO",
+    "text": "Concord AMMO (more concord bullets means more hegemony corpses)",
+    "at": "2026-11-15T09:49:20+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18123248576073092",
+    "handle": "vinnie2shoes",
+    "faction": 1,
+    "kw": "PILLBOXES",
+    "text": "Concord pillboxes, cut those hegemony dogs down on their next push",
+    "at": "2026-11-15T09:45:03+0000",
+    "likes": 1,
+    "reply": false
    }
   ]
  },
