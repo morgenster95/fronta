@@ -2,9 +2,10 @@
 //  • DUGOUTS  – hluboké kryty proti bombardování: u zálohy strany stojí pytlové kryty s trámovým vchodem a hlínou (jen po dobu rozkazu),
 //  • DOCTOR   – u obvaziště / nemocnice se mezi raněnými prochází lékař v bílém plášti (sprite zdravotníka, červený kříž nad hlavou).
 //  • AMMO    – sklad munice v týlu vedle obvaziště: bedny, police s náboji, plachta a pytlový val (mechanika zvyšuje palbu vlastních střelců),
-//  • PILLBOXES – betonové kulometné bunkry v přední linii (nápad Hegemonie z Rady fronty): kulometčíci a odstřelovači střílí víc (rozkaz `fire`).
+//  • PILLBOXES – betonové kulometné bunkry (obrázek z PixelLabu) v přední linii (nápad Hegemonie z Rady fronty): kulometčíci a odstřelovači střílí víc (rozkaz `fire`).
 // V dev režimu jde vyzkoušet bez hlasování: /?orders=0:DUGOUTS,0:DOCTOR  (strana:heslo).
 import { Container, Graphics, Sprite, Texture } from 'pixi.js';
+import { loadTexture } from './assets.js';
 
 const C = { ink: 0x0e0d0c, mud0: 0x2b2722, mud1: 0x3d3730, mud2: 0x524a3f, mud3: 0x6b6152, sand: 0x857a68, bone: 0xa39782, pale: 0xc4b8a0, white: 0xe3d9c3, rust: 0x7e3b2a, steel: 0x666d70 };
 
@@ -150,6 +151,8 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
 
   const pbTop = new Container(); // bunkry před valem (nad pytli)
   world.addChild(pbTop);
+  const pbs = []; // bunkry: záblesky kulometu v update()
+  const flash = new Graphics();
   // --- PILLBOXES: betonové bunkry v přední linii před stanovišti, ~jeden na 10 stanovišť otevřené části fronty ---
   theme.factions.forEach((_, f) => {
     if (!has('PILLBOXES', f)) return;
@@ -159,18 +162,37 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
     for (const sl of slots) {
       if (sl.x - lastX < 300) continue;
       lastX = sl.x;
-      const s = new Sprite(pillboxTexture(f, Math.round(sl.x) % 7));
+      const s = new Sprite(pillboxTexture(f, Math.round(sl.x) % 7)); // kreslená náhrada, než se načte obrázek z PixelLabu
+      // obrázky z PixelLabu (15. 11.): zepředu s průzorem (strana míří dolů, vidíme čelo), zezadu se vchodem (strana míří nahoru)
+      loadTexture(toEnemy > 0 ? '/assets/props/pillbox.png' : '/assets/props/pillbox_back.png').then((t) => { s.texture = t; }).catch(() => {});
+      pbs.push({ s, front: toEnemy > 0, t0: (Math.round(sl.x) * 37) % 4000 });
       s.anchor.set(0.5, 0.5);
       s.x = Math.round(sl.x + 14); s.y = Math.round(sl.y + toEnemy * 18);
       // bunkr před valem: u strany, která míří dolů, leží před pytli (nad nimi); u druhé ho zakryjí vojáci v zákopu
       (toEnemy > 0 ? pbTop : layer).addChild(s);
     }
   });
+  if (pbs.length) { world.addChild(flash); }
   let raised = false;
   return {
     shelters: [...layer.children, ...pbTop.children],
     docs,
     update(now, view) {
+      // kulomet v bunkru střílí dávkami: každé ~3 s dávka 6 záblesků z průzoru (u bunkru zezadu je záblesk vidět nad střechou)
+      if (pbs.length) {
+        flash.clear();
+        for (const p of pbs) {
+          const { s } = p;
+          if (view && (s.x < view.x0 - 40 || s.x > view.x1 + 40 || s.y < view.y0 - 40 || s.y > view.y1 + 40)) continue;
+          const u = (now + p.t0) % 3000;
+          if (u > 900) continue; // mezi dávkami ticho
+          if (Math.floor(u / 70) % 2) continue; // záblesk / pauza
+          const x = s.x, y = p.front ? s.y + 7 : s.y - 17, k = Math.floor(u / 140) % 2;
+          flash.rect(x - 2, y - 1, 4, 3).fill({ color: 0xffe9a8 });
+          flash.rect(x - 1 - k, y + (p.front ? 2 : -3), 2 + 2 * k, 2).fill({ color: 0xf2a43a });
+          flash.rect(x - 3, y, 1, 1).fill({ color: 0xf2a43a }); flash.rect(x + 2, y, 1, 1).fill({ color: 0xf2a43a });
+        }
+      }
       if (!raised && docs.length) { raised = true; world.setChildIndex(top, world.children.length - 1); } // lékař nad vojáky
       for (const d of docs) {
         const T = 9000, u = ((now + d.t0) % (2 * T)) / T; // tam a zpět

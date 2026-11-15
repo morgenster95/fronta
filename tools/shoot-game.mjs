@@ -19,7 +19,7 @@ const target = await p.evaluate((mode, zoom) => {
   const f = window.__front, site = f.hospitals?.sites.find((x) => x.faction === 0);
   let x, y;
   if (mode === 'hospital') { x = site.x; y = site.y - 4; }
-  else if (mode === 'pillbox') { const h = f.soldiers.filter((s) => s.faction === 0 && s.slot?.line === 'front'); const pb = f.orderFx.shelters.filter((c) => c.texture.width === 44).map((c) => ({ c, d: Math.min(...h.map((s) => Math.hypot(s.x - c.x, s.y - c.y))) })).sort((a, b) => a.d - b.d); const c = pb[0].c; x = c.x; y = c.y - 16; }
+  else if (mode === 'pillbox') { const h = f.soldiers.filter((s) => s.faction === 0 && s.slot?.line === 'front'); const pb = f.orderFx.shelters.filter((c) => c.texture.width === 44 || c.texture.width === 48).map((c) => ({ c, d: Math.min(...h.map((s) => Math.hypot(s.x - c.x, s.y - c.y))) })).sort((a, b) => a.d - b.d); const c = pb[0].c; x = c.x; y = c.y - 16; }
   else if (mode === 'wire') { const w = f.soldiers.filter((s) => s.onWire); const m = w[Math.floor(w.length / 2)] || site; x = m.x; y = m.y - 6; }
   else if (mode === 'doctor') { const bd = site.beds[0]; x = (bd.x + site.x) / 2 - 6; y = bd.y + 8; }
   else if (mode === 'ammo') { x = site.x + 150; y = site.y + 2; }

@@ -85,3 +85,6 @@
 {"time": "2026-11-13T10:56:54Z", "character": "image_pro", "name": "wire_coil", "direction": "-", "group": "089b59d1-6a88-43d4-beb0-e9217116ad59", "cost": 10, "error": null}
 {"time": "2026-11-13T10:56:55Z", "character": "image_pro", "name": "screw_picket", "direction": "-", "group": "07530335-3aa7-4e0f-a1b2-5810afcffecc", "cost": 10, "error": null}
 {"time": "2026-11-14T07:13:02Z", "character": "image_pro", "name": "observation_tree", "direction": "-", "group": "e44c542b-9fd7-4f5c-8e44-896bd9f2048d", "cost": 10, "error": null}
+{"time": "2026-11-15T09:21:47Z", "character": "image_pro", "name": "pillbox", "direction": "-", "group": "d42e4cc4-e332-422d-b625-5be953adb5d8", "cost": 5, "error": null}
+{"time": "2026-11-15T09:22:30Z", "character": "image_pro", "name": "pillbox_2", "direction": "-", "group": "8abded37-fdc4-425d-9b7a-16734b9dc563", "cost": 5, "error": null}
+{"time": "2026-11-15T09:23:38Z", "character": "image_pro", "name": "pillbox_back", "direction": "-", "group": "535be0cf-e044-4df3-ab95-fd016e493652", "cost": 5, "error": null}

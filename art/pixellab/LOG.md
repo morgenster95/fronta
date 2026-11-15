@@ -126,3 +126,6 @@ Příkaz: `python tools/pixellab.py pm <postava> <název> <směr> <snímek> "<po
 - plazení zepředu: start ze snímku lehnutí (`*@prone_south_8.png`), „crawling on the belly toward the viewer, left and right elbows pulling forward in turn, both arms always visible“
 - odstřelovač z boku: start `concord_sniper_east.png` (statická herní póza), „raises the rifle to the shoulder, aims to the right and fires one shot with recoil, then lowers it“
 - kulometčík: start `hegemony_machinegunner@crouch_south_0.png`, „fires the machine gun held in both hands at the hip toward the viewer, the gun shakes with rapid recoil“
+| pillbox/pillbox_0.png (48×32, betonový bunkr, style hedgehog) | create_image_pro_flash | d42e4cc4… | 5 | ✗ neurčitý tvar |
+| pillbox/pillbox_1.png → props/pillbox.png (zepředu, průzor s hlavní) | create_image_pro_flash, paleta | 8abded37… | 5 | ✔ (15. 11., hlasování PILLBOXES) |
+| pillbox/pillbox_back.png → props/pillbox_back.png (zezadu, vchod se schody; Concord) | create_image_pro_flash + style pillbox_1 | 535be0cf… | 5 | ✔ |
