@@ -1,6 +1,6 @@
 """Post hlasování o rozkazech (1080×1350): jedno hlasování, tři volby pro všechny (DUGOUTS, DOCTOR, AMMO), každá s ilustrací ze hry.
 Použití: python marketing/make_vote.py  → marketing/promo/vote_orders_1.jpg
-        python marketing/make_vote.py build → marketing/promo/vote_build_1.jpg (HOSPITAL / WIRE / AMMO, 15. 11.)
+        python marketing/make_vote.py build → marketing/promo/vote_build_1.jpg (HOSPITAL / PILLBOXES / AMMO, 15. 11.)
 """
 import math
 import os
@@ -23,9 +23,9 @@ VARIANTS = {
         ("DOCTOR", "A SURGEON ARRIVES", "FEWER DEAD, HEALS FAST"),
         ("AMMO", "AMMUNITION TRAIN", "SHOOTERS FIRE 40% MORE"),
     ]),
-    "build": ("vote_build_1.jpg", "WHAT DOES YOUR SIDE NEED?", ("hospital", "wire", "ammo"), [
+    "build": ("vote_build_1.jpg", "WHAT DOES YOUR SIDE NEED?", ("hospital", "pillbox", "ammo"), [
         ("HOSPITAL", "A BIGGER HOSPITAL", "MORE BEDS, FEWER DEAD"),
-        ("WIRE", "NEW WIRE BELTS", "FEWER MEN HIT"),
+        ("PILLBOXES", "CONCRETE PILLBOXES", "MG + SNIPERS, 5 DAYS"),
         ("AMMO", "AMMUNITION TRAIN", "40% MORE FIRE, 3 DAYS"),
     ]),
 }

@@ -2,6 +2,7 @@
 //  • DUGOUTS  – hluboké kryty proti bombardování: u zálohy strany stojí pytlové kryty s trámovým vchodem a hlínou (jen po dobu rozkazu),
 //  • DOCTOR   – u obvaziště / nemocnice se mezi raněnými prochází lékař v bílém plášti (sprite zdravotníka, červený kříž nad hlavou).
 //  • AMMO    – sklad munice v týlu vedle obvaziště: bedny, police s náboji, plachta a pytlový val (mechanika zvyšuje palbu vlastních střelců),
+//  • PILLBOXES – betonové kulometné bunkry v přední linii (nápad Hegemonie z Rady fronty): kulometčíci a odstřelovači střílí víc (rozkaz `fire`).
 // V dev režimu jde vyzkoušet bez hlasování: /?orders=0:DUGOUTS,0:DOCTOR  (strana:heslo).
 import { Container, Graphics, Sprite, Texture } from 'pixi.js';
 
@@ -32,6 +33,30 @@ function shelterTexture(faction = 0, seed = 1) {
   return Texture.from(c);
 }
 
+
+// betonový kulometný bunkr: šestiúhelníkový blok s průzorem, pytle po stranách, proužek v barvě strany
+function pillboxTexture(faction = 0, seed = 1) {
+  const W = 44, H = 24, c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  const px = (x, y, w, h, col) => { g.fillStyle = `#${col.toString(16).padStart(6, '0')}`; g.fillRect(x, y, w, h); };
+  const CON = [0x8a8a84, 0x76766f, 0x9c9a92, 0x63625c];
+  // pytle po stranách
+  for (let i = 0; i < 3; i++) { px(1, 9 + i * 4, 8, 4, i % 2 ? C.bone : C.sand); px(W - 9, 9 + i * 4, 8, 4, i % 2 ? C.sand : C.bone); px(1, 9 + i * 4, 8, 1, C.pale); px(W - 9, 9 + i * 4, 8, 1, C.pale); }
+  // betonový blok se zkosenými rohy
+  for (let y = 2; y < H - 1; y++) {
+    const cut = Math.max(0, 4 - y, y - (H - 6));
+    for (let x = 7 + cut; x < W - 7 - cut; x++) px(x, y, 1, 1, CON[((x * 5 + y * 3 + seed) % 7 < 2) ? 3 : y < 5 ? 2 : (x > W / 2 + 6 ? 1 : 0)]);
+  }
+  px(9, 2, W - 18, 1, 0xb4b2a9); // horní hrana na světle
+  // průzor pro kulomet
+  px(12, 9, W - 24, 3, C.ink); px(12, 12, W - 24, 1, 0x4a4a45);
+  px(W / 2 - 1, 10, 6, 1, C.steel); // hlaveň v průzoru
+  // praskliny a proužek strany
+  px(14, 15, 1, 3, 0x55554f); px(15, 17, 2, 1, 0x55554f); px(W - 16, 5, 1, 2, 0x55554f);
+  px(10, H - 4, W - 20, 2, faction === 0 ? C.steel : 0x6f7148);
+  return Texture.from(c);
+}
 
 // sklad munice: pytlový val, hromady beden se značkami, police s mosaznými náboji, plachta, lucerna
 function ammoTexture(faction = 0) {
@@ -122,9 +147,28 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
     s.x = Math.round(site.x + 150); s.y = Math.round(site.y);
     layer.addChild(s);
   });
+
+  const pbTop = new Container(); // bunkry před valem (nad pytli)
+  world.addChild(pbTop);
+  // --- PILLBOXES: betonové bunkry v přední linii před stanovišti, ~jeden na 10 stanovišť otevřené části fronty ---
+  theme.factions.forEach((_, f) => {
+    if (!has('PILLBOXES', f)) return;
+    const toEnemy = map.front[f] < map.front[1 - f] ? 1 : -1;
+    const slots = map.slots[f].filter((sl) => sl.line === 'front' && sl.x >= openX0 && sl.x <= openX1).sort((a, b) => a.x - b.x);
+    let lastX = -999;
+    for (const sl of slots) {
+      if (sl.x - lastX < 300) continue;
+      lastX = sl.x;
+      const s = new Sprite(pillboxTexture(f, Math.round(sl.x) % 7));
+      s.anchor.set(0.5, 0.5);
+      s.x = Math.round(sl.x + 14); s.y = Math.round(sl.y + toEnemy * 18);
+      // bunkr před valem: u strany, která míří dolů, leží před pytli (nad nimi); u druhé ho zakryjí vojáci v zákopu
+      (toEnemy > 0 ? pbTop : layer).addChild(s);
+    }
+  });
   let raised = false;
   return {
-    shelters: layer.children,
+    shelters: [...layer.children, ...pbTop.children],
     docs,
     update(now, view) {
       if (!raised && docs.length) { raised = true; world.setChildIndex(top, world.children.length - 1); } // lékař nad vojáky

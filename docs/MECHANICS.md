@@ -378,3 +378,8 @@ Uživatel: „musí se umírat, je blbost, že by nikoho nezastřelili k smrti; 
 - (15. 11.) Nasycení palby vypnuto (`roles.saturation` 0, uživatel: víc střelců = větší palebná síla). Simulace padlí H ~24 / 14 / 10, C ~7 / 11 / 11,5.
 - (15. 11. odpoledne, uživatel: „je to dlouhé, rychleji ozdravovat nebo zabíjet“) Těžce raněný mimo lůžko se může zahojit už po 1 noci (`care.heavy.minDays` 1) a po 2 nocích se rozhodne (`maxDays` 2): zahojí se s šancí 0,3 + 0,6 × péče mediků (Hegemonie 46 % → ~58 %, Concord 100 % → 90 %), jinak zemře. Nikdo neleží týden.
   Dnešní noc Hegemonie (zkouška): z 24 na nosítkách 12 zahojeno, 10 padlo, 1 zůstává. Simulace padlí H ~22 / 5 / 4, C ~7 / 11 / 11,5.
+
+### 2026-11-15: návrh hlasování HOSPITAL / PILLBOXES / AMMO (NÁVRH, čeká na schválení postu)
+- HOSPITAL: druhý nemocniční dugout (`build: dugout`, +4 lůžka, +4 nosítka, natrvalo).
+- PILLBOXES (nápad Hegemonie z Rady fronty): betonové bunkry v přední linii, kulometčíci palba ×1,6, odstřelovači ×1,3, 5 dní; na mapě betonové bunkry před valem (`web/src/orders-fx.js`, dev `/?orders=0:PILLBOXES`).
+- AMMO: palba ×1,4, 3 dny. Každá strana hlasuje zvlášť (`perFaction`). Návrh: `marketing/drafts/vote-build.draft.json`, obrázek `python marketing/make_vote.py build`.
