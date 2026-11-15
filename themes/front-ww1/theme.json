@@ -576,7 +576,11 @@
         "stabilizeBed": 3
       },
       "linger": {
-        "base": 0.05, "perDay": 0.07, "care": 0.7, "trench": 1.5, "max": 0.45,
+        "base": 0.08,
+        "perDay": 0.1,
+        "care": 0.7,
+        "trench": 1.5,
+        "max": 0.45,
         "_": "15. 11. (uživatel): těžce raněný bez lůžka může zemřít; riziko za noc = (base + perDay × dní od zranění) × (1 − care × péče mediků) × (v zákopu trench), nejvýš max. Nováčci (newbieDays) chránění."
       },
       "triage": 1,
@@ -592,17 +596,17 @@
         "_": "podpůrné role (nosič, kuchař, kaplan, spojař, runner, ženista): občas vystřelí"
       },
       "rifleman": {
-        "fire": 0.17,
+        "fire": 0.25,
         "severity": {
-          "light": 0.17,
-          "heavy": 0.1
+          "light": 0.3,
+          "heavy": 0.12
         }
       },
       "machinegunner": {
-        "fire": 0.26,
+        "fire": 0.38,
         "severity": {
-          "light": 0.25,
-          "heavy": 0.04
+          "light": 0.35,
+          "heavy": 0.08
         },
         "suppress": 0.15,
         "suppressMax": 0.3,
@@ -610,7 +614,7 @@
         "_": "potlačení: každý kulomet naproti sníží palbu nepřítele o suppress (nejvýš suppressMax)"
       },
       "sniper": {
-        "fire": 0.3,
+        "fire": 0.45,
         "severity": {
           "light": 0.55,
           "heavy": 0.3
@@ -657,8 +661,8 @@
         "_": "práce za den (× úroveň)"
       },
       "kill": 0.5,
-        "killHeavy": 0.12,
-        "_killHeavy": "15. 11. (uživatel: musí se umírat i přímo palbou): kritický zásah kulkou zabije na místě s kill 0,5 (dřív 0,2), těžký s killHeavy 0,12.",
+      "killHeavy": 0.25,
+      "_killHeavy": "15. 11. (uživatel: musí se umírat i přímo palbou): kritický zásah kulkou zabije na místě s kill 0,5 (dřív 0,2), těžký s killHeavy 0,12.",
       "saturation": 1,
       "_saturation": "saturation: střelec trefuje méně, když je u něj víc vlastních střelců než nepřátel na dostřel (min(1, saturation × nepřátel / vlastních)). Početní převaha nedrtí s druhou mocninou.",
       "_kill": "kill: šance, že kritický zásah kulkou zabije na místě (roles.<role>.kill přebíjí). Ostatní smrti vznikají z nedostatku lůžek, nosítek a mediků."

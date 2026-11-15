@@ -124,7 +124,7 @@ test('rozmanitost: nováčci ani vojáci v jednom dni nemají stejné zápisy, v
   }
   for (const x of s.soldiers) {
     const own = x.record.map((r) => strip(x, r[1]).slice(0, 30));
-    assert.ok(new Set(own).size >= own.length - 2, own.join('\n'));
+    assert.ok(new Set(own).size >= own.length - 4, own.join('\n')); // od 15. 11. víc zásahů: krátké denní zápisy raněného se mohou opakovat
   }
 });
 
@@ -423,13 +423,13 @@ test('boj: převzatí hráči nejsou chránění a nováčci taky ne (newbieDays
   s.soldiers.forEach((x, i) => { if (i % 2) x.claimed = true; });
   const hot = { ...theme, battle: { ...theme.battle, hit: 0.5 } };
   battleTick(s, hot, story, 2);
-  const hit = s.soldiers.filter((x) => x.wound);
+  const hit = s.soldiers.filter((x) => x.wound || x.status === 'fallen'); // kritický zásah může zabít na místě (roles.kill)
   assert.ok(hit.some((x) => x.claimed), 'i převzatí dostávají zásahy');
   assert.equal(theme.battle.newbieDays, 0, 'ochrana nováčků je vypnutá');
-  assert.ok(hit.some((x) => x.wound.sev === 'crit'), 'i nováček může dostat kritický zásah');
+  assert.ok(hit.some((x) => x.wound?.sev === 'crit' || x.status === 'fallen'), 'i nováček může dostat kritický zásah');
 });
 
-test('boj: hlídací simulace – 100 vojáků, 9 týdnů: horní mez úmrtí (obvaziště < 9, nemocnice < 3 na stranu týdně), nemocnice pomáhá, texty doplněné', () => {
+test('boj: hlídací simulace – 100 vojáků, 9 týdnů: horní mez úmrtí (obvaziště < 18, nemocnice < 10 na stranu týdně; od 15. 11. víc smrtí), nemocnice pomáhá, texty doplněné', () => {
   const run = (builds, seed) => {
     const s = emptyState(theme);
     enlist(s, 100, `g${seed}_`);
@@ -445,8 +445,8 @@ test('boj: hlídací simulace – 100 vojáků, 9 týdnů: horní mez úmrtí (o
   };
   const dug = [0, 1, 2].map((i) => run(['dugout'], i)).reduce((a, b) => a + b) / 3;
   const aid = [0, 1, 2].map((i) => run([], i)).reduce((a, b) => a + b) / 3;
-  assert.ok(dug < 3, `s dugoutem ${dug.toFixed(2)} mrtvých na stranu týdně`);
-  assert.ok(aid < 9, `jen obvaziště ${aid.toFixed(2)} mrtvých na stranu týdně`);
+  assert.ok(dug < 10, `s dugoutem ${dug.toFixed(2)} mrtvých na stranu týdně`);
+  assert.ok(aid < 18, `jen obvaziště ${aid.toFixed(2)} mrtvých na stranu týdně`);
   assert.ok(aid > dug, 'nemocnice zachraňuje životy');
 });
 

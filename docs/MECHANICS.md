@@ -360,3 +360,9 @@ Uživatel: „musí se umírat, je blbost, že by nikoho nezastřelili k smrti; 
 - **Smrt přímo palbou:** kritický zásah kulkou zabije na místě s `roles.kill` 0,5 (dřív 0,2), odstřelovač 0,6 (dřív 0,35); nově i těžký zásah s `roles.killHeavy` 0,12.
 - **Dlouho ležící těžce raněný bez lůžka** (`care.linger`): riziko smrti za noc = (0,05 + 0,07 × dní od zranění) × (1 − 0,7 × péče mediků) × 1,5 v zákopu, nejvýš 45 %. Nováčci chránění (`newbieDays`). Na lůžku se neumírá takhle (operace, viz výš).
 - Simulace (30 běhů, stav 15. 11. ráno, Hegemonie 42 těžce raněných mimo lůžka, medici 42 %): padlí za den H ~3,7 / 5,1 / 4,9, Concord ~1,3 / 1,7 / 1,9 (dřív H 0,8 / 1,0 / 1,9). Nemocnice (víc lůžek) a medici riziko jasně snižují.
+
+### 2026-11-15 (dopoledne): ještě víc smrtí, ztráty rostou s počtem hráčů (NASAZENO, uživatel: „je víc hráčů a málo smrtí“)
+- Palba: puškař `fire` 0,17 → 0,25, kulomet 0,26 → 0,38, odstřelovač 0,30 → 0,45 (víc hráčů v linii = víc zásahů).
+- Závažnost zásahu: puškař lehce 70 % / těžce 18 % / kriticky 12 % (dřív 83/7/10), kulomet 65/27/8.
+- `roles.killHeavy` 0,12 → 0,25; `care.linger` base 0,05 → 0,08, perDay 0,07 → 0,1.
+- Simulace (stav 15. 11., 426 hráčů): padlí za den H ~6 / 8 / 7, C ~3 / 3,6 / 3,7 (celkem ~9–12 denně, ~2,5 % hráčů), raněných ~35–43 denně.
