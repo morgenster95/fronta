@@ -654,11 +654,34 @@
     "likes": 0,
     "reply": false
    }
+  ],
+  "18096896921167813": [
+   {
+    "id": "17993729552858526",
+    "handle": "lebronmygoat25",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hegemony Pillboxes (close second being hospital beds)",
+    "at": "2026-11-15T09:35:25+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18120244577052607",
+    "handle": "zaboravljeninemanjic",
+    "faction": 0,
+    "kw": "PILLBOXES",
+    "text": "Hegemony Pillboxes, long live the Kaiser ❤️",
+    "at": "2026-11-15T09:35:03+0000",
+    "likes": 0,
+    "reply": false
+   }
   ]
  },
  "scanned": {
   "18124174678948734": true,
   "18087856601321668": true,
-  "18183576988433109": true
+  "18183576988433109": true,
+  "18096896921167813": true
  }
 }
