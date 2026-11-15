@@ -1,0 +1,126 @@
+{
+ "seconds": 84.1,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.6,
+   0.67,
+   "Day six.",
+   "day"
+  ],
+  [
+   1.8,
+   1.19,
+   "The guns spoke all night.",
+   "guns"
+  ],
+  [
+   4.6,
+   2.71,
+   "A Hegemony rifleman saw a movement across the wire.",
+   "shooter"
+  ],
+  [
+   7.56,
+   3.2,
+   "One shot. The Concord sniper never got up.",
+   "shot"
+  ],
+  [
+   11.01,
+   5.01,
+   "Sixty-seven men hit by morning. Forty Hegemony, twenty-seven Concord.",
+   "count"
+  ],
+  [
+   16.27,
+   7.39,
+   "Hill 304 is in Hegemony hands. From its observation tree, the Hegemony spotters watched every head in the Concord trenches.",
+   "obs"
+  ],
+  [
+   23.91,
+   5.79,
+   "Twenty-five of them fell. Twenty-one Hegemony. Their families sent the next in line.",
+   "fallen"
+  ],
+  [
+   29.95,
+   3.26,
+   "Both hospitals are full. Every bed is taken.",
+   "aid"
+  ],
+  [
+   33.46,
+   2.92,
+   "Seventeen Hegemony wounded wait on stretchers, in the mud.",
+   "stretcher"
+  ],
+  [
+   36.63,
+   1.94,
+   "Now the fight is for Blackwater Canal.",
+   "race"
+  ],
+  [
+   38.82,
+   7.22,
+   "Concord twenty-one. Hegemony four. The first side to kill one hundred enemy soldiers takes Blackwater Canal.",
+   "raceN"
+  ],
+  [
+   46.29,
+   1.92,
+   "New at the front: a letter from home.",
+   "letter"
+  ],
+  [
+   48.46,
+   8.51,
+   "Open your soldier's card and send one. It keeps your soldier fifteen percent safer for one night. Three letters are already on the way.",
+   "letter2"
+  ],
+  [
+   57.22,
+   6.43,
+   "Yesterday, 53 new soldiers came up the line. 29 Hegemony, 24 Concord.",
+   "joined"
+  ],
+  [
+   63.9,
+   2.44,
+   "433 soldiers hold the line now.",
+   "army"
+  ],
+  [
+   66.59,
+   1.5,
+   "227 for the Hegemony.",
+   "armyH"
+  ],
+  [
+   68.34,
+   1.45,
+   "206 for the Concord.",
+   "armyC"
+  ],
+  [
+   70.04,
+   2.67,
+   "And today, each side votes for what it needs most.",
+   "vote"
+  ],
+  [
+   72.96,
+   4.08,
+   "Hospital, pillboxes, or ammo. Comment one word.",
+   "opts"
+  ],
+  [
+   77.29,
+   3.41,
+   "Comment Concord... or Hegemony. Link in bio.",
+   "cta"
+  ]
+ ]
+}
