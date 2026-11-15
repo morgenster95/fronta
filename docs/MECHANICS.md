@@ -366,3 +366,5 @@ Uživatel: „musí se umírat, je blbost, že by nikoho nezastřelili k smrti; 
 - Závažnost zásahu: puškař lehce 70 % / těžce 18 % / kriticky 12 % (dřív 83/7/10), kulomet 65/27/8.
 - `roles.killHeavy` 0,12 → 0,25; `care.linger` base 0,05 → 0,08, perDay 0,07 → 0,1.
 - Simulace (stav 15. 11., 426 hráčů): padlí za den H ~6 / 8 / 7, C ~3 / 3,6 / 3,7 (celkem ~9–12 denně, ~2,5 % hráčů), raněných ~35–43 denně.
+- (15. 11. poledne, uživatel: „zvýšit úmrtí v zákopu bez ošetření a trochu i na nosítkách“) `care.linger` base 0,1, perDay 0,1, v zákopu bez nosítek ×3 (dřív 1,5) a už první noc, max 60 %. Simulace: padlí za den H ~9,4 / 9,2 / 7,6, C ~2,8 / 3,6 / 3,9.
+  Délky pobytu (stav 15. 11.): lůžko nejvýš 2 dny (noc operace, pak zpět na frontu), nosítka průměr ~1 den, nejvýš 2 (pak se zahojí, nebo zemře), lehce ranění v zákopu do druhého dne.

@@ -492,7 +492,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         // dlouho ležící těžce raněný bez lůžka (uživatel 15. 11.): riziko smrti roste s každým dnem a s chybějící péčí mediků,
         // v zákopu víc než na nosítkách. Ukazuje, že bez lůžek (nemocnice) a mediků se raněné udržet nedaří.
         const L = cfg.care.linger;
-        if (L && !fresh && !newbie) {
+        if (L && (!fresh || trench) && !newbie) { // v zákopu bez nosítek hrozí smrt už první noc (uživatel 15. 11.)
           const p = Math.min(L.max, (L.base + L.perDay * (day - w.day)) * (1 - L.care * g) * (trench ? L.trench : 1) * (ctx.dieOf?.(s) ?? 1));
           if (rand() < p) { if (die(s, 'diedNoBed', 'nocare')) continue; }
         }

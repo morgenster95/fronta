@@ -576,12 +576,12 @@
         "stabilizeBed": 3
       },
       "linger": {
-        "base": 0.08,
+        "base": 0.1,
         "perDay": 0.1,
         "care": 0.7,
-        "trench": 1.5,
-        "max": 0.45,
-        "_": "15. 11. (uživatel): těžce raněný bez lůžka může zemřít; riziko za noc = (base + perDay × dní od zranění) × (1 − care × péče mediků) × (v zákopu trench), nejvýš max. Nováčci (newbieDays) chránění."
+        "trench": 3,
+        "max": 0.6,
+        "_": "15. 11. (uživatel): těžce raněný bez lůžka může zemřít; riziko za noc = (base + perDay × dní od zranění) × (1 − care × péče mediků) × (v zákopu bez nosítek trench, a to už první noc), nejvýš max. Nováčci (newbieDays) chránění."
       },
       "triage": 1,
       "_triage": "triage: kritický bez místa vezme lůžko nebo nosítka těžce raněnému.",
