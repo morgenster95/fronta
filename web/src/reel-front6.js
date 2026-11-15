@@ -35,7 +35,7 @@ const CSS = `${BASE}${FX_CSS}
   padding: 8px 14px 10px; border: 3px solid #0e0d0c; box-shadow: 4px 4px 0 rgba(0,0,0,0.55); opacity: 0; }
 .rf-bub::after { content: ''; position: absolute; left: 50%; bottom: -15px; margin-left: -9px; border: 9px solid transparent; border-top: 9px solid #0e0d0c; border-bottom: 0; }
 .rf-bub .who { display: block; font-family: 'Silkscreen', monospace; font-size: 15px; color: #7e3b2a; margin-bottom: 2px; }
-.rf-card { left: 9%; right: 9%; top: 18%; background: #c4b8a0; color: #1c1a17; padding: 14px 16px; box-shadow: 0 8px 0 rgba(0,0,0,0.5); transform: rotate(-1.5deg); }
+.rf-card { left: 9%; right: 9%; top: 25%; background: #c4b8a0; color: #1c1a17; padding: 14px 16px; box-shadow: 0 8px 0 rgba(0,0,0,0.5); transform: rotate(-1.5deg); }
 .rf-card .t { font-family: 'Silkscreen', monospace; font-size: 16px; color: #7e3b2a; border-bottom: 2px solid #7e3b2a; padding-bottom: 4px; margin-bottom: 6px; display: flex; justify-content: space-between; }
 .rf-card .n { font-family: 'Silkscreen', monospace; font-size: 32px; }
 .rf-card .w { font-family: 'VT323', monospace; font-size: 28px; }
@@ -47,7 +47,7 @@ const CSS = `${BASE}${FX_CSS}
 .rf-panel .c { font-family: 'VT323', monospace; font-size: 27px; color: #c9b99a; display: flex; justify-content: space-between; opacity: 0; }
 .rf-panel .c span:last-child { color: #e3d9c3; }
 .rf-bar { height: 22px; background: #1c1a17; border: 2px solid #524a3f; position: relative; margin-bottom: 8px; } .rf-bar i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; }
-#rf-toll { top: 20%; } #rf-race { top: 12%; } #rf-army { top: 30%; }
+#rf-toll { top: 22%; } #rf-race { top: 24%; } #rf-army { top: 30%; }
 #rf-roll { left: 8%; right: 8%; top: 56%; background: #c4b8a0; color: #1c1a17; padding: 10px 14px; transform: rotate(1deg); box-shadow: 0 8px 0 rgba(0,0,0,0.5); }
 #rf-roll .t { font-family: 'Silkscreen', monospace; font-size: 15px; color: #7e3b2a; border-bottom: 2px solid #7e3b2a; margin-bottom: 4px; }
 #rf-roll div.r { display: flex; justify-content: space-between; font-family: 'VT323', monospace; font-size: 23px; line-height: 1.05; opacity: 0; }
