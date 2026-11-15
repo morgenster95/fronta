@@ -354,3 +354,9 @@ Ko-fi zamítlo platby (problém s účtem Stripe). War Bonds zůstávají stejn�
 `theme.support.url` = https://www.patreon.com/cw/MudandIron, `theme.support.platform` = "Patreon" (texty na webu: „Support the front on Patreon“).
 Úrovně (schváleno 14. 11.): War Bonds 3 USD, Field Post 5 USD (exkluzivní příspěvky ze zákulisí a chystané věci), Officers' Mess 10 USD (zlatá hvězda nad vojákem na mapě, vidět při každém přiblížení; příkaz `star`/`unstar`, `theme.support.star`, `grantStar` v `engine/roster.js`); stužka od 3 USD, zůstává i po zrušení. Patron pošle na Patreonu IG jméno, udělení dál ručně příkazem `support`.
 Texty stránky, úrovně a uvítací zprávy: `marketing/patreon.md`; grafika `marketing/make_support.py` (patreon_cover/avatar/tier). Tlačítka na webu zapnout (`buttons: true`) až po ověření stránky.
+
+### 2026-11-15: víc smrtí, dlouho ležící ranění umírají (NASAZENO, uživatel)
+Uživatel: „musí se umírat, je blbost, že by nikoho nezastřelili k smrti; mají obrovské množství raněných, kteří tam jsou dlouho, musí být mnohem větší riziko smrti, aby bylo jasné, že potřebují nemocnici.“
+- **Smrt přímo palbou:** kritický zásah kulkou zabije na místě s `roles.kill` 0,5 (dřív 0,2), odstřelovač 0,6 (dřív 0,35); nově i těžký zásah s `roles.killHeavy` 0,12.
+- **Dlouho ležící těžce raněný bez lůžka** (`care.linger`): riziko smrti za noc = (0,05 + 0,07 × dní od zranění) × (1 − 0,7 × péče mediků) × 1,5 v zákopu, nejvýš 45 %. Nováčci chránění (`newbieDays`). Na lůžku se neumírá takhle (operace, viz výš).
+- Simulace (30 běhů, stav 15. 11. ráno, Hegemonie 42 těžce raněných mimo lůžka, medici 42 %): padlí za den H ~3,7 / 5,1 / 4,9, Concord ~1,3 / 1,7 / 1,9 (dřív H 0,8 / 1,0 / 1,9). Nemocnice (víc lůžek) a medici riziko jasně snižují.

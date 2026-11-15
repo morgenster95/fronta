@@ -955,7 +955,7 @@ test('v12: nosítka rostou s medici (aidPost.stretchersPerMedic), lůžka zůst�
 test('v12: triáž – kritický bez místa vezme lůžko těžce raněnému', () => {
   const s = setup(60, 'tri');
   const side = s.soldiers.filter((x) => x.faction === 0);
-  const cfg = quiet({ aidPost: { ...theme.battle.aidPost, beds: 1, stretchers: 0, stretchersPerMedic: 0, critRisk: 0 }, care: { ...theme.battle.care, triage: 1, crit: { ...theme.battle.care.crit, dieBase: 0 } } });
+  const cfg = quiet({ aidPost: { ...theme.battle.aidPost, beds: 1, stretchers: 0, stretchersPerMedic: 0, critRisk: 0 }, care: { ...theme.battle.care, linger: null, triage: 1, crit: { ...theme.battle.care.crit, dieBase: 0 } } });
   hurt(side[0], 'heavy', 19);
   battleTick(s, cfg, story, 19);
   assert.equal(side[0].wound.place, 'bed', 'těžký dostal lůžko');
@@ -965,6 +965,7 @@ test('v12: triáž – kritický bez místa vezme lůžko těžce raněnému', (
   assert.equal(side[0].wound.place, 'trench', 'těžký šel o stupeň níž');
   assert.equal(side[1].status, 'wounded', 'kritický na lůžku přežil noc');
 });
+
 
 test('v12: přímý zásah granátem (shell.kill) zabije na místě, lůžko ani medik nepomůže', () => {
   const s = emptyState(theme);
@@ -1246,4 +1247,23 @@ test('grantStar: hvězda Officers\' Mess dá i stužku, zápis; revokeStar sund�
   assert.ok(revokeStar(st, theme, 'ann'));
   assert.deepEqual(st.soldiers[0].medals, ['war-bonds']);
   assert.equal(revokeStar(st, theme, 'ann'), null);
+});
+
+test('linger: dlouho ležící těžce raněný bez lůžka a bez mediků umírá častěji než s péčí', () => {
+  const run = (medics) => {
+    let dead = 0;
+    for (let k = 0; k < 30; k++) {
+      const s = setup(60, `lg${k}`);
+      const side = s.soldiers.filter((x) => x.faction === 0);
+      const cfg = quiet({ care: { ...theme.battle.care, heavy: { ...theme.battle.care.heavy, worsen: 0, heal: 0 } } });
+      for (let i = 0; i < 6; i++) { hurt(side[i], 'heavy', 15); side[i].wound.place = 'trench'; }
+      for (let i = 6; i < 6 + medics; i++) side[i].archetype = 'medic';
+      battleTick(s, cfg, story, 20);
+      dead += side.slice(0, 6).filter((x) => x.status === 'fallen').length;
+    }
+    return dead;
+  };
+  const noCare = run(0), fullCare = run(20);
+  assert.ok(noCare > 0, 'bez péče někdo umře');
+  assert.ok(noCare > fullCare, `bez péče víc mrtvých (${noCare} vs ${fullCare})`);
 });

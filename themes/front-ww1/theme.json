@@ -573,6 +573,10 @@
         "_": "kriticky: musí mít nosítka nebo lůžko, jinak noc nepřežije. Smrt za noc = dieBase × critRisk místa (nosítka 1) + dieNoCare × chybějící péče (na lůžku 0). Zlepší se na těžce po stabilize nocích na nosítkách s plnou péčí, po stabilizeBed na lůžku",
         "stabilizeBed": 3
       },
+      "linger": {
+        "base": 0.05, "perDay": 0.07, "care": 0.7, "trench": 1.5, "max": 0.45,
+        "_": "15. 11. (uživatel): těžce raněný bez lůžka může zemřít; riziko za noc = (base + perDay × dní od zranění) × (1 − care × péče mediků) × (v zákopu trench), nejvýš max. Nováčci (newbieDays) chránění."
+      },
       "triage": 1,
       "_triage": "triage: kritický bez místa vezme lůžko nebo nosítka těžce raněnému.",
       "_bed": "lůžko = operace: první noc na lůžku kritický umírá s dieBase × critRisk místa, kdo přežije, je těžce raněný a druhý den se vrací na frontu (nejvýš 2 dny na lůžku); engine/battle.js"
@@ -611,7 +615,7 @@
         },
         "pick": 0.5,
         "_": "pick = šance, že si vybere kulometčíka nebo důstojníka",
-        "kill": 0.35
+        "kill": 0.6
       },
       "officer": {
         "fire": 0.008,
@@ -650,7 +654,9 @@
         "work": 2,
         "_": "práce za den (× úroveň)"
       },
-      "kill": 0.2,
+      "kill": 0.5,
+        "killHeavy": 0.12,
+        "_killHeavy": "15. 11. (uživatel: musí se umírat i přímo palbou): kritický zásah kulkou zabije na místě s kill 0,5 (dřív 0,2), těžký s killHeavy 0,12.",
       "saturation": 1,
       "_saturation": "saturation: střelec trefuje méně, když je u něj víc vlastních střelců než nepřátel na dostřel (min(1, saturation × nepřátel / vlastních)). Početní převaha nedrtí s druhou mocninou.",
       "_kill": "kill: šance, že kritický zásah kulkou zabije na místě (roles.<role>.kill přebíjí). Ostatní smrti vznikají z nedostatku lůžek, nosítek a mediků."

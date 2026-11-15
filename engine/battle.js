@@ -300,7 +300,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     wound(t, sev, { by: { handle: s.handle, name: s.name, role: s.archetype, faction: f } });
     // smrtelný zásah kulkou (roles.<role>.kill nebo roles.kill): kritický zásah může zabít na místě
     const kill = R[s.archetype]?.kill ?? R.kill ?? 0;
-    if (sev === 'crit' && kill && rand() < kill) t.wound.outright = 'shot';
+    if ((sev === 'crit' && kill && rand() < kill) || (sev === 'heavy' && R.killHeavy && rand() < R.killHeavy)) t.wound.outright = 'shot'; // i těžký zásah může zabít (roles.killHeavy)
     stats[f].hits.fire[s.archetype] = (stats[f].hits.fire[s.archetype] || 0) + 1;
     s.hits = (s.hits || 0) + 1;
     s.hitsBy = { ...(s.hitsBy || {}), [sev]: ((s.hitsBy || {})[sev] || 0) + 1 };
@@ -489,6 +489,13 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       } else if (w.sev === 'heavy') {
         const trench = w.place === 'trench';
         const newbie = day - (s.enlisted ?? day) < cfg.newbieDays && !w.shell;
+        // dlouho ležící těžce raněný bez lůžka (uživatel 15. 11.): riziko smrti roste s každým dnem a s chybějící péčí mediků,
+        // v zákopu víc než na nosítkách. Ukazuje, že bez lůžek (nemocnice) a mediků se raněné udržet nedaří.
+        const L = cfg.care.linger;
+        if (L && !fresh && !newbie) {
+          const p = Math.min(L.max, (L.base + L.perDay * (day - w.day)) * (1 - L.care * g) * (trench ? L.trench : 1) * (ctx.dieOf?.(s) ?? 1));
+          if (rand() < p) { if (die(s, 'diedNoBed', 'nocare')) continue; }
+        }
         if (!fresh && !newbie && rand() < C.worsen * (1 - g) * (trench ? C.trench : 1)) {
           w.sev = 'crit';
           s.lastCrit = day;
