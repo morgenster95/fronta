@@ -372,3 +372,5 @@ Uživatel: „musí se umírat, je blbost, že by nikoho nezastřelili k smrti; 
   Simulace: padlí za den H ~11 / 11 / 9, C ~7 / 8,6 / 9,8 (celkem ~18 denně, ~4 % hráčů), raněných ~45–55 denně.
 - (15. 11. odpoledne, uživatel: „leží v zákopech už ze včera, střílí se na ně, nemají drát“) `battle.hitLying`: raněný, který od včerejška leží v zákopu bez nosítek, je taky cíl palby (lehký se zhorší, těžký a kritický zemře na místě); `wire.cover` 0,15 → 0,4 (celý drát sníží zásahy o 40 %).
   Simulace: padlí za den H ~15 / 14 / 9, C ~6 / 7,8 / 9 (celkem ~21 denně).
+- (15. 11. odpoledne, uživatel: „26 na nosítkách bez péče a venku by mělo být mnohem horší“) Zjištění: medici, kteří nestíhají, dávali dřív plnou péči nejvážnějším (nosítka) a lehce ranění neměli nic, takže na nosítkách se většina uzdravila. Nově `care.spread`: péče se rozdělí rovným dílem (každý dostane podíl = pokrytí), těžký se bez péče skoro nezahojí (`care.heavy.healPow` 2), `care.linger` base 0,2, perDay 0,25, care 0,85.
+  Dnešní noc Hegemonie (zkouška): z 24 na nosítkách 10 padlo, 1 se zahojil, 12 zůstává; simulace padlí H ~22 / 13 / 9,5, C ~6 / 8,7 / 9,4.

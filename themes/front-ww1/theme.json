@@ -568,7 +568,8 @@
         "trench": 1.5,
         "heal": 0.35,
         "minDays": 2,
-        "_": "těžce: nosítka/lůžko; bez péče riziko zhoršení (v zákopu ×trench); hojí se od minDays s heal × péče (na lůžku × care místa)"
+        "_": "těžce: nosítka/lůžko; bez péče riziko zhoršení (v zákopu ×trench); hojí se od minDays s heal × péče (na lůžku × care místa)",
+        "healPow": 2
       },
       "crit": {
         "need": 2,
@@ -579,16 +580,17 @@
         "stabilizeBed": 3
       },
       "linger": {
-        "base": 0.15,
-        "perDay": 0.15,
-        "care": 0.7,
+        "base": 0.2,
+        "perDay": 0.25,
+        "care": 0.85,
         "trench": 3,
         "max": 0.6,
         "_": "15. 11. (uživatel): těžce raněný bez lůžka může zemřít; riziko za noc = (base + perDay × dní od zranění) × (1 − care × péče mediků) × (v zákopu bez nosítek trench, a to už první noc), nejvýš max. Nováčci (newbieDays) chránění."
       },
       "triage": 1,
       "_triage": "triage: kritický bez místa vezme lůžko nebo nosítka těžce raněnému.",
-      "_bed": "lůžko = operace: první noc na lůžku kritický umírá s dieBase × critRisk místa, kdo přežije, je těžce raněný a druhý den se vrací na frontu (nejvýš 2 dny na lůžku); engine/battle.js"
+      "_bed": "lůžko = operace: první noc na lůžku kritický umírá s dieBase × critRisk místa, kdo přežije, je těžce raněný a druhý den se vrací na frontu (nejvýš 2 dny na lůžku); engine/battle.js",
+      "spread": true
     },
     "roles": {
       "_covers": "covers = kolik lidí poblíž jeden voják role pokryje (kulomet: nepřátelské střelce, spojař: vojáky, důstojník/spojka: střelce, kuchař: lehce raněné, kaplan: kriticky raněné na nosítkách). Účinek = plný účinek × min(1, počet role × covers / lidí poblíž): roste s poměrem, nikdy přes plný účinek.",

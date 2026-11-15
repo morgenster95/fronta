@@ -449,7 +449,9 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const medics = state.soldiers.filter((s) => s.faction === f && s.archetype === 'medic' && s.status !== 'fallen' && !(s.wound && s.wound.sev !== 'light') && !busy.has(s.id));
     for (const s of patients) {
       const n = needOf(cfg, s);
-      const g = n ? Math.min(1, supply / n) : 1;
+      // care.spread (15. 11., uživatel): medici, kteří nestíhají, se rozdělí mezi všechny raněné rovným dílem (každý dostane jen část péče),
+      // místo aby nejvážnější měli plnou péči a ostatní nic
+      const g = cfg.care.spread ? (n ? stats[f].cover : 1) : n ? Math.min(1, supply / n) : 1;
       supply = Math.max(0, supply - n);
       s.wound.care = g;
       if (g > 0 && medics.length) {
@@ -506,7 +508,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
           w.sev = 'crit';
           s.lastCrit = day;
           ev(s, 'wounded', eventEntry('worsened', s, day, theme, story, {}, today));
-        } else if (!fresh && day - w.day >= C.minDays && rand() < C.heal * g * (trench ? 0.5 : 1) * (ctx.healOf?.(s) ?? 1)) {
+        } else if (!fresh && day - w.day >= C.minDays && rand() < C.heal * Math.pow(g, C.healPow ?? 1) * (trench ? 0.5 : 1) * (ctx.healOf?.(s) ?? 1)) { // healPow: bez péče se těžký skoro nezahojí
           recover(s, 'patchedStretcher');
         }
       } else {
