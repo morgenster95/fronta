@@ -2,7 +2,7 @@
 //   node tools/day-reel.mjs [--state soubor]   → marketing/reels/day<N>.data.json (jména, počty, lůžka, výprava)
 //                                                 a marketing/reels/day<N>.script.json (věty voiceoveru s časy)
 // Výroba videa: bash tools/make-reel.sh day<N> (nebo workflow reel s name=day<N>). Nic nepublikuje.
-import { raceStatus } from '../engine/race.js';
+import { raceStatus, activeObservation } from '../engine/race.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, loadTheme } from './lib.mjs';
@@ -49,7 +49,10 @@ const letters = state.soldiers.filter((s) => s.letter === day && s.status !== 'f
 const vic = (state.victories || []).at(-1);
 const shelled = vic && vic.barrageTo >= day + 1 ? { side: 1 - vic.faction, nights: vic.barrageTo - day, from: vic.name } : null;
 const newSince = state.soldiers.filter((s) => s.enlisted === day).length;
+const obsA = activeObservation(state, day); // pozorovatelna na kótě (filmový záběr se stromem)
+const obs = obsA ? { by: obsA.by, name: obsA.name } : null;
 const voteOpen = !!state.vote?.mediaId;
+const voteKws = (state.vote?.options || []).map((o) => o.kw.toLowerCase()); // volby běžícího hlasování (15. 11.: hospital, pillboxes, ammo)
 // přírůstek hráčů za včerejší den (půlnoc–půlnoc UTC), spočtený předem z gitu: marketing/reels/day<N>.joined.json
 const jf = path.join(ROOT, 'marketing', 'reels', `day${day}.joined.json`);
 const joined = fs.existsSync(jf) ? JSON.parse(fs.readFileSync(jf, 'utf8')).joined : null;
@@ -80,12 +83,13 @@ const lines = [
     [0, `One shot. ${sevWord[fire.sev]}`, 'shot'],
   ] : [[4.6, 'Stray rounds. A grenade. The wire. The front takes its toll.', 'shooter']]),
   [0, cap(`${numWord(total)} men hit by morning. ${numWord(hitN[0])} Hegemony, ${numWord(hitN[1])} Concord.`), 'count'],
-  ...(fallen.length ? [[0, cap(`${say(fallen.length)} of them fell. ${fallBy[0].length && fallBy[1].length ? `${say(Math.max(...fallBy.map((l) => l.length)))} ${short(fallBy[0].length >= fallBy[1].length ? 0 : 1)}.` : ''} Their families sent the next in line.`), 'fallen']] : []),
+  ...(obs ? [[0, `${obs.name} is in ${short(obs.by)} hands. From its observation tree, the ${short(obs.by)} spotters watched every head in the ${short(1 - obs.by)} trenches.`, 'obs']] : []),
+  ...(fallen.length ? [[0, cap(`${numWord(fallen.length)} of them fell. ${fallBy[0].length && fallBy[1].length ? `${numWord(Math.max(...fallBy.map((l) => l.length)))} ${short(fallBy[0].length >= fallBy[1].length ? 0 : 1)}.` : ''} Their families sent the next in line.`), 'fallen']] : []),
   [0, nb >= 4 ? 'Both hospitals are full. Every bed is taken.' : `The ${short(focus)} aid post has ${say(beds[focus].length)} ${nb === 1 ? 'bed' : 'beds'} taken.`, 'aid'],
   [0, stretchN ? cap(`${numWord(stretchN)} ${short(focus)} wounded wait on stretchers, in the mud.`) : 'When they fill, the badly hit wait on stretchers, in the mud.', 'stretcher'],
   ...(race ? [
-    [0, `And a new race has begun. ${race.name}.`, 'race'],
-    [0, `${short(race.lead)} ${numWord(race.counts[race.lead])}. ${short(1 - race.lead)} ${numWord(race.counts[1 - race.lead])}. First to one hundred takes the hill.`, 'raceN'],
+    [0, race.type === 'kills' ? `Now the fight is for ${race.name}.` : `And a new race has begun. ${race.name}.`, 'race'],
+    [0, `${short(race.lead)} ${numWord(race.counts[race.lead])}. ${short(1 - race.lead)} ${numWord(race.counts[1 - race.lead])}. ${race.type === 'kills' ? `The first side to kill one hundred enemy soldiers takes ${race.name}.` : 'First to one hundred takes the hill.'}`, 'raceN'],
   ] : []),
   ...(shelled ? [[0, `Tonight the guns fire again. ${say(shelled.nights)} more ${shelled.nights === 1 ? 'night' : 'nights'} of shelling for the ${short(shelled.side)}.`.replace(/(\. )([a-z])/, (m, a, c) => a + c.toUpperCase()), 'tonight']] : []),
   [0, 'New at the front: a letter from home.', 'letter'],
@@ -95,13 +99,13 @@ const lines = [
   [0, `${army[0]} for the Hegemony.`, 'armyH'],
   [0, `${army[1]} for the Concord.`, 'armyC'],
   ...(raid ? [[0, `Field HQ wants ${say(raid.seats)} volunteers a side, for a night raid on Saint-Ash. Comment ${raid.kw.toLowerCase()}.`.replace('Saint-Ash', raid.short), 'raid']] : []),
-  ...(voteOpen ? [[0, 'And today, each side votes what to build.', 'vote'], [0, 'A hospital, or sandbags.', 'opts']] : []),
+  ...(voteOpen ? [[0, 'And today, each side votes for what it needs most.', 'vote'], [0, `${cap(voteKws.slice(0, -1).join(', '))}, or ${voteKws.at(-1)}. Comment one word.`, 'opts']] : []),
   [0, 'Comment Concord... or Hegemony. Link in bio.', 'cta'],
 ];
 const seconds = 90; // horní odhad; skutečnou délku určí hlas (story_vo.py, auto)
 const t2 = null;
 
-const data = { day, label, army, total, hitN, hit, fire, fallen, fallBy: fallBy.map((l) => l.length), beds, stretchers, focus, raid, race, letters, shelled, newSince, joined, seconds, t2, silent: gunsSilent(state, theme) };
+const data = { day, label, obs, voteN: voteKws.length, army, total, hitN, hit, fire, fallen, fallBy: fallBy.map((l) => l.length), beds, stretchers, focus, raid, race, letters, shelled, newSince, joined, seconds, t2, silent: gunsSilent(state, theme) };
 const name = `day${day}`;
 const dir = path.join(ROOT, 'marketing', 'reels');
 fs.writeFileSync(path.join(dir, `${name}.data.json`), JSON.stringify(data, null, 1));

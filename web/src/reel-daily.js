@@ -4,14 +4,16 @@
 import { makeCinema, CSS as BASE } from './reel-day1.js';
 import { paperTexture, tornClip } from './paper.js';
 import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, tagAt, slam, ease, easeOut, clamp01, win, typed } from './reel-kit.js';
-import voteImg from '../../marketing/promo/vote_build_2.jpg';
+import voteImg from '../../marketing/promo/vote_build_1.jpg'; // běžící hlasování HOSPITAL / PILLBOXES / AMMO (15. 11.)
 import { makeScenes, pickScene, CINEMA_CSS } from './cinema.js';
+import { makeWireScenes } from './cinema-wire.js';
 
 // jen podklady scénáře; day*.sfx.json zapisuje natáčení za běhu a jeho sledování by stránku znovu načetlo
 const files = import.meta.glob(['../../marketing/reels/day*.json', '!**/*.sfx.json'], { eager: true, import: 'default' });
 
 const CSS = `${BASE}${FX_CSS}${CINEMA_CSS}
 #rd-count { left: 7%; right: 7%; top: 54%; }
+#rd #rd-count { filter: opacity(var(--obs-hide, 1)); }
 #rd-count .side { display: grid; grid-template-columns: 1fr auto; align-items: baseline; margin: 8px 0 2px; font-family: 'Silkscreen', monospace; font-size: 22px; }
 #rd-count .side b { font-weight: 400; font-size: 50px; line-height: 1; display: inline-block; }
 #rd-count ul { list-style: none; margin: 0; padding: 0; }
@@ -77,6 +79,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const at = (id) => C.at(id);
   const tSh = at('shooter'), tShot = at('shot'), tCount = at('count'), tAid = at('aid'), tStr = at('stretcher');
   const tArmy = at('army'), tArmyH = at('armyH'), tArmyC = at('armyC'), tRaid = at('raid'), tVote = at('vote'), tOpts = at('opts'), tCta = at('cta');
+  const tObs = at('obs');
   const tFallen = at('fallen'), tRace = at('race'), tRaceN = at('raceN'), tNight = at('tonight'), tLetter = at('letter'), tLetter2 = at('letter2'), tJoined = at('joined');
   // co následuje po obvazišti (závod, děla, dopis, počty) a po přejezdu po linii (výprava, hlasování, závěr)
   const tPost = tRace ?? tNight ?? tLetter ?? tJoined ?? tArmy ?? tRaid ?? tVote ?? tCta;
@@ -146,7 +149,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   const SFX = [];
   for (const e of EV) if (e[1] === 'shoot' || e[1] === 'shootAt') SFX.push([e[0] + 0.62, 'shoot', 0]);
   SFX.push([0.5, 'type', 0.4], [at('guns'), 'type', 0.9], [tSh, 'reveal', 0], [(tShot ?? tCount) + 0.3, 'stamp', 0], [tCount, 'drum', 0], [tAid, 'bell', 0], ...(tArmy ? [[tArmy, 'drum', 0], ...(tArmyH ? [[tArmyH, 'stamp', 0], [tArmyC, 'stamp', 0]] : [])] : []),
-    ...(tRaid ? [[tRaid, 'whistle', 0]] : []), ...(tVote ? [[tVote, 'drum', 0], ...[0, 1].map((i) => [tOpts + i * 1.1, 'stamp', 0])] : []), [tCta, 'end', 0],
+    ...(tRaid ? [[tRaid, 'whistle', 0]] : []), ...(tVote ? [[tVote, 'drum', 0], ...[0, 1, 2].map((i) => [tOpts + i * 0.9, 'stamp', 0])] : []), [tCta, 'end', 0],
     ...(tFallen ? [[tFallen, 'bell', 0]] : []), ...(tRace ? [[tRace, 'drum', 0], [tRaceN + 0.3, 'tick', 2]] : []), ...(tNight ? [[tNight, 'barrage', 5]] : []),
     ...(tLetter ? [[tLetter + 0.4, 'type', 1.2], [tLetter2 + 0.4, 'stamp', 0]] : []), ...(tJoined ? [[tJoined + 0.3, 'tick', 2.5]] : []));
   // dopady granátů za první linií (předem určené, video je vždy stejné)
@@ -181,7 +184,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     ${fallenList.length ? `<div id="rd-fallen"><div class="paper" style="background-image:url(${paperTexture(7)});clip-path:${tornClip(7)}">
       <div class="h"><span>ROLL OF HONOUR</span><span>DAY ${data.label ?? data.day}</span></div><ul>${fallenList.map((x) => `<li><b>† ${x.name}</b><span>${short(x.faction).toLowerCase()} ${roleName(x.role).toLowerCase()}</span></li>`).join('')}</ul>
       <div class="heir">THE NEXT OF EACH FAMILY TOOK THEIR PLACE</div></div></div>` : ''}
-    ${data.race ? `<div id="rd-hill" class="panel"><div class="k">THE RACE FOR ${data.race.name.toUpperCase()}</div>${[0, 1].map((f) => `<div style="color:${f ? '#c9c26a' : '#a7b4bb'}"><div class="row"><span>${short(f)}</span><b>0</b></div><div class="bar"><i style="width:0"></i></div></div>`).join('')}<div class="goal">FIRST TO ${data.race.goal} TAKES THE HILL</div></div>` : ''}
+    ${data.race ? `<div id="rd-hill" class="panel"><div class="k">THE RACE FOR ${data.race.name.toUpperCase()}</div>${[0, 1].map((f) => `<div style="color:${f ? '#c9c26a' : '#a7b4bb'}"><div class="row"><span>${short(f)}</span><b>0</b></div><div class="bar"><i style="width:0"></i></div></div>`).join('')}<div class="goal">${data.race.type === 'kills' ? `FIRST TO ${data.race.goal} KILLS TAKES THE CANAL` : `FIRST TO ${data.race.goal} TAKES THE HILL`}</div></div>` : ''}
     ${data.shelled ? `<div id="rd-night"><span>TONIGHT</span><br><span>${data.shelled.nights > 1 ? 'AND TOMORROW' : 'THE LAST NIGHT'}</span><br><span>ON THE ${short(data.shelled.side)}</span></div>` : ''}
     ${data.joined ? `<div id="rd-joined" class="panel"><div class="k">YESTERDAY · NEW SOLDIERS</div><div class="n">+0</div>
       <div class="s"><span style="color:#a7b4bb">HEGEMONY <b>+0</b></span><span style="color:#c9c26a">CONCORD <b>+0</b></span></div></div>` : ''}
@@ -193,7 +196,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
       <div class="m">${data.raid.seats} per side · tonight</div><div class="kw">COMMENT ${data.raid.kw}</div></div>` : ''}
     ${data.army ? `<div id="rd-army" class="panel"><div class="k">ON THE LINE TODAY</div><div class="n">0</div></div>` : ''}
     <div id="rd-side"><span><b></b><em style="font-style:normal"></em></span></div>
-    <div id="rd-vote" style="${tVote ? '' : 'display:none'}"><img src="${voteImg}" alt="">${[0, 1].map((i) => `<div class="hl" style="top:${(54 + i * 80) / 2.7}%;height:${72 / 2.7}%"></div>`).join('')}</div>
+    <div id="rd-vote" style="${tVote ? '' : 'display:none'}"><img src="${voteImg}" alt="">${[0, 1, 2].map((i) => `<div class="hl" style="top:${(42 + i * 60) / 2.7}%;height:${56 / 2.7}%"></div>`).join('')}</div>
     <div id="rd-sub"></div>
     <div id="rd-every"><span>EVERY MORNING · 13:00 UTC</span></div>
   `;
@@ -205,14 +208,22 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
   root.insertBefore(scenes.canvas, cine.canvas.nextSibling);
   const intro = pickScene(data.day, data.raid ? ['march', 'flare'] : ['march', 'flare', 'church']);
   const outro = pickScene(data.day, ['dawn', 'dawnwire', 'grim'], 1); // dawnwire = Hegemony za úsvitu, grim = Concord v ohni
+  const raceEnd = [tNight, tLetter, tJoined, tArmy, tRaid, tVote, tCta].filter((x) => x != null && x > (tRace ?? 0)).sort((a, b) => a - b)[0] ?? tCta;
   const sceneAt = (t) => {
     if (t < tSh && intro !== 'march') return [intro, t];
     if (t >= tStr && t < tPost) return ['aidpost', t - tStr];
     if (tLetter && t >= tLetter && t < (tLetEnd ?? tTail)) return ['letter', t - tLetter];
     if (tRaid && t >= tRaid && t < tVote) return ['church', t - tRaid];
+    if (tRace && t >= tRace && t < raceEnd) return ['canal', t - tRace]; // o co se teď bojuje: kanál Blackwater (15. 11.)
     if (t >= tCta && outro !== 'dawn') return [outro, t - tCta];
     return null;
   };
+  // pozorovatelna na kótě: strom se spotterem (cinema-wire 'tree') během věty o ní
+  const wire = makeWireScenes(tex, anims);
+  wire.canvas.id = 'rd-cine3';
+  wire.canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;opacity:0';
+  root.insertBefore(wire.canvas, scenes.canvas.nextSibling);
+  const obsEnd = [tFallen, tAid].filter((x) => x != null && x > (tObs ?? 0)).sort((a, b) => a - b)[0];
   const paint = fxLayers(root);
   const $ = (s) => root.querySelector(s);
   const show = (sel, o) => { const el = $(sel); if (el) el.style.opacity = o; };
@@ -247,6 +258,10 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     }
     // noc na začátku, úsvit na konci
     const night = t < tSh, dawn = t >= tCta;
+    const obsOn = tObs != null && t >= tObs && t < obsEnd;
+    if (obsOn) wire.draw('tree', t - tObs, { side: data.obs.by });
+    wire.canvas.style.opacity = obsOn ? 1 : 0;
+    root.style.setProperty('--obs-hide', obsOn ? '0' : '1'); // panel se zraněnými během záběru na strom schovat
     const sc = sceneAt(t);
     if (sc) scenes.draw(sc[0], sc[1]);
     else if (night) cine.draw(t + 3, 'night', { ...NIGHT, pan: t * 6 });
@@ -345,8 +360,8 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     v.style.opacity = t < tVote || t > tCta ? 0 : Math.min(1, vu * 2, (tCta - t) / 0.2);
     v.style.transform = `rotate(${(1 - vu) * -9}deg) scale(${0.7 + 0.3 * vu})`;
     root.querySelectorAll('#rd-vote .hl').forEach((el, i) => {
-      const a = tOpts + i * 1.1;
-      el.style.opacity = t > a && t < tCta ? (t < a + 1.1 || i === 1 ? 1 : 0.25) : 0;
+      const a = tOpts + i * 0.9;
+      el.style.opacity = t > a && t < tCta ? (t < a + 0.9 ? 1 : 0.25) : 0;
     });
     }
   }

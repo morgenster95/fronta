@@ -10,7 +10,7 @@ const rgb = (c) => `rgb(${c[0]},${c[1]},${c[2]})`;
 const off = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
 const clamp01 = (x) => Math.min(1, Math.max(0, x));
 
-export const SCENES = ['flare', 'church', 'aidpost', 'letter', 'dawnwire', 'grim'];
+export const SCENES = ['flare', 'church', 'aidpost', 'letter', 'dawnwire', 'grim', 'canal'];
 export const pickScene = (day, list, k = 0) => list[(day * 7 + k * 3) % list.length];
 
 // dithered svislý přechod (barvy palety, žádné plynulé přechody)
@@ -471,6 +471,59 @@ export function makeScenes(tex, anims = {}) {
         g.fillRect(Math.round(x), Math.round(y), k % 4 ? 1 : 2, k % 4 ? 1 : 2);
       }
       g.setTransform(1, 0, 0, 1, 0, 0);
+    },
+    // Blackwater Canal (cíl závodu „100 zabitých“, 15. 11.): noční kanál pod světlicí, rozbitý kamenný most,
+    // na protějším břehu pytle a záblesky pušek, v popředí dva vojáci Hegemonie (skutečné sprity, stejné měřítko ×3) a cedule
+    canal(t) {
+      if (!L.canal) {
+        const c = off(W, H), cg = c.getContext('2d');
+        sky(cg, 0, 150, ['#04060d', '#0a1022', '#141a2e', '#22223a', '#33283a']);
+        // protější břeh se zákopem a pytli
+        cg.fillStyle = '#17131a'; cg.fillRect(0, 120, W, 40);
+        for (let x = -4; x < W; x += 9) { cg.fillStyle = (x / 9) % 2 ? '#231d22' : '#2b2329'; cg.beginPath(); cg.ellipse(x + 4, 128, 5, 2.5, 0, 0, Math.PI * 2); cg.fill(); }
+        // mrtvé stromy na protějším břehu
+        cg.fillStyle = '#0b0a09';
+        for (const [x, h] of [[22, 34], [138, 28], [160, 40]]) { cg.fillRect(x, 120 - h, 2, h); cg.fillRect(x - 5, 120 - h * 0.7, 6, 1); cg.fillRect(x + 2, 120 - h * 0.5, 5, 1); cg.fillRect(x - 3, 120 - h * 0.85, 4, 1); }
+        // kanál: tmavá voda
+        sky(cg, 150, 214, ['#0a0f1c', '#0d1424', '#0a0e18', '#06080f']);
+        // kamenné zdi kanálu
+        cg.fillStyle = '#1f1c22'; cg.fillRect(0, 146, W, 5); cg.fillRect(0, 212, W, 5);
+        for (let x = 0; x < W; x += 8) { cg.fillStyle = '#29252b'; cg.fillRect(x, 146, 7, 2); cg.fillRect(x + 4, 212, 7, 2); }
+        // rozbitý most: pilíře a utržený oblouk
+        cg.fillStyle = '#16131a';
+        cg.fillRect(70, 132, 12, 82); cg.fillRect(112, 140, 12, 74);
+        for (let x = 60; x < 96; x++) cg.fillRect(x, Math.round(132 - Math.sin((x - 60) / 36 * Math.PI) * 6), 1, 5);
+        for (let x = 104; x < 134; x++) cg.fillRect(x, Math.round(140 - Math.sin((x - 104) / 60 * Math.PI) * 4 + (x - 104) * 0.15), 1, 4);
+        cg.fillStyle = '#0b0a09'; for (const [x, y] of [[96, 150], [99, 156], [101, 149], [104, 161]]) cg.fillRect(x, y, 3, 2); // trosky ve vodě
+        // náš břeh: bláto a pytle
+        cg.fillStyle = '#120e0c'; cg.fillRect(0, 217, W, 110);
+        for (let r = 0; r < 3; r++) for (let x = (r % 2) * -8; x < W; x += 16) { cg.fillStyle = (x + r) % 3 ? '#1b1612' : '#221b16'; cg.beginPath(); cg.ellipse(x + 8, 286 + r * 8, 8, 4, 0, 0, Math.PI * 2); cg.fill(); }
+        // cedule BLACKWATER
+        cg.fillStyle = '#2a2017'; cg.fillRect(150, 236, 2, 30); cg.fillRect(132, 232, 40, 9);
+        cg.fillStyle = '#8a7a62'; for (let i = 0; i < 9; i++) cg.fillRect(135 + i * 4, 235, 2, 3);
+        L.canal = c;
+      }
+      g.drawImage(L.canal, 0, 0);
+      // světlice: stoupá, visí, pomalu klesá; odraz ve vodě se vlní
+      const fy = 40 + Math.max(0, 30 - t * 14) + Math.max(0, t - 3) * 3, fx = 96 + Math.sin(t * 0.7) * 6;
+      glow(g, fx, fy, 70, '#5a5a6a', 0.55);
+      glow(g, fx, fy, 26, '#d9d4c4', 0.8);
+      g.fillStyle = '#fff6dc'; g.fillRect(Math.round(fx), Math.round(fy), 2, 2);
+      for (let k = 0; k < 9; k++) {
+        const yy = 160 + k * 6, w = 10 - k * 0.6 + Math.sin(t * 4 + k) * 3;
+        g.fillStyle = k % 2 ? 'rgba(217,212,196,0.35)' : 'rgba(217,212,196,0.18)';
+        g.fillRect(Math.round(fx - w / 2 + Math.sin(t * 3 + k * 1.7) * 2), yy, Math.round(w), 1);
+      }
+      // záblesky pušek na protějším břehu
+      for (let k = 0; k < 5; k++) {
+        const ph = (t * 1.3 + k * 0.37) % 1.6;
+        if (ph < 0.08) { const x = 18 + k * 34; glow(g, x, 124, 7, '#d98f3f', 1.2); g.fillStyle = '#fff6dc'; g.fillRect(x, 124, 1, 1); }
+      }
+      rain(g, t, 60, 0.25);
+      // popředí: dva vojáci Hegemonie za pytli hledí přes kanál (×3)
+      g.imageSmoothingEnabled = false;
+      if (dawnB) g.drawImage(dawnB, 18, 214, 96, 96);
+      if (dawnA) g.drawImage(dawnA, 92, 206 + Math.round(Math.sin(t * 0.9)), 96, 96);
     },
     dawnwire(t) {
       g.drawImage(L.dawn, 0, 0);
