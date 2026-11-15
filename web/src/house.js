@@ -2,6 +2,7 @@
 // Data: karta vojáka ze shardu (records/N.json: fallen = záznamy generací, generation, recFrom, medals, houseBadges…),
 // /data/honour.json a /data/boards.json se načtou až po otevření záložky.
 import { shareMemorial } from './share.js';
+import { dayLabel, dayNo } from './day.js';
 
 const $ = (id) => document.getElementById(id);
 const ORD = (n) => `${n}${['th', 'st', 'nd', 'rd'][((n % 100) - 20) % 10] || ['th', 'st', 'nd', 'rd'][n % 100] || 'th'}`;
@@ -45,7 +46,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
     }[c.kind] || 'Fell at the front.');
   };
   const causeShort = (c) => (c?.shell ? 'barrage, ' : '') + ({ nobed: 'no bed', wounds: 'of wounds', raid: 'night raid', line: 'at the front', shell: 'direct hit', shot: 'shot dead' }[c?.kind || 'line'] || 'at the front');
-  const dayL = (d) => (d > 0 ? `Day ${d}` : 'Mobilization');
+  const dayL = dayLabel;
 
   async function family(handle) {
     const rec = await loadRecord(handle);
@@ -88,7 +89,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
         <div class="frame"><img class="spr ${g.alive ? '' : 'dead'}" src="${sprite(f, g.archetype)}" alt="">${g.alive ? '' : '<span class="cross">✝</span>'}</div>
         <div class="gen">${ORD(g.gen).toUpperCase()} GENERATION</div>
         <div class="nm">${esc(g.first)}</div>
-        <div class="yrs">${g.alive ? `${dayL(g.enlisted)} → now` : `Day ${g.enlisted}–${g.day}`}</div>
+        <div class="yrs">${g.alive ? `${dayL(g.enlisted)} → now` : `${dayL(g.enlisted)}–${dayNo(g.day)}`}</div>
       </div>`).join('');
     // rodinné album: medaile a tituly všech generací + odznaky rodu (získané i ty, které ještě čekají)
     const got = new Map((rec.houseBadges || []).map((b) => [b.id, b]));
@@ -108,7 +109,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
             <div class="nm">${esc(g.name)}</div>
             <div class="muted sub">${ORD(g.gen)} of the House · ${g.prev ? `${esc(g.prev.first)}'s ${esc(INV[g.relation] || 'kin')}` : 'founder'}</div>
           </div>
-          <span class="status ${g.alive ? 'alive' : 'fell'}">${g.alive ? (['ON THE LINE', 'WOUNDED', 'MISSING IN ACTION', 'PRISONER OF WAR'][g.st] ?? 'ON THE LINE') : `✝ DAY ${g.day}`}</span>
+          <span class="status ${g.alive ? 'alive' : 'fell'}">${g.alive ? (['ON THE LINE', 'WOUNDED', 'MISSING IN ACTION', 'PRISONER OF WAR'][g.st] ?? 'ON THE LINE') : `✝ DAY ${dayNo(g.day)}`}</span>
         </div>
         <div class="gc-body">
           ${g.alive ? '' : `<div class="cause"><span class="sil">CAUSE OF DEATH</span>${esc(causeText(g.cause))}</div>`}
@@ -144,7 +145,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
       ${cards}
       <h3>Family album</h3>
       <div class="album">
-        ${badges.map((b) => `<div class="al ${b.got ? 'got' : 'locked'}" title="${esc(b.desc)}"><span class="ic">${b.got ? esc(b.icon) : '?'}</span><b>${esc(b.name)}</b><small>${b.got ? `Day ${b.got.day}` : esc(b.desc)}</small></div>`).join('')}
+        ${badges.map((b) => `<div class="al ${b.got ? 'got' : 'locked'}" title="${esc(b.desc)}"><span class="ic">${b.got ? esc(b.icon) : '?'}</span><b>${esc(b.name)}</b><small>${b.got ? dayLabel(b.got.day) : esc(b.desc)}</small></div>`).join('')}
         ${album.map((m) => `<div class="al got medal"><span class="ic">${esc(m.icon)}</span><b>${esc(m.name)}</b><small>${esc(m.who)}</small></div>`).join('')}
       </div>
       <div class="actions">
@@ -210,13 +211,13 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
     const o = document.createElement('div');
     o.id = 'death-overlay';
     o.innerHTML = `<div class="death">
-      <div class="ttl">✝ NEWS FROM THE FRONT · DAY ${p.day}</div>
+      <div class="ttl">✝ NEWS FROM THE FRONT · DAY ${dayNo(p.day)}</div>
       <div class="pair">
         <div><div class="frame"><img class="spr dead" src="${sprite(F.faction, p.archetype)}" alt=""></div><div class="nm">${esc(p.first)}</div></div>
         <div class="arrow">▸</div>
         <div><div class="frame new"><img class="spr" src="${sprite(F.faction, cur.archetype)}" alt=""></div><div class="nm">${esc(cur.first)}</div></div>
       </div>
-      <p><b>${esc(p.name)}</b> fell on Day ${p.day}.</p>
+      <p><b>${esc(p.name)}</b> fell on ${dayLabel(p.day)}.</p>
       <p class="muted">${esc(causeText(p.cause))}</p>
       <div class="days">${p.days ?? '?'} ${p.days === 1 ? 'DAY' : 'DAYS'}</div>
       <div class="muted small">at the front</div>
@@ -250,7 +251,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
       <div class="sides">${[0, 1].map((f) => `<div class="side-box"><b style="color:${fac(f).color}">${cnt[f]}</b><span class="muted">${esc(fac(f).name)} fallen</span></div>`).join('')}</div>
       <div class="chips">${[['all', 'ALL'], ['0', fac(0).name.replace('The ', '').toUpperCase()], ['1', fac(1).name.replace('The ', '').toUpperCase()], ...(me ? [['me', 'MY HOUSE']] : [])]
         .map(([k, l]) => `<button type="button" class="chip ${k === filter ? 'on' : ''}" data-f="${k}">${esc(l)}</button>`).join('')}</div>
-      ${list.length ? [...by].map(([d, rows]) => `<div class="day-h">DAY ${d}</div>` + rows.map((r) => `
+      ${list.length ? [...by].map(([d, rows]) => `<div class="day-h">${dayLabel(d).toUpperCase()}</div>` + rows.map((r) => `
         <button type="button" class="fallen-row" data-h="${esc(r.handle)}">
           <img class="spr dead" src="${sprite(r.faction, r.archetype)}" alt="">
           <span><span class="nm"><span class="dot" style="background:${fac(r.faction).color}"></span>${esc(r.name)}</span>

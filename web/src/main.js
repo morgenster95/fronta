@@ -13,6 +13,7 @@ import { initOrderFx } from './orders-fx.js';
 import { initWire, placeVolunteers } from './wire.js';
 import { initObservation } from './observation.js';
 import { getJson, loadTexture, loadImage, loadAtlas } from './assets.js';
+import { setDayShift } from './day.js';
 
 TextureSource.defaultOptions.scaleMode = 'nearest';
 
@@ -89,6 +90,7 @@ async function boot() {
     fetch('/data/roster.json').then((r) => r.json()),
     getJson('/assets/soldiers/manifest.json', { cache: 'no-cache' }),
   ]);
+  setDayShift(theme); // zobrazené číslo dne (theme.dayShift, web/src/day.js)
   const map = generateFront(theme.map);
   const worldW = map.W * map.tile, worldH = map.H * map.tile;
   // otevřené sektory; zbytek mapy je „neprozkoumaný“ (ztmavený) a kamera tam nepustí

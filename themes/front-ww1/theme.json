@@ -1,5 +1,7 @@
 {
   "warStart": "2026-11-09",
+  "dayShift": -1,
+  "_dayShift": "Zobrazené číslo dne = state.day + dayShift (15. 11.: state.day 7 = Day 6 u hráčů; engine/day.js, web/src/day.js). Uložené dny se nemění.",
   "_warStart": "Den 1 války (UTC). Day reel nese číslo včerejšího dne podle kalendáře: reel z 14. 11. = Day 5, z 15. 11. = Day 6 (tools/day-reel.mjs reelDay, pravidlo uživatele 14. 11.).",
   "id": "front-ww1",
   "title": "MUD & IRON",

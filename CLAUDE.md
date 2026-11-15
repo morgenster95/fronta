@@ -140,7 +140,8 @@ Postup pro nový reel `<name>`:
 6. Až to uživatel **výslovně schválí**: přidat položku do `marketing/queue.json` (vzor: existující položky, `publishAt` v UTC).
    Smyčka ji publikuje v daný čas. Video delší než 60 s jde do IG Stories jen rozdělené (`type: "story"`).
 
-**ČÍSLO DNE V DAY REELU (pravidlo uživatele 14. 11., chyba se nesmí opakovat):** Day reel ukazuje **včerejší den podle kalendáře** (Den 1 = 9. 11., `theme.warStart`): reel z 13. 11. = Day 4, ze 14. 11. = **Day 5**, z 15. 11. = **Day 6**, a tak dál, i když je vyrobený po ranních novinách (pak už `state.day` ukazuje o 1 víc; 14. 11. tak omylem vyšel „Day 6“).
+**ČÍSLO DNE VŠUDE (pravidlo uživatele 15. 11.):** hráči i uživatel počítají Den 1 = 10. 11.: **15. 11. = Day 6, 14. 11. = Day 5**, ranní noviny 15. 11. jsou Day 6. Vnitřní `state.day` je o 1 napřed (po novinách 15. 11. = 7), proto se zobrazuje `state.day + theme.dayShift` (−1): engine `engine/day.js` (`showDay`: příběhy {day}, kronika, zprávy botu), web `web/src/day.js` (`dayNo`, `dayLabel`), náhledy `preview-tick`/`sim-edition`. **Ve zprávách uživateli vždy uváděj zobrazené číslo dne (ne state.day).** Uložené dny ve stavu se nepřepisují.
+**ČÍSLO DNE V DAY REELU (pravidlo uživatele 14. 11., chyba se nesmí opakovat):** Day reel ukazuje **včerejší den podle kalendáře** (Den 1 = 9. 11., `theme.warStart`): reel ze 14. 11. = **Day 5**, z 15. 11. = **Day 6** (stejné číslo jako ranní noviny téhož dne), a tak dál, i když je vyrobený po ranních novinách (pak už `state.day` ukazuje o 1 víc; 14. 11. tak omylem vyšel „Day 6“).
 Titulek počítá `reelDay()` v `tools/day-reel.mjs` (`data.label`, přepis `--label N`), stejné číslo patří do popisku a do story (`--title "DAY N"`).
 **Každé denní video musí začínat titulkem „DAY N“** (velký psaný titulek v noci, `#rd-day` v `web/src/reel-daily.js`), i vlastní denní reel mimo šablonu (jako `reel-night6`, kde chyběl). Před odesláním videa uživateli zkontroluj titulek i číslo dne.
 

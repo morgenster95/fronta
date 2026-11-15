@@ -1,6 +1,7 @@
 // Obrázek vojáka ke sdílení do Instagram story (1080×1920).
 // Pixelová vrstva se kreslí na malé plátno a zvětšuje se celočíselně (ostré pixely), text je ostrý přímo ve velkém rozlišení.
 import { loadImage } from './assets.js';
+import { dayLabel, dayNo } from './day.js';
 
 const W = 1080, H = 1920, K = 5; // pixelová vrstva 216×384, zvětšená ×5
 const PAL = { ink: '#0e0d0c', dark: '#1c1a17', mud: '#2b2722', bone: '#a39782', white: '#e3d9c3', gold: '#d98f3f', rust: '#7e3b2a', grey: '#8a9295', khaki: '#c9c26a' };
@@ -211,7 +212,7 @@ export async function shareMemorial({ life, family, faction, heir, theme, sprite
   const nameLines = wrap(ctx, life.name.toUpperCase(), W - 120);
   nameLines.forEach((l, i) => text(ctx, l, W / 2, 1198 + i * 74, 62, PAL.white));
   let y = 1198 + nameLines.length * 74 + 14;
-  text(ctx, `DAY ${life.enlisted} – DAY ${life.day}`, W / 2, y, 34, PAL.bone, { shadow: false });
+  text(ctx, `${dayLabel(life.enlisted).toUpperCase()} – DAY ${dayNo(life.day)}`, W / 2, y, 34, PAL.bone, { shadow: false });
   y += 60;
   text(ctx, `${life.days} ${life.days === 1 ? 'DAY' : 'DAYS'} AT THE FRONT`, W / 2, y, 50, PAL.gold);
   y += 90;

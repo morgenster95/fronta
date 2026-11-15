@@ -137,7 +137,8 @@ test('pozdní nováček dostane úvod náhradníka a každý má vlastní minulo
     intros.push(r.soldier.record[0][1]);
     assert.ok(r.soldier.bg?.trade && r.soldier.bg?.home);
   }
-  assert.ok(intros.filter((t) => /Day 7|6 days/.test(t)).length >= 10, intros.join('\n'));
+  // zobrazený den = state.day + theme.dayShift (−1, 15. 11.)
+  assert.ok(intros.filter((t) => /Day 6|6 days/.test(t)).length >= 10, intros.join('\n'));
   assert.ok(!intros.some((t) => /\{\w+\}/.test(t)));
   const bgs = new Set(s.soldiers.map((x) => JSON.stringify(x.bg)));
   assert.equal(bgs.size, 30);
@@ -545,7 +546,7 @@ test('rod: odznaky rodu zůstávají napříč generacemi, bot dostane oznámen�
   const note = s.notices.at(-1);
   assert.equal(note.handle, n.handle);
   const msg = deathReply(note, theme, 'https://mudandiron.web.app');
-  assert.match(msg, new RegExp(`^@${n.handle} .+ fell on Day 21 on a stretcher, waiting for a bed`));
+  assert.match(msg, new RegExp(`^@${n.handle} .+ fell on Day 20 on a stretcher, waiting for a bed`));
   assert.match(msg, /has taken up the rifle\. Your house: https:\/\/mudandiron\.web\.app\/\?s=.+&fell=1$/);
 });
 

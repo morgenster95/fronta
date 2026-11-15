@@ -1,3 +1,4 @@
+import { showDay } from './day.js';
 // Závod frakcí o kóty: kdo první naverbuje `need` nových vojáků, dobude kótu.
 // Odměna („výšina“): dělostřelectvo na poraženého, nižší nebezpečí pro vítěze / vyšší pro poraženého, stuha, titul hrdiny,
 // zápis do záznamu všem vojákům a zpráva do deníku. Pak začíná nový závod o další kótu (počítají se jen noví rekruti).
@@ -77,7 +78,7 @@ function winRace(state, theme, story, st, f, recruit) {
   else v.barrageTo = day + R.barrageDays;
   state.victories = [...(state.victories || []), v];
   // stuha všem vojákům vítězné strany, titul hrdinovi, zápis každému vojákovi obou stran
-  const vars = (s) => ({ objective: st.name, us: short(theme, s.faction), them: short(theme, 1 - s.faction), day: String(day) });
+  const vars = (s) => ({ objective: st.name, us: short(theme, s.faction), them: short(theme, 1 - s.faction), day: String(showDay(theme, day)) });
   for (const s of state.soldiers) {
     if (s.status === 'fallen') continue;
     const won = s.faction === f;

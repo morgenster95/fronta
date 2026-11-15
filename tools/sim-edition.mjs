@@ -20,7 +20,7 @@ if (opt('--state', null)) base = loadState(theme, opt('--state', null));
 else { execFileSync('git', ['fetch', '-q', 'origin', 'main'], { cwd: ROOT }); base = stateFromGit('origin/main'); }
 const short = (f) => theme.factions[f].name.replace(/^The /, '');
 const v = (base.victories || []).at(-1);
-console.log(`Stav: Den ${base.day}, ${base.soldiers.length} vojáků (${[0, 1].map((f) => `${short(f)} ${base.soldiers.filter((s) => s.faction === f).length}`).join(', ')}); ${v ? `${short(v.faction)} ovládl ${v.name} (Den ${v.day}), bombardování ${short(1 - v.faction)} do Dne ${v.barrageTo}` : 'žádná dobytá kóta'}`);
+console.log(`Stav: Den ${base.day + (theme.dayShift ?? 0)} (hráči vidí), ${base.soldiers.length} vojáků (${[0, 1].map((f) => `${short(f)} ${base.soldiers.filter((s) => s.faction === f).length}`).join(', ')}); ${v ? `${short(v.faction)} ovládl ${v.name} (Den ${v.day}), bombardování ${short(1 - v.faction)} do Dne ${v.barrageTo}` : 'žádná dobytá kóta'}`);
 const dead = [], hurt = [], perDay = [];
 for (let r = 0; r < RUNS; r++) {
   const s = JSON.parse(JSON.stringify(base));
@@ -44,7 +44,7 @@ const sd = (a) => { const m = mean(a); return Math.sqrt(mean(a.map((x) => (x - m
 console.log(`\n${RUNS} běhů × ${DAYS} dní. Padlí / raněni za celé období (průměr ± směrodatná odchylka):`);
 for (const f of [0, 1]) console.log(`  ${short(f).padEnd(9)} padlí ${mean(dead.map((x) => x[f])).toFixed(1)} ± ${sd(dead.map((x) => x[f])).toFixed(1)} · raněni ${mean(hurt.map((x) => x[f])).toFixed(1)} ± ${sd(hurt.map((x) => x[f])).toFixed(1)}`);
 console.log('\nPo dnech (průměr padlých / raněných):');
-perDay.forEach((p, k) => console.log(`  Den ${base.day + 1 + k}: ${[0, 1].map((f) => `${short(f)} ${mean(p[f].map((x) => x[0])).toFixed(2)} / ${mean(p[f].map((x) => x[1])).toFixed(1)}`).join(' · ')}`));
+perDay.forEach((p, k) => console.log(`  Den ${base.day + 1 + k + (theme.dayShift ?? 0)}: ${[0, 1].map((f) => `${short(f)} ${mean(p[f].map((x) => x[0])).toFixed(2)} / ${mean(p[f].map((x) => x[1])).toFixed(1)}`).join(' · ')}`));
 if (v) {
   const L = 1 - v.faction, W = v.faction;
   const moreDead = dead.filter((x) => x[L] > x[W]).length, eqDead = dead.filter((x) => x[L] === x[W]).length;

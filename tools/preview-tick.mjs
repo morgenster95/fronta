@@ -24,7 +24,7 @@ dailyTick(s, theme, story);
 const short = (f) => theme.factions[f].name.replace(/^The /, '');
 const out = [];
 const p = (l = '') => out.push(l);
-p(`# Náhled vydání: Den ${s.day} (nový boj, vyvážení v${theme.battle.balance})`);
+p(`# Náhled vydání: Den ${s.day + (theme.dayShift ?? 0)} (hráči vidí; vnitřně ${s.day}) (nový boj, vyvážení v${theme.battle.balance})`);
 p(`Ze stavu s ${s.soldiers.length} vojáky. NIC SE NEULOŽILO ani nepublikovalo.\n`);
 const ch = s.chronicle.at(-1);
 p('## Trench Gazette');

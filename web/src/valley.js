@@ -2,6 +2,7 @@
 // Zem se kreslí kódem v pixelové mřížce 192×120 (×3), místa jsou obrázky z PixelLabu (theme.valley.locations[].img)
 // nebo náhradní pixelové ikony, dokud obrázek není.
 import { signInClaimed, sendVolunteer } from './claim.js';
+import { dayLabel } from './day.js';
 
 const GW = 192, GH = 120, PX = 6; // mřížka 192×120, plátno ×6 (ostré i na telefonu s retinou)
 const W = GW * PX, H = GH * PX;
@@ -277,7 +278,6 @@ export function initValley({ theme, roster, soldiers, openSoldier, toast, show }
   return { open };
 }
 
-const dayLabel = (d) => (d > 0 ? `Day ${d}` : 'Mobilization');
 const cap = (t) => t[0].toUpperCase() + t.slice(1);
 function esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);

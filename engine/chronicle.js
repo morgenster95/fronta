@@ -1,3 +1,4 @@
+import { showDay } from './day.js';
 import { raceStatus } from './race.js';
 // Kronika dne: automatický zápis do Deníku fronty po každém denním tahu.
 // Jmenuje skutečné hráče (@handle → na webu odkaz na kartu vojáka). Deterministická: stejný stav + den = stejný text.
@@ -106,6 +107,6 @@ export function writeChronicle(state, day, { theme, story, weather, events = [],
     const fresh = all.filter((t) => !recent.has(t));
     return pick(rand, fresh.length ? fresh : all);
   };
-  const title = lead ? lead.h : weather ? fromWeather() : `Day ${day}`;
+  const title = lead ? lead.h : weather ? fromWeather() : `Day ${showDay(theme, day)}`;
   return { day, kind: 'chronicle', by: 'Field Telegraph', title, weather: weather?.id ?? null, blocks };
 }

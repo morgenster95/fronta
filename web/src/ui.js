@@ -5,6 +5,7 @@ import { shareCard } from './share.js';
 import { paperTexture, tornClip } from './paper.js';
 import { initValley } from './valley.js';
 import { initHouse } from './house.js';
+import { dayLabel, dayNo } from './day.js';
 
 const $ = (id) => document.getElementById(id);
 const STATUS = ['On the line', 'Wounded', 'Missing in action', 'Prisoner of war', 'Fallen'];
@@ -13,14 +14,13 @@ const shardCache = new Map();
 const oldCache = new Map(); // starší zápisy (records-old), načtou se až na kliknutí
 
 // Den 0 = mobilizace (nábor před začátkem války)
-const dayLabel = (d) => (d > 0 ? `Day ${d}` : 'Mobilization');
 
 export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   const [A, B] = theme.factions;
   // ampersand ve Silkscreenu vypadá jako €, proto ho sázíme písmem VT323
   $('title').innerHTML = esc(theme.title).replace('&amp;', '<span class="amp">&amp;</span>');
   document.title = theme.title;
-  $('day').textContent = roster.day > 0 ? `Day ${roster.day}` : 'Mobilization';
+  $('day').textContent = dayLabel(roster.day);
   const n = [0, 1].map((f) => soldiers.filter((s) => s.faction === f && !s.vacant).length);
   const vacantCount = soldiers.filter((s) => s.vacant).length;
   $('total').textContent = `${(n[0] + n[1]).toLocaleString('en')} enlisted` + (vacantCount ? ` · ${vacantCount} posts waiting` : '');
@@ -110,7 +110,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   $('enlist-btn').onclick = () => show('enlist');
 
   // War Room: aktuální rozhodnutí, odemykání, historie rozhodnutí
-  $('wr-day').textContent = `${roster.day > 0 ? `Day ${roster.day} of the war` : 'Mobilization'} · ${(n[0] + n[1]).toLocaleString('en')} soldiers on the line`;
+  $('wr-day').textContent = `${dayNo(roster.day) > 0 ? `Day ${dayNo(roster.day)} of the war` : 'Mobilization'} · ${(n[0] + n[1]).toLocaleString('en')} soldiers on the line`;
   if (roster.vote) {
     $('wr-vote').innerHTML = `<p>${esc(roster.vote.question)}</p>` +
       roster.vote.options.map((o) => `<div class="vote-opt"><span class="kw">${esc(o.kw)}</span><span>${esc(o.label)}</span></div>`).join('') +
@@ -121,12 +121,12 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
   $('wr-unlocks').innerHTML = race
     ? `<p>${race.type === 'kills' ? `The first side to kill <b>${race.need}</b> enemy soldiers takes <b>${esc(race.name)}</b>.` : `The first side to bring <b>${race.need}</b> new soldiers to the front takes <b>${esc(race.name)}</b>.`} ${esc(race.reward || '')}</p>${raceBars(race)}` +
       `<p class="muted">Every friend who comments ${theme.factions.map((x) => `<b>${esc(x.keyword)}</b>`).join(' or ')} on ${esc(theme.instagram)} counts. After the battle, a new race begins.</p>` +
-      ((roster.victories || []).length ? `<ol class="history">${roster.victories.map((v) => `<li><span class="d">Day ${v.day} · ${esc(theme.factions[v.faction].name.replace('The ', ''))}</span>took ${esc(v.name)} · deciding rifle: @${esc(v.hero)}</li>`).join('')}</ol>` : '')
+      ((roster.victories || []).length ? `<ol class="history">${roster.victories.map((v) => `<li><span class="d">${dayLabel(v.day)} · ${esc(theme.factions[v.faction].name.replace('The ', ''))}</span>took ${esc(v.name)} · deciding rifle: @${esc(v.hero)}</li>`).join('')}</ol>` : '')
     : '<p class="muted">—</p>';
   $('wr-history').innerHTML = (roster.history || []).map((e) => {
     const tot = Object.values(e.counts || {}).reduce((a, b) => a + b, 0) || 1;
     const res = Object.entries(e.counts || {}).map(([k, v]) => `${esc(k)} ${Math.round((v / tot) * 100)}%`).join(' · ');
-    return `<li><span class="d">Day ${e.day} · ${esc(e.winner)}</span>${esc(e.question)}<br><span class="muted">${res}</span><br>${esc(e.text || '')}</li>`;
+    return `<li><span class="d">${dayLabel(e.day)} · ${esc(e.winner)}</span>${esc(e.question)}<br><span class="muted">${res}</span><br>${esc(e.text || '')}</li>`;
   }).join('') || '<li class="muted">The war has just begun. The first decision is yours.</li>';
   $('warroom-btn').onclick = () => show('warroom');
 
@@ -332,7 +332,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     $('card-enlisted').textContent = dayLabel(rec.enlisted);
     const fam = [];
     if (s.generation > 1) fam.push(`<b>${ORD[s.generation] || s.generation + 'th'}</b> of the House of ${esc(rec.family)} at the front.`);
-    for (const p of rec.fallen || []) fam.push(`✝ ${esc(p.name)}, fell on Day ${p.day}`);
+    for (const p of rec.fallen || []) fam.push(`✝ ${esc(p.name)}, fell on ${dayLabel(p.day)}`);
     if (rec.background) fam.unshift(`<span class="bg">${esc(rec.background)}</span>`);
     if (s.medals?.includes('wire-party')) fam.unshift(`<span class="medal">\u26d3 Wire Party</span> ${rec.wiring || 3} nights mending the wire`);
     if (s.medals?.includes('first-wave')) fam.unshift('<span class="medal">🎖 First Wave</span> one of the first 100 to enlist');
@@ -344,12 +344,12 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     for (const m of s.medals || []) {
       if (m.startsWith('hero:')) {
         const v = (roster.victories || []).find((x) => x.id === m.slice(5));
-        fam.unshift(`<span class="medal">🏅 Medal of Valor</span> decided the battle for ${esc(v?.name ?? 'the ridge')}${v ? `, Day ${v.day}` : ''}`);
+        fam.unshift(`<span class="medal">🏅 Medal of Valor</span> decided the battle for ${esc(v?.name ?? 'the ridge')}${v ? `, ${dayLabel(v.day)}` : ''}`);
         continue;
       }
       if (!m.startsWith('obj:')) continue;
       const v = (roster.victories || []).find((x) => x.id === m.slice(4));
-      fam.unshift(`<span class="medal">🎖 ${esc(v?.name ?? 'Battle')}</span> fought on the winning side${v ? `, Day ${v.day}` : ''}`);
+      fam.unshift(`<span class="medal">🎖 ${esc(v?.name ?? 'Battle')}</span> fought on the winning side${v ? `, ${dayLabel(v.day)}` : ''}`);
     }
     for (const title of rec.titles || []) fam.unshift(`<span class="title">★ ${esc(title)}</span>`);
     $('card-family').innerHTML = fam.join('<br>');

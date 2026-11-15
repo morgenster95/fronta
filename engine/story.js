@@ -1,3 +1,4 @@
+import { showDay } from './day.js';
 // Generátor příběhů ze šablon tématu (zdarma, bez AI API). Deterministický: stejný voják + den = stejný zápis.
 
 import { rngFor, pick, weighted, hashString } from './rng.js';
@@ -89,7 +90,7 @@ export function enlistEntry(soldier, theme, story, today = null, day = soldier.e
   // od 3. dne války přicházejí „náhradníci“: úvody, které vědí, že válka už běží
   const late = day >= 3 && story.enlistLate ? story.enlistLate.map((x) => [x, 3]) : [];
   const tpl = pickVaried(rand, [...even(story.enlist), ...late], soldier, today);
-  return fill(tpl, soldierVars(soldier, theme, story, { day: String(day), daysIn: String(Math.max(1, day - 1)) }), rand);
+  return fill(tpl, soldierVars(soldier, theme, story, { day: String(showDay(theme, day)), daysIn: String(Math.max(1, day - 1)) }), rand);
 }
 
 // Počasí dne: stejné pro celou frontu, deterministické podle tématu a dne.
