@@ -500,6 +500,13 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         const newbie = day - (s.enlisted ?? day) < cfg.newbieDays && !w.shell;
         // dlouho ležící těžce raněný bez lůžka (uživatel 15. 11.): riziko smrti roste s každým dnem a s chybějící péčí mediků,
         // v zákopu víc než na nosítkách. Ukazuje, že bez lůžek (nemocnice) a mediků se raněné udržet nedaří.
+        // rozhodnutí (15. 11., uživatel: „je to dlouhé, rychleji ozdravovat nebo zabíjet“): kdo leží těžce raněný maxDays nocí,
+        // ten se buď zahojí (šance resolveHeal + resolveCare × péče mediků), nebo zemře; jiné hody ten den nehází
+        if (C.maxDays && !fresh && day - w.day >= C.maxDays) {
+          if (rand() < C.resolveHeal + C.resolveCare * g) recover(s, 'patchedStretcher');
+          else if (die(s, 'diedNoBed', 'nocare')) continue;
+          continue;
+        }
         const L = cfg.care.linger;
         if (L && (!fresh || trench) && !newbie) { // v zákopu bez nosítek hrozí smrt už první noc (uživatel 15. 11.)
           const p = Math.min(L.max, (L.base + L.perDay * (day - w.day)) * (1 - L.care * g) * (trench ? L.trench : 1) * (ctx.dieOf?.(s) ?? 1));

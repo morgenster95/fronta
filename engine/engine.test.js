@@ -583,7 +583,7 @@ test('péče: kritičtí první na lůžka, pak nosítka; kritický bez nosítek
   const side = s.soldiers.filter((x) => x.faction === 0);
   side.slice(0, 2).forEach((x) => { x.archetype = 'medic'; });
   hurt(side[2], 'heavy', 19); hurt(side[3], 'crit', 20); hurt(side[4], 'crit', 20); hurt(side[5], 'crit', 20);
-  const cfg = quiet({ aidPost: { ...theme.battle.aidPost, beds: 2, stretchers: 1, critRisk: 0, stretchersPerMedic: 0 }, care: { ...theme.battle.care, crit: { ...theme.battle.care.crit, dieBase: 0 } } });
+  const cfg = quiet({ aidPost: { ...theme.battle.aidPost, beds: 2, stretchers: 1, critRisk: 0, stretchersPerMedic: 0 }, care: { ...theme.battle.care, linger: null, heavy: { ...theme.battle.care.heavy, minDays: 99, maxDays: 0, worsen: 0 }, crit: { ...theme.battle.care.crit, dieBase: 0 } } }); // test rozdělení míst, ne hojení
   battleTick(s, cfg, story, 20);
   const bedded = [side[3], side[4], side[5]].filter((x) => x.wound?.place === 'bed');
   assert.equal(bedded.length, 2, 'dva kritičtí na lůžkách');
