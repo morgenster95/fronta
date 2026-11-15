@@ -668,8 +668,8 @@
       "kill": 0.5,
       "killHeavy": 0.25,
       "_killHeavy": "15. 11. (uživatel: musí se umírat i přímo palbou): kritický zásah kulkou zabije na místě s kill 0,5 (dřív 0,2), těžký s killHeavy 0,12.",
-      "saturation": 1,
-      "_saturation": "saturation: střelec trefuje méně, když je u něj víc vlastních střelců než nepřátel na dostřel (min(1, saturation × nepřátel / vlastních)). Početní převaha nedrtí s druhou mocninou.",
+      "saturation": 0,
+      "_saturation": "VYPNUTO 15. 11. (uživatel: víc střelců = větší palebná síla). Dřív: střelec trefoval méně, když bylo u něj víc vlastních střelců než nepřátel na dostřel.",
       "_kill": "kill: šance, že kritický zásah kulkou zabije na místě (roles.<role>.kill přebíjí). Ostatní smrti vznikají z nedostatku lůžek, nosítek a mediků."
     },
     "xp": {
