@@ -663,7 +663,7 @@
     "kw": "HOSPITAL",
     "text": "Hegemony Pillboxes (close second being hospital beds)",
     "at": "2026-11-15T09:35:25+0000",
-    "likes": 1,
+    "likes": 2,
     "reply": false
    },
    {
@@ -673,7 +673,7 @@
     "kw": "PILLBOXES",
     "text": "Hegemony Pillboxes, long live the Kaiser ❤️",
     "at": "2026-11-15T09:35:03+0000",
-    "likes": 1,
+    "likes": 2,
     "reply": false
    },
    {
@@ -723,6 +723,16 @@
     "kw": "HOSPITAL",
     "text": "Hegemony HOSPITAL (many Wounded we have)",
     "at": "2026-11-15T10:50:13+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18057270674609330",
+    "handle": "miguell.jacob",
+    "faction": 0,
+    "kw": "AMMO",
+    "text": "Ammo for Hegemony! War is won by supplies",
+    "at": "2026-11-15T10:51:08+0000",
     "likes": 0,
     "reply": false
    }
