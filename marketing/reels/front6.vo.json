@@ -1,0 +1,120 @@
+{
+ "seconds": 88.5,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.8,
+   5.74,
+   "Day six. The Hegemony took Hill 304. Then it began to count its dead.",
+   "open"
+  ],
+  [
+   6.79,
+   2.13,
+   "Four hundred and thirty-three men hold this line.",
+   "front"
+  ],
+  [
+   9.17,
+   4.93,
+   "Two hundred and twenty-seven Hegemony in the north. Two hundred and six Concord in the south.",
+   "sides"
+  ],
+  [
+   14.35,
+   6.3,
+   "On Hill 304 stands a dead tree made of steel. Inside it, a Hegemony spotter watches every head.",
+   "tree"
+  ],
+  [
+   20.9,
+   4.75,
+   "A Concord sniper raised his head for one look. Karel Check fired first.",
+   "shot1"
+  ],
+  [
+   25.9,
+   1.48,
+   "Anselm Rock did not get up.",
+   "rock"
+  ],
+  [
+   27.63,
+   6.46,
+   "Further down the line, the Concord chaplain Bram Hop knelt by a wounded man. A Hegemony sniper found him there.",
+   "chaplain"
+  ],
+  [
+   34.34,
+   3.28,
+   "Four Concord men fell. Every one of them was shot.",
+   "concord"
+  ],
+  [
+   37.87,
+   2.27,
+   "But the real killer was behind the Hegemony line.",
+   "hosp"
+  ],
+  [
+   40.39,
+   7.68,
+   "Eighty wounded. Thirteen medics. Every bed taken. Seventeen men on stretchers, in the rain.",
+   "hosp2"
+  ],
+  [
+   48.32,
+   4.75,
+   "Nineteen of them died waiting for a doctor. Two of the dead were medics themselves.",
+   "wait"
+  ],
+  [
+   53.32,
+   3.05,
+   "Twenty-one Hegemony fell. Four Concord.",
+   "toll"
+  ],
+  [
+   56.62,
+   1.94,
+   "Now the fight is for Blackwater Canal.",
+   "canal"
+  ],
+  [
+   58.81,
+   6.41,
+   "The first side to kill one hundred enemy soldiers takes it. Concord twenty-one. Hegemony four.",
+   "canal2"
+  ],
+  [
+   65.47,
+   2.29,
+   "So each side must choose what it needs most.",
+   "vote"
+  ],
+  [
+   68.01,
+   7.17,
+   "A bigger hospital. Concrete pillboxes. Or an ammunition train. Comment one word.",
+   "vote2"
+  ],
+  [
+   75.43,
+   2.73,
+   "Yesterday, fifty-three new men came up the line.",
+   "joined"
+  ],
+  [
+   78.41,
+   3.41,
+   "Comment Concord... or Hegemony. Link in bio.",
+   "cta"
+  ],
+  [
+   82.07,
+   3.01,
+   "Mud and Iron. Every follower is a soldier.",
+   "cta2"
+  ]
+ ]
+}
