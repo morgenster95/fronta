@@ -913,8 +913,8 @@
       "_note": "Patreon Officers' Mess (10 USD): zlatá hvězda nad vojákem na mapě, vidět při každém přiblížení (web/src/main.js). Udělení příkazem star, odebrání unstar (když patron odejde); stužka War Bonds zůstává.",
       "medal": "officers-star",
       "name": "Officers' Mess",
-      "line": "a star over their head on the front",
-      "entry": "{name} was invited to the Officers' Mess. From today a gold star hangs over the trench where {name} stands."
+      "line": "dines in the Officers' Mess for keeping the front supplied",
+      "entry": "{name} was invited to the Officers' Mess for keeping the front supplied. The colonel poured a real coffee and raised his cup: 'The front does not forget its friends.'"
     },
     "buttons": true,
     "_buttons": "buttons: false = tlačítka Support na webu skrytá (13.–14. 11. byla skrytá, Ko-fi zamítlo platby); od 14. 11. zapnuto s odkazem na Patreon."
