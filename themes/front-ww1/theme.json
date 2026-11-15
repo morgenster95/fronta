@@ -290,10 +290,11 @@
     ],
     "observation": {
       "days": 3,
-      "fire": 0.3,
+      "fire": 0.8,
       "roles": [
         "sniper",
-        "machinegunner"
+        "machinegunner",
+        "rifleman"
       ],
       "_": "odměna kóty s reward 'observation' (Hill 304; místo bombardování, pokyn uživatele 14. 11.): `days` dní od příštího dne mají odstřelovači a kulometčíci vítěze palbu ×(1+fire); web ukáže falešný strom-pozorovatelnu za linií vítěze; noviny každé ráno hlášení",
       "victory": "For {days} days the spotters in the observation tree on {objective} will watch every move in the {them} trenches, and the {us} snipers and machine gunners will shoot straighter for it",
@@ -303,7 +304,9 @@
         "The tree keeps watching for {n} more days.",
         "The tree keeps watching for one more day.",
         "Tonight the spotters climb down for the last time."
-      ]
+      ],
+      "kill": 1,
+      "_kill": "15. 11. (uživatel: pozorovatelna musí být znát na smrtích): střelci strany s pozorovatelnou (sniper, MG, puškař) mají palbu ×(1+fire) a šanci zabít na místě ×(1+kill)."
     },
     "_need": "need: výchozí cíl závodu; objectives[].type 'kills' = vyhrává, kdo první zabije `need` nepřátel (padlí soupeře od začátku závodu); Blackwater Canal: kills 100 (uživatel 14. 11.: místo nových vojáků rozhodují zabití)"
   },
@@ -576,8 +579,8 @@
         "stabilizeBed": 3
       },
       "linger": {
-        "base": 0.1,
-        "perDay": 0.1,
+        "base": 0.15,
+        "perDay": 0.15,
         "care": 0.7,
         "trench": 3,
         "max": 0.6,

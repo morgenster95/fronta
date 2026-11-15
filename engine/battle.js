@@ -300,7 +300,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     wound(t, sev, { by: { handle: s.handle, name: s.name, role: s.archetype, faction: f } });
     // smrtelný zásah kulkou (roles.<role>.kill nebo roles.kill): kritický zásah může zabít na místě
     const kill = R[s.archetype]?.kill ?? R.kill ?? 0;
-    if ((sev === 'crit' && kill && rand() < kill) || (sev === 'heavy' && R.killHeavy && rand() < R.killHeavy)) t.wound.outright = 'shot'; // i těžký zásah může zabít (roles.killHeavy)
+    const km = ctx.killOf?.(s) ?? 1; // pozorovatelna: přesnější a smrtelnější zásahy
+    if ((sev === 'crit' && kill && rand() < Math.min(1, kill * km)) || (sev === 'heavy' && R.killHeavy && rand() < Math.min(1, R.killHeavy * km))) t.wound.outright = 'shot'; // i těžký zásah může zabít (roles.killHeavy)
     stats[f].hits.fire[s.archetype] = (stats[f].hits.fire[s.archetype] || 0) + 1;
     s.hits = (s.hits || 0) + 1;
     s.hitsBy = { ...(s.hitsBy || {}), [sev]: ((s.hitsBy || {})[sev] || 0) + 1 };
