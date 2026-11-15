@@ -735,7 +735,12 @@
         ]
       },
       "_note": "Hlasování HOSPITAL / PILLBOXES / AMMO, schváleno uživatelem 15. 11. („vydej post“, bez procent a dnů v textu). Vyhodnotí noviny Day 7 (16. 11. 13:00 UTC).",
-      "publishAt": "2026-11-15T09:30:00Z"
+      "publishAt": "2026-11-15T09:30:00Z",
+      "published": {
+        "id": "18096896921167813",
+        "permalink": "https://www.instagram.com/p/Dfwd8fCFN8K/",
+        "at": "2026-11-15T09:33:21.614Z"
+      }
     },
     {
       "id": "story-vote-build",
