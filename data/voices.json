@@ -763,7 +763,7 @@
     "kw": "HOSPITAL",
     "text": "Hegemony HOSPITALS.  We have too many wounded to not have a larger one.",
     "at": "2026-11-15T16:14:17+0000",
-    "likes": 1,
+    "likes": 2,
     "reply": false
    },
    {
@@ -773,7 +773,7 @@
     "kw": "HOSPITAL",
     "text": "Hegemony hospital please. Stayed on a stretcher for a days outside before being nursed to health and walking back to my piece of the line",
     "at": "2026-11-15T16:52:37+0000",
-    "likes": 3,
+    "likes": 4,
     "reply": false
    },
    {
@@ -793,6 +793,16 @@
     "kw": "PILLBOXES",
     "text": "Concord Pillboxes. We need to reinforce the frontline from any further advances.",
     "at": "2026-11-15T19:40:05+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18109504325206927",
+    "handle": "cwilliam357",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "My vote has already been cast, and I think I voted incorrectly after looking at the battlefield, to my fellow hegemony comrades please vote for a hospital, our men are lying sick and wounded in the mud and blood soaked fields, without proper accommodation.",
+    "at": "2026-11-15T19:47:15+0000",
     "likes": 0,
     "reply": false
    }
