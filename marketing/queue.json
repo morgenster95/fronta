@@ -695,6 +695,57 @@
         "permalink": "https://www.instagram.com/stories/mudandiron/4030286791655274425",
         "at": "2026-11-14T14:47:35.192Z"
       }
+    },
+    {
+      "id": "vote-build",
+      "type": "image",
+      "files": [
+        "vote_build_1.jpg"
+      ],
+      "caption": "THE FRONT DECIDES ⚔️\n\nThe hospitals are full and men are dying on the stretchers. The Hegemony wire is in shreds. Now each side picks what it needs most.\n\nComment ONE word:\n🏥 HOSPITAL: a bigger hospital. More beds and more stretchers. Fewer men die waiting.\n🧱 PILLBOXES: concrete pillboxes along your front line. Your machine gunners and snipers hit a lot harder.\n📦 AMMO: an ammunition train. All your shooters fire more.\n\nYour soldier is your vote: we know which side you serve, so no need to write it. Each side counts its own votes, so the two sides can choose differently. Not enlisted yet? Comment CONCORD or HEGEMONY together with your choice.\n\nThe winner for each side is announced in the Trench Gazette at 13:00 UTC.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
+      "vote": {
+        "question": "What does your side need most?",
+        "perFaction": true,
+        "minHours": 8,
+        "note": "Comment one word under our latest post. Each side votes for itself; your soldier is your ballot.",
+        "options": [
+          {
+            "kw": "HOSPITAL",
+            "label": "A bigger hospital: more beds and more stretchers",
+            "build": "dugout",
+            "outcome": "The {side} dug a second hospital dugout: more beds, more stretchers."
+          },
+          {
+            "kw": "PILLBOXES",
+            "label": "Concrete pillboxes: machine gunners and snipers hit harder",
+            "fire": {
+              "machinegunner": 1.6,
+              "sniper": 1.3
+            },
+            "days": 5,
+            "outcome": "The {side} poured concrete pillboxes along the front line: their machine guns and snipers fire harder."
+          },
+          {
+            "kw": "AMMO",
+            "label": "Ammunition train: all your shooters fire more",
+            "fire": 1.4,
+            "days": 3,
+            "outcome": "An ammunition train reached the {side} line: the shooters fire more."
+          }
+        ]
+      },
+      "_note": "Hlasování HOSPITAL / PILLBOXES / AMMO, schváleno uživatelem 15. 11. („vydej post“, bez procent a dnů v textu). Vyhodnotí noviny Day 7 (16. 11. 13:00 UTC).",
+      "publishAt": "2026-11-15T09:30:00Z"
+    },
+    {
+      "id": "story-vote-build",
+      "type": "story",
+      "files": [
+        "story_vote-build.jpg"
+      ],
+      "caption": "",
+      "publishAt": "2026-11-15T09:40:00Z",
+      "_note": "Story k položce vote-build (pravidlo: ke každé novince i story). "
     }
   ]
 }

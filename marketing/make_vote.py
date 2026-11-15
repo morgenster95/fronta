@@ -25,8 +25,8 @@ VARIANTS = {
     ]),
     "build": ("vote_build_1.jpg", "WHAT DOES YOUR SIDE NEED?", ("hospital", "pillbox", "ammo"), [
         ("HOSPITAL", "A BIGGER HOSPITAL", "MORE BEDS, FEWER DEAD"),
-        ("PILLBOXES", "CONCRETE PILLBOXES", "MG + SNIPERS, 5 DAYS"),
-        ("AMMO", "AMMUNITION TRAIN", "40% MORE FIRE, 3 DAYS"),
+        ("PILLBOXES", "CONCRETE PILLBOXES", "MG + SNIPERS HIT MORE"),
+        ("AMMO", "AMMUNITION TRAIN", "SHOOTERS FIRE MORE"),
     ]),
 }
 OPTIONS = [
