@@ -1,0 +1,111 @@
+{
+ "seconds": 80,
+ "auto": true,
+ "drums": [
+  "shot1",
+  [
+   [
+    "open",
+    "front"
+   ]
+  ],
+  "toll"
+ ],
+ "lines": [
+  [
+   0.8,
+   "Day six. The Hegemony took Hill 304. Then it began to count its dead.",
+   "open"
+  ],
+  [
+   0,
+   "Four hundred and thirty-three men hold this line.",
+   "front"
+  ],
+  [
+   0,
+   "Two hundred and twenty-seven Hegemony in the north. Two hundred and six Concord in the south.",
+   "sides"
+  ],
+  [
+   0,
+   "On Hill 304 stands a dead tree made of steel. Inside it, a Hegemony spotter watches every head.",
+   "tree"
+  ],
+  [
+   0,
+   "A Concord sniper raised his head for one look. Karel Check fired first.",
+   "shot1"
+  ],
+  [
+   0,
+   "Anselm Rock did not get up.",
+   "rock"
+  ],
+  [
+   0,
+   "Further down the line, the Concord chaplain Bram Hop knelt by a wounded man. A Hegemony sniper found him there.",
+   "chaplain"
+  ],
+  [
+   0,
+   "Four Concord men fell. Every one of them was shot.",
+   "concord"
+  ],
+  [
+   0,
+   "But the real killer was behind the Hegemony line.",
+   "hosp"
+  ],
+  [
+   0,
+   "Eighty wounded. Thirteen medics. Every bed taken. Seventeen men on stretchers, in the rain.",
+   "hosp2"
+  ],
+  [
+   0,
+   "Nineteen of them died waiting for a doctor. Two of the dead were medics themselves.",
+   "wait"
+  ],
+  [
+   0,
+   "Twenty-one Hegemony fell. Four Concord.",
+   "toll"
+  ],
+  [
+   0,
+   "Now the fight is for Blackwater Canal.",
+   "canal"
+  ],
+  [
+   0,
+   "The first side to kill one hundred enemy soldiers takes it. Concord twenty-one. Hegemony four.",
+   "canal2"
+  ],
+  [
+   0,
+   "So each side must choose what it needs most.",
+   "vote"
+  ],
+  [
+   0,
+   "A bigger hospital. Concrete pillboxes. Or an ammunition train. Comment one word.",
+   "vote2"
+  ],
+  [
+   0,
+   "Yesterday, fifty-three new men came up the line.",
+   "joined"
+  ],
+  [
+   0,
+   "Comment Concord... or Hegemony. Link in bio.",
+   "cta"
+  ],
+  [
+   0,
+   "Mud and Iron. Every follower is a soldier.",
+   "cta2"
+  ]
+ ]
+}
