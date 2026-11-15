@@ -468,10 +468,11 @@ export function dailyTick(state, theme, story, ctx = {}) {
   const fireOf = (s) => orderFire(state, s.faction, day, s.archetype) * obsOf(s);
   // pozorovatel hlásí přesné místo: zásah střelce s pozorovatelnou častěji zabije na místě (×(1 + observation.kill))
   const killOf = (s) => (obsOf(s) > 1 ? 1 + (theme.race.observation.kill || 0) : 1);
+  const unsuppressed = (s) => !!(obs && s.faction === obs.by); // strana s pozorovatelnou: kulomety naproti ji nepotlačí
   const healOf = (s) => orderHeal(state, s.faction, day);
   const exposedOf = (s) => orderExposed(state, s.faction, day) * letterOf(s);
   const dieOf = (s) => orderDie(state, s.faction, day);
-  const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf, shellOf, fireOf, killOf, healOf, exposedOf, dieOf }) : { events: [], news: [], ids: new Set() };
+  const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf, shellOf, fireOf, killOf, unsuppressed, healOf, exposedOf, dieOf }) : { events: [], news: [], ids: new Set() };
   if (theme.race) checkKillRace(state, theme, story); // závod „kdo první zabije N“: zpráva o dobytí jde do state.news (níž se přidá do novin)
   const events = [...raid.events, ...fight.events];
   const today = new Set(); // šablony použité dnes (rozmanitost mezi vojáky)

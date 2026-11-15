@@ -281,7 +281,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     // (cílů je omezeně, kryjí se). Početní převaha tak nedrtí s druhou mocninou a složení rolí menší strany má váhu.
     const foes = R.saturation ? near(targetsOf[e], X(s), range).length : 0;
     const sat = R.saturation ? Math.min(1, (R.saturation * foes) / Math.max(1, mates.length)) : 1;
-    const p = fire * mult(theme, s) * (1 + lead) * (1 - suppress) * sat * (ctx.fireOf?.(s) ?? 1);
+    // pozorovatelna (15. 11., uživatel): pozorovatel hlásí, kde stojí nepřátelské kulomety, takže střelce strany s pozorovatelnou nepotlačí
+    const p = fire * mult(theme, s) * (1 + lead) * (ctx.unsuppressed?.(s) ? 1 : 1 - suppress) * sat * (ctx.fireOf?.(s) ?? 1);
     stats[f].shots++;
     const rand = rngFor(s.id, 'fire', day);
     if (rand() >= p) continue;
