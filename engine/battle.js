@@ -259,7 +259,9 @@ export function battleTick(state, theme, story, day, ctx = {}) {
 
   // 1) palba hráčů
   const front = theme.factions.map((_, f) => lineup(state, f, (s) => able(s) && s.line === 'front'));
-  const targetsOf = theme.factions.map((_, f) => lineup(state, f, (s) => able(s) && (cfg.line[s.line] ?? 0) > 0));
+  // cíle: zdraví vojáci v linii a od 15. 11. i ranění, kteří od včerejška leží v zákopu bez nosítek (uživatel: „taky se na ně střílí“)
+  const lying = (s) => s.status === 'wounded' && s.wound?.place === 'trench' && s.wound.day < day && !busy.has(s.id);
+  const targetsOf = theme.factions.map((_, f) => lineup(state, f, (s) => (able(s) || (cfg.hitLying && lying(s))) && (cfg.line[s.line] ?? 0) > 0));
   const shooters = theme.factions.flatMap((_, f) => front[f]);
   const taken = new Set(); // každý cíl nejvýš jeden zásah za den
   const fireLog = [];
@@ -295,9 +297,12 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     for (let i = 0; i < pool.length; i++) { k -= w[i]; if (k <= 0) { t = pool[i]; break; } }
     if (rand() > coverOf(t) / (cfg.line.front || 1)) continue; // krytí zachytilo kulku
     const src = R[s.archetype]?.severity ? s.archetype : 'rifleman';
-    const sev = severity(t, R[src].severity, rand, false);
+    const prev = t.wound; // raněný ležící v zákopu: lehký se zhorší, těžký a kritický druhou kulku nepřežije
+    let sev = severity(t, R[src].severity, rand, false);
+    if (prev) sev = prev.sev === 'light' ? (sev === 'light' ? 'heavy' : sev) : 'crit';
     taken.add(t.id);
     wound(t, sev, { by: { handle: s.handle, name: s.name, role: s.archetype, faction: f } });
+    if (prev && prev.sev !== 'light') t.wound.outright = 'shot';
     // smrtelný zásah kulkou (roles.<role>.kill nebo roles.kill): kritický zásah může zabít na místě
     const kill = R[s.archetype]?.kill ?? R.kill ?? 0;
     const km = ctx.killOf?.(s) ?? 1; // pozorovatelna: přesnější a smrtelnější zásahy

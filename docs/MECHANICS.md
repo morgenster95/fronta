@@ -370,3 +370,5 @@ Uživatel: „musí se umírat, je blbost, že by nikoho nezastřelili k smrti; 
   Délky pobytu (stav 15. 11.): lůžko nejvýš 2 dny (noc operace, pak zpět na frontu), nosítka průměr ~1 den, nejvýš 2 (pak se zahojí, nebo zemře), lehce ranění v zákopu do druhého dne.
 - (15. 11. odpoledne, uživatel: „nestíhají → víc má umřít; pozorovatelna není znát“) pozorovatelna: palba ×1,8 (dřív ×1,3) i pro puškaře, šance zabít na místě ×2 (`race.observation.kill`, `killOf` v `engine/roster.js`); `care.linger` base 0,15, perDay 0,15.
   Simulace: padlí za den H ~11 / 11 / 9, C ~7 / 8,6 / 9,8 (celkem ~18 denně, ~4 % hráčů), raněných ~45–55 denně.
+- (15. 11. odpoledne, uživatel: „leží v zákopech už ze včera, střílí se na ně, nemají drát“) `battle.hitLying`: raněný, který od včerejška leží v zákopu bez nosítek, je taky cíl palby (lehký se zhorší, těžký a kritický zemře na místě); `wire.cover` 0,15 → 0,4 (celý drát sníží zásahy o 40 %).
+  Simulace: padlí za den H ~15 / 14 / 9, C ~6 / 7,8 / 9 (celkem ~21 denně).

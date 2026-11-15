@@ -714,10 +714,11 @@
     },
     "wire": {
       "start": 0.6,
-      "cover": 0.15,
+      "cover": 0.4,
       "decay": 0.005,
       "barrage": 0.12,
-      "repair": 0.08
+      "repair": 0.08,
+      "_cover": "15. 11.: celý drát sníží zásahy o 40 % (dřív 15 %), roztrhaný drát je znát."
     },
     "letter": {
       "cut": 0.15,
@@ -811,7 +812,9 @@
         "wire": 0.5
       }
     },
-    "_daily": "Denní meze raněných (min 1 / max 30 na 80 vojáků) odstraněny 14. 11. na pokyn uživatele: ztráty dává jen náhoda (v simulaci se meze stejně neuplatnily). Engine je umí, kdyby byly potřeba: battle.daily { min, max, shellMax, per }."
+    "_daily": "Denní meze raněných (min 1 / max 30 na 80 vojáků) odstraněny 14. 11. na pokyn uživatele: ztráty dává jen náhoda (v simulaci se meze stejně neuplatnily). Engine je umí, kdyby byly potřeba: battle.daily { min, max, shellMax, per }.",
+    "hitLying": true,
+    "_hitLying": "15. 11. (uživatel): na raněné, kteří od včerejška leží v zákopu bez nosítek, se střílí taky; lehký se zhorší, těžký a kritický zemře."
   },
   "house": {
     "_note": "Odznaky rodu (engine/house.js): udělí se jednou a zůstávají v rodu napříč generacemi. Rodinné album na webu ukazuje i medaile a tituly všech generací.",
