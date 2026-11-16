@@ -3,6 +3,7 @@
 //  • DOCTOR   – u obvaziště / nemocnice se mezi raněnými prochází lékař v bílém plášti (sprite zdravotníka, červený kříž nad hlavou).
 //  • AMMO    – sklad munice v týlu vedle obvaziště: bedny, police s náboji, plachta a pytlový val (mechanika zvyšuje palbu vlastních střelců),
 //  • PILLBOXES – betonové kulometné bunkry (obrázek z PixelLabu) v přední linii (nápad Hegemonie z Rady fronty): kulometčíci a odstřelovači střílí víc (rozkaz `fire`).
+//    Od 16. 11. má každý bunkr vlající vlajku strany (Hegemonie ocel s rezavým pruhem, Concord oliva se žlutou hvězdou), ukázka docs/mockups/pillbox_flags.png.
 // V dev režimu jde vyzkoušet bez hlasování: /?orders=0:DUGOUTS,0:DOCTOR  (strana:heslo).
 import { Container, Graphics, Sprite, Texture } from 'pixi.js';
 import { loadTexture } from './assets.js';
@@ -34,6 +35,27 @@ function shelterTexture(faction = 0, seed = 1) {
   return Texture.from(c);
 }
 
+
+// vlajka strany na bunkru: tyčka z rohu střechy, vlající látka (Hegemonie: ocel s rezavým pruhem, Concord: oliva se žlutou hvězdou; barvy jako prapory v reelech)
+const FLAG = [{ col: 0x8a9295, dark: 0x666d70, mark: 0x7e3b2a }, { col: 0x6f7148, dark: 0x3f4230, mark: 0xc9c26a }];
+function drawFlag(g, x, y, f, t) {
+  const F = FLAG[f] || FLAG[0], W = 12, H = 8, top = y - 15;
+  g.clear();
+  g.rect(x, top, 1, 16).fill(0x0e0d0c); // tyčka
+  g.rect(x, top - 1, 1, 1).fill(0xa39782); // hlavička
+  for (let i = 0; i < W; i++) {
+    const o = Math.round(Math.sin(t * 3.2 - i * 0.5) * 1.4 * (i / W));
+    const c = Math.cos(t * 3.2 - i * 0.5) > 0.4 ? F.dark : F.col;
+    const yy = top + 1 + o;
+    g.rect(x + 1 + i, yy, 1, H).fill(c);
+    if (f === 0) g.rect(x + 1 + i, yy + 3, 1, 2).fill(F.mark); // rezavý pruh přes střed
+    g.rect(x + 1 + i, yy + H, 1, 1).fill({ color: 0x0e0d0c, alpha: 0.5 }); // stín spodní hrany
+  }
+  if (f === 1) { // hvězda uprostřed (tvar plus s jádrem)
+    const cx = x + 7, o = Math.round(Math.sin(t * 3.2 - 6 * 0.5) * 1.4 * (6 / W)), cy = top + 4 + o;
+    g.rect(cx - 1, cy - 1, 3, 3).fill(F.mark); g.rect(cx, cy - 2, 1, 5).fill(F.mark); g.rect(cx - 2, cy, 5, 1).fill(F.mark);
+  }
+}
 
 // betonový kulometný bunkr: šestiúhelníkový blok s průzorem, pytle po stranách, proužek v barvě strany
 function pillboxTexture(faction = 0, seed = 1) {
@@ -165,20 +187,32 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
       const s = new Sprite(pillboxTexture(f, Math.round(sl.x) % 7)); // kreslená náhrada, než se načte obrázek z PixelLabu
       // obrázky z PixelLabu (15. 11.): zepředu s průzorem (strana míří dolů, vidíme čelo), zezadu se vchodem (strana míří nahoru)
       loadTexture(toEnemy > 0 ? '/assets/props/pillbox.png' : '/assets/props/pillbox_back.png').then((t) => { s.texture = t; }).catch(() => {});
-      pbs.push({ s, front: toEnemy > 0, t0: (Math.round(sl.x) * 37) % 4000 });
+      const fl = new Graphics(); // vlajka strany na střeše (16. 11.: aby se bunkry obou stran rozlišily)
+      pbs.push({ s, fl, f, front: toEnemy > 0, t0: (Math.round(sl.x) * 37) % 4000 });
       s.anchor.set(0.5, 0.5);
       s.x = Math.round(sl.x + 14); s.y = Math.round(sl.y + toEnemy * 18);
       // bunkr před valem: u strany, která míří dolů, leží před pytli (nad nimi); u druhé ho zakryjí vojáci v zákopu
       (toEnemy > 0 ? pbTop : layer).addChild(s);
+      (toEnemy > 0 ? pbTop : layer).addChild(fl);
+      drawFlag(fl, s.x - 15, s.y - 10, f, 0);
     }
   });
   if (pbs.length) { world.addChild(flash); }
+  let flagT = 0;
   let raised = false;
   return {
     shelters: [...layer.children, ...pbTop.children],
     docs,
     update(now, view) {
       // kulomet v bunkru střílí dávkami: každé ~3 s dávka 6 záblesků z průzoru (u bunkru zezadu je záblesk vidět nad střechou)
+      if (pbs.length && now - flagT > 120) { // vlajky vlají (překreslení ~8× za s, jen viditelné)
+        flagT = now;
+        for (const p of pbs) {
+          const { s } = p;
+          if (view && (s.x < view.x0 - 40 || s.x > view.x1 + 40 || s.y < view.y0 - 40 || s.y > view.y1 + 40)) continue;
+          drawFlag(p.fl, s.x - 15, s.y - 10, p.f, (now + p.t0) / 1000);
+        }
+      }
       if (pbs.length) {
         flash.clear();
         for (const p of pbs) {
