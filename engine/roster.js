@@ -278,8 +278,9 @@ export function grantSupport(state, theme, handle) {
   if (s.status !== 'fallen' && sup.entry) addEntry(s, state.day, sup.entry.replaceAll('{name}', s.name));
   state.news ??= [];
   const n = state.news.find((x) => x.kind === 'thanks' && x.day === state.day);
-  if (n) n.names.push(s.name);
-  else state.news.push({ day: state.day, kind: 'thanks', routine: true, h: sup.newsHead, names: [s.name] });
+  const who = `${s.name} (@${s.handle})`; // 16. 11. (uživatel): s handlem, ať jde na dárce v novinách kliknout
+  if (n) n.names.push(who);
+  else state.news.push({ day: state.day, kind: 'thanks', routine: true, h: sup.newsHead, names: [who] });
   const t = state.news.find((x) => x.kind === 'thanks' && x.day === state.day);
   t.h = sup.newsHead; // nadpis i text vždy podle aktuálního tématu
   t.text = sup.newsText.replace('{names}', andList(t.names));
