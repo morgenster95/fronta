@@ -789,6 +789,26 @@
         "permalink": "https://www.instagram.com/stories/mudandiron/4031015918935519879",
         "at": "2026-11-15T14:56:20.430Z"
       }
+    },
+    {
+      "id": "reel-front7",
+      "type": "reel",
+      "files": [
+        "reel_front7.mp4"
+      ],
+      "caption": "DAY 7 · A SONG ACROSS THE WIRE 🎶\n\nFelix Kagr of the Concord sang on night watch. From across the wire, very quietly, somebody sang the next line. In the morning a Hegemony sniper found him.\n\nAt R-F9, Silas Samhatespeac shot the Hegemony sniper Leopold Shadowizard. A few hours later a machine gun found Silas too. His nephew Severin took the same post and carved his initials under his uncle's. The same letters.\n\nRafael Superfeisty had started a game of chess by post. His first move is on its way home. Rafael is not.\n\n⚰️ 17 fell: 10 Concord, 7 Hegemony.\n🧱 Both sides voted PILLBOXES. The concrete went up today. From tomorrow their machine guns fire harder.\n🌊 The race for Blackwater Canal: Concord 28, Hegemony 14. First to 100 enemy dead takes it.\n\n466 soldiers hold the front (Hegemony 241 · Concord 225), 42 joined yesterday. Comment CONCORD or HEGEMONY to enlist. Link in bio.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
+      "_note": "Day reel Day 7 (příběhy vojáků, nové scény song/chess/initials, front7). Schváleno uživatelem 16. 11. („můžeš ho hned vydat“).",
+      "publishAt": "2026-11-16T13:44:00Z"
+    },
+    {
+      "id": "story-reel-front7",
+      "type": "story",
+      "files": [
+        "story_reel-front7.jpg"
+      ],
+      "caption": "",
+      "publishAt": "2026-11-16T13:54:00Z",
+      "_note": "Story k položce reel-front7 (pravidlo: ke každé novince i story). "
     }
   ]
 }
