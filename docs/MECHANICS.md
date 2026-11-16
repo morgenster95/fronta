@@ -379,7 +379,7 @@ Uživatel: „musí se umírat, je blbost, že by nikoho nezastřelili k smrti; 
 - (15. 11. odpoledne, uživatel: „je to dlouhé, rychleji ozdravovat nebo zabíjet“) Těžce raněný mimo lůžko se může zahojit už po 1 noci (`care.heavy.minDays` 1) a po 2 nocích se rozhodne (`maxDays` 2): zahojí se s šancí 0,3 + 0,6 × péče mediků (Hegemonie 46 % → ~58 %, Concord 100 % → 90 %), jinak zemře. Nikdo neleží týden.
   Dnešní noc Hegemonie (zkouška): z 24 na nosítkách 12 zahojeno, 10 padlo, 1 zůstává. Simulace padlí H ~22 / 5 / 4, C ~7 / 11 / 11,5.
 
-### 2026-11-15: návrh hlasování HOSPITAL / PILLBOXES / AMMO (NÁVRH, čeká na schválení postu)
+### 2026-11-15: návrh hlasování HOSPITAL / PILLBOXES / AMMO (NASAZENO: post 15. 11., vyhodnoceno 16. 11.: obě strany PILLBOXES, H 46:23:6, C 46:7:5)
 - HOSPITAL: druhý nemocniční dugout (`build: dugout`, +4 lůžka, +4 nosítka, natrvalo).
 - PILLBOXES (nápad Hegemonie z Rady fronty): betonové bunkry v přední linii, kulometčíci palba ×1,6, odstřelovači ×1,3, 5 dní; na mapě betonové bunkry před valem (`web/src/orders-fx.js`, dev `/?orders=0:PILLBOXES`).
 - AMMO: palba ×1,4, 3 dny. Každá strana hlasuje zvlášť (`perFaction`). Návrh: `marketing/drafts/vote-build.draft.json`, obrázek `python marketing/make_vote.py build`.
@@ -390,3 +390,16 @@ Dřív rozkaz z hlasování (`issueOrders`, `from = state.day + 1` před přecho
 Teď `from = state.day + 2` (`engine/roster.js`, `resolveVote`): noviny vyhlásí výsledek, web stavbu ukáže hned (bunkry, kryty, sklad; web nekontroluje `from`), účinek platí od další bitvy po celých `days` dní.
 První použití: PILLBOXES 16. 11. (obě strany) → vnitřní dny 9–13 = noviny 17.–21. 11.; bunkry na mapě od 16. 11. do novin 21. 11.
 Stavby (`build`, např. nemocnice) se nemění (platí hned jako dřív).
+
+## 2026-11-16: PILLBOXES na mapě: řidší, s vlajkami stran (NASAZENO)
+- Bunkry stojí v přední linii jen v otevřené části fronty, **jeden na ~800 px = 21 na stranu** (dřív 300 px = 53; uživatel: „strašně moc“), asi 1 na obrazovce (`web/src/orders-fx.js`).
+- Každý bunkr má **vlající vlajku strany** (kreslená v kódu, `drawFlag`; PixelLab z cloudu nešel): Hegemonie ocelově šedá s rezavým pruhem, Concord olivová se žlutou hvězdou (barvy jako prapory v reelech). Hegemonie bunkr zepředu (průzor, záblesky kulometu), Concord zezadu (vchod). Ukázka `docs/mockups/pillbox_flags.png`.
+- Na mapě hned po vyhlášení výsledku (16. 11.), účinek od další bitvy (viz výš), zmizí s novinami 21. 11.
+- Pozor (řečeno uživateli): účinek je pro obě strany stejný, ale Hegemonie má víc kulometčíků a odstřelovačů (73 : 55) a do 17. 11. i pozorovatelnu na Hill 304, takže jí PILLBOXES pomůže víc.
+
+## 2026-11-16: Vysvětlení ztrát v náhledu novin (NASAZENO, jen pro uživatele)
+Uživatel chce u ztrát vždy vědět proč. `node tools/preview-tick.mjs` má sekci **„Proč (vysvětlení, jen pro tebe)“**: po stranách odkud zásahy (palba nepřítele podle rolí, granáty, pozadí), zdraví střelci obou stran, co to ovlivnilo (pozorovatelna, bombardování, rozkazy), péče (raněni před tahem, medici, pokrytí, v zákopu bez nosítek), příčiny smrti a shrnutí, kdo je na tom hůř a proč. Nepublikuje se.
+Rozbor 16. 11.: Hegemonie měla po bombardování z Verdel Ridge (Den 4–5: 38 a 55 zasažených, péče mediků 40–45 %) velkou zásobu těžce raněných; pravidlo z 15. 11. „těžce raněný se do 2 nocí zahojí, nebo zemře“ ji Den 6 rozhodlo naráz (19 mrtvých bez péče). Od Dne 7 je silnější Hegemonie: bombardování skončilo, pozorovatelna, víc kulometů a odstřelovačů, vypnuté nasycení palby.
+
+## 2026-11-16: War Bonds v novinách s @handle (NASAZENO)
+`grantSupport` píše do poděkování „Jméno (@handle)“, web z toho udělá odkaz na vojáka. Výjimka z nedotknutelné kroniky na výslovný pokyn uživatele: příkaz `linkSupport { handle, day }` doplnil @vis.acquillae do už vydaného poděkování v novinách Day 7 (vnitřní den 8).
