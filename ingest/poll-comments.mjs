@@ -13,7 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
-import { switchFaction, grantSupport, grantStar, revokeStar, rewriteSupport, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
+import { switchFaction, grantSupport, grantStar, revokeStar, rewriteSupport, linkSupport, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 import { wiringReturns } from '../engine/wiring.js';
 import { deathReply } from '../engine/house.js';
@@ -143,6 +143,7 @@ async function main() {
         const r = switchFaction(state, theme, map, c.handle, c.faction);
         console.log(r ? `⇄ @${r.handle}: ${r.from} → ${r.to}, ${r.unit}, ${r.sector}` : `⇄ příkaz ${c.id}: nic se nezměnilo`);
       }
+      if (c.cmd === 'linkSupport') console.log(`🎗 @${c.handle} doplněn do poděkování v novinách: ${linkSupport(state, c.handle, c.day)}×`);
       if (c.cmd === 'rewriteSupport') console.log(`🎗 přepis War Bonds @${c.handle}: ${rewriteSupport(state, theme, c.handle, c.old)} zápis(ů)`);
       if (c.cmd === 'support') {
         const r = grantSupport(state, theme, c.handle);

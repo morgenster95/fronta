@@ -287,6 +287,24 @@ export function grantSupport(state, theme, handle) {
   return { handle: s.handle, name: s.name };
 }
 
+// Jednorázové doplnění @handle k dárci v už vydaných novinách (příkaz linkSupport { handle, day }), výjimka z pravidla „kronika se nepřepisuje“
+// na výslovný pokyn uživatele 2026-11-16 (vis.acquillae, Day 7): v poděkování za War Bonds se ke jménu přidá „(@handle)“, ať jde kliknout. Vrací počet změn.
+export function linkSupport(state, handle, day) {
+  const s = state.soldiers.find((x) => x.handle === String(handle || '').toLowerCase().replace(/^@/, ''));
+  if (!s) return 0;
+  const names = [s.name, ...(s.fallen || []).map((f) => f.name)];
+  let n = 0;
+  for (const ch of state.chronicle || []) {
+    if (day != null && ch.day !== day) continue;
+    for (const b of ch.blocks || []) {
+      if (b.kind !== 'thanks' || typeof b.text !== 'string' || b.text.includes(`@${s.handle}`)) continue;
+      const nm = names.find((x) => b.text.includes(x));
+      if (nm) { b.text = b.text.replace(nm, `${nm} (@${s.handle})`); n++; }
+    }
+  }
+  return n;
+}
+
 // Patreon Officers' Mess: hvězda nad vojákem (jen vzhled). Dá i stužku War Bonds, pokud ji voják nemá. Odebrání (patron odešel) nechá stužku i deník.
 export function grantStar(state, theme, handle) {
   const st = theme.support?.star;
