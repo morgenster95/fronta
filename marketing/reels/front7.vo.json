@@ -1,0 +1,132 @@
+{
+ "seconds": 86.4,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.9,
+   2.62,
+   "Day seven. It began with a song.",
+   "open"
+  ],
+  [
+   3.77,
+   2.44,
+   "Felix Kagr of the Concord sang on night watch.",
+   "song"
+  ],
+  [
+   6.46,
+   3.47,
+   "From across the wire, very quietly, somebody sang the next line.",
+   "song2"
+  ],
+  [
+   10.18,
+   3.91,
+   "In the morning, a Hegemony sniper found him. Wendel Freddie.",
+   "morning"
+  ],
+  [
+   14.34,
+   4.67,
+   "At R-F nine, Silas Samhatespeac shot the Hegemony sniper Leopold Shadowizard.",
+   "duel"
+  ],
+  [
+   19.26,
+   2.78,
+   "Before noon, a machine gun found Silas too.",
+   "duel2"
+  ],
+  [
+   22.29,
+   5.65,
+   "Rafael Superfeisty had started a game of chess by post. He sent his first move home.",
+   "chess"
+  ],
+  [
+   28.19,
+   3.31,
+   "The answer is on its way. Rafael is not.",
+   "chess2"
+  ],
+  [
+   31.75,
+   5.81,
+   "Seventeen men fell. Ten Concord, nine of them shot. Seven Hegemony.",
+   "toll"
+  ],
+  [
+   37.81,
+   6.39,
+   "From the tree on Hill 304, Hegemony spotters called out every head. Thirty-two Concord men were hit.",
+   "tree"
+  ],
+  [
+   44.45,
+   3.19,
+   "Both sides voted for the same thing. Concrete.",
+   "pill"
+  ],
+  [
+   47.89,
+   4.87,
+   "The pillboxes went up today. From tomorrow, their machine guns fire harder.",
+   "pill2"
+  ],
+  [
+   53.01,
+   7.74,
+   "The race for Blackwater Canal. Concord twenty-eight, Hegemony fourteen. First to one hundred enemy dead takes it.",
+   "race"
+  ],
+  [
+   61.0,
+   3.3,
+   "Silas's nephew, Severin, took his post at R-F nine.",
+   "init"
+  ],
+  [
+   64.55,
+   5.24,
+   "He found his uncle's initials in the wall, and carved his own beneath them. The same letters.",
+   "init2"
+  ],
+  [
+   70.04,
+   2.88,
+   "Yesterday, forty-two new soldiers came up the line.",
+   "joined"
+  ],
+  [
+   73.17,
+   2.17,
+   "Four hundred and sixty-six now hold the front.",
+   "army"
+  ],
+  [
+   75.59,
+   1.63,
+   "Two hundred and forty-one Hegemony.",
+   "armyH"
+  ],
+  [
+   77.47,
+   1.78,
+   "Two hundred and twenty-five Concord.",
+   "armyC"
+  ],
+  [
+   79.5,
+   1.9,
+   "Comment HEGEMONY or CONCORD to enlist.",
+   "cta"
+  ],
+  [
+   81.65,
+   1.27,
+   "Your name goes on the line.",
+   "cta2"
+  ]
+ ]
+}
