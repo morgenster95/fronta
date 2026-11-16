@@ -757,13 +757,29 @@
       "_": "wiring party: dobrovolníci (komentář WIRE pod postem s wiring: true) v noci opraví drát; riziko = (base + perFire × palba hlídek nepřítele na dostřel, kdo jde ven, nehlídá) × počasí × bombardování × ženista; zásah = běžné zranění (péče jako jinde)",
       "news": {
         "below": 0.5,
-        "h": "The wire is down",
+        "h": [
+          "The wire is down",
+          "Gaps in the wire",
+          "The wire needs hands",
+          "Holes in no man's land",
+          "Thin wire, open doors"
+        ],
         "side": "{side} wire in no man's land is down to {pct}% after {cause}. In {gaps} of {secs} sectors there are gaps a man could walk through.",
         "causeBarrage": "{days} of shelling from {ridge}",
         "causeWear": "rain, rust and stray bullets",
-        "why": "Wire is what stops a raid before it reaches the trench, and it soaks up the bullets that cross the line. Without it, every post on the fire step is easier to hit.",
-        "call": "So the wiring parties go out after dark. They crawl out with coils of barbed wire and corkscrew posts that twist into the mud without a sound, and when a flare goes up they drop flat and wait for the dark. Volunteers: comment WIRE under the wiring order on Instagram.",
-        "_": "zpráva v Gazette, když má strana průměrný drát pod 'below' (nebo je pod bombardováním a drát má pod 'below'); engine/battle.js",
+        "why": [
+          "Wire is what stops a raid before it reaches the trench, and it soaks up the bullets that cross the line. Without it, every post on the fire step is easier to hit.",
+          "Barbed wire is the first line of defense. It slows a raid, holds up a patrol and gives the men behind it cover. A trench with broken wire is a trench with an open door.",
+          "Every yard of wire is a yard the enemy has to cut through before reaching the fire step. Where the wire is gone, the men on watch are easier to hit.",
+          "Wire does not stop a bullet by itself, but it keeps the enemy at a distance and gives the men on the fire step cover. Thin wire means more men hit."
+        ],
+        "call": [
+          "So the wiring parties go out after dark. They crawl out with coils of barbed wire and corkscrew posts that twist into the mud without a sound, and when a flare goes up they drop flat and wait for the dark. Volunteers: comment WIRE under the wiring order on Instagram.",
+          "Wiring parties fix it at night. They crawl out with coils of wire and corkscrew posts, work in the dark and lie flat when a flare goes up. Volunteers: comment WIRE under the wiring order on Instagram.",
+          "Only volunteers can mend it. After dark they crawl out with pliers, gloves and coils of wire, and come back before dawn. To volunteer, comment WIRE under the wiring order on Instagram.",
+          "The front needs hands on the wire tonight. It is slow, quiet, dangerous work, and every yard counts. Comment WIRE under the wiring order on Instagram to join a wiring party."
+        ],
+        "_": "zpráva v Gazette, když má strana průměrný drát pod 'below' (nebo je pod bombardováním a drát má pod 'below'); engine/battle.js h, why a call můžou být pole variant (každý den jiná).",
         "mendedShelled": "In the night {n} volunteers crawled out and put up {yards} yards of new wire. Then the last shells came down and tore much of it apart again. Without the wiring parties it would be down to {without}%."
       }
     },

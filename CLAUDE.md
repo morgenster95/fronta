@@ -20,6 +20,8 @@ Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co
   Štáb fronty (Artifact) z cloudu znovu nedostupný (404): doplnit `reel-front7` (published) a `story-reel-front7` v sezení, kde je přístupný.
 - **War Bonds v novinách s @handle** (16. 11.): `grantSupport` píše „Jméno (@handle)“, ať jde na dárce kliknout. Výjimka (pokyn uživatele): příkaz `linkSupport` doplnil @vis.acquillae do už vydaného poděkování v novinách Day 7.
 - **Videa:** mazání z Release po zveřejnění zůstává (místo); uživatel si originály stáhne z IG. Nápad: široké 16:9 video na YouTube (zatím jen nápad).
+- **Rozmanitost textů (16. 11. odpoledne, terminál):** simulace 90 dní ukázala, že běžné denní zápisy vydrží (opakování ~1 %), ale bojové texty měly 3–5 šablon (`shotHit` se vojákovi opakoval v 71 %). Přidáno ~220 šablon: `shotHit` 25 + nové `shotHit_machinegunner/_sniper/_rifleman` (přimíchají se k obecným, `engine/battle.js`), `bullet*`, `patched*`, smrti, granáty, lazaret, `ward*`, `comrade` 40, `enemy` 30, počasí 10 vět + 10 titulků na typ, rubrika o drátu má varianty (`theme.battle.wiring.news.h/why/call` můžou být pole).
+  Bojové události nesou `tpl` → noviny už nedají stejnou historku dvakrát do jednoho vydání. Výsledek: opakování u vojáka za 90 dní 28 % → 2 %, nejčastější šablona za den 11–14× → 3–6×. Kontrola: skript ve scratchpadu (kopie enginu s logem `pickVaried`); při dalším rozšiřování drž pravidla textů níž.
 - Drobnost: `sim-edition` vypisuje „bombardování Concord do Dne undefined“ (Hill 304 dává pozorovatelnu, ne bombardování); jen popisek.
 
 ## ČEKÁ NA OVĚŘENÍ A ROZHODNUTÍ (stav 2026-11-11 večer; na začátku relace to uživateli stručně připomeň)

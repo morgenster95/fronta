@@ -132,8 +132,9 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   const R = cfg.roles, range = R.range;
   const busy = ctx.busy || new Set();
   const today = new Set();
+  // tpl = klíč šablony, kterou eventEntry právě vybral (poslední v s.seen): kronika podle něj nedá stejnou historku dvakrát do jednoho vydání
   const ev = (s, type, text) => {
-    out.events.push({ type, handle: s.handle, faction: s.faction, text });
+    out.events.push({ type, handle: s.handle, faction: s.faction, text, tpl: s.seen?.at(-1) });
     out.ids.add(s.id);
     addEntry(s, day, text);
     return text;
@@ -316,7 +317,9 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const bk = { light: 'bulletLight', heavy: 'bulletHeavy', crit: 'bulletCrit' }[sev];
     ev(t, sev === 'light' ? 'hit' : 'wounded', eventEntry(story[bk] ? bk : hitKind(sev), t, day, theme, story, {}, today) + by);
     fireLog.push({ by: s.handle, byF: f, role: s.archetype, at: t.handle, sev });
-    ev(s, 'shot', eventEntry('shotHit', s, day, theme, story, { target: t.name, targetHandle: t.handle, how: { light: 'grazed', heavy: 'badly wounded', crit: 'gravely wounded' }[sev] }, today));
+    // texty role (story.shotHit_<role>) se přimíchají k obecným: jeden společný balík, takže se nic neopakuje, dokud se nevyčerpá celý
+    const own = story[`shotHit_${s.archetype}`];
+    ev(s, 'shot', eventEntry('shotHit', s, day, theme, own?.length ? { ...story, shotHit: [...story.shotHit, ...own] } : story, { target: t.name, targetHandle: t.handle, how: { light: 'grazed', heavy: 'badly wounded', crit: 'gravely wounded' }[sev] }, today));
   }
 
   // 2) pozadí: dělostřelectvo, granáty, miny; bombardování po výhře
@@ -603,7 +606,9 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       const without = Math.max(0, Math.round((avg - (m.after - m.before)) * 100));
       return `${line} ${WN.mendedShelled.replace('{n}', m.n).replace('{yards}', m.yards).replace('{without}', without)}`;
     }).filter(Boolean);
-    if (sides.length) out.news.push({ day, kind: 'wire', h: WN.h, text: [...sides, WN.why, WN.call].filter(Boolean).join(' ') });
+    // titulek a pevné věty můžou být pole variant: každý den jiná (ať noviny neopakují doslova stejný odstavec)
+    const wr = rngFor(theme.id, 'wirenews', day), one = (x) => (Array.isArray(x) ? x[Math.floor(wr() * x.length)] : x);
+    if (sides.length) out.news.push({ day, kind: 'wire', h: one(WN.h), text: [...sides, one(WN.why), one(WN.call)].filter(Boolean).join(' ') });
   }
   // Gazette: jen čísla ztrát po stranách a jména padlých (každý zásah a každé zranění vidí hráč u svého vojáka)
   {
