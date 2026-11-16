@@ -1,0 +1,41 @@
+{
+ "seconds": 90,
+ "auto": true,
+ "drums": [
+  "morning",
+  [
+   [
+    "chess",
+    "toll"
+   ],
+   [
+    "init",
+    "joined"
+   ]
+  ],
+  "race"
+ ],
+ "lines": [
+  [0.9, "Day seven. It began with a song.", "open"],
+  [0, "Felix Kagr of the Concord sang on night watch.", "song"],
+  [0, "From across the wire, very quietly, somebody sang the next line.", "song2"],
+  [0, "In the morning, a Hegemony sniper found him. Wendel Freddie.", "morning"],
+  [0, "At R-F nine, Silas Samhatespeac shot the Hegemony sniper Leopold Shadowizard.", "duel"],
+  [0, "Before noon, a machine gun found Silas too.", "duel2"],
+  [0, "Rafael Superfeisty had started a game of chess by post. He sent his first move home.", "chess"],
+  [0, "The answer is on its way. Rafael is not.", "chess2"],
+  [0, "Seventeen men fell. Ten Concord, nine of them shot. Seven Hegemony.", "toll"],
+  [0, "From the tree on Hill 304, Hegemony spotters called out every head. Thirty-two Concord men were hit.", "tree"],
+  [0, "Both sides voted for the same thing. Concrete.", "pill"],
+  [0, "The pillboxes went up today. From tomorrow, their machine guns fire harder.", "pill2"],
+  [0, "The race for Blackwater Canal. Concord twenty-eight, Hegemony fourteen. First to one hundred enemy dead takes it.", "race"],
+  [0, "Silas's nephew, Severin, took his post at R-F nine.", "init"],
+  [0, "He found his uncle's initials in the wall, and carved his own beneath them. The same letters.", "init2"],
+  [0, "Yesterday, forty-two new soldiers came up the line.", "joined"],
+  [0, "Four hundred and sixty-six now hold the front.", "army"],
+  [0, "Two hundred and forty-one Hegemony.", "armyH"],
+  [0, "Two hundred and twenty-five Concord.", "armyC"],
+  [0, "Comment HEGEMONY or CONCORD to enlist.", "cta"],
+  [0, "Your name goes on the line.", "cta2"]
+ ]
+}

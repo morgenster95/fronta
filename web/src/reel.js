@@ -117,6 +117,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'front7') {
+    // Day reel Day 7 (16. 11.): příběhy skutečných vojáků, nové filmové scény (píseň přes drát, šachy poštou, iniciály ve zdi), ztráty, pevnůstky, závod, počty (reel-front7.js)
+    return import('./reel-front7.js').then(async ({ startStoriesReel }) => {
+      await startStoriesReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'night6') {
     // Den 6: noc wiring party (skuteční dobrovolníci, světlice, jména zasažených), poslední granáty, krátké shrnutí (reel-night6.js)
     return import('./reel-night6.js').then(async ({ startNightReel }) => {
