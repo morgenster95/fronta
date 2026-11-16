@@ -51,7 +51,8 @@ export function orderBarrage(state, faction, day) {
 }
 
 export function orderFire(state, faction, day, role) {
-  return live(state, faction, day).reduce((m, o) => m * (typeof o.fire === 'number' ? o.fire : (o.fire?.[role] ?? 1)), 1);
+  // `ruined` (souboj komentářů, engine/shells.js): část staveb rozbitá, rozkaz střílí jen zbytkem: 1 + (m − 1) × (1 − ruined)
+  return live(state, faction, day).reduce((m, o) => { const f = typeof o.fire === 'number' ? o.fire : (o.fire?.[role] ?? 1); return m * (1 + (f - 1) * (1 - (o.ruined || 0))); }, 1);
 }
 
 // vítězné možnosti → rozkazy (začínají dnem `from`)

@@ -8,6 +8,7 @@ import { pick, weighted, rngFor } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
 import { orderDanger, orderRecover, orderShell, orderFire, orderHeal, orderExposed, orderDie, issueOrders } from './orders.js';
+import { resolveShells } from './shells.js';
 import { wiringKeyword, joinWiring } from './wiring.js';
 import { battleTick, battlePublic, build as buildStructure, ensureBattle, levelOf, gunsSilent } from './battle.js';
 import { awardHouseBadges, noticeDeath } from './house.js';
@@ -463,6 +464,7 @@ export function storyFor(state, theme, story) {
 export function dailyTick(state, theme, story, ctx = {}) {
   story = storyFor(state, theme, story);
   const decided = resolveVote(state, theme, ctx.now);
+  resolveShells(state, theme, ctx.now); // souboj komentářů (granáty): zpráva do novin, rozbité bunkry poraženého
   if (decided && !decided.perFaction) {
     ctx = { ...ctx, danger: ctx.danger ?? decided.danger };
   }
@@ -635,7 +637,8 @@ export function buildPublic(state, theme) {
       ...(state.vote.perFaction ? { perFaction: true } : {}), ...(state.vote.note ? { note: state.vote.note } : {}),
     } : null,
     battle: battlePublic(state, theme),
-    orders: (state.orders || []).filter((o) => state.day + 1 <= o.to).map(({ faction, kw, label, from, to }) => ({ faction, kw, label, from, to })),
+    orders: (state.orders || []).filter((o) => state.day + 1 <= o.to).map(({ faction, kw, label, from, to, ruined }) => ({ faction, kw, label, from, to, ...(ruined ? { ruined } : {}) })),
+    shells: state.shells ? { counts: state.shells.counts, target: state.shells.target, openedAt: state.shells.openedAt } : null, // souboj komentářů: živé počty granátů
     updated: new Date().toISOString(),
     nextEdition: nextEdition(state, theme),
     fields: ['handle', 'faction', 'x', 'y', 'dir', 'line', 'medals', 'archetype', 'rank', 'status', 'variant', 'claimed', 'generation', 'name'],

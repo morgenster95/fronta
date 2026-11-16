@@ -117,6 +117,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'pillbox') {
+    // souboj o pevnůstky (16. 11.): bunkry obou stran, velitelství, děla, výbuch a ruina, výzva „1 comment = 1 shell“ (reel-pillbox.js)
+    return import('./reel-pillbox.js').then(async ({ startPillboxReel }) => {
+      await startPillboxReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'front7') {
     // Day reel Day 7 (16. 11.): příběhy skutečných vojáků, nové filmové scény (píseň přes drát, šachy poštou, iniciály ve zdi), ztráty, pevnůstky, závod, počty (reel-front7.js)
     return import('./reel-front7.js').then(async ({ startStoriesReel }) => {

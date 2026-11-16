@@ -403,3 +403,11 @@ Rozbor 16. 11.: Hegemonie měla po bombardování z Verdel Ridge (Den 4–5: 38 
 
 ## 2026-11-16: War Bonds v novinách s @handle (NASAZENO)
 `grantSupport` píše do poděkování „Jméno (@handle)“, web z toho udělá odkaz na vojáka. Výjimka z nedotknutelné kroniky na výslovný pokyn uživatele: příkaz `linkSupport { handle, day }` doplnil @vis.acquillae do už vydaného poděkování v novinách Day 7 (vnitřní den 8).
+
+## 2026-11-16: Souboj komentářů o pevnůstky „1 comment = 1 shell“ (POSTAVENO, spustí se zveřejněním reelu `pillbox` po schválení)
+Uživatel chtěl něco virálního, co lidi vyhecuje ke komentářům. `engine/shells.js`:
+- Pod postem s `shells` ve frontě (`{ target: "PILLBOXES", minHours: 8, cap: 20 }`) je **každý komentář vojáka jeden granát pro jeho stranu**. Nováček napíše HEGEMONY/CONCORD, narukuje a jeho komentář se počítá taky. Jeden účet nejvýš 20 granátů (proti spamu). Bot na granáty neodpovídá (riziko limitů IG).
+- **Ranní noviny** (nejdřív 8 h po otevření) sečtou: strana s víc granáty rozbije podíl bunkrů poraženého `ruined = 0,25 + 0,75 × (víc − míň) / víc` (při shodě nic). Rozkaz PILLBOXES poraženého pak střílí jen zbytkem: násobek `1 + (m − 1) × (1 − ruined)`. Žádné mrtvé navíc (sláva a pevnůstky, ne masakr).
+- Noviny: „The guns answered“: kolik granátů která strana vystřelila, kolik % bunkrů padlo, nejpilnější obsluha děla (jméno + @handle).
+- **Na mapě** se z podílu bunkrů poraženého stanou **ruiny** (`pillbox_ruin.png` / `pillbox_back_ruin.png`, vyrobené z herních spritů `art/props/pillbox/make_ruin.py`; utržený roh, výztuž, sutiny), bez vlajky, nestřílí, doutnají. Dev náhled `/?orders=0:PILLBOXES,1:PILLBOXES&ruin=1:0.5`.
+- `theme.shells` (`base`, `newsHead`); web dostává živé počty v `roster.shells`.

@@ -920,5 +920,10 @@
     "_buttons": "buttons: false = tlačítka Support na webu skrytá (13.–14. 11. byla skrytá, Ko-fi zamítlo platby); od 14. 11. zapnuto s odkazem na Patreon."
   },
   "officerBalance": true,
-  "_officerBalance": "Vyrovnání poručíků (2026-11-12): nováček bez přání role ze strany s méně poručíky je poručík, strana s víc poručíky žádného nedostane, při rovnosti běžné losování. false = jen losování."
+  "_officerBalance": "Vyrovnání poručíků (2026-11-12): nováček bez přání role ze strany s méně poručíky je poručík, strana s víc poručíky žádného nedostane, při rovnosti běžné losování. false = jen losování.",
+  "shells": {
+    "base": 0.25,
+    "newsHead": "The guns answered",
+    "_": "Souboj komentářů (engine/shells.js, 16. 11.): pod postem s `shells` je každý komentář granát pro stranu komentujícího (strop cap na účet); ranní noviny: vítěz rozbije podíl base + (1 − base) × (víc − míň) / víc bunkrů (rozkaz target) poraženého."
+  }
 }

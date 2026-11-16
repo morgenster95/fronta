@@ -13,6 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
+import { addShell } from '../engine/shells.js';
 import { switchFaction, grantSupport, grantStar, revokeStar, rewriteSupport, linkSupport, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 import { wiringReturns } from '../engine/wiring.js';
@@ -183,6 +184,8 @@ async function main() {
   const councilMedia = (queue.items || []).filter((i) => i.council && i.published?.id).map((i) => i.published.id); // „Rada fronty“: nápady hráčů, vyhrává nejvíc lajků (tools/council.mjs)
   const voteMedia = new Set([state.vote?.mediaId, ...(state.events || []).filter((e) => e.perFaction && e.day >= state.day - 2).map((e) => e.mediaId), ...letterMedia].filter(Boolean));
   for (const mid of voteMedia) if (!posts.some((p) => p.id === mid)) posts.push({ id: mid, count: undefined }); // hlasování projít vždy
+  if (state.shells?.mediaId && !posts.some((p) => p.id === state.shells.mediaId)) posts.push({ id: state.shells.mediaId, count: undefined }); // souboj komentářů projít vždy
+  let shellsAdded = 0;
   // hesla všech hlasování (běžící, nedávná i čekající ve frontě), ne napevno v kódu
   const voiceKws = [...new Set([...(state.vote?.options || []), ...(queue.items || []).flatMap((i) => i.vote?.options || [])].map((o) => o.kw))];
   let voicesDirty = false;
@@ -212,6 +215,11 @@ async function main() {
         if (own && !own.reply && parseComment(c.text, theme)?.type === 'enlist') own.reply = c.replyTo || c.id;
       }
       const res = applyComment(state, c, theme, story, map);
+      // souboj komentářů (engine/shells.js): každý komentář vojáka pod postem = granát pro jeho stranu (i nováčka, který tím narukoval); bot na granáty neodpovídá
+      if (state.shells?.mediaId === mid) {
+        const sol = state.soldiers.find((x) => x.id === c.userId) || state.soldiers.find((x) => x.handle === (c.username || '').toLowerCase());
+        if (sol && addShell(state, { commentId: c.id, userId: c.userId, handle: sol.handle, faction: sol.faction })) shellsAdded++;
+      }
       if (!res) continue;
       // přihláška na výpravu (heslo místa v komentáři), i u nováčka, který tím zároveň narukoval
       const raid = res.type === 'volunteer' ? res : res.raid;
@@ -421,6 +429,7 @@ async function main() {
   if (state.vote?.perFaction && posts.some((p) => p.id === state.vote.mediaId)) state.vote.recounted = 1;
   if (voicesDirty && !process.env.DRY_RUN) fs.writeFileSync(VOICES, JSON.stringify(voices, null, 1) + '\n');
   console.log(`hlasy fronty: ${Object.values(voices.posts).reduce((a, l) => a + l.length, 0)} delších komentářů pod hlasováním`);
+  if (state.shells) console.log(`💥 granáty: +${shellsAdded}, celkem ${state.shells.counts.join(' : ')}`);
   console.log(`hotovo: +${enlisted} rekrutů, ${claimed} převzetí, celkem ${state.soldiers.length}, followers ${state.followers}`);
   if (process.env.DRY_RUN) return;
   saveState(state);

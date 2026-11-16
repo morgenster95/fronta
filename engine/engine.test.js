@@ -1269,3 +1269,27 @@ test('linger: dlouho ležící těžce raněný bez lůžka a bez mediků umír�
   assert.ok(noCare > 0, 'bez péče někdo umře');
   assert.ok(noCare > fullCare, `bez péče víc mrtvých (${noCare} vs ${fullCare})`);
 });
+
+test('souboj komentářů (shells): granát za komentář, strop na účet, vítěz rozbije podíl bunkrů poraženého, palba jen zbytkem', async () => {
+  const { openShells, addShell, resolveShells } = await import('./shells.js');
+  const { orderFire } = await import('./orders.js');
+  const theme = { factions: [{ name: 'The Hegemony' }, { name: 'The Concord' }], shells: { base: 0.25, newsHead: 'The guns answered' } };
+  const st = { day: 8, soldiers: [{ handle: 'ann', name: 'Ann Lee', faction: 0 }, { handle: 'bob', name: 'Bob Ray', faction: 1 }], news: [],
+    orders: [{ faction: 0, kw: 'PILLBOXES', from: 9, to: 13, fire: { machinegunner: 1.6 } }, { faction: 1, kw: 'PILLBOXES', from: 9, to: 13, fire: { machinegunner: 1.6 } }] };
+  openShells(st, { mediaId: 'm1', openedAt: '2026-11-16T15:00:00Z', minHours: 8, cap: 3 });
+  for (let i = 0; i < 5; i++) addShell(st, { commentId: `a${i}`, userId: 'u1', handle: 'ann', faction: 0 }); // strop 3
+  assert.equal(addShell(st, { commentId: 'a0', userId: 'u1', handle: 'ann', faction: 0 }), false, 'stejný komentář dvakrát ne');
+  addShell(st, { commentId: 'b1', userId: 'u2', handle: 'bob', faction: 1 });
+  assert.deepEqual(st.shells.counts, [3, 1]);
+  assert.equal(resolveShells(st, theme, '2026-11-16T20:00:00Z'), null, 'před lhůtou se ještě střílí');
+  const r = resolveShells(st, theme, '2026-11-17T13:00:00Z');
+  assert.equal(r.winner, 0);
+  assert.equal(st.shells, null);
+  const ruined = st.orders[1].ruined;
+  assert.ok(Math.abs(ruined - (0.25 + 0.75 * 2 / 3)) < 0.01);
+  assert.equal(st.orders[0].ruined, undefined, 'vítězi se nic nerozbije');
+  assert.ok(Math.abs(orderFire(st, 1, 9, 'machinegunner') - (1 + 0.6 * (1 - ruined))) < 1e-9);
+  assert.equal(orderFire(st, 0, 9, 'machinegunner'), 1.6);
+  assert.match(st.news.at(-1).text, /The Hegemony fired 3 shells, the Concord 1/);
+  assert.match(st.news.at(-1).text, /@ann/);
+});

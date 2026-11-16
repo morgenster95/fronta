@@ -389,6 +389,6 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     shell,
     flareAt: (x, y) => particles.push({ kind: 'flare', x, y, vy: -0.05, life: 7000, max: 7000 }),
     // ladění v konzoli (jen dev)
-    debug: { shoot: (list) => list.forEach((s) => shoot([s], lastNow)), sendMedic: (s) => sendMedic(s, lastNow), burst: () => burst(lastView, lastNow), actors },
+    debug: { shoot: (list) => list.forEach((s) => shoot([s], lastNow)), shell: (x, y, big) => shell(x, y, big), sendMedic: (s) => sendMedic(s, lastNow), burst: () => burst(lastView, lastNow), actors },
   };
 }

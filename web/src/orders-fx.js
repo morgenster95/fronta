@@ -120,6 +120,10 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
     if (q) orders = [...orders, ...q.split(',').map((x) => { const [f, kw] = x.split(':'); return { faction: Number(f), kw: kw.toUpperCase() }; })];
   }
   const has = (kw, f) => orders.some((o) => o.kw === kw && o.faction === f);
+  // rozbité bunkry (souboj komentářů, engine/shells.js): podíl `ruined` u rozkazu; dev náhled /?ruin=1:0.5 (strana:podíl)
+  const ruinQ = import.meta.env.DEV ? new URLSearchParams(location.search).get('ruin') : null;
+  const ruinOf = (f) => Math.max(0, ...orders.filter((o) => o.kw === 'PILLBOXES' && o.faction === f).map((o) => o.ruined || 0),
+    ...(ruinQ ? ruinQ.split(',').map((x) => x.split(':')).filter(([g]) => Number(g) === f).map(([, r]) => Number(r) || 0) : []));
   const layer = new Container();
   world.addChildAt(layer, world.getChildIndex(anchor) + 1);
   const top = new Container(); // lékař nad vojáky
@@ -180,21 +184,23 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
     if (!has('PILLBOXES', f)) return;
     const toEnemy = map.front[f] < map.front[1 - f] ? 1 : -1;
     const slots = map.slots[f].filter((sl) => sl.line === 'front' && sl.x >= openX0 && sl.x <= openX1).sort((a, b) => a.x - b.x);
-    let lastX = -999;
+    let lastX = -999, idx = 0;
+    const ruinedShare = ruinOf(f);
     for (const sl of slots) {
       if (sl.x - lastX < 800) continue; // 16. 11. (uživatel): řidší, ~20 na stranu, asi 1 na obrazovce (dřív 300 px = ~53)
       lastX = sl.x;
+      const ruin = ((idx++ * 0.6180339) % 1) < ruinedShare; // rozbité rozprostřené po celé frontě (pevné pořadí, všichni vidí stejné)
       const s = new Sprite(pillboxTexture(f, Math.round(sl.x) % 7)); // kreslená náhrada, než se načte obrázek z PixelLabu
-      // obrázky z PixelLabu (15. 11.): zepředu s průzorem (strana míří dolů, vidíme čelo), zezadu se vchodem (strana míří nahoru)
-      loadTexture(toEnemy > 0 ? '/assets/props/pillbox.png' : '/assets/props/pillbox_back.png').then((t) => { s.texture = t; }).catch(() => {});
-      const fl = new Graphics(); // vlajka strany na střeše (16. 11.: aby se bunkry obou stran rozlišily)
-      pbs.push({ s, fl, f, front: toEnemy > 0, t0: (Math.round(sl.x) * 37) % 4000 });
+      // obrázky z PixelLabu (15. 11.): zepředu s průzorem (strana míří dolů, vidíme čelo), zezadu se vchodem (strana míří nahoru); ruina = art/props/pillbox/make_ruin.py
+      loadTexture(`/assets/props/${toEnemy > 0 ? 'pillbox' : 'pillbox_back'}${ruin ? '_ruin' : ''}.png`).then((t) => { s.texture = t; }).catch(() => {});
+      const fl = new Graphics(); // vlajka strany na střeše (16. 11.: aby se bunkry obou stran rozlišily); ruina vlajku nemá, jen doutná
+      pbs.push({ s, fl, f, ruin, front: toEnemy > 0, t0: (Math.round(sl.x) * 37) % 4000 });
       s.anchor.set(0.5, 0.5);
       s.x = Math.round(sl.x + 14); s.y = Math.round(sl.y + toEnemy * 18);
       // bunkr před valem: u strany, která míří dolů, leží před pytli (nad nimi); u druhé ho zakryjí vojáci v zákopu
       (toEnemy > 0 ? pbTop : layer).addChild(s);
       (toEnemy > 0 ? pbTop : layer).addChild(fl);
-      drawFlag(fl, s.x - 15, s.y - 10, f, 0);
+      if (!ruin) drawFlag(fl, s.x - 15, s.y - 10, f, 0);
     }
   });
   if (pbs.length) { world.addChild(flash); }
@@ -202,6 +208,7 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
   let raised = false;
   return {
     shelters: [...layer.children, ...pbTop.children],
+    pillboxes: pbs, // { s, fl, f, ruin, front } (reel „pillbox“ jeden rozstřílí)
     docs,
     update(now, view) {
       // kulomet v bunkru střílí dávkami: každé ~3 s dávka 6 záblesků z průzoru (u bunkru zezadu je záblesk vidět nad střechou)
@@ -210,13 +217,17 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
         for (const p of pbs) {
           const { s } = p;
           if (view && (s.x < view.x0 - 40 || s.x > view.x1 + 40 || s.y < view.y0 - 40 || s.y > view.y1 + 40)) continue;
-          drawFlag(p.fl, s.x - 15, s.y - 10, p.f, (now + p.t0) / 1000);
+          if (p.ruin) { // ruina doutná: tenký kouř stoupá z díry ve střeše
+            p.fl.clear();
+            for (let k = 0; k < 7; k++) { const u = ((now + p.t0) / 2600 + k / 7) % 1; p.fl.rect(Math.round(s.x - 9 + Math.sin(u * 6 + k) * 3 + u * 6), Math.round(s.y - 8 - u * 26), 2 + (u > 0.5 ? 1 : 0), 2).fill({ color: u < 0.3 ? 0x524a3f : 0x3d3730 }); }
+          } else drawFlag(p.fl, s.x - 15, s.y - 10, p.f, (now + p.t0) / 1000);
         }
       }
       if (pbs.length) {
         flash.clear();
         for (const p of pbs) {
           const { s } = p;
+          if (p.ruin) continue; // z ruiny se nestřílí
           if (view && (s.x < view.x0 - 40 || s.x > view.x1 + 40 || s.y < view.y0 - 40 || s.y > view.y1 + 40)) continue;
           const u = (now + p.t0) % 3000;
           if (u > 900) continue; // mezi dávkami ticho

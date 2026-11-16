@@ -13,6 +13,7 @@ import path from 'node:path';
 import { ROOT, loadTheme, loadState, saveState } from '../tools/lib.mjs';
 import { openWiring, wiringMedia } from '../engine/wiring.js';
 import { fireTriggers, openItemVote } from './triggers.mjs';
+import { openShells } from '../engine/shells.js';
 
 const API = `https://${process.env.IG_API_HOST || 'graph.facebook.com'}/${process.env.IG_API_VERSION || 'v23.0'}`;
 const TOKEN = process.env.IG_ACCESS_TOKEN;
@@ -160,6 +161,7 @@ async function main() {
       // kolo se opakovalo (stav z origin/main): hlasování otevřít znovu, jen pokud ještě neběží
       const st = loadState(theme);
       if (item.wiring && !wiringMedia(st, item.published.id) && !(st.wiring?.nights || []).some((n) => n.media === item.published.id)) { openWiring(st, item.published.id, st.day); saveState(st); }
+      if (item.shells && !st.shells && !(st.chronicle || []).some((c) => (c.blocks || []).some((b) => b.kind === 'shells')) ) { openShells(st, { ...item.shells, mediaId: item.published.id, openedAt: item.published.at }); saveState(st); }
       if (item.vote && st.vote?.mediaId !== item.published.id && !(st.events || []).some((e) => e.mediaId === item.published.id)) {
         if (openItemVote(st, item) === 'open') saveState(st);
         fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
@@ -180,6 +182,13 @@ async function main() {
       const st = loadState(theme);
       if (!wiringMedia(st, item.published.id)) { openWiring(st, item.published.id, st.day); saveState(st); }
       console.log(`⛓ ${item.id}: wiring party otevřena (heslo ${theme.battle?.wiring?.keyword || 'WIRE'})`);
+    }
+    // souboj komentářů (granáty) pod tímto postem: počítá se do ranních novin (engine/shells.js)
+    if (item.shells) {
+      const st = loadState(theme);
+      openShells(st, { ...item.shells, mediaId: item.published.id, openedAt: item.published.at || new Date().toISOString() });
+      saveState(st);
+      console.log(`💥 ${item.id}: souboj komentářů otevřen (cíl ${item.shells.target || 'PILLBOXES'})`);
     }
     // hlasování pod tímto postem (stav se načte znovu: mezitím ho nic jiného neměnilo, ale ať se nepřepíše starší kopií)
     if (item.vote) {
