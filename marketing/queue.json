@@ -822,6 +822,30 @@
         "permalink": "https://www.instagram.com/stories/mudandiron/4031710420692664476",
         "at": "2026-11-16T13:56:03.349Z"
       }
+    },
+    {
+      "id": "reel-pillbox",
+      "type": "reel",
+      "files": [
+        "reel_pillbox.mp4"
+      ],
+      "shells": {
+        "target": "PILLBOXES",
+        "minHours": 8
+      },
+      "caption": "THE GUNS ARE YOURS 💥\n\nConcrete pillboxes went up along the whole front today, a machine gun inside and a flag on every roof. Both headquarters gave the same order: knock them out.\n\n💬 1 COMMENT = 1 SHELL\nComment HEGEMONY or CONCORD under this reel. Every comment is one shell for your side. New here? Your first comment enlists you.\n\nThe next Trench Gazette counts the shells. The side that fired more turns the enemy pillboxes into ruins, on the map, for everyone to see.\n\nWho fires more? 👇\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
+      "_note": "Souboj komentářů o pevnůstky (engine/shells.js). Schváleno uživatelem 16. 11. („vydej to v nejlepší možný čas“), 19:00 UTC = 20:00 CET.",
+      "publishAt": "2026-11-16T19:00:00Z"
+    },
+    {
+      "id": "story-reel-pillbox",
+      "type": "story",
+      "files": [
+        "story_reel-pillbox.jpg"
+      ],
+      "caption": "",
+      "publishAt": "2026-11-16T19:10:00Z",
+      "_note": "Story k položce reel-pillbox (pravidlo: ke každé novince i story). "
     }
   ]
 }
