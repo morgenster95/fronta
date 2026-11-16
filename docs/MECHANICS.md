@@ -383,3 +383,10 @@ Uživatel: „musí se umírat, je blbost, že by nikoho nezastřelili k smrti; 
 - HOSPITAL: druhý nemocniční dugout (`build: dugout`, +4 lůžka, +4 nosítka, natrvalo).
 - PILLBOXES (nápad Hegemonie z Rady fronty): betonové bunkry v přední linii, kulometčíci palba ×1,6, odstřelovači ×1,3, 5 dní; na mapě betonové bunkry před valem (`web/src/orders-fx.js`, dev `/?orders=0:PILLBOXES`).
 - AMMO: palba ×1,4, 3 dny. Každá strana hlasuje zvlášť (`perFaction`). Návrh: `marketing/drafts/vote-build.draft.json`, obrázek `python marketing/make_vote.py build`.
+
+## 2026-11-16: rozkazy z hlasování platí až od příští bitvy (NASAZENO)
+Uživatel: „pevnůstky by se měly dnes jen objevit na mapě, herně by měly být až zítra, protože je teprve postavili.“
+Dřív rozkaz z hlasování (`issueOrders`, `from = state.day + 1` před přechodem dne) působil už v bitvě téhož ranního vydání, ve kterém se vyhlásil výsledek.
+Teď `from = state.day + 2` (`engine/roster.js`, `resolveVote`): noviny vyhlásí výsledek, web stavbu ukáže hned (bunkry, kryty, sklad; web nekontroluje `from`), účinek platí od další bitvy po celých `days` dní.
+První použití: PILLBOXES 16. 11. (obě strany) → vnitřní dny 9–13 = noviny 17.–21. 11.; bunkry na mapě od 16. 11. do novin 21. 11.
+Stavby (`build`, např. nemocnice) se nemění (platí hned jako dřív).

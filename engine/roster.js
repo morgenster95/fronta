@@ -390,7 +390,7 @@ function resolveFactionVote(state, v, theme) {
   const total = Object.keys(v.tallies).length;
 
   const winner = per.map((p) => `${sideName(theme, p.faction)}: ${p.winner?.kw ?? 'no votes'}`).join(' · ');
-  const orders = issueOrders(state, per.filter((p) => p.winner).map((p) => ({ ...p.winner, ...(p.winner.byFaction?.[p.faction] || {}), faction: p.faction })), state.day + 1); // byFaction: stejné heslo, jiný účinek podle strany
+  const orders = issueOrders(state, per.filter((p) => p.winner).map((p) => ({ ...p.winner, ...(p.winner.byFaction?.[p.faction] || {}), faction: p.faction })), state.day + 2); // 16. 11. (uživatel): rozkaz platí až od příští bitvy (dnes se teprve postaví, na mapě je vidět hned); byFaction: stejné heslo, jiný účinek podle strany
   // stavby (dugout, pytle, drát…): trvalé, staví se jen hlasováním
   // věta o stavbě (theme.battle.buildings[].done) nahradí obecný výsledek možnosti, ať se v Gazette neříká totéž dvakrát
   const builtOf = per.map((p) => (p.winner?.build ? buildStructure(state, theme, p.faction, p.winner.build) : null));

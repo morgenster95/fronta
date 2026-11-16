@@ -330,10 +330,11 @@ test('hlasování po frakcích: hlas se páruje s vojákem, každá strana má v
   assert.match(ev.text, /The Hegemony dug in\. The Concord built a hospital\./);
   assert.equal(s.vote, null);
   // rozkazy platí od dnešního dne (tah už proběhl) 3 dny
-  assert.equal(orderDanger(s, 0, s.day), 0.7);
-  assert.equal(orderDanger(s, 1, s.day), 1);
-  assert.equal(orderDanger(s, 0, s.day + 3), 1);
-  assert.equal(orderRecover(s, 1, s.day + 2, 0.35), 0.6);
+  assert.equal(orderDanger(s, 0, s.day), 1); // 16. 11.: rozkaz platí až od příští bitvy
+  assert.equal(orderDanger(s, 0, s.day + 1), 0.7);
+  assert.equal(orderDanger(s, 1, s.day + 1), 1);
+  assert.equal(orderDanger(s, 0, s.day + 4), 1);
+  assert.equal(orderRecover(s, 1, s.day + 3, 0.35), 0.6);
   assert.equal(orderRecover(s, 0, s.day, 0.35), 0.35);
   assert.match(s.chronicle.at(-1).blocks?.map((b) => b.text).join(' ') ?? JSON.stringify(s.chronicle.at(-1)), /The Hegemony chose FORTIFY \(2 to 1\)/);
 });
@@ -1066,8 +1067,8 @@ test('hlasování po frakcích s vlastní nabídkou: každá strana volí jen sv
   dailyTick(s, theme, story);
   const ev = s.events.at(-1);
   assert.deepEqual(ev.winners, ['DUGOUTS', 'VICKERS'], 'Concord: remíza 1:1 → dřívější možnost v jeho nabídce');
-  assert.equal(orderShell(s, 0, s.day), 0.7);
-  assert.equal(orderShell(s, 1, s.day), 1);
+  assert.equal(orderShell(s, 0, s.day + 1), 0.7);
+  assert.equal(orderShell(s, 1, s.day + 1), 1);
   assert.equal(ev.counts[0].STORM, 0);
   assert.ok(!('DUGOUTS' in ev.counts[1]), 'Concord nemá cizí možnost v počtech');
   const f = { ...s, orders: [{ faction: 1, kw: 'V', from: s.day, to: s.day + 2, fire: { machinegunner: 1.4 } }] };
