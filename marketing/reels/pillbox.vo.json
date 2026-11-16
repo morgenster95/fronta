@@ -1,0 +1,60 @@
+{
+ "seconds": 39.0,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.7,
+   1.15,
+   "The pillboxes are up.",
+   "open"
+  ],
+  [
+   2.1,
+   5.03,
+   "Concrete, a machine gun, and a flag on every roof. On both sides.",
+   "open2"
+  ],
+  [
+   7.38,
+   3.38,
+   "Both headquarters gave the same order. Knock them out.",
+   "hq"
+  ],
+  [
+   11.01,
+   2.45,
+   "Every shell the front can carry goes to the guns tonight.",
+   "guns"
+  ],
+  [
+   13.71,
+   4.29,
+   "Two near misses. Then one direct hit, and the concrete is rubble.",
+   "boom"
+  ],
+  [
+   18.25,
+   4.02,
+   "By morning, the side that fired more turns the enemy pillboxes into ruins.",
+   "ruin"
+  ],
+  [
+   22.52,
+   3.51,
+   "Your comment is a shell. Comment HEGEMONY or CONCORD.",
+   "cta"
+  ],
+  [
+   26.28,
+   5.91,
+   "Every comment counts, up to twenty each. New here? Your first comment enlists you.",
+   "cta2"
+  ],
+  [
+   32.44,
+   3.08,
+   "The Trench Gazette counts the shells. Fire!",
+   "cta3"
+  ]
+ ]
+}
