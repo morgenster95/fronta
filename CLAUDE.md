@@ -4,6 +4,19 @@ Tenhle soubor čte Claude Code i v cloudu (aplikace Claude v mobilu, claude.ai/c
 Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co je teď ve hře), `docs/BATTLE.md` a `docs/COMBAT_ROLES.md` (boj), `docs/ONBOARDING.md` (rekruti a provoz),
 `docs/SCHEDULE.md` (rytmus dne), `docs/MAP_MISSIONS.md` (výpravy, vypnuté), **`docs/MECHANICS.md` (deník domluvených mechanik)**. `docs/DESIGN.md` je původní návrh, neaktualizuje se.
 
+## SEZENÍ 2026-11-16 DOPOLEDNE (cloud, předávka do terminálu): ZAČNI TADY
+**Čísla dne:** 16. 11. = Day 7 (ranní noviny 13:00 UTC). Uživateli vždy zobrazené číslo (`state.day − 1`).
+- **Hlasování HOSPITAL / PILLBOXES / AMMO** (`vote-build`, otevřeno 15. 11. 9:33 UTC) se vyhodnotí v novinách 16. 11. 13:00 UTC. Stav v 11:45 UTC: Hegemonie PILLBOXES 46 / HOSPITAL 23 / AMMO 6, Concord PILLBOXES 46 / HOSPITAL 7 / AMMO 5.
+  Nanečisto (`preview-tick --save-state`) obě strany PILLBOXES → `state.orders` from 8 to 12 (×1,6 kulomet, ×1,3 odstřelovač, 5 dní, bunkry zmizí s novinami 20. 11.).
+  **Ověřit po novinách:** Gazette má výsledek, `state.orders` obsahuje PILLBOXES pro 0 i 1, na webu stojí bunkry s vlajkami.
+- **Bunkry PILLBOXES na mapě (NASAZENO 16. 11.):** `web/src/orders-fx.js`, jeden na ~800 px otevřené fronty = **21 na stranu** (dřív 300 px = 53, uživatel: moc), asi 1 na obrazovce. Každý má **vlající vlajku strany** (`drawFlag`, kreslená v kódu): Hegemonie ocelově šedá s rezavým pruhem, Concord olivová se žlutou hvězdou (barvy jako prapory v reelech). Hegemonie bunkr zepředu (průzor, záblesky), Concord zezadu (vchod). Ukázka `docs/mockups/pillbox_flags.png`, dev náhled `/?orders=0:PILLBOXES,1:PILLBOXES`.
+- **PixelLab z cloudového sezení nejde** (proxy 403, klíč je síťové tajemství jen v prostředí, kde se generovalo dřív). Pro generování spritů pracuj z terminálu / toho prostředí.
+- **Varování pro uživatele (vyřčeno):** PILLBOXES je pro obě strany stejný, ale Hegemonie má víc kulometčíků a odstřelovačů (42+31 = 73 proti 33+22 = 55) a k tomu pozorovatelnu na Hill 304 (ještě 16. a 17. 11.). Concord může mít v dalších dnech velké ztráty; sim-edition (před PILLBOXES): padlí za 3 dny H 15 : C 31. Uživatel zatím nic neměnil.
+- **Uživatel chce u ztrát VŽDY vysvětlení příčin** (co je způsobilo, proč má strana víc raněných). Zdroje: `state.battle.stats` (po dnech: `hits.shell/bg/fire[role]`, `sev`, `deaths.nocare/nobed/wounds/shell/shot`, `cover` = péče mediků, `trench` = raněných bez nosítek), raněni po stranách (`s.wound.sev/place/day/shell`), role po stranách, rozkazy, pozorovatelna, bombardování.
+  Rozbor 16. 11.: raněných 71 (H 43: 22 lehce, 17 těžce na nosítkách, 4 na lůžku; C 28: 19 / 5 / 4). Hegemonie trpěla bombardováním od Concordu (Verdel Ridge) Den 4–5 (38 a 55 zasažených, péče mediků jen 40–45 %), Den 6 zemřelo **19 Hegemonie bez péče**: pravidlo z 15. 11. „těžce raněný se do 2 nocí zahojí, nebo zemře“ (zahojení 0,3 + 0,6 × péče) rozhodlo naráz celou zásobu raněných po granátech. Teď je Hegemonie silnější: bombardování skončilo, pozorovatelna, víc kulometů a odstřelovačů, vypnuté nasycení palby.
+  **Navrženo uživateli (čeká na odpověď):** aby `tools/preview-tick.mjs` sám vypisoval sekci „Proč“ (granáty, chybějící péče, pozorovatelna, palba podle rolí, rozkazy).
+- Drobnost: `sim-edition` vypisuje „bombardování Concord do Dne undefined“ (Hill 304 dává pozorovatelnu, ne bombardování); jen popisek.
+
 ## ČEKÁ NA OVĚŘENÍ A ROZHODNUTÍ (stav 2026-11-11 večer; na začátku relace to uživateli stručně připomeň)
 1. **Převod stavu po částech** (`data/state-records/`, `SPLIT_STATE=1` v `front-loop.yml`): proběhne při příštím restartu smyčky (nejpozději ~21:00 UTC 11. 11.; čekající starší běh jsem zrušil).
    **Ověřit:** v `main` je složka `data/state-records` (128 souborů), `data/state.json` je menší, počty zápisů sedí (`recN`), smyčka běží dál, web se nasazuje a karta ukazuje 3 zápisy + „Show more“.

@@ -175,14 +175,14 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
   world.addChild(pbTop);
   const pbs = []; // bunkry: záblesky kulometu v update()
   const flash = new Graphics();
-  // --- PILLBOXES: betonové bunkry v přední linii před stanovišti, ~jeden na 10 stanovišť otevřené části fronty ---
+  // --- PILLBOXES: betonové bunkry v přední linii před stanovišti, jeden na ~800 px otevřené části fronty (~20 na stranu) ---
   theme.factions.forEach((_, f) => {
     if (!has('PILLBOXES', f)) return;
     const toEnemy = map.front[f] < map.front[1 - f] ? 1 : -1;
     const slots = map.slots[f].filter((sl) => sl.line === 'front' && sl.x >= openX0 && sl.x <= openX1).sort((a, b) => a.x - b.x);
     let lastX = -999;
     for (const sl of slots) {
-      if (sl.x - lastX < 300) continue;
+      if (sl.x - lastX < 800) continue; // 16. 11. (uživatel): řidší, ~20 na stranu, asi 1 na obrazovce (dřív 300 px = ~53)
       lastX = sl.x;
       const s = new Sprite(pillboxTexture(f, Math.round(sl.x) % 7)); // kreslená náhrada, než se načte obrázek z PixelLabu
       // obrázky z PixelLabu (15. 11.): zepředu s průzorem (strana míří dolů, vidíme čelo), zezadu se vchodem (strana míří nahoru)
