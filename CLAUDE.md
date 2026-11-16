@@ -4,6 +4,12 @@ Tenhle soubor čte Claude Code i v cloudu (aplikace Claude v mobilu, claude.ai/c
 Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co je teď ve hře), `docs/BATTLE.md` a `docs/COMBAT_ROLES.md` (boj), `docs/ONBOARDING.md` (rekruti a provoz),
 `docs/SCHEDULE.md` (rytmus dne), `docs/MAP_MISSIONS.md` (výpravy, vypnuté), **`docs/MECHANICS.md` (deník domluvených mechanik)**. `docs/DESIGN.md` je původní návrh, neaktualizuje se.
 
+## NA 17. 11. (pokyn uživatele 17. 11. v noci): PATRON VE VIDEU
+- **Day reel Day 8 (17. 11.) MUSÍ obsahovat poděkování podporovateli Edmundu Mcnamarovi (@zidane_mcnamara, Concord, puškař, Patreon Officers' Mess = hvězda + War Bonds).**
+  Cíl: motivovat další k podpoře. Záběr na jeho vojáka ve hře (hvězda nad hlavou, stužka), jméno + @handle ve videu (ve videu označení smí, v IG popisku ne), věta ve voiceoveru (např. „Edmund Mcnamara bought War Bonds and joined the Officers' Mess. The front does not forget its friends.“) a krátká výzva, jak podpořit (Support na webu / Patreon).
+  `tools/day-reel.mjs` ani `web/src/reel-daily.js` zatím žádnou část o podporovatelích NEMAJÍ: přidat obecnou část „War Bonds“ (podklady z `state.news` kind `thanks` posledních novin + vojáci s `officers-star`), zobrazit jen když je komu děkovat. Hvězdu ukázat jen u toho, kdo ji má (v01py ji nechce).
+  Před výrobou připomenout uživateli; ve video kontrole ověřit jméno, hvězdu a číslo dne.
+
 ## SEZENÍ 2026-11-16 DOPOLEDNE (cloud, předávka do terminálu): ZAČNI TADY
 **Čísla dne:** 16. 11. = Day 7 (ranní noviny 13:00 UTC). Uživateli vždy zobrazené číslo (`state.day − 1`).
 - **Hlasování HOSPITAL / PILLBOXES / AMMO** (`vote-build`, otevřeno 15. 11. 9:33 UTC) se vyhodnotí v novinách 16. 11. 13:00 UTC. Stav v 11:45 UTC: Hegemonie PILLBOXES 46 / HOSPITAL 23 / AMMO 6, Concord PILLBOXES 46 / HOSPITAL 7 / AMMO 5.
