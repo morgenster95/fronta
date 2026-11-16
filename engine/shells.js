@@ -1,12 +1,12 @@
 // Souboj komentářů „counter-battery“ (16. 11. 2026, na přání uživatele: něco svižného, co každý okomentuje):
 // pod postem s `shells` je KAŽDÝ komentář jeden granát pro stranu, ke které komentující patří (voják; nováček narukuje heslem strany
-// v tom komentáři a jeho granát se počítá taky). Jeden účet nejvýš `cap` granátů. Ranní noviny (nejdřív `minHours` po otevření) sečtou:
+// v tom komentáři a jeho granát se počítá taky). Bez stropu (kolik komentářů, tolik střel; `cap` jen volitelně). Ranní noviny (nejdřív `minHours` po otevření) sečtou:
 // strana s víc granáty rozbije část staveb `target` (rozkaz z hlasování, např. PILLBOXES) poražené strany. Podíl zničených:
 //   ruined = base + (1 − base) × (víc − míň) / víc   (při shodě nic). Rozkaz pak střílí jen zbytkem: násobek palby 1 + (m − 1) × (1 − ruined).
 // Na mapě se z podílu bunkrů stanou ruiny (web/src/orders-fx.js). Žádné mrtvé navíc: je to o slávě a o pevnůstkách, ne masakr.
 // state.shells = { mediaId, openedAt, minHours, cap, target, counts: [h, c], by: { userId: { n, f, handle } }, ids: [commentId…] }
 
-export function openShells(state, { mediaId, openedAt, minHours = 8, cap = 20, target = 'PILLBOXES' }) {
+export function openShells(state, { mediaId, openedAt, minHours = 8, cap = null, target = 'PILLBOXES' }) {
   if (!mediaId) return null;
   if (state.shells?.mediaId === mediaId) return state.shells;
   state.shells = { mediaId, openedAt: openedAt || new Date().toISOString(), minHours, cap, target, counts: [0, 0], by: {}, ids: [] };
@@ -22,7 +22,7 @@ export function addShell(state, { commentId, userId, handle, faction }) {
   const key = String(userId || handle || '').toLowerCase();
   if (!key) return false;
   const u = (S.by[key] ??= { n: 0, f: faction, handle: handle ? String(handle).toLowerCase() : null });
-  if (u.n >= S.cap) return false; // strop na účet
+  if (S.cap && u.n >= S.cap) return false; // strop na účet jen když je nastavený (16. 11. uživatel: bez stropu, kolik komentářů, tolik střel)
   u.n++;
   S.counts[u.f]++; // granát jde vždy straně, za kterou účet střílí poprvé (voják nemění stranu uprostřed palby)
   return true;

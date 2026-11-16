@@ -406,7 +406,7 @@ Rozbor 16. 11.: Hegemonie měla po bombardování z Verdel Ridge (Den 4–5: 38 
 
 ## 2026-11-16: Souboj komentářů o pevnůstky „1 comment = 1 shell“ (POSTAVENO, spustí se zveřejněním reelu `pillbox` po schválení)
 Uživatel chtěl něco virálního, co lidi vyhecuje ke komentářům. `engine/shells.js`:
-- Pod postem s `shells` ve frontě (`{ target: "PILLBOXES", minHours: 8, cap: 20 }`) je **každý komentář vojáka jeden granát pro jeho stranu**. Nováček napíše HEGEMONY/CONCORD, narukuje a jeho komentář se počítá taky. Jeden účet nejvýš 20 granátů (proti spamu). Bot na granáty neodpovídá (riziko limitů IG).
+- Pod postem s `shells` ve frontě (`{ target: "PILLBOXES", minHours: 8, cap: 20 }`) je **každý komentář vojáka jeden granát pro jeho stranu**. Nováček napíše HEGEMONY/CONCORD, narukuje a jeho komentář se počítá taky. Bez stropu: kolik komentářů, tolik střel (uživatel 16. 11.; strop 20 na účet zrušen ještě před zveřejněním, ve videu ani popisku se nezmiňuje). Bot na granáty neodpovídá, takže ho ani série komentářů jednoho člověka nezahltí.
 - **Ranní noviny** (nejdřív 8 h po otevření) sečtou: strana s víc granáty rozbije podíl bunkrů poraženého `ruined = 0,25 + 0,75 × (víc − míň) / víc` (při shodě nic). Rozkaz PILLBOXES poraženého pak střílí jen zbytkem: násobek `1 + (m − 1) × (1 − ruined)`. Žádné mrtvé navíc (sláva a pevnůstky, ne masakr).
 - Noviny: „The guns answered“: kolik granátů která strana vystřelila, kolik % bunkrů padlo, nejpilnější obsluha děla (jméno + @handle).
 - **Na mapě** se z podílu bunkrů poraženého stanou **ruiny** (`pillbox_ruin.png` / `pillbox_back_ruin.png`, vyrobené z herních spritů `art/props/pillbox/make_ruin.py`; utržený roh, výztuž, sutiny), bez vlajky, nestřílí, doutnají. Dev náhled `/?orders=0:PILLBOXES,1:PILLBOXES&ruin=1:0.5`.

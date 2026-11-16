@@ -91,7 +91,7 @@ export async function startPillboxReel({ cam, life, map, theme, soldiers, tex, a
     <div id="rp-cta"><div class="big">1 COMMENT<br>= 1 SHELL</div>
       <div class="mid">COMMENT <span>HEGEMONY</span><br>OR <i>CONCORD</i></div>
       <div class="race"><div class="r"><span>HEGEMONY</span><div class="sh h">${'<u></u>'.repeat(12)}</div></div><div class="r"><span>CONCORD</span><div class="sh c">${'<u></u>'.repeat(12)}</div></div></div>
-      <div class="sm">Up to 20 shells each. Most shells by the next Trench Gazette destroys the enemy pillboxes.</div></div>
+      <div class="sm">The side with more shells by the next Trench Gazette destroys the enemy pillboxes.</div></div>
     <div id="rp-fire">FIRE!</div>
     <div id="rd-big"></div>
     <div id="rd-sub"></div>
