@@ -1,5 +1,5 @@
 {
- "seconds": 39.0,
+ "seconds": 38.0,
  "voice": "en-GB-RyanNeural",
  "lines": [
   [
@@ -46,12 +46,12 @@
   ],
   [
    26.28,
-   5.91,
-   "Every comment counts, up to twenty each. New here? Your first comment enlists you.",
+   4.94,
+   "Every comment counts. New here? Your first comment enlists you.",
    "cta2"
   ],
   [
-   32.44,
+   31.47,
    3.08,
    "The Trench Gazette counts the shells. Fire!",
    "cta3"
