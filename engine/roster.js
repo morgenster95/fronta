@@ -39,6 +39,15 @@ const CLAIM_RE = /\bENLIST-([A-Z0-9]{4})\b/i;
 // („sniper rifle“ → sniper, ne rifleman). Víc různých rolí v jednom komentáři = nejasné → nic.
 // Bez podmínky na „want/be…“: hráči píšou prostě „CONCORD medic“ i v delších větách. Výjimka: „let him cook“.
 const NOT_A_WISH = /\blet (him|her|them|me|us) cook\b/g;
+// krátká žádost o roli (ne otázka, ne vyprávění): nejvýš 6 slov bez @zmínek, bez otazníku, nezačíná tázacím slovem
+export function roleRequest(text) {
+  const t = String(text || '').replace(/@[\w.]+/g, ' ').trim();
+  if (!t || t.includes('?')) return false;
+  const words = t.split(/\s+/).filter((w) => /[a-z0-9]/i.test(w));
+  if (words.length > 6) return false;
+  return !/^(what|how|why|who|when|where|which|is|are|am|can|could|do|does|did|should|will|would)\b/i.test(words[0] || '');
+}
+
 export function parseRole(text, theme) {
   let t = ` ${(text || '').toLowerCase().replace(NOT_A_WISH, ' ').replace(/[^a-z0-9' -]+/g, ' ')} `;
   const terms = theme.archetypes.filter((a) => !a.special) // zvláštní role (pilot) se nepřeje v komentáři, jen se losuje
@@ -86,7 +95,7 @@ export function roleReply(theme, s, role, reason) {
   const kw = theme.factions.map((f) => f.keyword).join(' or ');
   switch (reason) {
     case 'granted': return `@${s.handle} Granted. ${s.name} now serves as ${name}. Find your soldier on the front, link in bio.`;
-    case 'same': return `@${s.handle} ${s.name} already serves as ${name}, soldier.`;
+    case 'same': return null; // 17. 11.: už tu roli má, není co sdělit (bot mlčí)
     case 'officer': return `@${s.handle} Lieutenants aren't requested, soldier. The front chooses them. Pick another role.`;
     case 'used': return `@${s.handle} ${s.name} already chose a role. Claim your soldier on the front (link in bio) to request a transfer to ${name}.`;
     case 'notEnlisted': return `@${s.handle} Pick a side first: comment ${kw} together with ${name} and you'll be enlisted straight into that role.`;
@@ -133,13 +142,17 @@ export function applyComment(state, comment, theme, story, map) {
   const raid = raidKeyword(state, theme, comment.text);
   // dopis domů (post s voices): zmínka role v textu („the medic carried me…“) není přání role
   const wish = comment.letter ? null : parseRole(comment.text, theme);
+  // 17. 11. (uživatel): už narukovaný si roli přeje jen krátkou žádostí („MEDIC“, „make me a sniper“);
+  // otázka („what does a lieutenant do“) nebo delší věta („the medic carried me back“) není přání: nic se nezmění a bot mlčí.
+  // Nábor s rolí („CONCORD medic“) jde dál beze změny (větev narukování níž).
+  const asks = roleRequest(comment.text);
   if (!parsed || existing) {
     // přání role od už narukovaného (před přihláškou na výpravu: role se hned počítá)
-    const role = existing && wish ? { role: wish, reason: wishRole(state, existing, wish, theme, story) } : null;
+    const role = existing && wish && asks ? { role: wish, reason: wishRole(state, existing, wish, theme, story) } : null;
     if (raid && existing) return { type: 'volunteer', handle, soldier: existing, ...volunteer(state, theme, existing, 'comment'), roleWish: role };
     if (raid && !parsed) return { type: 'volunteer', handle, soldier: { handle }, ok: false, reason: 'notEnlisted' }; // nejdřív narukovat
     if (role) return { type: 'role', handle, soldier: existing, ...role };
-    if (wish && !existing) return { type: 'role', handle, soldier: { handle }, role: wish, reason: 'notEnlisted' };
+    if (wish && !existing) return { type: 'role', handle, soldier: { handle }, role: wish, reason: 'notEnlisted' }; // bez vojáka: i otázka je žádost, odpověď poradí narukovat
     // hlas frakce bez vojáka: nejdřív narukovat (odpověď poradí, jak)
     const vo = !existing && state.vote?.perFaction && voteOption(state, comment);
     if (vo) return { type: 'vote', handle, kw: vo.kw, reason: 'notEnlisted' };

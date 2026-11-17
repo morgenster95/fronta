@@ -1350,3 +1350,15 @@ test('lhůta náboru pilotů a souboje komentářů platí i s časem jako čís
   assert.equal(resolveShells(st, th, Date.parse('2026-11-17T13:00:00Z')), null, 'souboj po hodině ještě běží');
   assert.ok(st.shells);
 });
+
+test('přání role od už narukovaného: jen krátká žádost; otázka ani vyprávění roli nemění a bot mlčí', async () => {
+  const { roleRequest, roleReply } = await import('./roster.js');
+  assert.equal(roleRequest('MEDIC'), true);
+  assert.equal(roleRequest('make me a sniper please'), true);
+  assert.equal(roleRequest('@someone CONCORD medic'), true);
+  assert.equal(roleRequest('what does a lieutenant do'), false);
+  assert.equal(roleRequest('can I be a medic'), false);
+  assert.equal(roleRequest('lieutenant?'), false);
+  assert.equal(roleRequest('the medic carried me back to the trench last night'), false);
+  assert.equal(roleReply(theme, { handle: 'a', name: 'A' }, 'medic', 'same'), null);
+});

@@ -442,3 +442,8 @@ Dnešní bitva už proběhla s piloty (bonus puškařů ×1,12 u obou stran, ž�
 ## 2026-11-17: Čestné tituly (příkaz `title`) a Propagandist of the Hegemony (NASAZENO)
 Na pokyn uživatele: odměna pro hráče, kteří hru šíří. Příkaz `{ cmd: "title", handle, title, entry, newsHead, newsText }` (`grantTitle` v `engine/roster.js`): titul na kartě vojáka (★), zápis do deníku, zpráva do příštích novin s @handle. Jen čest, žádná herní výhoda.
 První: Konrad Sebs (@_sebs.c_, Hegemonie, odstřelovač, First Wave), „Propagandist of the Hegemony“ za plakáty (`art/cine/sebs_poster_*.png`, ze screenshotů od uživatele) a burcování pod příspěvky (manifesty, sjednocení hlasů Hegemonie v Radě fronty, z jeho BUNKERS vzešly pevnůstky).
+
+## 2026-11-17: Přání role v komentáři jen krátkou žádostí (NASAZENO)
+Uživatel: hráč s rolí se jen zeptal, co dělá poručík, a bot mu napsal „už jsi poručík“. Navíc delší věta se zmínkou role („the medic carried me back…“) mohla hráči, který ještě nevyužil první volbu zdarma, roli potichu změnit.
+Teď (`roleRequest` v `engine/roster.js`): u už narukovaného vojáka je přání role jen krátká žádost: nejvýš 6 slov (bez @zmínek), bez otazníku, nezačíná tázacím slovem (what, how, why, can, does…). Otázka nebo delší věta nic nemění a bot mlčí. Když voják roli už má (`same`), bot mlčí vždy.
+Beze změny: nábor s rolí („CONCORD medic“), odpověď člověku bez vojáka (i na otázku „can I be a doctor?“ poradí narukovat), převelení z karty.
