@@ -263,21 +263,17 @@ test('přání role v komentáři: rozpoznání, první volba zdarma, důstojní
   const b = applyComment(s, { id: 'c2', userId: 'u2', username: 'eva', text: 'HEGEMONY' }, theme, story, map).soldier;
   const was = b.archetype;
   const want = was === 'sniper' ? 'cook' : 'sniper';
+  // 17. 11.: kdo už vojáka má, tomu komentář roli nemění a bot mlčí (role jen při náboru, jinak převelení z karty)
   const c = applyComment(s, { id: 'c3', userId: 'u2', username: 'eva', text: `I want to be a ${want}` }, theme, story, map);
-  assert.equal(c.type, 'role');
-  assert.equal(c.reason, b.archetype === 'officer' && was === 'officer' ? 'locked' : 'granted');
-  if (c.reason === 'granted') {
-    assert.equal(b.archetype, want);
-    assert.match(b.record.at(-1)[1], new RegExp(theme.archetypes.find((x) => x.id === want).name.toLowerCase()));
-    const d = applyComment(s, { id: 'c4', userId: 'u2', username: 'eva', text: 'actually make me a runner' }, theme, story, map);
-    assert.equal(d.reason, 'used', 'druhá změna jen převelením z karty');
-  }
+  assert.equal(c, null);
+  assert.equal(b.archetype, was);
+  assert.equal(applyComment(s, { id: 'c4', userId: 'u2', username: 'eva', text: 'what does a lieutenant do' }, theme, story, map), null);
   const e = applyComment(s, { id: 'c5', userId: 'u9', username: 'nobody', text: 'can I be a doctor?' }, theme, story, map);
   assert.equal(e.reason, 'notEnlisted');
   assert.equal(s.soldiers.length, 2);
   const f = applyComment(s, { id: 'c6', userId: 'u7', username: 'boss', text: 'CONCORD make me captain' }, theme, story, map);
   assert.equal(f.roleWish.reason, 'officer');
-  for (const x of [a, c, e, f]) {
+  for (const x of [a, e, f]) {
     const w = x.type === 'enlist' ? x.roleWish : x;
     const t = roleReply(theme, x.soldier, w.role, w.reason);
     if (t) assert.doesNotMatch(t, /undefined|\{/);
@@ -1351,14 +1347,3 @@ test('lhůta náboru pilotů a souboje komentářů platí i s časem jako čís
   assert.ok(st.shells);
 });
 
-test('přání role od už narukovaného: jen krátká žádost; otázka ani vyprávění roli nemění a bot mlčí', async () => {
-  const { roleRequest, roleReply } = await import('./roster.js');
-  assert.equal(roleRequest('MEDIC'), true);
-  assert.equal(roleRequest('make me a sniper please'), true);
-  assert.equal(roleRequest('@someone CONCORD medic'), true);
-  assert.equal(roleRequest('what does a lieutenant do'), false);
-  assert.equal(roleRequest('can I be a medic'), false);
-  assert.equal(roleRequest('lieutenant?'), false);
-  assert.equal(roleRequest('the medic carried me back to the trench last night'), false);
-  assert.equal(roleReply(theme, { handle: 'a', name: 'A' }, 'medic', 'same'), null);
-});
