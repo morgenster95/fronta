@@ -1,0 +1,42 @@
+{
+ "seconds": 29.5,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.6,
+   1.47,
+   "The Hegemony has a new voice.",
+   "open"
+  ],
+  [
+   2.32,
+   5.15,
+   "Konrad Sebs. A sniper from the first wave, and the man behind these posters.",
+   "who"
+  ],
+  [
+   7.72,
+   5.36,
+   "Under every order he rallies his comrades. The Kaiser and the Fatherland demand your steel.",
+   "words"
+  ],
+  [
+   13.33,
+   4.41,
+   "His plan for bunkers won the Front Council. Today the pillboxes stand.",
+   "bunkers"
+  ],
+  [
+   17.99,
+   2.18,
+   "The colonel named him Propagandist of the Hegemony.",
+   "title"
+  ],
+  [
+   20.42,
+   5.61,
+   "Draw for your side. Tag Mud and Iron. The best posters will be shown here.",
+   "cta"
+  ]
+ ]
+}
