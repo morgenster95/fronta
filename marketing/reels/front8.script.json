@@ -1,12 +1,13 @@
 {
  "seconds": 60,
  "auto": true,
- "drums": ["open", [["bucket", "toll"], ["tea", "race"]], "pilot"],
+ "drums": ["open", [["rifle", "toll"], ["tea", "race"]], "pilot"],
  "lines": [
   [0.9, "Day eight. Your shells fell all night.", "open"],
-  [0, "Hegemony three hundred and eighty-three. Concord three hundred and one. Four in ten Concord pillboxes are rubble.", "shells"],
-  [0, "The day before, a bucket rose over the Concord trench. A sniper shot it full of holes.", "bucket"],
-  [0, "Ivo Lettersabcd hung a sign. Water costs enough already. Today he stood up to fix a sandbag.", "bucket2"],
+  [0, "Hegemony three hundred and eighty-three shells. Concord three hundred and one.", "shells"],
+  [0, "Shell after shell found the concrete. Four in ten Concord pillboxes are rubble.", "destroy"],
+  [0, "Oskar Guyy studied medicine before the war. Here he was soldier and doctor at once.", "rifle"],
+  [0, "He was killed on watch. His rifle still pointed where the shot came from.", "rifle2"],
   [0, "Eighteen Concord men fell. The Hegemony lost one. With the concrete gone, the spotters on Hill 304 saw every head.", "toll"],
   [0, "Chaplain Gideon Vylet was shot at dawn. His tea was still hot.", "tea"],
   [0, "Blackwater Canal. The Hegemony lead, thirty-two to twenty-nine.", "race"],

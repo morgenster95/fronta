@@ -1,6 +1,6 @@
 // Day reel Day 8 (17. 11. 2026, noviny 17. 11. 13:00 UTC; /?reel=front8&vacant=700, jen vývojový server), do minuty:
 //  výbuchy na ruinách bunkrů Concordu + titulek DAY 8 → výsledek souboje komentářů (granáty, 41 % bunkrů Concordu v troskách, nejpilnější obsluha)
-//  → film „bucket“ (Ivo Lettersabcd a cedulka Water costs enough already) → padlí s příčinami a proč (bez bunkrů, pozorovatelna na Hill 304)
+//  → zničení dvou bunkrů Concordu ve hře (zásahy, ruina, kouř) → film „rifle“ (Oskar Guyy, student medicíny, puška namířená na střelce) → padlí s příčinami a proč (bez bunkrů, pozorovatelna na Hill 304)
 //  → film „tea“ (kaplan Gideon Vylet) → závod o Blackwater Canal → noví patroni Officers' Mess se zlatou hvězdou nad vojákem (ve hře)
 //  → přírůstek a počty hráčů s přejezdem po liniích → letadla nad frontou a výzva PILOT (los v novinách 18. 11.; piloti zatím nejsou!).
 // Hlas: marketing/reels/front8.script.json. Filmové scény: web/src/cinema-day8.js.
@@ -8,6 +8,7 @@ import { CSS as BASE } from './reel-day1.js';
 import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, slam, clamp01, win, typed, easeOut, tagAt } from './reel-kit.js';
 import script from '../../marketing/reels/front8.script.json';
 import { makeDay8Scenes } from './cinema-day8.js';
+import { loadTexture } from './assets.js';
 
 const files = import.meta.glob('../../marketing/reels/front8.vo.json', { eager: true, import: 'default' });
 
@@ -68,16 +69,18 @@ export async function startDay8Reel({ cam, life, map, theme, soldiers, tex, anim
   const planes = F.planeFx;
   const mid = ((map.front[0] + map.front[1]) / 2) * T;
 
-  const id = ['open', 'shells', 'bucket', 'bucket2', 'toll', 'tea', 'race', 'stars', 'army', 'pilot'];
+  const id = ['open', 'shells', 'destroy', 'rifle', 'rifle2', 'toll', 'tea', 'race', 'stars', 'army', 'pilot'];
   const tt = Object.fromEntries(id.map((k) => [k, at(k)]));
   const half = (a, b) => a + (b - a) / 2;
+  const tDes2 = half(tt.destroy, tt.rifle);
   const tStar2 = half(tt.stars, tt.army), tArmyC = half(tt.army, tt.pilot) + 0.6;
   planes?.placeAt?.(0, tt.pilot + 0.6, mC.x - 120); // letadlo Hegemonie přeletí nad frontou Concordu
   const pose = (t) => planes?.poseOf?.(0, t * 1000);
   const K = [[0, ruin.x - 20, ruin.y - 18, 3.4], [tt.shells - 0.01, ruin.x + 10, ruin.y - 18, 3.8]];
-  K.push([tt.shells, boxH.x - 20, boxH.y - 16, 3.6, 'cut'], [half(tt.shells, tt.bucket) - 0.01, boxH.x + 10, boxH.y - 16, 3.9]);
-  K.push([half(tt.shells, tt.bucket), ruin2.x - 24, ruin2.y - 18, 3.4, 'cut'], [tt.bucket - 0.01, ruin2.x + 14, ruin2.y - 18, 3.7]);
-  K.push([tt.bucket, ruin2.x, ruin2.y, 3], [tt.toll, tree.x - 40, tree.y - 40, 2.6, 'cut'], [tt.tea - 0.01, tree.x + 30, tree.y - 40, 2.9]);
+  K.push([tt.shells, boxH.x - 20, boxH.y - 16, 3.6, 'cut'], [tt.destroy - 0.01, boxH.x + 10, boxH.y - 16, 3.9]);
+  K.push([tt.destroy, ruin.x - 20, ruin.y - 18, 3.6, 'cut'], [tDes2 - 0.01, ruin.x + 6, ruin.y - 18, 4.0]);
+  K.push([tDes2, ruin2.x - 20, ruin2.y - 18, 3.6, 'cut'], [tt.rifle - 0.01, ruin2.x + 6, ruin2.y - 18, 4.0]);
+  K.push([tt.rifle, ruin2.x, ruin2.y, 3], [tt.toll, tree.x - 40, tree.y - 40, 2.6, 'cut'], [tt.tea - 0.01, tree.x + 30, tree.y - 40, 2.9]);
   K.push([tt.tea, tree.x, tree.y, 2.9], [tt.race, mH.x - 220, mid, 1.2, 'cut'], [tt.stars - 0.01, mH.x + 220, mid, 1.3]);
   K.push([tt.stars, star1.x - 12, star1.y - 24, 4.0, 'cut'], [tStar2 - 0.01, star1.x + 10, star1.y - 24, 4.4]);
   K.push([tStar2, star2.x - 12, star2.y - 24, 4.0, 'cut'], [tt.army - 0.01, star2.x + 10, star2.y - 24, 4.4]);
@@ -89,15 +92,21 @@ export async function startDay8Reel({ cam, life, map, theme, soldiers, tex, anim
     return camPathAt(t);
   };
   const sub = subtitles(vo);
-  const film = (t) => (t >= tt.bucket && t < tt.toll ? 'bucket' : t >= tt.tea && t < tt.race ? 'tea' : null);
-  const filmT = { bucket: tt.bucket, tea: tt.tea };
-  const fx = transitions([[tt.shells, 'whip'], [half(tt.shells, tt.bucket), 'whip'], [tt.bucket, 'black', 0.35], [tt.toll, 'black', 0.35], [tt.tea, 'black', 0.35], [tt.race, 'flash'],
+  const film = (t) => (t >= tt.rifle && t < tt.toll ? 'rifle' : t >= tt.tea && t < tt.race ? 'tea' : null);
+  const filmT = { rifle: tt.rifle, tea: tt.tea };
+  const fx = transitions([[tt.shells, 'whip'], [tt.destroy, 'whip'], [tDes2, 'whip'], [tt.rifle, 'black', 0.35], [tt.toll, 'black', 0.35], [tt.tea, 'black', 0.35], [tt.race, 'flash'],
     [tt.stars, 'flash'], [tStar2, 'whip'], [tt.army, 'flash'], [tArmyC, 'whip'], [tt.pilot, 'flash']]);
   // výbuchy granátů na ruinách bunkrů Concordu (úvod)
   const booms = [];
   for (let k = 0, t = 0.3; t < tt.shells - 0.2; t += 0.55, k++) booms.push([t, ruin.x + ((k * 53) % 120) - 60, ruin.y + ((k * 37) % 50) - 25, k % 3 === 0]);
+  // zničení: oba bunkry (dnes už ruiny) se na začátku úseku ukážou celé, dostanou zásahy a v okamžiku přímého zásahu se změní v ruinu
+  const targets = [[ruin, tt.destroy], [ruin2, tDes2]].map(([sp, t0]) => ({ sp, t0, hit: t0 + 1.6, pb: pbs.find((p) => p.s === sp), done: false }));
+  for (const g of targets) for (const [dt, dx, dy, big] of [[0.4, 46, 10, false], [1.0, -42, -6, false], [1.6, 0, 0, true], [1.85, 14, 6, true]]) booms.push([g.t0 + dt, g.sp.x + dx, g.sp.y + dy, big]);
+  booms.sort((a, b) => a[0] - b[0]);
+  const tex2 = {};
+  for (const n of ['pillbox_back', 'pillbox_back_ruin']) loadTexture(`/assets/props/${n}.png`).then((x) => { tex2[n] = x; }).catch(() => {});
   const SFX = booms.map(([t, , , big]) => [+t.toFixed(2), 'shell', big ? 1 : 0]);
-  SFX.push([tt.bucket + 2.4, 'shoot', 0], [tt.toll, 'drum', 0], [tt.race, 'drum', 0], [tt.stars, 'stamp', 0], [END - 1.3, 'end', 0]);
+  SFX.push([tt.rifle + 0.5, 'shoot', 0], [tt.toll, 'drum', 0], [tt.race, 'drum', 0], [tt.stars, 'stamp', 0], [END - 1.3, 'end', 0]);
   for (let t = tt.toll + 0.6; t < tt.tea - 0.3; t += 0.8) SFX.push([+t.toFixed(2), 'shoot', 0]);
 
   document.body.classList.add('reel');
@@ -114,9 +123,9 @@ export async function startDay8Reel({ cam, life, map, theme, soldiers, tex, anim
     <div id="rd-day"><div class="big"></div><div class="sub"></div></div>
     <div id="r8-shells" class="r8-panel"><div class="t">THE GUNS ANSWERED · SHELLS FIRED</div>${bars(...D.shells)}
       <div class="note">${D.ruined}% of Concord pillboxes destroyed<br>busiest gun: ${D.crew[0]}, ${D.crew[1]} shells</div></div>
-    <div id="r8-ruinTag" class="r8-tag">CONCORD PILLBOX · RUINED</div>
+    <div id="r8-ruinTag" class="r8-tag">CONCORD PILLBOX · DESTROYED</div>
     <div id="r8-boxTag" class="r8-tag">HEGEMONY PILLBOX · STANDING</div>
-    <div id="r8-cap" >IVO LETTERSABCD · CONCORD<small>R-F10 · the bucket, the sign, the sandbag</small></div>
+    <div id="r8-cap" >OSKAR "SMOKES" GUYY · CONCORD<small>R-F14 · medical student, soldier and doctor</small></div>
     <div id="r8-toll" class="r8-panel"><div class="t">DAY 8 · THE DEAD</div>
       <div class="row"><span>CONCORD</span><b>${D.fell[1]}</b></div>${causes(D.con)}
       <div class="row" style="margin-top:10px"><span>HEGEMONY</span><b>${D.fell[0]}</b></div>${causes(D.heg)}
@@ -158,6 +167,12 @@ export async function startDay8Reel({ cam, life, map, theme, soldiers, tex, anim
     for (const q of soldiers) if (q.vacant && q.sprite && q.sprite.alpha < 1) { q.sprite.alpha = 1; q.sprite.tint = [0xffffff, 0xf0ece4, 0xe6e2da, 0xfff4e8][q.variant % 4]; } // žádní duchové
     const [x, y, z] = camAt(t);
     cam.set(x, y, z * (1 + 0.03 * f.punch));
+    for (const g of targets) { // celý bunkr před zásahem, ruina po něm (vlajka a doutnání přes orders-fx)
+      if (!g.pb || !tex2.pillbox_back || !tex2.pillbox_back_ruin) continue;
+      const intact = t >= g.t0 - 0.5 && t < g.hit;
+      if (intact && g.pb.ruin) { g.pb.ruin = false; g.sp.texture = tex2.pillbox_back; }
+      if (!intact && !g.pb.ruin) { g.pb.ruin = true; g.sp.texture = tex2.pillbox_back_ruin; g.pb.fl.clear(); }
+    }
     while (bi < booms.length && booms[bi][0] <= t) { const [, bx, by0, big] = booms[bi]; life.debug.shell?.(bx, by0, big); bi++; }
     const fl = film(t);
     if (fl) d8.draw(fl, t - filmT[fl]);
@@ -170,12 +185,12 @@ export async function startDay8Reel({ cam, life, map, theme, soldiers, tex, anim
     $('#rd-day .big').textContent = typed('DAY 8', t, 0.3, 10);
     $('#rd-day .sub').textContent = t > 1.2 ? typed('YOUR SHELLS FELL ALL NIGHT', t, 1.2, 30) : '';
     // souboj o bunkry
-    show('#r8-shells', win(t, tt.shells + 0.1, tt.bucket - 0.05, 0.2));
+    show('#r8-shells', win(t, tt.shells + 0.1, tt.destroy - 0.05, 0.2));
     grow('#r8-shells', tt.shells + 0.3);
-    tagAt($('#r8-boxTag'), { x: boxH.x, y: boxH.y + 40 }, cam, win(t, tt.shells + 0.2, half(tt.shells, tt.bucket) - 0.05, 0.2), 0);
-    tagAt($('#r8-ruinTag'), { x: ruin2.x, y: ruin2.y + 44 }, cam, win(t, half(tt.shells, tt.bucket) + 0.1, tt.bucket - 0.05, 0.2), 0);
+    tagAt($('#r8-boxTag'), { x: boxH.x, y: boxH.y + 40 }, cam, win(t, tt.shells + 0.2, tt.destroy - 0.05, 0.2), 0);
+    { const who = t < tDes2 ? ruin : ruin2, hitAt = t < tDes2 ? tt.destroy + 1.6 : tDes2 + 1.6; tagAt($('#r8-ruinTag'), { x: who.x, y: who.y + 44 }, cam, t > hitAt + 0.3 && t < tt.rifle - 0.05 ? 1 : 0, 0); }
     // kbelík
-    show('#r8-cap', win(t, tt.bucket + 0.3, tt.toll - 0.1, 0.3));
+    show('#r8-cap', win(t, tt.rifle + 0.3, tt.toll - 0.1, 0.3));
     // ztráty + proč
     show('#r8-toll', win(t, tt.toll + 0.1, tt.tea - 0.05, 0.2));
     root.querySelectorAll('#r8-toll .c').forEach((el, i) => (el.style.opacity = t > tt.toll + 0.5 + i * 0.3 ? 1 : 0));

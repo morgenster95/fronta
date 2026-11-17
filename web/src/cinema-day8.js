@@ -1,8 +1,8 @@
 // Filmové scény k příběhům Day 8 (17. 11. 2026; mřížka 180×320, herní paleta, dithering jako cinema.js):
-//  • bucket – nad zákopem Concordu se objeví kbelík na tyči, odstřelovač ho prostřelí (voda stříká), kbelík zmizí a na kůl se přibije cedulka
-//             „WATER COSTS ENOUGH ALREADY“ (Ivo „Ghost“ Lettersabcd, hříčka z textů hry); na konci se uvolní pytel s pískem (dnes ho šel spravit)
+//  • rifle  – svítání nad valem, puška pořád namířená do země nikoho a brašna s červeným křížem (Oskar „Smokes“ Guyy, student medicíny,
+//             v zákopu voják i doktor, padl na hlídce); kbelík (bucket) uživatel 17. 11. zamítl
 //  • tea    – úsvit, na pytli s pískem plecháček čaje, z něj stoupá pára; vedle dřevěný křížek na šňůrce a otevřená knížka (kaplan Gideon „Whistle“ Vylet)
-// Použití: const d8 = makeDay8Scenes(); root.prepend(d8.canvas); d8.draw('bucket', t)
+// Použití: const d8 = makeDay8Scenes(); root.prepend(d8.canvas); d8.draw('rifle', t)
 import { sky, glow, off, clamp01, easeOut, by, CW as W, CH as H } from './cinema.js';
 
 const P = {
@@ -28,53 +28,34 @@ export function makeDay8Scenes() {
   const g = canvas.getContext('2d');
 
   const scenes = {
-    bucket(t) {
-      // šedé odpoledne, pohled ze dna zákopu Concordu na val
-      sky(g, 0, 150, ['#3a3d44', '#4a4c52', '#5a5a5c', '#66625c']);
-      g.fillStyle = '#2b2a2a'; for (let k = 0; k < 9; k++) { const u = (t * 0.05 + k * 0.13) % 1; g.fillRect(Math.round(u * 200 - 10), 30 + k * 11, 14 + (k % 3) * 6, 2); } // mraky
-      const SHOT = 2.4, DOWN = 4.0, SIGN = 5.0, SLIP = 8.6;
-      // tyč s kbelíkem: vyjede nad val, po zásahu se zakymácí, pak zmizí dolů
-      const up = easeOut(clamp01((t - 0.4) / 0.8)) - easeOut(clamp01((t - DOWN) / 0.5));
-      const wob = t > SHOT && t < DOWN ? Math.sin((t - SHOT) * 18) * 3 * Math.exp(-(t - SHOT) * 1.5) : 0;
-      const bx = 60, by0 = 150 - up * 46;
-      if (up > 0.01) {
-        g.fillStyle = '#5a4632'; g.fillRect(bx + 6, by0 + 12, 2, 80); // tyč
-        g.save(); g.translate(bx + 7, by0 + 12); g.rotate(wob * 0.03); g.scale(1.7, 1.7);
-        g.fillStyle = '#8a9295'; g.fillRect(-8, -14, 16, 14); // kbelík
-        g.fillStyle = '#a7b0b3'; g.fillRect(-8, -14, 16, 2); g.fillStyle = '#666d70'; g.fillRect(4, -12, 3, 12);
-        g.strokeStyle = '#3d3730'; g.beginPath(); g.arc(0, -14, 7, Math.PI, 0); g.stroke(); // ucho
-        if (t > SHOT) { g.fillStyle = P.ink; g.fillRect(-3, -8, 2, 2); g.fillRect(3, -6, 2, 2); } // díry po kulce
-        g.restore();
-        // voda stříká z děr (oblouky kapek)
-        if (t > SHOT) for (let i = 0; i < 18; i++) {
-          const u = ((t - SHOT) * 1.6 + i * 0.07) % 1.2;
-          if (u > 1) continue;
-          const side = i % 2 ? 1 : -1;
-          g.fillStyle = i % 3 ? P.water : P.water2;
-          g.fillRect(Math.round(bx + 7 + side * (5 + u * 22)), Math.round(by0 + 2 + u * 12 + u * u * 46), 2, 2);
-        }
-      }
-      // záblesk zásahu a jiskra
-      if (t > SHOT && t < SHOT + 0.15) { glow(g, bx + 4, by0 - 4, 18, P.fire, 1.4); }
-      // val (pytle) v popředí, na konci se jeden pytel uvolní a sjede
-      bags(g, 150, 4, 1, 5, easeOut(clamp01((t - SLIP) / 0.7)));
-      g.fillStyle = '#2b2722'; g.fillRect(0, 186, W, H - 186);
-      for (let y = 196; y < H; y += 9) { g.fillStyle = '#332e28'; g.fillRect(0, y, W, 2); } // dno zákopu, prkna
-      // kůl s cedulkou: přibije se po stažení kbelíku
-      const sg = easeOut(clamp01((t - SIGN) / 0.4));
-      if (sg > 0) {
-        g.fillStyle = '#5a4632'; g.fillRect(118, 150 - sg * 36, 3, 50);
-        g.save(); g.translate(119, 120 - sg * 6); g.rotate(-0.04 + (1 - sg) * 0.3);
-        g.fillStyle = '#b49a72'; g.fillRect(-36, -12, 72, 24);
-        g.fillStyle = '#8a7356'; g.fillRect(-36, 10, 72, 2); g.fillStyle = '#c9ae84'; g.fillRect(-36, -12, 72, 1);
-        g.fillStyle = P.ink; g.fillRect(-33, -10, 2, 2); g.fillRect(31, -10, 2, 2); // hřebíky
-        g.fillStyle = '#2a1d14'; g.font = '7px Silkscreen, monospace'; g.textAlign = 'center'; g.textBaseline = 'middle';
-        g.fillText('WATER COSTS', 0, -4); g.fillText('ENOUGH ALREADY', 0, 5);
-        g.restore();
-      }
-      // déšť jemný
-      g.fillStyle = 'rgba(170,180,195,0.35)';
-      for (let k = 0; k < 40; k++) { const p = (k * 0.618) % 1, q = (k * 0.754) % 1; const y = ((q * 340 + t * 200) % 340) - 10; g.fillRect(Math.round((p * 220 - y * 0.2) % 200), Math.round(y), 1, 3); }
+    rifle(t) {
+      // svítání nad valem: na pytlích leží puška, pořád namířená do země nikoho; vedle brašna s červeným křížem (Oskar „Smokes“ Guyy,
+      // před válkou student medicíny, v zákopu voják i doktor). Na začátku vzdálený záblesk výstřelu, pak ticho a mlha.
+      const dawn = clamp01(t / 6);
+      sky(g, 0, 190, ['#0d1120', '#1a2034', '#2c2c40', '#4a3a44', dawn > 0.5 ? '#7a5248' : '#5a4448']);
+      g.fillStyle = '#14141a';
+      for (let x = 0; x < W; x++) g.fillRect(x, Math.round(176 + 2 * Math.sin(x * 0.06)), 1, 30); // obzor (val nepřítele)
+      for (const [x, h] of [[20, 14], [64, 9], [118, 16], [160, 11]]) { g.fillRect(x, 176 - h, 2, h); g.fillRect(x - 4, 176 - h + 4, 10, 1); }
+      if (t > 0.5 && t < 0.62) glow(g, 150, 172, 16, '#fff6dc', 1.4); // výstřel z druhé strany
+      // mlha nad zemí nikoho
+      g.fillStyle = '#3a3e52';
+      for (let y = 180; y < 206; y++) for (let x = 0; x < W; x++) if (0.2 * Math.sin((x + t * 5) * 0.06 + y * 0.4) + 0.14 > by(x, y) + Math.abs(y - 193) * 0.02) g.fillRect(x, y, 1, 1);
+      // val (popředí, detail ×1,9 kolem pušky): brašna s křížem leží za puškou, puška míří doprava k nepříteli
+      g.save(); g.translate(90, 205); g.scale(1.9, 1.9); g.translate(-70, -214);
+      bags(g, 214, 3, 0);
+      g.fillStyle = '#17151a'; g.fillRect(-60, 240, W + 120, H);
+      g.fillStyle = '#6b6152'; g.fillRect(36, 192, 22, 13); g.fillStyle = '#857a68'; g.fillRect(36, 192, 22, 2);
+      g.fillStyle = '#e3d9c3'; g.fillRect(43, 195, 8, 8); g.fillStyle = '#a3291c'; g.fillRect(46, 196, 2, 6); g.fillRect(44, 198, 6, 2);
+      g.fillStyle = '#4a3a2a'; g.fillRect(32, 189, 2, 10); g.fillRect(60, 189, 2, 10); // popruh
+      g.fillStyle = '#4a3a2a'; g.fillRect(28, 204, 30, 4); g.fillRect(24, 205, 6, 5); // pažba
+      g.fillStyle = '#5a4632'; g.fillRect(28, 204, 30, 1);
+      g.fillStyle = '#3e4447'; g.fillRect(58, 204, 44, 3); g.fillStyle = '#5c6366'; g.fillRect(58, 204, 44, 1); // hlaveň
+      g.fillStyle = '#2b2722'; g.fillRect(50, 207, 4, 3); // spoušť
+      g.fillStyle = '#a7b0b3'; g.fillRect(102, 205, 12, 1); // bodák
+      g.restore();
+      // jemný déšť
+      g.fillStyle = 'rgba(170,180,195,0.3)';
+      for (let k = 0; k < 36; k++) { const p = (k * 0.618) % 1, q = (k * 0.754) % 1; const y = ((q * 340 + t * 180) % 340) - 10; g.fillRect(Math.round((p * 220 - y * 0.2) % 200), Math.round(y), 1, 3); }
     },
     tea(t) {
       // úsvit: obloha se rozjasňuje, plecháček na pytli, pára stoupá a ohýbá se ve větru
