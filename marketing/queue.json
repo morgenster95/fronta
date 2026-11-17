@@ -940,16 +940,6 @@
       "publishAt": "2026-11-17T23:00:00Z"
     },
     {
-      "id": "story-reel-sebs",
-      "type": "story",
-      "files": [
-        "story_reel-sebs.jpg"
-      ],
-      "caption": "",
-      "publishAt": "2026-11-17T23:10:00Z",
-      "_note": "Story k položce reel-sebs (pravidlo: ke každé novince i story). "
-    },
-    {
       "id": "reel-hook",
       "type": "reel",
       "files": [
@@ -963,11 +953,21 @@
       "id": "story-reel-hook",
       "type": "story",
       "files": [
-        "story_reel-hook.jpg"
+        "reel_hook.mp4"
       ],
       "caption": "",
       "publishAt": "2026-11-18T12:10:00Z",
       "_note": "Story k položce reel-hook (pravidlo: ke každé novince i story). "
+    },
+    {
+      "id": "story-reel-sebs",
+      "type": "story",
+      "files": [
+        "reel_sebs.mp4"
+      ],
+      "caption": "",
+      "publishAt": "2026-11-17T23:10:00Z",
+      "_note": "Story k položce reel-sebs (pravidlo: ke každé novince i story). "
     }
   ]
 }

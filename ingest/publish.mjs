@@ -106,6 +106,7 @@ function dropPublishedVideos(q) {
     for (const f of item.files || []) {
       const local = path.join(ROOT, 'marketing', 'promo', f);
       if (!/\.mp4$/i.test(f)) continue;
+      if (q.items.some((o) => !o.published && (o.files || []).includes(f))) continue; // stejné video ještě čeká (story z reelu): nemazat
       if (fs.existsSync(local)) { fs.unlinkSync(local); console.log(`🧹 ${f}: zveřejněno, smazáno z repa`); }
       if (process.env.GH_TOKEN && !item.mediaDropped?.includes(f)) {
         try { execFileSync('gh', ['release', 'delete-asset', 'media', f, '-y'], { stdio: 'ignore' }); console.log(`🧹 ${f}: zveřejněno, smazáno z Release media`); } catch { /* už tam není */ }
