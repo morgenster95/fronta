@@ -1,0 +1,17 @@
+{
+ "seconds": 60,
+ "auto": true,
+ "drums": ["open", [["bucket", "toll"], ["tea", "race"]], "pilot"],
+ "lines": [
+  [0.9, "Day eight. Your shells fell all night.", "open"],
+  [0, "Hegemony three hundred and eighty-three. Concord three hundred and one. Four in ten Concord pillboxes are rubble.", "shells"],
+  [0, "The day before, a bucket rose over the Concord trench. A sniper shot it full of holes.", "bucket"],
+  [0, "Ivo Lettersabcd hung a sign. Water costs enough already. Today he stood up to fix a sandbag.", "bucket2"],
+  [0, "Eighteen Concord men fell. The Hegemony lost one. With the concrete gone, the spotters on Hill 304 saw every head.", "toll"],
+  [0, "Chaplain Gideon Vylet was shot at dawn. His tea was still hot.", "tea"],
+  [0, "Blackwater Canal. The Hegemony lead, thirty-two to twenty-nine.", "race"],
+  [0, "Edmund Mcnamara and Walter Wizzerd joined the Officers' Mess. A gold star now hangs over their soldiers.", "stars"],
+  [0, "Thirty-two new soldiers yesterday. Five hundred and two now hold the front.", "army"],
+  [0, "Tomorrow, two of you will fly. Comment PILOT under our pilot reel.", "pilot"]
+ ]
+}
