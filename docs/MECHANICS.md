@@ -438,3 +438,7 @@ Uživatel chtěl něco virálního, co lidi vyhecuje ke komentářům. `engine/s
 Denní tah posílá čas jako číslo (`Date.now()`), `resolvePilotCall` a `resolveShells` ho převáděly přes `Date.parse` → NaN → lhůta (`minHours`) se přeskočila. Noviny 17. 11. (Day 8) proto losovaly piloty jen 43 minut po otevření náboru (měly 18. 11.).
 Oprava: čas se bere jako číslo i text (test v `engine/engine.test.js`). Na pokyn uživatele příkaz `undoPilots` (`engine/pilots.js`): Dietrich „Button“ Slade (@slade_2233) a Karel Pavla (@pavla.9_) dostali zpátky roli odstřelovače, zprávy „A pilot takes the air“ smazány z novin Day 8 (výjimka z nedotknutelné kroniky), nábor obnoven s 21 přihláškami ze stavu před losem; los v novinách 18. 11. 13:00 UTC.
 Dnešní bitva už proběhla s piloty (bonus puškařů ×1,12 u obou stran, žádné sestřelení); to se nevrací. Souboj o pevnůstky byl vyhodnocen správně (běžel 18 h > 8 h).
+
+## 2026-11-17: Čestné tituly (příkaz `title`) a Propagandist of the Hegemony (NASAZENO)
+Na pokyn uživatele: odměna pro hráče, kteří hru šíří. Příkaz `{ cmd: "title", handle, title, entry, newsHead, newsText }` (`grantTitle` v `engine/roster.js`): titul na kartě vojáka (★), zápis do deníku, zpráva do příštích novin s @handle. Jen čest, žádná herní výhoda.
+První: Konrad Sebs (@_sebs.c_, Hegemonie, odstřelovač, First Wave), „Propagandist of the Hegemony“ za plakáty (`art/cine/sebs_poster_*.png`, ze screenshotů od uživatele) a burcování pod příspěvky (manifesty, sjednocení hlasů Hegemonie v Radě fronty, z jeho BUNKERS vzešly pevnůstky).

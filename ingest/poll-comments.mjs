@@ -15,7 +15,7 @@ import path from 'node:path';
 import { ROOT, loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
 import { addShell } from '../engine/shells.js';
 import { addPilotApp, undoPilots } from '../engine/pilots.js';
-import { switchFaction, grantSupport, grantStar, revokeStar, rewriteSupport, linkSupport, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
+import { switchFaction, grantSupport, grantStar, revokeStar, rewriteSupport, linkSupport, grantTitle, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 import { wiringReturns } from '../engine/wiring.js';
 import { deathReply } from '../engine/house.js';
@@ -146,6 +146,7 @@ async function main() {
         console.log(r ? `⇄ @${r.handle}: ${r.from} → ${r.to}, ${r.unit}, ${r.sector}` : `⇄ příkaz ${c.id}: nic se nezměnilo`);
       }
       if (c.cmd === 'undoPilots') console.log(`✈ los pilotů vrácen: ${undoPilots(state, theme, c)} rolí, nábor znovu otevřen (${Object.keys(state.pilotCall?.apps || {}).length} přihlášek)`);
+      if (c.cmd === 'title') { const r = grantTitle(state, c.handle, c); console.log(r ? `🎖 titul @${r.handle}: ${r.title}` : `🎖 příkaz ${c.id}: voják nenalezen nebo titul už má`); }
       if (c.cmd === 'linkSupport') console.log(`🎗 @${c.handle} doplněn do poděkování v novinách: ${linkSupport(state, c.handle, c.day)}×`);
       if (c.cmd === 'rewriteSupport') console.log(`🎗 přepis War Bonds @${c.handle}: ${rewriteSupport(state, theme, c.handle, c.old)} zápis(ů)`);
       if (c.cmd === 'support') {

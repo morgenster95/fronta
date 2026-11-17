@@ -307,6 +307,17 @@ export function linkSupport(state, handle, day) {
   return n;
 }
 
+// Čestný titul hráči (příkaz title { handle, title, entry?, newsHead?, newsText? }), jen čest, žádná herní výhoda (17. 11.: Konrad Sebs,
+// „Propagandist of the Hegemony“ za plakáty a burcování pod příspěvky). Titul na kartě, zápis do deníku ({name}), zpráva do příštích novin ({name}, {handle}).
+export function grantTitle(state, handle, { title, entry, newsHead, newsText } = {}) {
+  const s = state.soldiers.find((x) => x.handle === String(handle || '').toLowerCase().replace(/^@/, ''));
+  if (!s || !title || (s.titles || []).includes(title)) return null;
+  s.titles = [...(s.titles || []), title];
+  if (entry && s.status !== 'fallen') addEntry(s, state.day, entry.replaceAll('{name}', s.name));
+  if (newsText) state.news = [...(state.news || []), { day: state.day, kind: 'title', h: newsHead || title, text: newsText.replaceAll('{name}', s.name).replaceAll('{handle}', s.handle) }];
+  return { handle: s.handle, name: s.name, title };
+}
+
 // Patreon Officers' Mess: hvězda nad vojákem (jen vzhled). Dá i stužku War Bonds, pokud ji voják nemá. Odebrání (patron odešel) nechá stužku i deník.
 export function grantStar(state, theme, handle) {
   const st = theme.support?.star;
