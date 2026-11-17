@@ -138,3 +138,10 @@ Příkaz: `python tools/pixellab.py pm <postava> <název> <směr> <snímek> "<po
 | pilot 8 směrů (v3 + reference) | create_character | e0358802… (heg), d739f8c6… (con) | 2×1 |
 | pilot chůze walking-6-frames (V, J, S; Z zrcadlem) | animate_character | skupiny v postavách | 6×1 |
 
+
+## Pozadí filmových scén (17. 11. 2026, cloud, prostředí `fronta` s klíčem PixelLab)
+| Co | Nástroj | Job | Cena |
+|---|---|---|---|
+| art/cine/cine_tea.png 180×256 (obsah 148×256): úsvit, plecháček čaje, křížek, knížka na pytlích | create_image_pro_flash, paleta Trench-24 (`tools/pixellab.py img`) | be795ef5… | 9 |
+| art/cine/cine_rifle.png 180×256: zákop za svítání, puška a brašna s křížem na valu, vlevo volné místo pro sprite | create_image_pro_flash, paleta Trench-24 | 362f4f5d… | 9 |
+Použití: `web/src/cinema-day8.js` (pára, mlha, výstřel a herní sprite vojáka v kódu). Obrázky leží mimo web/public, do videa se načtou jen při natáčení.

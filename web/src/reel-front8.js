@@ -37,7 +37,7 @@ const CSS = `${BASE}${FX_CSS}
 #r8-roll .t { font-family: 'Silkscreen', monospace; font-size: 15px; color: #7e3b2a; border-bottom: 2px solid #7e3b2a; margin-bottom: 4px; }
 #r8-roll div.r { display: flex; justify-content: space-between; font-family: 'VT323', monospace; font-size: 24px; line-height: 1.05; opacity: 0; }
 #r8-roll div.r span { color: #5a4a3a; }
-#r8-cap { left: 8%; right: 8%; top: 76%; font-family: 'Silkscreen', monospace; font-size: 22px; text-align: center; color: #e3d9c3; text-shadow: 3px 3px 0 #0e0d0c; opacity: 0; }
+#r8-cap { left: 8%; right: 8%; top: 24%; font-family: 'Silkscreen', monospace; font-size: 22px; text-align: center; color: #e3d9c3; text-shadow: 3px 3px 0 #0e0d0c; opacity: 0; }
 #r8-cap small { display: block; font-family: 'VT323', monospace; font-size: 28px; color: #c9b99a; }
 #r8-pilot { left: 8%; right: 8%; top: 64%; background: rgba(14,13,12,0.93); border: 4px solid #d98f3f; padding: 14px; text-align: center; opacity: 0; }
 #r8-pilot .big { font-family: 'Silkscreen', monospace; font-size: 40px; color: #d98f3f; }
@@ -106,7 +106,7 @@ export async function startDay8Reel({ cam, life, map, theme, soldiers, tex, anim
   const tex2 = {};
   for (const n of ['pillbox_back', 'pillbox_back_ruin']) loadTexture(`/assets/props/${n}.png`).then((x) => { tex2[n] = x; }).catch(() => {});
   const SFX = booms.map(([t, , , big]) => [+t.toFixed(2), 'shell', big ? 1 : 0]);
-  SFX.push([tt.rifle + 0.5, 'shoot', 0], [tt.toll, 'drum', 0], [tt.race, 'drum', 0], [tt.stars, 'stamp', 0], [END - 1.3, 'end', 0]);
+  SFX.push([tt.rifle + 1.2, 'shoot', 0], [tt.rifle + 2.7, 'shoot', 0], [tt.rifle + 4.2, 'shoot', 0], [tt.rifle2 + 0.3, 'shoot', 0], [tt.toll, 'drum', 0], [tt.race, 'drum', 0], [tt.stars, 'stamp', 0], [END - 1.3, 'end', 0]);
   for (let t = tt.toll + 0.6; t < tt.tea - 0.3; t += 0.8) SFX.push([+t.toFixed(2), 'shoot', 0]);
 
   document.body.classList.add('reel');
@@ -148,7 +148,7 @@ export async function startDay8Reel({ cam, life, map, theme, soldiers, tex, anim
   const capT = root.querySelector('#r8-capT');
   capT.style.cssText = 'position:absolute;left:8%;right:8%;top:24%;font-family:Silkscreen,monospace;font-size:22px;text-align:center;color:#e3d9c3;text-shadow:3px 3px 0 #0e0d0c;opacity:0';
   capT.querySelector('small').style.cssText = "display:block;font-family:'VT323',monospace;font-size:28px;color:#c9b99a";
-  const d8 = makeDay8Scenes();
+  const d8 = makeDay8Scenes(tex, anims);
   d8.canvas.id = 'r8-film';
   root.prepend(d8.canvas);
   const paint = fxLayers(root);
@@ -175,7 +175,7 @@ export async function startDay8Reel({ cam, life, map, theme, soldiers, tex, anim
     }
     while (bi < booms.length && booms[bi][0] <= t) { const [, bx, by0, big] = booms[bi]; life.debug.shell?.(bx, by0, big); bi++; }
     const fl = film(t);
-    if (fl) d8.draw(fl, t - filmT[fl]);
+    if (fl) d8.draw(fl, t - filmT[fl], { shot: tt.rifle2 - tt.rifle + 0.3 });
     show('#r8-film', fl ? 1 : 0);
     show('#r8-rain', fl ? 0 : 1);
     paint({ ...f, black: Math.max(f.black, t < tt.shells ? 0.35 : 0, t < 0.3 ? 1 - t / 0.3 : 0, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) });

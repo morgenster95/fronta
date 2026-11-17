@@ -136,11 +136,11 @@ if __name__ == "__main__":
         for _ in range(60):
             time.sleep(10)
             r = call("get_image", {"job_id": job.group(1)})
-            m = re.search(r"https://\S+?\.png", r)
+            m = re.search(r"https://\S+?\.png", r) or re.search(r"download: (https://\S+)", r)
             if m:
                 os.makedirs(os.path.join(ROOT, "art", "cine"), exist_ok=True)
                 dst = os.path.join(ROOT, "art", "cine", f"{name}.png")
-                urllib.request.urlretrieve(m.group(0), dst)
+                urllib.request.urlretrieve(m.group(1) if m.lastindex else m.group(0), dst)
                 print("uloženo", dst)
                 break
             if "fail" in r.lower() or "error" in r.lower():
