@@ -1,5 +1,5 @@
 {
- "seconds": 60.8,
+ "seconds": 60.5,
  "voice": "en-GB-RyanNeural",
  "lines": [
   [
@@ -10,54 +10,60 @@
   ],
   [
    3.98,
-   7.15,
-   "Hegemony three hundred and eighty-three. Concord three hundred and one. Four in ten Concord pillboxes are rubble.",
+   4.52,
+   "Hegemony three hundred and eighty-three shells. Concord three hundred and one.",
    "shells"
   ],
   [
-   11.38,
-   5.49,
-   "The day before, a bucket rose over the Concord trench. A sniper shot it full of holes.",
-   "bucket"
+   8.75,
+   4.87,
+   "Shell after shell found the concrete. Four in ten Concord pillboxes are rubble.",
+   "destroy"
   ],
   [
-   17.12,
-   6.75,
-   "Ivo Lettersabcd hung a sign. Water costs enough already. Today he stood up to fix a sandbag.",
-   "bucket2"
+   13.87,
+   5.13,
+   "Oskar Guyy studied medicine before the war. Here he was soldier and doctor at once.",
+   "rifle"
   ],
   [
-   24.12,
+   19.25,
+   4.35,
+   "He was killed on watch. His rifle still pointed where the shot came from.",
+   "rifle2"
+  ],
+  [
+   23.85,
    7.75,
    "Eighteen Concord men fell. The Hegemony lost one. With the concrete gone, the spotters on Hill 304 saw every head.",
    "toll"
   ],
   [
-   32.12,
+   31.85,
    4.22,
    "Chaplain Gideon Vylet was shot at dawn. His tea was still hot.",
    "tea"
   ],
   [
-   36.59,
+   36.32,
    4.4,
    "Blackwater Canal. The Hegemony lead, thirty-two to twenty-nine.",
    "race"
   ],
   [
-   41.24,
+   40.97,
    6.21,
    "Edmund Mcnamara and Walter Wizzerd joined the Officers' Mess. A gold star now hangs over their soldiers.",
    "stars"
   ],
   [
-   47.7,
+   47.43,
    4.78,
    "Thirty-two new soldiers yesterday. Five hundred and two now hold the front.",
    "army"
   ],
   [
-   52.73,
+   52.46,
    4.57,
    "Tomorrow, two of you will fly. Comment PILOT under our pilot reel.",
    "pilot"
