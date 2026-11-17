@@ -117,6 +117,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'sebs') {
+    // krátký reel o propagandistovi Konradu Sebsovi (@_sebs.c_): jeho plakáty, voják, slova, bunkry, titul, výzva kreslit (reel-sebs.js)
+    return import('./reel-sebs.js').then(async ({ startSebsReel }) => {
+      await startSebsReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'front8') {
     // Day reel Day 8 (17. 11.): výsledek souboje o bunkry (ruiny), příběhy (kbelík, čaj), ztráty a proč, závod, noví patroni s hvězdou, přírůstky, nábor pilotů (reel-front8.js)
     return import('./reel-front8.js').then(async ({ startDay8Reel }) => {
