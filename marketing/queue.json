@@ -948,6 +948,26 @@
       "caption": "",
       "publishAt": "2026-11-17T23:10:00Z",
       "_note": "Story k položce reel-sebs (pravidlo: ke každé novince i story). "
+    },
+    {
+      "id": "reel-hook",
+      "type": "reel",
+      "files": [
+        "reel_hook.mp4"
+      ],
+      "caption": "Your comment becomes a soldier. 🪖\n\nComment one word, HEGEMONY or CONCORD, and you enlist in a WW1 war fought by 500+ real players. Your soldier gets a name, a post in the trench and a diary that writes itself every day. New orders, real losses, real heroes.\n\nFree to play. Link in bio. 👇 Pick your side.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron #pixelartgame #historygame",
+      "_note": "Náborový reel pro nové publikum (hook, 16,5 s, smyčka). Uživatel 17. 11.: vyplnit ranní mezeru před novinami; 12:00 UTC = 13:00 CET.",
+      "publishAt": "2026-11-18T12:00:00Z"
+    },
+    {
+      "id": "story-reel-hook",
+      "type": "story",
+      "files": [
+        "story_reel-hook.jpg"
+      ],
+      "caption": "",
+      "publishAt": "2026-11-18T12:10:00Z",
+      "_note": "Story k položce reel-hook (pravidlo: ke každé novince i story). "
     }
   ]
 }
