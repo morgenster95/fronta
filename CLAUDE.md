@@ -137,7 +137,7 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
 - **Nic nepublikuj na Instagram bez výslovného souhlasu uživatele** (reel, story, post). Tokeny nikdy nezadávej ani nevypisuj.
 - **Statické posty vždy 1080×1350 (4:5)**, víc místa a pro IG nejlepší: kreslí se v mřížce 216×270 a zvětší ×5 (`marketing/make_posts.py` W, H, K; `make_day.py`, `make_victory.py`).
 - **V popiscích na IG hráče neoznačovat** (žádné @jméno; hromadné označování může IG vyhodnotit jako spam). Platí i pro hrdinu kóty: v popisku je jeho jméno
-  bez zavináče. Označení a jména hráčů patří do hry (web, Gazette) a do videa.
+  bez zavináče. **Výjimka (uživatel 17. 11.):** autora díla, které ve videu použijeme (např. plakáty), v popisku jednou označíme („🎨 Posters by @handle“), ať o tom ví. Označení a jména hráčů patří do hry (web, Gazette) a do videa.
 - **Denní reel i jeho popisek vždy uvádí, kolik hráčů je teď na frontě** (celkem, pak přejezd kamery po první linii Hegemonie a Concordu s počtem každé strany; `tools/day-reel.mjs` věty `army`, `armyH`, `armyC`, `data.army`).
 - **Ve videích žádní „duchové“** (průsvitní vojáci; uživatel na to upozorňoval opakovaně): každý voják ve videu má plné krytí a barvu. Ve hře jsou neobsazená stanoviště záměrně šedá a poloprůhledná, ale v režimu natáčení (`?reel=`) to `web/src/main.js` vypíná.
   Nový reel nebo filmový záběr nesmí nikde kreslit vojáky s `alpha < 1` (mlha a stín jen jako barevný tint, ne průhlednost) a po vyrenderování se snímky vždy zkontrolují, jestli tam žádný duch není.
