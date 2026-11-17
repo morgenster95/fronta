@@ -35,7 +35,7 @@ export function resolveShells(state, theme, now = null) {
   const S = state.shells;
   if (!S) return null;
   const opened = Date.parse(S.openedAt);
-  const t = now ? Date.parse(now) : Date.now();
+  const t = now == null ? Date.now() : typeof now === 'number' ? now : Date.parse(now); // 17. 11.: denní tah posílá číslo (Date.now()), Date.parse(číslo) = NaN → lhůta se přeskočila a losovalo se hned
   if (Number.isFinite(opened) && t - opened < (S.minHours ?? 8) * 3600e3) return null; // ještě se střílí
   const cfg = theme.shells || {};
   const [h, c] = S.counts;

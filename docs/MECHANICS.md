@@ -433,3 +433,8 @@ Uživatel chtěl něco virálního, co lidi vyhecuje ke komentářům. `engine/s
 - Reel `pilot` (`web/src/reel-pilot.js`, `cinema-pilot.js`, `marketing/reels/pilot.script.json`, náhled `docs/mockups/pilot_reel_sheet.png`): samostatný náborový reel, ne Day reel.
 - **Nasazeno 17. 11. (uživatel „hned to nasaď“):** kód v `main`, příspěvek `reel-pilot` ve frontě (publishAt 12:15 UTC, `pilots: { minHours: 24 }`), story `story-reel-pilot` 12:25 UTC. Los: noviny 18. 11. 13:00 UTC. Letadlo létá nad nepřátelskou frontou; ze země po něm ve hře létají stopovky a obláčky flaku (jen vizuál).
 
+
+## 2026-11-17: Oprava: los pilotů proběhl o den dřív (NASAZENO)
+Denní tah posílá čas jako číslo (`Date.now()`), `resolvePilotCall` a `resolveShells` ho převáděly přes `Date.parse` → NaN → lhůta (`minHours`) se přeskočila. Noviny 17. 11. (Day 8) proto losovaly piloty jen 43 minut po otevření náboru (měly 18. 11.).
+Oprava: čas se bere jako číslo i text (test v `engine/engine.test.js`). Na pokyn uživatele příkaz `undoPilots` (`engine/pilots.js`): Dietrich „Button“ Slade (@slade_2233) a Karel Pavla (@pavla.9_) dostali zpátky roli odstřelovače, zprávy „A pilot takes the air“ smazány z novin Day 8 (výjimka z nedotknutelné kroniky), nábor obnoven s 21 přihláškami ze stavu před losem; los v novinách 18. 11. 13:00 UTC.
+Dnešní bitva už proběhla s piloty (bonus puškařů ×1,12 u obou stran, žádné sestřelení); to se nevrací. Souboj o pevnůstky byl vyhodnocen správně (běžel 18 h > 8 h).

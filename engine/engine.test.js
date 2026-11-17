@@ -1337,3 +1337,16 @@ test('pilot: za 90 dní je sestřelení vzácné, ale nastane (základ 5 % denn�
   const per = down / flights;
   assert.ok(per > 0.035 && per < 0.075, `denní šance ${per}`);
 });
+
+test('lhůta náboru pilotů a souboje komentářů platí i s časem jako číslem (Date.now())', async () => {
+  const { openPilotCall, resolvePilotCall } = await import('./pilots.js');
+  const { openShells, resolveShells } = await import('./shells.js');
+  const th = { factions: [{ name: 'The Hegemony' }, { name: 'The Concord' }], shells: {} };
+  const st = { day: 9, soldiers: [], news: [], orders: [] };
+  openPilotCall(st, { mediaId: 'p', openedAt: '2026-11-17T12:17:00Z', minHours: 24 });
+  assert.equal(resolvePilotCall(st, th, Date.parse('2026-11-17T13:00:00Z')), null, 'za 43 minut se ještě nelosuje');
+  assert.ok(st.pilotCall);
+  openShells(st, { mediaId: 's', openedAt: '2026-11-17T12:00:00Z', minHours: 8 });
+  assert.equal(resolveShells(st, th, Date.parse('2026-11-17T13:00:00Z')), null, 'souboj po hodině ještě běží');
+  assert.ok(st.shells);
+});

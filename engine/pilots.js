@@ -47,7 +47,7 @@ export function resolvePilotCall(state, theme, now = null) {
   state.pilots ??= theme.factions.map(() => null);
   const C = state.pilotCall;
   if (!C) return null;
-  const t = now ? Date.parse(now) : Date.now();
+  const t = now == null ? Date.now() : typeof now === 'number' ? now : Date.parse(now); // 17. 11.: denní tah posílá číslo (Date.now()), Date.parse(číslo) = NaN → lhůta se přeskočila a losovalo se hned
   if (Number.isFinite(Date.parse(C.openedAt)) && t - Date.parse(C.openedAt) < (C.minHours ?? 24) * 3600e3) return null; // přihlášky ještě běží
   state.pilotCall = null;
   const out = [];
@@ -106,4 +106,20 @@ export function pilotSortie(state, theme, day, weatherId, fall, wound) {
 
 export function pilotsPublic(state) {
   return (state.pilots || []).map((p) => (p ? { handle: p.handle, variant: p.variant } : null));
+}
+
+// Oprava 17. 11. (pokyn uživatele): los pilotů proběhl o den dřív (chyba s časem). Vrátí vybraným pilotům předchozí roli,
+// uvolní místa pilotů, smaže zprávy „A pilot takes the air“ z novin daného dne (výjimka z nedotknutelné kroniky na výslovný pokyn)
+// a obnoví nábor s přihláškami ze stavu před losem (`call`), aby se losovalo až v dalších novinách. Vrací počet vrácených rolí.
+export function undoPilots(state, theme, { day, call } = {}) {
+  let n = 0;
+  for (const p of state.pilots || []) {
+    const s = p && state.soldiers.find((x) => x.handle === p.handle);
+    if (s && s.archetype === 'pilot') { s.archetype = s.prevRole || 'rifleman'; delete s.prevRole; n++; }
+  }
+  state.pilots = theme.factions.map(() => null);
+  for (const ch of state.chronicle || []) if (day == null || ch.day === day) ch.blocks = (ch.blocks || []).filter((b) => b.kind !== 'pilot');
+  state.news = (state.news || []).filter((x) => x.kind !== 'pilot');
+  if (call && !state.pilotCall) state.pilotCall = { ...call, apps: { ...call.apps }, ids: [...(call.ids || [])] };
+  return n;
 }
