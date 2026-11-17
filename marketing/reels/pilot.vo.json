@@ -1,0 +1,66 @@
+{
+ "seconds": 40.6,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.7,
+   2.08,
+   "Only two people on this front will ever fly.",
+   "hook"
+  ],
+  [
+   3.03,
+   3.29,
+   "One pilot for the Hegemony. One for the Concord.",
+   "field"
+  ],
+  [
+   6.57,
+   2.65,
+   "From the air, the pilot sees every trench on the line.",
+   "fly"
+  ],
+  [
+   9.47,
+   2.1,
+   "Your riflemen shoot better while the plane is up.",
+   "rifles"
+  ],
+  [
+   11.82,
+   4.65,
+   "The Concord flies too. Two planes. One sky.",
+   "other"
+  ],
+  [
+   16.72,
+   6.15,
+   "But the ground shoots back. Rifles. Machine guns. Flak.",
+   "risk"
+  ],
+  [
+   23.12,
+   2.22,
+   "Fly long enough, and the ground will find you.",
+   "down"
+  ],
+  [
+   25.59,
+   2.41,
+   "Want to fly? Comment PILOT.",
+   "cta"
+  ],
+  [
+   28.25,
+   4.29,
+   "One pilot per side. The Trench Gazette names them, by lottery.",
+   "cta2"
+  ],
+  [
+   32.79,
+   4.38,
+   "New here? Comment HEGEMONY or CONCORD with PILOT, and you enlist.",
+   "cta3"
+  ]
+ ]
+}
