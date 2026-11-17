@@ -431,4 +431,5 @@ Uživatel chtěl něco virálního, co lidi vyhecuje ke komentářům. `engine/s
 - Nábor: příspěvek ve frontě s `pilots: { minHours: 24 }` otevře `state.pilotCall`; komentář s PILOT od vojáka pod ním = přihláška (`ingest/poll-comments.mjs`, bot neodpovídá); ranní noviny po 24 h losují jednoho pilota na stranu (`resolvePilotCall`), zpráva „A pilot takes the air“. Sestřelení: zpráva „Plane down“, role se uvolní, nové kolo = nový příspěvek s `pilots`.
 - Web: `roster.pilots` → letadlo nad frontou (`web/src/planes.js`); sprite pilota na zemi `<strana>_pilot`.
 - Reel `pilot` (`web/src/reel-pilot.js`, `cinema-pilot.js`, `marketing/reels/pilot.script.json`, náhled `docs/mockups/pilot_reel_sheet.png`): samostatný náborový reel, ne Day reel.
+- **Nasazeno 17. 11. (uživatel „hned to nasaď“):** kód v `main`, příspěvek `reel-pilot` ve frontě (publishAt 12:15 UTC, `pilots: { minHours: 24 }`), story `story-reel-pilot` 12:25 UTC. Los: noviny 18. 11. 13:00 UTC. Letadlo létá nad nepřátelskou frontou; ze země po něm ve hře létají stopovky a obláčky flaku (jen vizuál).
 
