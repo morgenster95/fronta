@@ -859,6 +859,29 @@
         "permalink": "https://www.instagram.com/stories/mudandiron/4031869166675699415",
         "at": "2026-11-16T19:11:28.492Z"
       }
+    },
+    {
+      "id": "reel-pilot",
+      "type": "reel",
+      "files": [
+        "reel_pilot.mp4"
+      ],
+      "pilots": {
+        "minHours": 24
+      },
+      "caption": "PILOTS WANTED ✈️\n\nOnly two people on this front will ever fly: one pilot for the Hegemony, one for the Concord.\n\nFrom the air, the pilot sees every trench on the line. Your side's riflemen shoot better while the plane is up. But the ground shoots back, and a plane that flies long enough gets hit.\n\n💬 Want to fly? Comment PILOT under this reel.\nNew here? Add HEGEMONY or CONCORD and your comment enlists you too.\n\nApplications close in 24 hours. The Trench Gazette draws one pilot for each side, by lottery.\n\nWho takes the air? 👇\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron",
+      "_note": "Náborové video na piloty a letadla (engine/pilots.js, ne Day reel). Schváleno uživatelem 17. 11. („hned to nasaď“). Přihlášky 24 h, los v ranních novinách.",
+      "publishAt": "2026-11-17T12:15:00Z"
+    },
+    {
+      "id": "story-reel-pilot",
+      "type": "story",
+      "files": [
+        "story_reel-pilot.jpg"
+      ],
+      "caption": "",
+      "publishAt": "2026-11-17T12:25:00Z",
+      "_note": "Story k položce reel-pilot (pravidlo: ke každé novince i story). "
     }
   ]
 }
