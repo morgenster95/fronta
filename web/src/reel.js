@@ -149,6 +149,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'pilot') {
+    // nábor pilotů (17. 11.): samostatné video o pilotech a letadlech, výzva PILOT (reel-pilot.js)
+    return import('./reel-pilot.js').then(async ({ startPilotReel }) => {
+      await startPilotReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'wire') {
     // wiring party: historie, nové animace (plazení, světlice, kůl), potrhaný drát ve hře, dobrovolníci u drátu, výzva WIRE (reel-wire.js)
     return import('./reel-wire.js').then(async ({ startWireReel }) => {

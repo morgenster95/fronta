@@ -42,10 +42,11 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
       raid: `Fell on a night raid${c.place ? ` at ${c.place}` : ''}.`,
       shell: 'Killed outright by a shell.',
       shot: `Shot dead by the enemy${c.by ? ` (@${c.by})` : ''}.`,
+      pilot: 'Shot down in the plane over the lines.',
       line: 'Fell at the front.',
     }[c.kind] || 'Fell at the front.');
   };
-  const causeShort = (c) => (c?.shell ? 'barrage, ' : '') + ({ nobed: 'no bed', wounds: 'of wounds', raid: 'night raid', line: 'at the front', shell: 'direct hit', shot: 'shot dead' }[c?.kind || 'line'] || 'at the front');
+  const causeShort = (c) => (c?.shell ? 'barrage, ' : '') + ({ nobed: 'no bed', wounds: 'of wounds', raid: 'night raid', line: 'at the front', shell: 'direct hit', shot: 'shot dead', pilot: 'plane shot down' }[c?.kind || 'line'] || 'at the front');
   const dayL = dayLabel;
 
   async function family(handle) {

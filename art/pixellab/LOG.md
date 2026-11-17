@@ -129,3 +129,12 @@ Příkaz: `python tools/pixellab.py pm <postava> <název> <směr> <snímek> "<po
 | pillbox/pillbox_0.png (48×32, betonový bunkr, style hedgehog) | create_image_pro_flash | d42e4cc4… | 5 | ✗ neurčitý tvar |
 | pillbox/pillbox_1.png → props/pillbox.png (zepředu, průzor s hlavní) | create_image_pro_flash, paleta | 8abded37… | 5 | ✔ (15. 11., hlasování PILLBOXES) |
 | pillbox/pillbox_back.png → props/pillbox_back.png (zezadu, vchod se schody; Concord) | create_image_pro_flash + style pillbox_1 | 535be0cf… | 5 | ✔ |
+
+## Letadla a pilot (17. 11. 2026)
+| Co | Nástroj | ID | Cena |
+|---|---|---|---|
+| plane_{heg,con}_{0,1} 96×96 shora (heg trojplošník/dvouplošník, con dvouplošník/trojplošník) → web/public/assets/props/plane_*.png | create_image_pro_flash, paleta | 24f3bd57…, 1ffb96ff…, 39cc06ae…, 29cac09b… | 4×5 |
+| pilot hegemony/concord 32×32 (kožená přilba, brýle, šála) | create_image_pro_flash + style_image jihu vojáka strany, seed 5 | 1354989d…, 6c991391… | 2×5 |
+| pilot 8 směrů (v3 + reference) | create_character | e0358802… (heg), d739f8c6… (con) | 2×1 |
+| pilot chůze walking-6-frames (V, J, S; Z zrcadlem) | animate_character | skupiny v postavách | 6×1 |
+

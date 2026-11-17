@@ -1293,3 +1293,47 @@ test('souboj komentářů (shells): granát za komentář, strop na účet, vít
   assert.match(st.news.at(-1).text, /The Hegemony fired 3 shells, the Concord 1/);
   assert.match(st.news.at(-1).text, /@ann/);
 });
+
+test('pilot: PILOT se nedá přát ani převelet, los dá jednoho pilota na stranu, puškaři střílí líp, sestřelení uvolní roli', async () => {
+  const P = await import('./pilots.js');
+  const { fallSoldier } = await import('./soldier.js');
+  assert.equal(parseRole('I want to be a pilot', theme), null); // role se nepřeje v komentáři
+  const st = emptyState(theme);
+  const mk = (u, txt) => applyComment(st, { id: `e-${u}`, userId: u, username: u, text: txt }, theme, story, map)?.soldier;
+  const a = mk('pa', 'HEGEMONY'), b = mk('pb', 'HEGEMONY'), c = mk('pc', 'CONCORD');
+  for (let i = 0; i < 12; i++) mk(`mg${i}`, 'HEGEMONY machine gun');
+  P.openPilotCall(st, { mediaId: 'm9', openedAt: '2026-11-17T10:00:00Z', minHours: 24 });
+  for (const [i, s] of [a, b, c].entries()) assert.ok(P.addPilotApp(st, { commentId: `k${i}`, userId: s.id, handle: s.handle, faction: s.faction, text: 'PILOT please' }));
+  assert.equal(P.addPilotApp(st, { commentId: 'k0', userId: a.id, handle: a.handle, faction: 0, text: 'PILOT' }), false); // stejný komentář podruhé
+  assert.equal(P.resolvePilotCall(st, theme, '2026-11-17T20:00:00Z'), null); // ještě běží
+  const out = P.resolvePilotCall(st, theme, '2026-11-18T11:00:00Z');
+  assert.equal(out.length, 2);
+  assert.equal(st.pilots[1].handle, c.handle);
+  assert.ok([a.handle, b.handle].includes(st.pilots[0].handle));
+  const pil = st.soldiers.find((s) => s.handle === st.pilots[0].handle);
+  assert.equal(pil.archetype, 'pilot');
+  assert.equal(P.pilotFire(st, theme, 0, 'clear'), 1.12);
+  assert.equal(P.pilotFire(st, theme, 0, 'fog'), 1); // mlha drží letadlo na zemi
+  // sestřelení: šance 1 → role se uvolní a pilot padne nebo je raněn
+  const hot = { ...theme, pilot: { ...theme.pilot, shotDown: 1 } };
+  const r = P.pilotSortie(st, hot, 5, 'clear', fallSoldier, (s, sev) => { s.wound = { sev, day: 5 }; s.status = 'wounded'; });
+  assert.equal(r.filter((x) => x.handle === pil.handle).length, 1);
+  assert.equal(st.pilots[0], null);
+  assert.ok(pil.status === 'fallen' || pil.status === 'wounded');
+  if (pil.status === 'wounded') assert.equal(pil.archetype, pil.prevRole ?? pil.archetype); // raněný se vrací do původní role
+  assert.notEqual(pil.archetype, 'pilot');
+});
+
+test('pilot: za 90 dní je sestřelení vzácné, ale nastane (základ 5 % denně)', async () => {
+  const P = await import('./pilots.js');
+  const { fallSoldier } = await import('./soldier.js');
+  let down = 0, flights = 0;
+  for (let run = 0; run < 200; run++) {
+    const st = emptyState(theme);
+    const s = applyComment(st, { id: 'x', userId: 'z', username: `z${run}`, text: 'HEGEMONY' }, theme, story, map).soldier;
+    st.pilots = [{ handle: s.handle, since: 1, variant: 0 }, null]; s.archetype = 'pilot';
+    for (let d = 1; d <= 30 && st.pilots[0]; d++) { flights++; const r = P.pilotSortie({ ...st, theme }, { ...theme, id: `t${run}` }, d, 'clear', fallSoldier, () => {}); if (r.length) down++; }
+  }
+  const per = down / flights;
+  assert.ok(per > 0.035 && per < 0.075, `denní šance ${per}`);
+});

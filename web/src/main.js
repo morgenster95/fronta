@@ -10,6 +10,7 @@ import { startReel } from './reel.js';
 import { buildHospitals, roofAlpha, hospitalSize } from './hospital.js';
 import { hospitalNav } from './hospital-nav.js';
 import { initOrderFx } from './orders-fx.js';
+import { initPlanes } from './planes.js';
 import { initWire, placeVolunteers } from './wire.js';
 import { initObservation } from './observation.js';
 import { getJson, loadTexture, loadImage, loadAtlas } from './assets.js';
@@ -332,6 +333,8 @@ async function boot() {
 
   // viditelné účinky rozkazů z hlasování (kryty proti bombardování, lékař u obvaziště)
   const orderFx = initOrderFx({ world, anchor: terrainLayer, roster, map, tex, anims, hospitals, theme, openX0, openX1 });
+  // letadla pilotů nad frontou (web/src/planes.js; dev náhled /?planes=0,1)
+  const planeFx = initPlanes({ world, map, roster, openX0, openX1 });
   // drát podle stavu úseků a wiring party (web/src/wire.js); když se rekvizity načtou, terén už drát nekreslí čarami
   // wiring party: přihlášení dobrovolníci jdou ze zákopu k drátu svého úseku (před vytvořením spritů, ať je karta i výběr najdou tam)
   // reel o noci wiring party (/?reel=nightN): skuteční dobrovolníci té noci z marketing/reels/nightN.volunteers.json (po tahu už ve stavu nejsou)
@@ -662,7 +665,7 @@ async function boot() {
   const hospNav = hospitalNav({ world, cam, sites: hospitals?.sites, theme, soldiers, hidden: !!reelParam && reelParam !== 'news' });
 
   // --- smyčka ---
-  if (import.meta.env.DEV) window.__front = { obsFx, life, cam, soldiers, tex, anims, hospitals, orderFx, open: (s) => ui.openSoldier(s) }; // ladění v konzoli
+  if (import.meta.env.DEV) window.__front = { planeFx, obsFx, life, cam, soldiers, tex, anims, hospitals, orderFx, open: (s) => ui.openSoldier(s) }; // ladění v konzoli
   const visibleSoldiers = [];
   // ?slow=N zpomalí animace a efekty N× (jen pro kontrolu výstřelů na snímcích obrazovky)
   const slow = Math.max(1, Number(new URLSearchParams(location.search).get('slow')) || 1);
@@ -717,6 +720,7 @@ async function boot() {
 
     // simulovaný život (výstřely, granáty, světlice, zdravotníci) + otřes kamery při blízkém dopadu
     orderFx.update(now, view);
+    planeFx.update(now, view, sfx);
     wireFx?.update(now);
     const sh = life.update(now, reelTime != null ? app.ticker.deltaMS : app.ticker.deltaMS / slow, view, visibleSoldiers, showSprites);
     if (sh) world.position.set(world.position.x + Math.round(sh.x), world.position.y + Math.round(sh.y));

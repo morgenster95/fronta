@@ -189,6 +189,14 @@
         "officer",
         "commanding officer"
       ]
+    },
+    {
+      "id": "pilot",
+      "name": "Pilot",
+      "weight": 0,
+      "special": true,
+      "desc": "Flies recon over the front. Your side's riflemen shoot better while the plane is up. One per side, chosen by lottery.",
+      "aliases": []
     }
   ],
   "ranks": [
@@ -674,7 +682,10 @@
       "_killHeavy": "15. 11. (uživatel: musí se umírat i přímo palbou): kritický zásah kulkou zabije na místě s kill 0,5 (dřív 0,2), těžký s killHeavy 0,12.",
       "saturation": 0,
       "_saturation": "VYPNUTO 15. 11. (uživatel: víc střelců = větší palebná síla). Dřív: střelec trefoval méně, když bylo u něj víc vlastních střelců než nepřátel na dostřel.",
-      "_kill": "kill: šance, že kritický zásah kulkou zabije na místě (roles.<role>.kill přebíjí). Ostatní smrti vznikají z nedostatku lůžek, nosítek a mediků."
+      "_kill": "kill: šance, že kritický zásah kulkou zabije na místě (roles.<role>.kill přebíjí). Ostatní smrti vznikají z nedostatku lůžek, nosítek a mediků.",
+      "pilot": {
+        "fire": 0
+      }
     },
     "xp": {
       "gain": {
@@ -941,5 +952,18 @@
     "base": 0.25,
     "newsHead": "The guns answered",
     "_": "Souboj komentářů (engine/shells.js, 16. 11.): pod postem s `shells` je každý komentář granát pro stranu komentujícího (strop cap na účet); ranní noviny: vítěz rozbije podíl base + (1 − base) × (víc − míň) / víc bunkrů (rozkaz target) poraženého."
+  },
+  "pilot": {
+    "_note": "Role PILOT (docs/MECHANICS.md 2026-11-17): rifleman = bonus palby puškařů strany, shotDown = denní šance sestřelení, perTenMG = +šance za každých 10 nepřátelských kulometčíků, deathShare = podíl smrti při sestřelení, grounded = počasí bez letu",
+    "rifleman": 0.12,
+    "shotDown": 0.05,
+    "perTenMG": 0.01,
+    "deathShare": 0.5,
+    "grounded": [
+      "storm",
+      "fog"
+    ],
+    "newsHead": "A pilot takes the air",
+    "downHead": "Plane down"
   }
 }

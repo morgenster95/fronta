@@ -1,6 +1,6 @@
 // Stav světa (soupiska) a jeho změny: komentář → narukování, kód → převzetí, denní tah, export statických dat pro web.
 
-import { createSoldier, tickSoldier, heir, selectForStory, addEntry } from './soldier.js';
+import { createSoldier, tickSoldier, heir, selectForStory, addEntry, fallSoldier } from './soldier.js';
 import { enlistEntry, weatherFor, eventEntry, tplKey, makeBackground, backgroundLine, silenceGuns } from './story.js';
 import { writeChronicle } from './chronicle.js';
 import { checkRace, checkKillRace, raceStatus, raceDanger, activeBarrage, activeObservation, awardHonors } from './race.js';
@@ -9,6 +9,7 @@ import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
 import { orderDanger, orderRecover, orderShell, orderFire, orderHeal, orderExposed, orderDie, issueOrders } from './orders.js';
 import { resolveShells } from './shells.js';
+import { resolvePilotCall, pilotFire, pilotSortie, pilotsPublic } from './pilots.js';
 import { wiringKeyword, joinWiring } from './wiring.js';
 import { battleTick, battlePublic, build as buildStructure, ensureBattle, levelOf, gunsSilent } from './battle.js';
 import { awardHouseBadges, noticeDeath } from './house.js';
@@ -40,7 +41,7 @@ const CLAIM_RE = /\bENLIST-([A-Z0-9]{4})\b/i;
 const NOT_A_WISH = /\blet (him|her|them|me|us) cook\b/g;
 export function parseRole(text, theme) {
   let t = ` ${(text || '').toLowerCase().replace(NOT_A_WISH, ' ').replace(/[^a-z0-9' -]+/g, ' ')} `;
-  const terms = theme.archetypes
+  const terms = theme.archetypes.filter((a) => !a.special) // zvláštní role (pilot) se nepřeje v komentáři, jen se losuje
     .flatMap((a) => [a.id, a.name, ...(a.aliases || [])].map((w) => [w.toLowerCase().replace(/[^a-z0-9' -]+/g, ' ').trim(), a.id]))
     .filter(([w]) => w)
     .sort((a, b) => b[0].length - a[0].length);
@@ -465,6 +466,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
   story = storyFor(state, theme, story);
   const decided = resolveVote(state, theme, ctx.now);
   resolveShells(state, theme, ctx.now); // souboj komentářů (granáty): zpráva do novin, rozbité bunkry poraženého
+  resolvePilotCall(state, theme, ctx.now); // nábor pilotů: los mezi přihlášenými, jeden pilot na stranu
   if (decided && !decided.perFaction) {
     ctx = { ...ctx, danger: ctx.danger ?? decided.danger };
   }
@@ -486,13 +488,14 @@ export function dailyTick(state, theme, story, ctx = {}) {
   // pozorovatelna na kótě (theme.race.observation): odstřelovači a kulometčíci strany, která ji drží, střílí přesněji
   const obs = theme.race?.observation && activeObservation(state, day);
   const obsOf = (s) => (obs && s.faction === obs.by && (theme.race.observation.roles || []).includes(s.archetype) ? 1 + (theme.race.observation.fire || 0) : 1);
-  const fireOf = (s) => orderFire(state, s.faction, day, s.archetype) * obsOf(s);
+  const fireOf = (s) => orderFire(state, s.faction, day, s.archetype) * obsOf(s) * (s.archetype === 'rifleman' ? pilotFire(state, theme, s.faction, weather?.id) : 1); // letecký průzkum zlepšuje puškaře
   // pozorovatel hlásí přesné místo: zásah střelce s pozorovatelnou častěji zabije na místě (×(1 + observation.kill))
   const killOf = (s) => (obsOf(s) > 1 ? 1 + (theme.race.observation.kill || 0) : 1);
   const unsuppressed = (s) => !!(obs && s.faction === obs.by); // strana s pozorovatelnou: kulomety naproti ji nepotlačí
   const healOf = (s) => orderHeal(state, s.faction, day);
   const exposedOf = (s) => orderExposed(state, s.faction, day) * letterOf(s);
   const dieOf = (s) => orderDie(state, s.faction, day);
+  pilotSortie(state, theme, day, weather?.id, fallSoldier, (s, sev) => { s.wound = { sev, day }; s.status = 'wounded'; s.woundsTaken = (s.woundsTaken || 0) + 1; }); // denní vzlet: bouře/mlha drží na zemi, jinak malá šance sestřelení
   const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf, shellOf, fireOf, killOf, unsuppressed, healOf, exposedOf, dieOf }) : { events: [], news: [], ids: new Set() };
   if (theme.race) checkKillRace(state, theme, story); // závod „kdo první zabije N“: zpráva o dobytí jde do state.news (níž se přidá do novin)
   const events = [...raid.events, ...fight.events];
@@ -588,8 +591,8 @@ export function rollOfHonour(state, n = 300) {
 // --- převelení (výběr povolání převzatým hráčem) ---
 export const TRANSFER_COOLDOWN = 7;
 export function requestTransfer(state, s, role, theme) {
-  const ok = theme.archetypes.some((a) => a.id === role && a.id !== 'officer');
-  if (!ok || !s || !s.claimed || s.archetype === 'officer') return false;
+  const ok = theme.archetypes.some((a) => a.id === role && a.id !== 'officer' && !a.special);
+  if (!ok || !s || !s.claimed || s.archetype === 'officer' || s.archetype === 'pilot') return false;
   s.pendingRole = role === s.archetype ? null : role;
   return true;
 }
@@ -638,6 +641,7 @@ export function buildPublic(state, theme) {
     } : null,
     battle: battlePublic(state, theme),
     orders: (state.orders || []).filter((o) => state.day + 1 <= o.to).map(({ faction, kw, label, from, to, ruined }) => ({ faction, kw, label, from, to, ...(ruined ? { ruined } : {}) })),
+    pilots: pilotsPublic(state), // piloti stran pro web (letadlo nad frontou)
     shells: state.shells ? { counts: state.shells.counts, target: state.shells.target, openedAt: state.shells.openedAt } : null, // souboj komentářů: živé počty granátů
     updated: new Date().toISOString(),
     nextEdition: nextEdition(state, theme),

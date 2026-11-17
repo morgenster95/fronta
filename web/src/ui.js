@@ -470,7 +470,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     box.innerHTML = '<h3>Request a transfer</h3>' +
       (wait ? `<p class="muted">Your last transfer was recent. You can ask now; it goes through in ${days(wait)}.</p>`
             : `<p class="muted">Choose where ${esc(s.name)} serves. One transfer per 7 days. The new role changes your soldier on the map and the stories you get.</p>`) +
-      theme.archetypes.filter((a) => a.id !== 'officer').map((a) =>
+      theme.archetypes.filter((a) => a.id !== 'officer' && !a.special).map((a) =>
         `<button class="role${a.id === s.archetype?.id ? ' on' : ''}" data-role="${a.id}"><b>${esc(a.name)}</b><span>${esc(a.desc || '')}</span></button>`).join('');
     box.hidden = false;
     box.onclick = async (ev) => {

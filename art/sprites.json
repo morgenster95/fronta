@@ -1,92 +1,100 @@
 {
-  "_note": "Výběr spritů pro hru. Klíč = frakce (střelec) nebo frakce_archetyp. character = PixelLab ID (stáhne se 8 směrů), fixed = ručně opravené soubory, které přepíšou stažené.",
-  "concord": {
-    "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26",
-    "fixed": {}
-  },
-  "hegemony": {
-    "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4",
-    "fixed": {}
-  },
-  "concord_medic": {
-    "character": "1c2e3717-6107-4501-90a0-f12a33ff6432",
-    "fixed": {
-      "north-east": "art/pixellab/fixed/concord_medic_north-east.png",
-      "north-west": "art/pixellab/fixed/concord_medic_north-west.png",
-      "south-west": "art/pixellab/fixed/concord_medic_south-west.png"
-    }
-  },
-  "concord_officer": {
-    "character": "dc3ddbe4-b5a4-4de5-b05d-fd89d36197cb",
-    "fixed": {
-      "east": "art/pixellab/fixed/concord_officer_east.png",
-      "south-east": "art/pixellab/fixed/concord_officer_south-east.png",
-      "south-west": "art/pixellab/fixed/concord_officer_south-west.png",
-      "west": "art/pixellab/fixed/concord_officer_west.png"
-    }
-  },
-  "concord_machinegunner": {
-    "character": "f7a54b6c-d1b8-4ed1-b634-2074bcb72938",
-    "fixed": {}
-  },
-  "hegemony_medic": {
-    "character": "d2f80eb4-eedd-4552-8bdd-1934d6548f2a",
-    "fixed": {}
-  },
-  "hegemony_officer": {
-    "character": "950bb8f7-6aa9-4f47-9fe7-58bae4f1f330",
-    "fixed": {}
-  },
-  "hegemony_machinegunner": {
-    "character": "3a323a11-d6a9-42dc-a66f-7e8d9ce0102b",
-    "fixed": {}
-  },
-  "concord_cook": {
-    "character": "288935c9-c136-47e6-a37e-89ccbd65de3c",
-    "fixed": {}
-  },
-  "concord_runner": {
-    "character": "70bc903b-6b34-4846-9cfc-c799b9ec690c",
-    "fixed": {}
-  },
-  "concord_sapper": {
-    "character": "1975012f-fa42-41f8-ad01-e168f62d8f4f",
-    "fixed": {}
-  },
-  "concord_signaller": {
-    "character": "def6613d-a2ad-49a8-bc13-950f2828d7ca",
-    "fixed": {}
-  },
-  "hegemony_chaplain": {
-    "character": "9abee545-09d3-4e64-b9aa-acb23cd3221f",
-    "fixed": {}
-  },
-  "hegemony_cook": {
-    "character": "f7411133-bf34-4b8f-bf44-6ede64b9f131",
-    "fixed": {}
-  },
-  "hegemony_runner": {
-    "character": "6b649917-c83c-4d40-b225-ebbfce1c7f2c",
-    "fixed": {}
-  },
-  "hegemony_sapper": {
-    "character": "9daa47a7-1ec1-4d4f-9d47-b939cb54dc65",
-    "fixed": {}
-  },
-  "hegemony_sniper": {
-    "character": "93e28abe-340b-4c8e-b194-ff873f67bb8c",
-    "fixed": {}
-  },
-  "hegemony_signaller": {
-    "character": "8ffd6cd3-2c61-41f8-b711-2938fa8a6a99",
-    "fixed": {}
-  },
-  "concord_chaplain": {
-    "character": "e6c7fe1f-61d9-43fb-8f2e-8ac7fc270499",
-    "fixed": {}
-  },
-  "concord_sniper": {
-    "character": "7426cf4a-3535-479b-96f6-9991c20b37ad",
-    "fixed": {}
+ "_note": "Výběr spritů pro hru. Klíč = frakce (střelec) nebo frakce_archetyp. character = PixelLab ID (stáhne se 8 směrů), fixed = ručně opravené soubory, které přepíšou stažené.",
+ "concord": {
+  "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26",
+  "fixed": {}
+ },
+ "hegemony": {
+  "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4",
+  "fixed": {}
+ },
+ "concord_medic": {
+  "character": "1c2e3717-6107-4501-90a0-f12a33ff6432",
+  "fixed": {
+   "north-east": "art/pixellab/fixed/concord_medic_north-east.png",
+   "north-west": "art/pixellab/fixed/concord_medic_north-west.png",
+   "south-west": "art/pixellab/fixed/concord_medic_south-west.png"
   }
+ },
+ "concord_officer": {
+  "character": "dc3ddbe4-b5a4-4de5-b05d-fd89d36197cb",
+  "fixed": {
+   "east": "art/pixellab/fixed/concord_officer_east.png",
+   "south-east": "art/pixellab/fixed/concord_officer_south-east.png",
+   "south-west": "art/pixellab/fixed/concord_officer_south-west.png",
+   "west": "art/pixellab/fixed/concord_officer_west.png"
+  }
+ },
+ "concord_machinegunner": {
+  "character": "f7a54b6c-d1b8-4ed1-b634-2074bcb72938",
+  "fixed": {}
+ },
+ "hegemony_medic": {
+  "character": "d2f80eb4-eedd-4552-8bdd-1934d6548f2a",
+  "fixed": {}
+ },
+ "hegemony_officer": {
+  "character": "950bb8f7-6aa9-4f47-9fe7-58bae4f1f330",
+  "fixed": {}
+ },
+ "hegemony_machinegunner": {
+  "character": "3a323a11-d6a9-42dc-a66f-7e8d9ce0102b",
+  "fixed": {}
+ },
+ "concord_cook": {
+  "character": "288935c9-c136-47e6-a37e-89ccbd65de3c",
+  "fixed": {}
+ },
+ "concord_runner": {
+  "character": "70bc903b-6b34-4846-9cfc-c799b9ec690c",
+  "fixed": {}
+ },
+ "concord_sapper": {
+  "character": "1975012f-fa42-41f8-ad01-e168f62d8f4f",
+  "fixed": {}
+ },
+ "concord_signaller": {
+  "character": "def6613d-a2ad-49a8-bc13-950f2828d7ca",
+  "fixed": {}
+ },
+ "hegemony_chaplain": {
+  "character": "9abee545-09d3-4e64-b9aa-acb23cd3221f",
+  "fixed": {}
+ },
+ "hegemony_cook": {
+  "character": "f7411133-bf34-4b8f-bf44-6ede64b9f131",
+  "fixed": {}
+ },
+ "hegemony_runner": {
+  "character": "6b649917-c83c-4d40-b225-ebbfce1c7f2c",
+  "fixed": {}
+ },
+ "hegemony_sapper": {
+  "character": "9daa47a7-1ec1-4d4f-9d47-b939cb54dc65",
+  "fixed": {}
+ },
+ "hegemony_sniper": {
+  "character": "93e28abe-340b-4c8e-b194-ff873f67bb8c",
+  "fixed": {}
+ },
+ "hegemony_signaller": {
+  "character": "8ffd6cd3-2c61-41f8-b711-2938fa8a6a99",
+  "fixed": {}
+ },
+ "concord_chaplain": {
+  "character": "e6c7fe1f-61d9-43fb-8f2e-8ac7fc270499",
+  "fixed": {}
+ },
+ "concord_sniper": {
+  "character": "7426cf4a-3535-479b-96f6-9991c20b37ad",
+  "fixed": {}
+ },
+ "hegemony_pilot": {
+  "character": "e0358802-0f4e-462c-915b-a1165eb6c515",
+  "fixed": {}
+ },
+ "concord_pilot": {
+  "character": "58a6d228-ccbf-4481-8876-5ab69d925fd0",
+  "fixed": {}
+ }
 }

@@ -14,6 +14,7 @@ import { ROOT, loadTheme, loadState, saveState } from '../tools/lib.mjs';
 import { openWiring, wiringMedia } from '../engine/wiring.js';
 import { fireTriggers, openItemVote } from './triggers.mjs';
 import { openShells } from '../engine/shells.js';
+import { openPilotCall } from '../engine/pilots.js';
 
 const API = `https://${process.env.IG_API_HOST || 'graph.facebook.com'}/${process.env.IG_API_VERSION || 'v23.0'}`;
 const TOKEN = process.env.IG_ACCESS_TOKEN;
@@ -182,6 +183,13 @@ async function main() {
       const st = loadState(theme);
       if (!wiringMedia(st, item.published.id)) { openWiring(st, item.published.id, st.day); saveState(st); }
       console.log(`⛓ ${item.id}: wiring party otevřena (heslo ${theme.battle?.wiring?.keyword || 'WIRE'})`);
+    }
+    // nábor pilotů (engine/pilots.js): komentáře PILOT pod tímto postem jsou přihlášky, losuje se v ranních novinách
+    if (item.pilots) {
+      const st = loadState(theme);
+      openPilotCall(st, { ...item.pilots, mediaId: item.published.id, openedAt: item.published.at || new Date().toISOString() });
+      saveState(st);
+      console.log(`✈ ${item.id}: nábor pilotů otevřen`);
     }
     // souboj komentářů (granáty) pod tímto postem: počítá se do ranních novin (engine/shells.js)
     if (item.shells) {

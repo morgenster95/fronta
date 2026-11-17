@@ -179,6 +179,35 @@ export function createSound() {
     ambience = null;
   }
 
+  // motor letadla: tichý hluk (pilový tón ~75 Hz s kolísáním + šum), jeden hlas na letadlo, hlasitost a stereo podle polohy vůči kameře
+  const planes = {};
+  function plane(id, x, y, dir) {
+    if (!on || !ctx) return;
+    let p = planes[id];
+    if (!p) {
+      const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = 74 + id * 9;
+      const lfo = ctx.createOscillator(); lfo.frequency.value = 17 + id * 3; // chvění motoru
+      const lg = ctx.createGain(); lg.gain.value = 5; lfo.connect(lg).connect(o.frequency);
+      const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 520;
+      const n = ctx.createBufferSource(); n.buffer = noise; n.loop = true;
+      const nf = ctx.createBiquadFilter(); nf.type = 'bandpass'; nf.frequency.value = 340; nf.Q.value = 0.8;
+      const ng = ctx.createGain(); ng.gain.value = 0.35;
+      const g = ctx.createGain(); g.gain.value = 0;
+      const pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+      o.connect(f); n.connect(nf).connect(ng).connect(f);
+      f.connect(g); if (pan) g.connect(pan).connect(master); else g.connect(master);
+      o.start(); lfo.start(); n.start();
+      p = planes[id] = { o, g, pan, f };
+    }
+    const pl = place(x, y);
+    const t = ctx.currentTime;
+    p.g.gain.setTargetAtTime(Math.min(0.05, pl.gain * 0.06), t, 0.3); // záměrně velmi tiché
+    p.f.frequency.setTargetAtTime(520 - pl.far * 330, t, 0.3);
+    p.o.frequency.setTargetAtTime((74 + id * 9) * (dir > 0 ? 1.03 : 1), t, 0.5); // jemný dopplerův posun podle směru
+    if (p.pan) p.pan.pan.setTargetAtTime(pl.pan, t, 0.2);
+  }
+  function mutePlanes() { for (const p of Object.values(planes)) p.g.gain.value = 0; }
+
   function setOn(v) {
     on = v;
     try { localStorage.setItem(KEY, v ? '1' : '0'); } catch {}
@@ -188,6 +217,7 @@ export function createSound() {
       startAmbience();
     } else if (ctx) {
       stopAmbience();
+      mutePlanes();
       ctx.suspend();
     }
   }
@@ -196,7 +226,7 @@ export function createSound() {
   try { wanted = localStorage.getItem(KEY) === '1'; } catch {}
 
   return {
-    rifle, boom, flare,
+    rifle, boom, flare, plane,
     setView: (v) => (view = v),
     setWeather: (w) => (weather = w),
     get on() { return on; },

@@ -14,6 +14,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
 import { addShell } from '../engine/shells.js';
+import { addPilotApp } from '../engine/pilots.js';
 import { switchFaction, grantSupport, grantStar, revokeStar, rewriteSupport, linkSupport, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 import { wiringReturns } from '../engine/wiring.js';
@@ -185,7 +186,8 @@ async function main() {
   const voteMedia = new Set([state.vote?.mediaId, ...(state.events || []).filter((e) => e.perFaction && e.day >= state.day - 2).map((e) => e.mediaId), ...letterMedia].filter(Boolean));
   for (const mid of voteMedia) if (!posts.some((p) => p.id === mid)) posts.push({ id: mid, count: undefined }); // hlasování projít vždy
   if (state.shells?.mediaId && !posts.some((p) => p.id === state.shells.mediaId)) posts.push({ id: state.shells.mediaId, count: undefined }); // souboj komentářů projít vždy
-  let shellsAdded = 0;
+  if (state.pilotCall?.mediaId && !posts.some((p) => p.id === state.pilotCall.mediaId)) posts.push({ id: state.pilotCall.mediaId, count: undefined }); // nábor pilotů projít vždy
+  let shellsAdded = 0, pilotApps = 0;
   // hesla všech hlasování (běžící, nedávná i čekající ve frontě), ne napevno v kódu
   const voiceKws = [...new Set([...(state.vote?.options || []), ...(queue.items || []).flatMap((i) => i.vote?.options || [])].map((o) => o.kw))];
   let voicesDirty = false;
@@ -219,6 +221,11 @@ async function main() {
       if (state.shells?.mediaId === mid) {
         const sol = state.soldiers.find((x) => x.id === c.userId) || state.soldiers.find((x) => x.handle === (c.username || '').toLowerCase());
         if (sol && addShell(state, { commentId: c.id, userId: c.userId, handle: sol.handle, faction: sol.faction })) shellsAdded++;
+      }
+      // nábor pilotů (engine/pilots.js): komentář PILOT vojáka pod náborovým příspěvkem = přihláška; bot neodpovídá, losuje se ranními novinami
+      if (state.pilotCall?.mediaId === mid) {
+        const sol = state.soldiers.find((x) => x.id === c.userId) || state.soldiers.find((x) => x.handle === (c.username || '').toLowerCase());
+        if (sol && addPilotApp(state, { commentId: c.id, userId: c.userId, handle: sol.handle, faction: sol.faction, text: c.text })) pilotApps++;
       }
       if (!res) continue;
       // přihláška na výpravu (heslo místa v komentáři), i u nováčka, který tím zároveň narukoval
@@ -429,6 +436,7 @@ async function main() {
   if (state.vote?.perFaction && posts.some((p) => p.id === state.vote.mediaId)) state.vote.recounted = 1;
   if (voicesDirty && !process.env.DRY_RUN) fs.writeFileSync(VOICES, JSON.stringify(voices, null, 1) + '\n');
   console.log(`hlasy fronty: ${Object.values(voices.posts).reduce((a, l) => a + l.length, 0)} delších komentářů pod hlasováním`);
+  if (state.pilotCall) console.log(`✈ přihlášky pilotů: +${pilotApps}, celkem ${Object.keys(state.pilotCall.apps).length}`);
   if (state.shells) console.log(`💥 granáty: +${shellsAdded}, celkem ${state.shells.counts.join(' : ')}`);
   console.log(`hotovo: +${enlisted} rekrutů, ${claimed} převzetí, celkem ${state.soldiers.length}, followers ${state.followers}`);
   if (process.env.DRY_RUN) return;
