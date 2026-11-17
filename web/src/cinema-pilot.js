@@ -84,10 +84,23 @@ export function makePilotScenes(tex, anims = {}) {
     g.fillStyle = P.ink; g.fillRect(150, y0 + 100, 2, 8);
   }
 
+  const hh = (i, k) => { const v = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return v - Math.floor(v); };
+  function puff(x, y, age, seed) {
+    if (age < 0 || age >= 1) return;
+    if (age < 0.1) { const a = 1 - age / 0.1; g.fillStyle = `rgba(217,143,63,${0.85 * a})`; g.fillRect(x - 6, y - 6, 13, 13); g.fillStyle = `rgba(255,246,220,${a})`; g.fillRect(x - 3, y - 3, 7, 7); }
+    const grow = 1 - Math.pow(1 - Math.min(1, age * 1.8), 2), R = 5 + 15 * grow, fade = age < 0.55 ? 1 : 1 - (age - 0.55) / 0.45;
+    for (let i = 0; i < 40; i++) { // kompaktní chuchvalec jako ve hře (web/src/planes.js)
+      const f1 = hh(i, seed), f2 = hh(i + 50, seed), a = hh(i + 100, seed) * 6.2832, r = R * Math.sqrt(f1);
+      const bx = x + Math.cos(a) * r, by = y + Math.sin(a) * r * 0.85 - age * 16 * (0.4 + 0.6 * f2);
+      const s = Math.max(3, Math.round((5 + f2 * 5) * (1 - age * 0.25)));
+      g.fillStyle = `rgba(${r < R * 0.42 ? '14,13,12' : r < R * 0.8 ? '28,26,23' : '61,55,48'},${0.96 * fade})`;
+      g.fillRect(Math.round(bx - s / 2), Math.round(by - s / 2), s, s);
+    }
+  }
   const state = { hit: 3.7 }; // okamžik zásahu ve scéně archie (reel ho sladí s hlasem)
   const SHOTS = [];
   { const r = rng(5); for (let i = 0; i < 70; i++) SHOTS.push([0.3 + i * 0.07, 20 + r() * 150]); }
-  const FLAK = [[0.8, 120, 128], [1.35, 70, 150], [1.9, 140, 118], [2.4, 100, 158], [2.9, 60, 132], [3.35, 128, 144]];
+  const FLAK = [[0.7, 126, 150], [1.2, 78, 176], [1.7, 146, 140], [2.2, 104, 186], [2.7, 64, 158], [3.2, 132, 170], [3.7, 90, 150]];
 
   const scenes = {
     field(t) {
@@ -114,7 +127,7 @@ export function makePilotScenes(tex, anims = {}) {
       for (const [cx, cy, rr] of [[40, 150, 12], [130, 176, 14], [90, 130, 8]]) { const x = ((cx - sc * 0.9) % 240 + 240) % 240 - 30; g.fillStyle = '#2a251f'; g.beginPath(); g.ellipse(x, cy, rr, rr / 2.4, 0, 0, Math.PI * 2); g.fill(); }
       // letadlo (Hegemonie, trojplošník) letí doprava; do zásahu uhýbá, potom se kouří a padá (zmenšuje se)
       const fall = clamp01((t - HIT) / 1.7);
-      const px = 18 + t * 14 + fall * 30, py = 112 + Math.sin(t * 2.3) * 14 + fall * 50;
+      const px = 18 + t * 14 + fall * 30, py = 150 + Math.sin(t * 2.3) * 12 + fall * 40;
       const scl = 1 - fall * 0.6;
       const im = plane(0, 1);
       g.fillStyle = 'rgba(0,0,0,0.28)'; g.beginPath(); g.ellipse(px + 56, py + 84 + fall * 30, 44 * scl, 8 * scl, 0, 0, Math.PI * 2); g.fill();
@@ -133,13 +146,8 @@ export function makePilotScenes(tex, anims = {}) {
       }
       // vrtule
       if (t < HIT + 0.8) { const ph = Math.floor(t * 22) % 3; g.fillStyle = `rgba(196,184,160,${ph === 0 ? 0.55 : 0.28})`; g.fillRect(Math.round(px + 84), Math.round(py + 35), 2, 26); }
-      // protiletadlové obláčky kolem
-      for (const [s, x, y] of FLAK) {
-        const u = t - s; if (u < 0 || u > 1.4) continue;
-        if (u < 0.15) { glow(g, x, y, 16, '#d98f3f', 1.2); g.fillStyle = P.fire; g.fillRect(x - 3, y - 3, 7, 7); }
-        const k = u / 1.4; g.fillStyle = `rgba(14,12,16,${0.9 * (1 - k * 0.8)})`;
-        for (let i = 0; i < 14; i++) g.fillRect(Math.round(x + Math.cos(i * 2.1) * (4 + k * 14)), Math.round(y + Math.sin(i * 1.7) * (4 + k * 10) - k * 8), 7 - Math.floor(k * 3), 7 - Math.floor(k * 3));
-      }
+      // protiletadlové obláčky kolem (hranatý tmavý chuchvalec: jádro nejtmavší, okraj světlejší; nabobtná, stoupá a řídne; ve hře stejně, web/src/planes.js)
+      for (const [s, x, y] of FLAK) puff(x, y, (t - s) / 1.9, s);
       // zásah: záblesk, kouř za strojem, stopa padá
       if (t >= HIT) {
         const fl = t < HIT + 0.2 ? 1 - (t - HIT) / 0.2 : 0;

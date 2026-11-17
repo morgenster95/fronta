@@ -46,7 +46,7 @@ export async function startPilotReel({ cam, life, map, theme, soldiers, tex, ani
   planes?.placeAt(0, tt.hook + 1.0, xH);
   planes?.placeAt(1, tt.other, xC);
   const pose = (f, t) => planes?.poseOf(f, t * 1000) || { x: xH, y: ((map.front[0] + map.front[1]) / 2) * T, dir: 1 };
-  const follow = (f, t, z, lead = 30) => { const p = pose(f, t); return [p.x + p.dir * lead, p.y + (f === 0 ? 26 : -26), z]; };
+  const follow = (f, t, z, lead = 30) => { const p = pose(f, t); return [p.x + p.dir * lead, p.y - (p.toEnemy ?? 1) * 38, z]; }; // kamera kousek k vlastním liniím: vidět obě strany a letadlo nad nepřítelem
   const isFilm = (t) => (t >= tt.field && t < tt.fly) || (t >= tt.risk && t < tt.cta);
   const K = [];
   const camAt = (t) => {
