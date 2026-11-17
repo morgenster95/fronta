@@ -15,11 +15,12 @@ export function makePilotScenes(tex, anims = {}) {
   const canvas = off(W, H);
   const g = canvas.getContext('2d');
   const IM = { heg: [img('/assets/props/plane_heg_0.png'), img('/assets/props/plane_heg_1.png')], con: [img('/assets/props/plane_con_0.png'), img('/assets/props/plane_con_1.png')] };
+  const IMP = { heg: [img('/assets/props/plane_heg_0_pilot.png'), img('/assets/props/plane_heg_1_pilot.png')], con: [img('/assets/props/plane_con_0_pilot.png'), img('/assets/props/plane_con_1_pilot.png')] }; // s pilotem v kabině
   const DAWN = 'rgba(217,143,63,0.10)';
   const walk = (k) => (anims[k]?.walk?.east || []).map((t) => lit(t, DAWN)).filter(Boolean);
   const W_ = { hegemony: walk('hegemony_pilot'), concord: walk('concord_pilot') };
   const idle = { hegemony: lit(tex.hegemony_pilot?.east, DAWN), concord: lit(tex.concord_pilot?.east, DAWN) };
-  const plane = (side, v) => IM[side === 0 ? 'heg' : 'con'][v];
+  const plane = (side, v, manned = true) => (manned ? IMP : IM)[side === 0 ? 'heg' : 'con'][v];
 
   // statické pozadí jedné poloviny letiště (tráva a bahno s ditheringem, dráha, stan, rukáv)
   const field = (side) => {
@@ -57,7 +58,8 @@ export function makePilotScenes(tex, anims = {}) {
     // letadlo: stojí uprostřed dráhy, po 3,4 s vyjede doprava a mizí
     const run = clamp01((t - 2.0) / 1.5);
     const px = 36 + easeOut(run) * 0 + run * run * 160, py = y0 + 40 + Math.round(Math.sin(t * 40) * (t > 1.4 ? 0.6 : 0));
-    const im = plane(side, side);
+    const boarded = t >= 1.5; // do 1,5 s je letadlo prázdné, pak v kabině sedí pilot
+    const im = plane(side, side, boarded);
     // stín letadla
     g.fillStyle = 'rgba(0,0,0,0.28)'; g.beginPath(); g.ellipse(px + 52, py + 70, 44, 6, 0, 0, Math.PI * 2); g.fill();
     g.imageSmoothingEnabled = false;
@@ -73,10 +75,10 @@ export function makePilotScenes(tex, anims = {}) {
     // pilot: jde od stanu k letadlu (0,1–1,4 s), zastaví se u kabiny a po 1,6 s zmizí (nasedl)
     const key = side ? 'concord' : 'hegemony';
     const wf = W_[key], u = clamp01((t - 0.1) / 1.3);
-    if (t < 1.6) {
-      const x = 22 + u * 38, y = y0 + 78 + Math.round(Math.sin(t * 9) * (u < 1 ? 1 : 0));
+    if (!boarded) {
+      const x = 22 + u * 36, y = y0 + 78 + Math.round(Math.sin(t * 9) * (u < 1 ? 1 : 0));
       const sp = u < 1 && wf.length ? wf[Math.floor(t * 8) % wf.length] : idle[key];
-      if (sp) g.drawImage(sp, Math.round(x), y, 48, 48);
+      if (sp) { if (sp === idle[key]) g.drawImage(sp, Math.round(x) + 8, y + 8, 32, 32); else g.drawImage(sp, Math.round(x), y, 48, 48); } // stojící sprite má plátno 32 px, chůze 48 (bez skoku velikosti)
     }
     // mechanik s kolem u letadla (kdo to má)
     g.fillStyle = P.ink; g.fillRect(150, y0 + 100, 2, 8);

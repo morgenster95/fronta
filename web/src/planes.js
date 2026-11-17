@@ -36,7 +36,7 @@ export function initPlanes({ world, map, roster, openX0, openX1 }) {
     pl.body.addChild(pl.spr, pl.prop);
     shadowLayer.addChild(pl.shadow); bodyLayer.addChild(pl.body);
     pl.body.visible = pl.shadow.visible = false;
-    loadTexture(`/assets/props/plane_${NAMES[pl.f]}_${pl.variant}.png`).then((t) => { pl.spr.texture = t; pl.shadow.texture = t; }).catch(() => {});
+    loadTexture(`/assets/props/plane_${NAMES[pl.f]}_${pl.variant}_pilot.png`).then((t) => { pl.spr.texture = t; pl.shadow.texture = t; }).catch(() => {});
   }
   let raised = false;
   // poloha letadla v čase `now` (ms): sdílí ji kreslení i reel, který kameru vede za letadlem; `shift` posune čas (reel začíná uprostřed fronty)
