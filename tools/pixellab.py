@@ -4,6 +4,9 @@
   python tools/pixellab.py anim <character_id> <název> <směr> '<json dalších parametrů>' [--max-cost N]
   python tools/pixellab.py wait
   python tools/pixellab.py pm <character_id> <název> <směr> <herní snímek .png> "<pohyb>" "<kdo to je>"   ← VÝCHOZÍ POSTUP (oprava 3)
+  python tools/pixellab.py img <název> <šířka> <výška> "<popis>" [--bg]   jeden obrázek (Pro Flash, paleta Trench-24) do art/cine/<název>.png
+      (pozadí filmových scén reelů; mimo web/public, web ho nestahuje). Cena podle delší strany: ≤96 px 5, ≤208 px 6, ≤256 px 9 generací.
+      Pojistka: stejný název v ledgeru = nic se neodešle; jedno odeslání, čeká se na výsledek (get_image), žádné opakování.
 
 VÝCHOZÍ POSTUP (schválil uživatel 13. 11.: „pohyby jsou lepší a opravdu kvalitní“): pixminimax se startovním snímkem ze SCHVÁLENÉHO
 herního spritu (web/public/assets/soldiers/…, ořez 48×48 kolem postavy), krátký popis pohybu, subject_description, 8 snímků, 1 generace.
@@ -116,6 +119,34 @@ if __name__ == "__main__":
         b = io.BytesIO(); im.save(b, "PNG")
         anim(ch, name, d, {"mode": "pixminimax", "action_description": motion, "frame_count": 8,
                            "custom_start_frame_base64": base64.b64encode(b.getvalue()).decode(), "subject_description": subj}, 4)
+    elif a[0] == "img":
+        name, w, h, desc = a[1], int(a[2]), int(a[3]), a[4]
+        if any(e.get("kind") == "img" and e.get("name") == name for e in ledger()):
+            sys.exit(f"{name}: už v ledgeru (art/pixellab/ledger.jsonl), nic se neodesílá. Jiný název = vědomě nový obrázek.")
+        TRENCH = ["#0e0d0c", "#1c1a17", "#2b2722", "#3d3730", "#524a3f", "#6b6152", "#857a68", "#a39782", "#c4b8a0", "#e3d9c3", "#8a9295", "#666d70",
+                  "#8c8a5c", "#6f7148", "#52543a", "#3f4230", "#7e3b2a", "#5c2a22", "#a85a36", "#d98f3f", "#c9c26a", "#2a3138", "#141a2c", "#4b4560"]
+        out = call("create_image_pro_flash", {"description": desc, "width": w, "height": h, "no_background": "--bg" not in a,
+                                               "palette": TRENCH, "palette_name": "Trench-24"})
+        job = (re.search(r"job[_ ]id[\"': ]+([\w-]+)", out) or re.search(r"\b([0-9a-f]{8}-[0-9a-f-]{27})\b", out))
+        with open(LEDGER, "a") as f:
+            f.write(json.dumps({"kind": "img", "name": name, "w": w, "h": h, "job": job and job.group(1), "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "desc": desc[:200]}) + "\n")
+        print(out[:800])
+        if not job:
+            sys.exit("job id nenalezen v odpovědi, zkontroluj ručně (NEOPAKOVAT odeslání)")
+        for _ in range(60):
+            time.sleep(10)
+            r = call("get_image", {"job_id": job.group(1)})
+            m = re.search(r"https://\S+?\.png", r)
+            if m:
+                os.makedirs(os.path.join(ROOT, "art", "cine"), exist_ok=True)
+                dst = os.path.join(ROOT, "art", "cine", f"{name}.png")
+                urllib.request.urlretrieve(m.group(0), dst)
+                print("uloženo", dst)
+                break
+            if "fail" in r.lower() or "error" in r.lower():
+                sys.exit(r[:600])
+        else:
+            sys.exit("výsledek zatím není, zkus: python tools/pixellab.py get_image '{\"job_id\": \"%s\"}'" % job.group(1))
     elif a[0] == "anim":
         mc = int(a[a.index("--max-cost") + 1]) if "--max-cost" in a else 4
         anim(a[1], a[2], a[3], json.loads(a[4]) if len(a) > 4 and not a[4].startswith("--") else {}, mc)

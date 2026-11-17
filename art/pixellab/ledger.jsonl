@@ -108,3 +108,4 @@
 {"time": "2026-11-17T10:07:40Z", "character": "58a6d228-ccbf-4481-8876-5ab69d925fd0", "name": "walk", "direction": "east", "group": "62ca247a-b344-4a66-8859-5a05e795845e", "cost": 1, "error": null}
 {"time": "2026-11-17T10:07:42Z", "character": "58a6d228-ccbf-4481-8876-5ab69d925fd0", "name": "walk", "direction": "south", "group": "1b1a5895-4706-4c7e-bfbc-a996926e9fdd", "cost": 1, "error": null}
 {"time": "2026-11-17T10:07:43Z", "character": "58a6d228-ccbf-4481-8876-5ab69d925fd0", "name": "walk", "direction": "north", "group": "be56a945-fee8-4db9-90a9-ce5bacbec806", "cost": 1, "error": null}
+{"kind": "img", "name": "cine_tea", "w": 180, "h": 256, "job": "be795ef5-7e15-4a5f-a100-b3a72c68131f", "at": "2026-11-17T16:10:46Z", "desc": "WW1 trench at dawn, close-up view from inside the trench. In the foreground a parapet of round sandbags. On top of the sandbags stands a dented tin mug of hot tea with steam, next to it a small wooden"}
