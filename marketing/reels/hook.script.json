@@ -1,0 +1,13 @@
+{
+ "seconds": 15,
+ "auto": true,
+ "drums": ["hook", [], "side"],
+ "lines": [
+  [0.2, "Comment one word.", "hook"],
+  [0, "And you become a soldier in this war.", "spawn"],
+  [0, "Five hundred players already fight here.", "army"],
+  [0, "New orders every day. Real losses. Real heroes.", "war"],
+  [0, "Pick a side.", "side"],
+  [0, "Comment HEGEMONY or CONCORD.", "cta"]
+ ]
+}
