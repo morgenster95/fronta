@@ -100,7 +100,7 @@ def plans():
         d.rectangle((cx - 4, cy - 3, cx + 4, cy + 3), fill=P["mud3"]); d.point((cx, cy - 5), fill=P["mud3"])
     d.line((mx0 + 60, my0 + 30, mx0 + 26, my0 + 14), fill=P["rust"]); d.line((mx0 + 120, my0 + 52, mx1 - 28, my0 + 68), fill=P["rust"])
     # lístky s plány
-    note(d, 18, 34, 74, 24, "NEWSREEL", "wide reports", P["rust"])
+    note(d, 18, 34, 74, 24, "NEWSREEL", "on YouTube", P["rust"])
     note(d, 152, 32, 82, 24, "STEADY FRONT", "more room", P["gold"])
     note(d, 18, 84, 74, 24, "VEHICLES", "in testing", P["olive"])
     note(d, 152, 86, 82, 24, "EXPEDITIONS", "to towns", P["steel"])
