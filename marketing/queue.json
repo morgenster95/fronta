@@ -1037,6 +1037,26 @@
       "mediaDropped": [
         "reel_front9.mp4"
       ]
+    },
+    {
+      "id": "reel-bonds",
+      "type": "reel",
+      "files": [
+        "reel_bonds.mp4"
+      ],
+      "publishAt": "2026-11-18T22:00:00Z",
+      "caption": "These soldiers kept the front alive. 🎗\n\nEdmund, Walter, Florian and Ulrich bought War Bonds. Their names went into the Trench Gazette, and their soldiers wear the ribbon and the star.\n\nMud & Iron is free, with no ads. Their support pays for every new scene, every plane, every shovel.\n\nIf you'd like to help, the link is in our bio. No game advantage, only honour.\nIf not, just keep fighting. That helps too.\n\n#pixelart #ww1 #indiegame #trenchwarfare #instagramgame #gamedev #mudandiron #pixelartgame",
+      "_note": "Reel o podpoře (32 s, bez cen). Schváleno uživatelem 18. 11. („dnes na 11 večer“ = 23:00 CET = 22:00 UTC), story s videem."
+    },
+    {
+      "id": "story-reel-bonds",
+      "type": "story",
+      "files": [
+        "reel_bonds.mp4"
+      ],
+      "caption": "",
+      "publishAt": "2026-11-18T22:10:00Z",
+      "_note": "Story k položce reel-bonds (pravidlo: ke každé novince i story). "
     }
   ]
 }
