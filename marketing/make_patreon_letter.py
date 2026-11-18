@@ -104,13 +104,10 @@ def plans():
     note(d, 146, 30, 88, 24, "STEADY FRONT", "more room", P["gold"])
     note(d, 18, 64, 74, 24, "VEHICLES", "in testing", P["olive"])
     note(d, 146, 64, 88, 24, "EXPEDITIONS", "to towns", P["steel"])
-    # briefing: obě strany pohromadě před mapou, zadní řada menší a výš (dál od diváka), přední řada větší
-    back = ["concord_medic", "hegemony_sniper", "concord_officer", "hegemony_signaller", "concord_runner", "hegemony_cook", "concord_sapper", "hegemony_medic"]
-    for i, n in enumerate(back):
-        soldier(im, f"{n}_north.png", 10 + i * 30, 96, k=1)
-    front = ["hegemony_officer", "concord_machinegunner", "hegemony", "concord", "hegemony_machinegunner", "concord_sniper"]
-    for i, n in enumerate(front):
-        soldier(im, f"{n}_north.png", 4 + i * 41, 108, k=2)
+    # briefing: jedna řada vojáků obou stran s různými rolemi (medik, poručík, kulometčík, odstřelovač, spojař)
+    row = ["concord_medic", "hegemony_officer", "concord_machinegunner", "hegemony_sniper", "concord_signaller"]
+    for i, n in enumerate(row):
+        soldier(im, f"{n}_north.png", 38 + i * 34, 96, k=2)
     d = ImageDraw.Draw(im)
     planks(im, (0, 132, W, 150), seed=2, vertical=False)
     light(im, W // 2, 60, 130, strength=0.6, steps=3)
