@@ -85,6 +85,16 @@ function bodyAnchor(tx) {
   return out;
 }
 
+// Stará otevřená stránka (18. 11.: hráčka měla v telefonu kartu z noci wiring party, deník se dočítal čerstvý, ale stav vojáka ne):
+// data fronty se mění jednou denně a stránka je jinak nikdy znovu nenačte. Když se uživatel ke kartě vrátí po víc než 30 min,
+// stránka se načte znovu (jen při návratu, žádné dotazy na pozadí, ať nezatěžujeme limit přenosu Firebase).
+if (!new URLSearchParams(location.search).get('reel')) {
+  const loadedAt = Date.now();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && Date.now() - loadedAt > 30 * 60e3) location.reload();
+  });
+}
+
 async function boot() {
   const [theme, roster, manifest] = await Promise.all([
     fetch('/data/theme.json').then((r) => r.json()),
