@@ -31,11 +31,11 @@ export function writeChronicle(state, day, { theme, story, weather, events = [],
   // noví vojáci: narukovali během včerejška (state.day byl day-1)
   const fresh = state.soldiers.filter((s) => s.enlisted === day - 1 && s.generation === 1);
   if (fresh.length) {
-    const by = theme.factions.map((_, f) => fresh.filter((s) => s.faction === f).map((s) => s.handle));
-    const parts = by.map((h, f) => (h.length ? `${short(f)}: ${list(h)}` : null)).filter(Boolean);
+    const by = theme.factions.map((_, f) => fresh.filter((s) => s.faction === f).length);
+    const parts = by.map((n, f) => (n ? `${short(f)} ${n}` : null)).filter(Boolean); // 18. 11. (uživatel): jen počty, bez jmen
     blocks.push({
       h: 'New on the line',
-      text: `${fresh.length === 1 ? 'One new soldier' : `${fresh.length} new soldiers`} came up the line. ${parts.join('. ')}.`,
+      text: `${fresh.length === 1 ? 'One new soldier' : `${fresh.length} new soldiers`} came up the line: ${parts.join(', ')}.`,
     });
   }
 
@@ -82,7 +82,7 @@ export function writeChronicle(state, day, { theme, story, weather, events = [],
   blocks.push({
     h: 'Roll call',
     text:
-      (losses.length ? losses.map(([k, h]) => (k === 'Wounded' ? `Wounded: ${h.length}.` : `${k}: ${list(h, 6)}.`)).join(' ') + ' ' : 'No losses reported. ') +
+      (losses.length ? losses.map(([k, h]) => `${k}: ${h.length}.`).join(' ') + ' ' : 'No losses reported. ') + // 18. 11. (uživatel): jen čísla
       `Strength on the line: ${theme.factions.map((_, f) => `${short(f)} ${alive[f]}`).join(' · ')}.`,
   });
 

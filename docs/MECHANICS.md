@@ -464,3 +464,6 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 ## 2026-11-18 Nábor: heslo strany s překlepem (NASAZENO)
 - Uživatel: hráč napsal „concorrrrd“ (emoce) a nenarukoval. `parseComment` (`engine/roster.js`) teď po přesné shodě zkusí každé slovo: sloučí opakovaná písmena a povolí jednu chybu (záměna, vynechání, přidání, prohození sousedních písmen), první písmeno musí sedět, heslo aspoň 6 písmen.
 - Projde: CONCORRRRD, HEGEMONYYY, concrod, hegemny, Hegemoney, concorde. Neprojde: concert, congrats, condor, second.
+
+## 2026-11-18 Noviny bez seznamů jmen (NASAZENO od novin 19. 11.)
+- Uživatel: v novinách jen čísla. „Casualties of the day“, „Roll call“ a „New on the line“ už nevypisují jména ani @handle padlých, raněných a nováčků (každý to najde u svého vojáka a v Roll of Honour). Příběhy („From the service records“) a zvláštní zprávy (piloti, tituly, War Bonds) jména dál mají.

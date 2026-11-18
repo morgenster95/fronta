@@ -613,16 +613,11 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   }
   // Gazette: jen čísla ztrát po stranách a jména padlých (každý zásah a každé zranění vidí hráč u svého vojáka)
   {
-    const nameOf = (e) => {
-      const x = state.soldiers.find((s) => s.handle === e.handle);
-      const nm = String(x?.name || '').replace(/"[^"]*"\s*/g, '').trim(); // nástupce se dosazuje až po tahu boje, jméno padlého je ještě u vojáka
-      return nm ? `${nm} (@${e.handle})` : `@${e.handle}`;
-    };
     const parts = theme.factions.map((_, f) => {
       const v = stats[f].sev, hit = v.light + v.heavy + v.crit;
       const dead = out.events.filter((e) => e.type === 'fallen' && e.faction === f);
       const split = [v.light && `${v.light} grazed`, v.heavy && `${v.heavy} badly`, v.crit && `${v.crit} gravely wounded`].filter(Boolean).join(', ');
-      return `${short(theme, f)}: ${hit ? `${hit} hit (${split})` : 'nobody hit'}${dead.length ? `; ${dead.length} fallen: ${dead.map(nameOf).join(', ')}` : '; no one fell'}.`;
+      return `${short(theme, f)}: ${hit ? `${hit} hit (${split})` : 'nobody hit'}${dead.length ? `; ${dead.length} fallen` : '; no one fell'}.`; // 18. 11. (uživatel): jen čísla, jména najde každý u svého vojáka a v Roll of Honour
     });
     out.news.push({ day, kind: 'fire', routine: true, h: 'Casualties of the day', text: parts.join(' ') });
   }
