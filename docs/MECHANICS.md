@@ -451,3 +451,11 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 - Simulace 60 běhů (skript ve scratchpadu, stav 18. 11. ráno, los pilotů ve 13:00 UTC): bonus puškařů ×1,12 přidá straně **~0,4 zásahu denně** (Hegemonie puškaři 7,6 → 8,0, Concord 9,4 → 9,9) a **~0,05 padlého denně**. V novinách ani ve ztrátách to není poznat.
 - I ×1,35 dá jen ~+1,4 zásahu a ~+0,1 padlého denně (puškaři mají malou šanci na zásah, pilot je jen násobí).
 - Návrh: letadlo dělá vlastní viditelnou věc, např. **průzkum: 2–3 zásahy denně navíc** do nepřátelské linie (zpráva „Spotted from the air“ se jménem pilota), nebo **označí cíl** pro kulomety (×1,15 kulometčíkům celé strany). Bez souhlasu neměnit.
+
+## 2026-11-18 Víc padlých: 2 výstřely denně a smrtelnější zásahy (NASAZENO, od novin 18. 11. 13:00 UTC)
+- Uživatel: 9 padlých denně na ~500 hráčů je málo, cíl ~30 (klidně ke 50).
+- `battle.roles.shots = 2`: každý střelec střílí 2× denně. V 1. kole všichni naráz, ve 2. kole jen ti, kdo zůstali zdraví (obě strany naráz, žádná nemá výhodu prvního výstřelu). Každý cíl dál nejvýš jeden zásah za den.
+- Smrtelnost na místě: těžký zásah `killHeavy` 0,25 → **0,7**, kritický `kill` 0,5 → **0,8**, kritický od odstřelovače `sniper.kill` 0,6 → **0,9**.
+- Simulace (20 běhů × 3 dny, stav 18. 11.): **~32 padlých a ~90 raněných denně** za obě strany (H ~15, C ~17); dřív ~9 / ~52. Varianta s palbou ×2 navíc dávala ~55 padlých a ~140 raněných (zamítnuto, přes strop).
+- Modifikátory dál fungují (ověřeno simulací): bunkry PILLBOXES (bez rozkazů Concord ~13 padlých/den místo ~17), pilot (násobí šanci na zásah), pozorovatelna.
+  **Pozor:** pozorovatelna (`race.observation`: palba ×1,8, smrtelnost ×2) je s novou smrtelností drtivá: zkusmo zapnutá dnes by Concord ztrácel ~40 padlých denně proti ~13. Před další kótou s odměnou `observation` ji zmírnit (návrh fire 0,4, kill 0,25), zatím neaktivní.

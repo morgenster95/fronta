@@ -399,7 +399,7 @@ test('boj: bombardování po výhře udělá paseku v několika sektorech poraž
   const there = s.soldiers.filter((x) => x.faction === 1 && secs.includes(x.sector));
   const elsewhere = s.soldiers.filter((x) => x.faction === 1 && !secs.includes(x.sector));
   const rate = (l) => l.filter((x) => x.wound).length / l.length;
-  assert.ok(rate(there) > rate(elsewhere) * 3, `pod granáty ${rate(there)} vs jinde ${rate(elsewhere)}`);
+  assert.ok(rate(there) > rate(elsewhere) * 1.8, `pod granáty ${rate(there)} vs jinde ${rate(elsewhere)}`);
   assert.ok(!s.soldiers.some((x) => x.faction === 0 && x.wound?.shell), 'vítěz granáty nedostává');
   for (const sec of secs) assert.ok(s.battle.sides[1].wire[sec] <= theme.battle.wire.start - theme.battle.shell.wire + 1e-9, 'drát v sektoru roztrhaný');
   // tři dny bombardování na nováčky bez nemocnice: kritičtí i padlí jsou možní (granát nešetří)
@@ -426,7 +426,7 @@ test('boj: převzatí hráči nejsou chránění a nováčci taky ne (newbieDays
   assert.ok(hit.some((x) => x.wound?.sev === 'crit' || x.status === 'fallen'), 'i nováček může dostat kritický zásah');
 });
 
-test('boj: hlídací simulace – 100 vojáků, 9 týdnů: horní mez úmrtí (obvaziště < 18, nemocnice < 10 na stranu týdně; od 15. 11. víc smrtí), nemocnice pomáhá, texty doplněné', () => {
+test('boj: hlídací simulace – 100 vojáků, 9 týdnů: horní mez úmrtí (obvaziště < 50, nemocnice < 40 na stranu týdně; od 18. 11. palba 2× denně, cíl ~30 padlých denně na 500), nemocnice pomáhá, texty doplněné', () => {
   const run = (builds, seed) => {
     const s = emptyState(theme);
     enlist(s, 100, `g${seed}_`);
@@ -442,8 +442,8 @@ test('boj: hlídací simulace – 100 vojáků, 9 týdnů: horní mez úmrtí (o
   };
   const dug = [0, 1, 2].map((i) => run(['dugout'], i)).reduce((a, b) => a + b) / 3;
   const aid = [0, 1, 2].map((i) => run([], i)).reduce((a, b) => a + b) / 3;
-  assert.ok(dug < 10, `s dugoutem ${dug.toFixed(2)} mrtvých na stranu týdně`);
-  assert.ok(aid < 18, `jen obvaziště ${aid.toFixed(2)} mrtvých na stranu týdně`);
+  assert.ok(dug < 40, `s dugoutem ${dug.toFixed(2)} mrtvých na stranu týdně`);
+  assert.ok(aid < 50, `jen obvaziště ${aid.toFixed(2)} mrtvých na stranu týdně`);
   assert.ok(aid > dug, 'nemocnice zachraňuje životy');
 });
 
@@ -976,7 +976,7 @@ test('v12: přímý zásah granátem (shell.kill) zabije na místě, lůžko ani
   const st = s.battle.stats.at(-1).sides[1];
   assert.ok(st.deaths.shell >= 1, `padlí přímým zásahem: ${st.deaths.shell}`);
   assert.ok(s.soldiers.some((x) => x.faction === 1 && x.status === 'fallen' && x.cause?.kind === 'shell'), 'příčina smrti shell');
-  assert.ok(!s.soldiers.some((x) => x.faction === 0 && x.status === 'fallen'), 'vítěz granáty nedostává');
+  assert.ok(!s.soldiers.some((x) => x.faction === 0 && x.status === 'fallen' && x.cause?.kind === 'shell'), 'vítěz granáty nedostává'); // od 18. 11. může vítěz padnout palbou
 });
 
 test('deník: každý voják má každý den právě jeden zápis, bez mezer (theme.storyShare = 1)', () => {
@@ -994,7 +994,7 @@ test('deník: každý voják má každý den právě jeden zápis, bez mezer (th
     }
     checked++;
   }
-  assert.ok(checked > 40);
+  assert.ok(checked > 20); // od 18. 11. víc padlých → méně vojáků první generace
 });
 
 test('stav se ukládá po částech: state.json bez zápisů, zápisy po dávkách; načtení vrátí totéž a ztracenou dávku pozná', async () => {
@@ -1347,3 +1347,18 @@ test('lhůta náboru pilotů a souboje komentářů platí i s časem jako čís
   assert.ok(st.shells);
 });
 
+
+test('boj: dva výstřely denně (battle.roles.shots) dají víc zásahů než jeden; modifikátory palby dál platí', () => {
+  const hits = (shots, seed) => {
+    const s = emptyState(theme);
+    enlist(s, 160, `sh2${seed}_`);
+    s.day = 5;
+    const cfg = { ...theme, battle: { ...theme.battle, roles: { ...theme.battle.roles, shots } } };
+    battleTick(s, cfg, story, 6);
+    const st = s.battle.stats.at(-1).sides;
+    return st.reduce((a, x) => a + Object.values(x.hits.fire).reduce((p, q) => p + q, 0), 0);
+  };
+  let one = 0, two = 0;
+  for (let i = 0; i < 4; i++) { one += hits(1, i); two += hits(2, i); }
+  assert.ok(two > one * 1.4, `2 výstřely ${two} vs 1 výstřel ${one}`);
+});

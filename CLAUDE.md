@@ -4,6 +4,11 @@ Tenhle soubor čte Claude Code i v cloudu (aplikace Claude v mobilu, claude.ai/c
 Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co je teď ve hře), `docs/BATTLE.md` a `docs/COMBAT_ROLES.md` (boj), `docs/ONBOARDING.md` (rekruti a provoz),
 `docs/SCHEDULE.md` (rytmus dne), `docs/MAP_MISSIONS.md` (výpravy, vypnuté), **`docs/MECHANICS.md` (deník domluvených mechanik)**. `docs/DESIGN.md` je původní návrh, neaktualizuje se.
 
+## 18. 11. (cloud): VÍC PADLÝCH, TESTOVACÍ REELY
+- **Boj od novin 18. 11.:** střelec střílí 2× denně (`battle.roles.shots`), smrtelnost těžký 0,7 / kritický 0,8 / odstřelovač 0,9 → ~32 padlých a ~90 raněných denně (dřív ~9 / ~52). Detaily a varování k pozorovatelně v `docs/MECHANICS.md`. Ověřit po novinách 18. 11., že čísla sedí, a ukázat uživateli „Proč“.
+- **Letadlo** dnes skoro nic nedělá (+0,05 padlého/den); návrh 3–4 vlastní zásahy denně čeká na souhlas.
+- **Testovací reely** `reel-trialA` („I let 500 strangers fight a war in my comments“) a `reel-trialB` (skutečný padlý @c10ud_b3rry3.0, zastřelen @jimmysparrow17) jsou hotové (`web/src/reel-trial.js`, Release `media`); **vydává je uživatel sám ručně jako trial reel** (do fronty je nedávat). `ingest/publish.mjs` umí `item.trial` (`trial_params`), zatím neověřeno naostro.
+
 ## 17. 11. DEN (cloud/terminál): CO VZNIKLO A CO PATŘÍ DO DAY REELU (Day 8 vychází z novin 17. 11. 13:00 UTC; zapsáno na pokyn uživatele)
 - **Patroni do Day reelu Day 8:** Edmund Mcnamara (@zidane_mcnamara) a **Walter „Ghost“ Wizzerd (@flying_wizzerd, Concord, kulometčík, Officers' Mess, hvězda od 17. 11.)**; oba v novinách 17. 11. ve zprávě „The front thanks…“. Ve videu @handle smí, v IG popisku ne.
 - **Souboj o bunkry dopadl (noviny 17. 11.):** Hegemonie 340 : Concord 299 granátů, rozbito ~34 % bunkrů Concordu (zprávě „The guns answered“, nejpilnější obsluha Otto Tyner). Jeden účet Concordu (autistic_monkey3) dal 152 granátů. Nanečisto: dnes padlí Hegemonie ~3,8, Concord ~14 (téměř všichni střelbou); vysvětlení ztrát je v `preview-tick`.

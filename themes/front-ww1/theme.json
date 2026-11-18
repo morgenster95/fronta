@@ -638,7 +638,7 @@
         },
         "pick": 0.5,
         "_": "pick = šance, že si vybere kulometčíka nebo důstojníka",
-        "kill": 0.6
+        "kill": 0.9
       },
       "officer": {
         "fire": 0.008,
@@ -677,8 +677,10 @@
         "work": 2,
         "_": "práce za den (× úroveň)"
       },
-      "kill": 0.5,
-      "killHeavy": 0.25,
+      "kill": 0.8,
+      "killHeavy": 0.7,
+      "shots": 2,
+      "_shots": "18. 11. (uživatel: na 500 hráčů je ~9 padlých denně málo, cíl ~30): každý střelec střílí 2× denně (2. kolo jen kdo zůstal zdravý, obě strany naráz), smrtelnost těžký 0,7 (dřív 0,25), kritický 0,8 (dřív 0,5), kritický od odstřelovače 0,9 (dřív 0,6). Simulace: ~32 padlých a ~90 raněných denně za obě strany.",
       "_killHeavy": "15. 11. (uživatel: musí se umírat i přímo palbou): kritický zásah kulkou zabije na místě s kill 0,5 (dřív 0,2), těžký s killHeavy 0,12.",
       "saturation": 0,
       "_saturation": "VYPNUTO 15. 11. (uživatel: víc střelců = větší palebná síla). Dřív: střelec trefoval méně, když bylo u něj víc vlastních střelců než nepřátel na dostřel.",
