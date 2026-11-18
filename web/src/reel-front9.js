@@ -1,13 +1,13 @@
 // Day reel Day 9 (18. 11. 2026, noviny 18. 11. 13:00 UTC; /?reel=front9&vacant=700, jen vývojový server), do minuty, rychlý háček:
-//  HÁČEK 0–3,5 s: film „melee“ (zákop v noci: výstřel, pád, souboj lopatek) + titulek DAY 9 a „33 DEAD“
+//  HÁČEK 0–3,5 s: boj zblízka PŘÍMO NA MAPĚ (raider Concordu s lopatkou v zákopu Hegemonie, obránce padne, soused raidera zastřelí) + DAY 9 a „33 DEAD“
 //  → palba dvakrát denně (výstřely po celé linii) → padlí s příčinami (bunkry Hegemonie stojí, Concordu v troskách)
 //  → příběh Marka Hama (skutečný hráč, zastřelen @gremlin_jngaf) → noví piloti a jejich letadla nad frontou
-//  → přírůstek a počty → závod o Blackwater Canal → film „flare“ (raideři pod světlicí) → film „melee“ znovu → výzva RAID.
-// Hlas: marketing/reels/front9.script.json. Filmové scény: web/src/cinema-raid.js (pozadí a lopatky z PixelLabu v art/cine).
+//  → přírůstek a počty → závod o Blackwater Canal → raideři se plazí zemí nikoho pod světlicí → raid Hegemonie v zákopu Concordu → výzva RAID.
+// Hlas: marketing/reels/front9.script.json. Boj: web/src/fight-fx.js (herní sprity + lopatka z PixelLabu ve stejném měřítku). Uživatel 18. 11.: žádné detailní obrázky pozadí.
 import { CSS as BASE } from './reel-day1.js';
 import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, slam, clamp01, win, easeOut, tagAt } from './reel-kit.js';
 import script from '../../marketing/reels/front9.script.json';
-import { makeRaidScenes } from './cinema-raid.js';
+import { makeFight } from './fight-fx.js';
 
 const files = import.meta.glob('../../marketing/reels/front9.vo.json', { eager: true, import: 'default' });
 
@@ -18,7 +18,8 @@ const D = {
 };
 
 const CSS = `${BASE}${FX_CSS}
-#r9-film { inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
+#r9-flare { inset: 0; background: radial-gradient(circle at 60% 8%, rgba(255,246,220,0.7) 0, rgba(255,246,220,0.3) 25%, rgba(255,246,220,0.08) 55%, rgba(0,0,0,0) 75%); mix-blend-mode: screen; opacity: 0; }
+#r9-flash { inset: 0; background: #fff6dc; opacity: 0; }
 #r9-hook { left: 4%; right: 4%; top: 12%; text-align: center; background: rgba(14,13,12,0.72); padding: 10px 0 14px; border-top: 3px solid #a33b2b; border-bottom: 3px solid #a33b2b; font-family: 'Silkscreen', monospace; color: #e3d9c3; text-shadow: 5px 5px 0 #0e0d0c; }
 #r9-hook .d { font-size: 44px; letter-spacing: 0.1em; color: #c9b99a; }
 #r9-hook .n { font-size: 92px; line-height: 1; color: #c8553d; }
@@ -38,7 +39,7 @@ const CSS = `${BASE}${FX_CSS}
 #r9-cta { left: 6%; right: 6%; top: 60%; text-align: center; background: rgba(14,13,12,0.93); border: 4px solid #c8553d; padding: 16px; opacity: 0; }
 #r9-cta .big { font-family: 'Silkscreen', monospace; font-size: 46px; color: #c8553d; line-height: 1.1; }
 #r9-cta .sm { font-family: 'VT323', monospace; font-size: 30px; color: #e3d9c3; margin-top: 6px; }
-#r9-night { inset: 0; background: rgba(20, 24, 50, 0.32); mix-blend-mode: multiply; }
+#r9-night { inset: 0; background: rgba(40, 46, 90, 0.38); mix-blend-mode: multiply; opacity: 0; }
 `;
 
 export async function startDay9Reel({ cam, life, map, soldiers, tex, anims }) {
@@ -69,30 +70,46 @@ export async function startDay9Reel({ cam, life, map, soldiers, tex, anims }) {
   const tToll2 = half(tt.toll, tt.story), tPil2 = half(tt.pilots, tt.army), tArmyC = half(tt.army, tt.race) + 0.5;
   planes?.placeAt?.(0, tt.pilots + 0.5, mC.x - 100); // letadlo Hegemonie nad frontou Concordu
   planes?.placeAt?.(1, tPil2 + 0.5, mH.x + 100); // letadlo Concordu nad frontou Hegemonie
-  const K = [[0, mC.x, mid, 1.0], [tt.deadly, mC.x - 300, mid, 1.15, 'cut'], [tt.toll - 0.01, mC.x + 300, mid, 1.25]];
+  // boj zblízka na mapě: obránci = skuteční vojáci v přední linii (jejich sprite se na chvíli schová), soused vystřelí
+  const front = (f) => soldiers.filter((q) => q.faction === f && q.slot?.line === 'front' && !q.vacant).sort((a, b) => a.x - b.x);
+  const fH = front(0), fC = front(1);
+  // obránce na volném místě zákopu (žádný bunkr do 90 px), se sousedem pro výstřel
+  const clear = (q) => !pbs.some((p) => Math.abs(p.s.x - q.x) < 90 && Math.abs(p.s.y - q.y) < 60);
+  const pickDef = (list, from) => { for (let i = from; i < list.length - 1; i++) if (clear(list[i]) && Math.abs(list[i + 1].x - list[i].x) < 40) return [list[i], list[i + 1]]; return [list[from], list[from + 1]]; };
+  const [defH, shH] = pickDef(fH, Math.floor(fH.length / 2));
+  const [defC, shC] = pickDef(fC, Math.floor(fC.length / 2) + 6);
+  const fight = await makeFight({ anims, soldiers });
+  const F1 = fight.scene({ at: 0.15, defender: defH, side: 1, shooter: shH, end: tt.deadly });
+  const F2 = fight.scene({ at: tt.raid2 + 0.1, defender: defC, side: 0, shooter: shC, end: END });
+  fight.crawlers({ at: tt.raid, end: tt.raid2, x: mC.x, y: mid + 10, n: 5, side: 1 });
+  const K = [[0, defH.x - 4, defH.y - 22, 8.0], [tt.deadly - 0.01, defH.x - 2, defH.y - 22, 8.6]];
+  K.push([tt.deadly, mC.x - 300, mid, 1.15, 'cut'], [tt.toll - 0.01, mC.x + 300, mid, 1.25]);
   K.push([tt.toll, boxH.x - 20, boxH.y - 16, 3.4, 'cut'], [tToll2 - 0.01, boxH.x + 10, boxH.y - 16, 3.7]);
   K.push([tToll2, ruinC.x - 20, ruinC.y - 18, 3.4, 'cut'], [tt.story - 0.01, ruinC.x + 10, ruinC.y - 18, 3.7]);
   K.push([tt.story, ham.x - 10, ham.y - 24, 4.2, 'cut'], [tt.pilots - 0.01, ham.x + 6, ham.y - 24, 4.7]);
   K.push([tt.army, mH.x - 240, mH.y + 10, 2.2, 'cut'], [tArmyC - 0.01, mH.x + 240, mH.y + 10, 2.4]);
   K.push([tArmyC, mC.x + 240, mC.y - 10, 2.2, 'cut'], [tt.race - 0.01, mC.x - 240, mC.y - 10, 2.4]);
   K.push([tt.race, mH.x - 220, mid, 1.2, 'cut'], [tt.raid - 0.01, mH.x + 220, mid, 1.3]);
-  K.push([tt.raid, mC.x, mid, 1.2], [END, mC.x, mid, 1.2]);
+  K.push([tt.raid, mC.x, mid, 6.0, 'cut'], [tt.raid2 - 0.01, mC.x, mid - 14, 6.6]);
+  K.push([tt.raid2, defC.x + 4, defC.y - 22, 8.0, 'cut'], [END, defC.x + 2, defC.y - 22, 8.6]);
   const camPathAt = camPath(K);
   const camAt = (t) => {
     if (t >= tt.pilots && t < tt.army) { const p = planes?.poseOf?.(t < tPil2 ? 0 : 1, t * 1000); if (p) return [p.x + p.dir * 20, p.y + 10, 2.6]; }
     return camPathAt(t);
   };
   const sub = subtitles(vo);
-  // filmy: háček (melee), raid (flare), raid2 + výzva (melee znovu)
-  const film = (t) => (t < tt.deadly ? ['melee', t] : t >= tt.raid && t < tt.raid2 ? ['flare', t - tt.raid] : t >= tt.raid2 ? ['melee', t - tt.raid2] : null);
-  const fx = transitions([[tt.deadly, 'flash'], [tt.toll, 'whip'], [tToll2, 'whip'], [tt.story, 'black', 0.3], [tt.pilots, 'flash'], [tPil2, 'whip'], [tt.army, 'flash'], [tArmyC, 'whip'], [tt.race, 'flash'], [tt.raid, 'black', 0.35], [tt.raid2, 'flash']]);
+  const night = (t) => t < tt.deadly || t >= tt.raid; // noc: háček a raid
+  const flashes = [F1?.hit, F1?.shot, F2?.hit, F2?.shot].filter(Boolean);
+  const fx = transitions([[tt.deadly, 'flash'], [tt.toll, 'whip'], [tToll2, 'whip'], [tt.story, 'black', 0.3], [tt.pilots, 'flash'], [tPil2, 'whip'], [tt.army, 'flash'], [tArmyC, 'whip'], [tt.race, 'flash'], [tt.raid, 'black', 0.35], [tt.raid2, 'whip']]);
   // palba dvakrát denně: výstřely po celé linii obou stran
   const line = soldiers.filter((s) => !s.vacant && s.slot?.line === 'front' && Math.abs(s.x - mC.x) < 700);
   const shots = [];
   for (let k = 0, t = tt.deadly + 0.1; t < tt.toll - 0.2; t += 0.12, k++) shots.push([t, line[(k * 37) % Math.max(1, line.length)]]);
   for (let k = 0, t = tt.story + 0.5; t < tt.story + 1.2; t += 0.6, k++) shots.push([t, by(D.story.by)].filter(Boolean));
   const SFX = shots.filter((s) => s[1]).map(([t]) => [+t.toFixed(2), 'shoot', 0]);
-  SFX.push([0.55, 'shoot', 0], [1.7 + 1.05, 'stamp', 0], [tt.raid2 + 0.55, 'shoot', 0], [tt.raid2 + 1.7 + 1.05, 'stamp', 0], [tt.toll, 'drum', 0], [tt.race, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]);
+  if (F1) SFX.push([+F1.hit.toFixed(2), 'stamp', 0], [+F1.shot.toFixed(2), 'shoot', 0]);
+  if (F2) SFX.push([+F2.hit.toFixed(2), 'stamp', 0], [+F2.shot.toFixed(2), 'shoot', 0]);
+  SFX.push( [tt.toll, 'drum', 0], [tt.race, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]);
 
   document.body.classList.add('reel');
   const style = document.createElement('style');
@@ -104,6 +121,8 @@ export async function startDay9Reel({ cam, life, map, soldiers, tex, anims }) {
       <div class="row"><span>CONCORD</span><b class="n" data-v="${b}">0</b></div><div class="r9-bar"><i data-w="${(b / Math.max(a, b)) * 100}" style="background:#8a8a52"></i></div>`;
   root.innerHTML = `
     <div id="r9-night"></div>
+    <div id="r9-flare"></div>
+    <div id="r9-flash"></div>
     <div id="r9-hook"><div class="d">DAY 9</div><div class="n">${D.dead} DEAD</div><div class="s">IN ONE DAY</div></div>
     <div id="r9-two" class="r9-panel"><div class="t">NEW ORDERS</div><div class="row" style="justify-content:center"><b>2 SHOTS</b>&nbsp;<span>A DAY · EVERY RIFLE</span></div></div>
     <div id="r9-toll" class="r9-panel"><div class="t">DAY 9 · THE DEAD</div>
@@ -124,9 +143,6 @@ export async function startDay9Reel({ cam, life, map, soldiers, tex, anims }) {
     <div id="rd-sub"></div>
   `;
   document.body.appendChild(root);
-  const rc = makeRaidScenes(tex, anims);
-  rc.canvas.id = 'r9-film';
-  root.prepend(rc.canvas);
   const paint = fxLayers(root);
   const $ = (s) => root.querySelector(s);
   const show = (sel, o) => { const el = $(sel); if (el) el.style.opacity = o; };
@@ -143,10 +159,12 @@ export async function startDay9Reel({ cam, life, map, soldiers, tex, anims }) {
     const [x, y, z] = camAt(t);
     cam.set(x, y, z * (1 + 0.04 * f.punch));
     while (si < shots.length && shots[si][0] <= t) { if (shots[si][1]) life.debug.shoot([shots[si][1]]); si++; }
-    const fl = film(t);
-    if (fl) rc.draw(fl[0], fl[1]);
-    show('#r9-film', fl ? 1 : 0);
-    show('#r9-night', fl ? 0 : 1);
+    fight.update(t);
+    const n = night(t);
+    show('#r9-night', n ? 1 : 0);
+    show('#r9-flare', n ? 0.85 + Math.sin(t * 11) * 0.1 : 0); // světlice nad frontou
+    const fh = flashes.find((q) => t >= q && t < q + 0.12);
+    show('#r9-flash', fh != null ? 0.55 * (1 - (t - fh) / 0.12) : 0);
     paint({ ...f, black: Math.max(f.black, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) });
 
     // háček: od prvního snímku, bez náběhu

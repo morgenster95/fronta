@@ -1,0 +1,110 @@
+// Boj zblízka PŘÍMO VE HŘE (reel, 18. 11. 2026; uživatel: cinematiky v měřítku hry se sprity ze hry, ne animace vložená do detailního obrázku).
+// Do vrstvy vojáků na mapě přidá vlastní „herce“ (Pixi Sprite) se sprity a animacemi ze hry; skutečného vojáka na stanovišti na chvíli schová.
+// Lopatka (úder zblízka) je z PixelLabu ve stejném měřítku jako herní sprity (art/cine/anim/shovel_*.png, jen pro videa, web je nestahuje).
+//   const fight = await makeFight({ anims, soldiers });
+//   fight.scene({ at: 0, defender: s, side: 1 })   // raider strany `side` vpadne k obránci `defender`; vrací časy (hit, kill)
+//   fight.update(t)                                 // každý snímek reelu
+import { Assets, Container, Sprite, Texture } from 'pixi.js';
+
+const files = import.meta.glob('../../art/cine/anim/shovel_*.png', { eager: true, import: 'default' });
+
+// kotva jako v life.js (pata na řádku 30 původních 32 px); u lopatek z PixelLabu pata podle spodku postavy v 1. snímku
+const anchorOf = (t, foot) => [0.5, foot != null ? foot / t.height : (30 + (t.height - 32) / 2) / t.height];
+
+export async function makeFight({ anims, soldiers }) {
+  const load = async (side) => {
+    const urls = Object.keys(files).filter((k) => k.includes(`shovel_${side}_`)).sort().map((k) => files[k]);
+    const tx = await Promise.all(urls.map((u) => Assets.load(u)));
+    tx.forEach((t) => { if (t.source) t.source.scaleMode = 'nearest'; });
+    return tx;
+  };
+  const SH = { 1: await load('concord'), 0: await load('hegemony') };
+  const FOOT = { 1: 39.5, 0: 41.5 }; // spodní řádek postavy v lopatkových snímcích (48×48 Concord, 56×52 Hegemonie)
+  const A = (key, anim, dir) => anims[key]?.[anim]?.[dir] || [];
+  // vlastní vrstva vedle bloků vojáků (do bloku se nic přidávat nesmí: main.js bere jeho děti jako vojáky)
+  let parent = null;
+  const par = () => {
+    if (parent) return parent;
+    const chunk = soldiers.find((s) => s.sprite?.parent?.parent)?.sprite.parent;
+    if (!chunk) return null;
+    parent = new Container();
+    parent.sortableChildren = true;
+    chunk.parent.addChild(parent); // nad všemi bloky (jinak by ho překryl další blok mapy)
+    return parent;
+  };
+  const acts = []; // { sp, keys: [[t0, frames, fps, foot, loop, x0, y0, x1, y1, dur]], hide?: soldier, from, to }
+  const hidden = [];
+
+  function actor(x, y) {
+    const sp = new Sprite(Texture.EMPTY);
+    sp.visible = false;
+    sp.position.set(x, y);
+    sp.zIndex = y + 0.5;
+    par()?.addChild(sp);
+    return { sp, keys: [] };
+  }
+  // úsek animace: od t0, snímky `fr` rychlostí fps (loop nebo poslední snímek drží), pohyb z (x0,y0) do (x1,y1) za dur
+  const seg = (a, t0, fr, fps, { foot = null, loop = false, from = null, to = null, dur = 0 } = {}) => a.keys.push({ t0, fr, fps, foot, loop, from, to, dur });
+
+  return {
+    // raider strany `side` vpadne zleva/zprava k obránci; obránce se brání lopatkou, padne; soused obránce zastřelí raidera
+    scene({ at, defender, side, shooter = null, end = at + 4 }) {
+      if (!defender) return null;
+      const dx = side === 1 ? -1 : 1; // Concord přichází zleva (míří na východ), Hegemonie zprava (na západ)
+      const dirR = side === 1 ? 'east' : 'west', dirD = side === 1 ? 'west' : 'east';
+      const kD = defender.faction === 0 ? 'hegemony' : 'concord';
+      const x = defender.x, y = defender.y;
+      const R = actor(x + dx * 15, y), Dd = actor(x, y);
+      const HIT = at + 1.25, KILL = at + 2.3;
+      seg(R, at, [SH[side][0]], 1, { foot: FOOT[side], from: [x + dx * 15, y - 16], to: [x + dx * 15, y], dur: 0.3 });
+      seg(R, at + 0.3, SH[side], 9, { foot: FOOT[side] });
+      seg(Dd, at, [A(kD, 'walk', dirD)[0] || SH[defender.faction][0]], 1, { foot: A(kD, 'walk', dirD)[0] ? null : FOOT[defender.faction] });
+      seg(Dd, at + 0.35, SH[defender.faction], 9, { foot: FOOT[defender.faction] }); // brání se lopatkou
+      seg(Dd, HIT + 0.05, A(kD, 'die', dirD), 10, {});
+      // soused obránce (odstřelovač z boku) zastřelí raidera
+      let S = null;
+      if (shooter) {
+        const kS = shooter.faction === 0 ? 'hegemony_sniper' : 'concord_sniper';
+        S = actor(x - dx * 22, shooter.y);
+        seg(S, at + 1.0, [A(kS, 'fire-side', dirD)[0]], 1, {});
+        seg(S, at + 1.6, A(kS, 'fire-side', dirD), 12, {});
+        hidden.push([shooter, at, end]);
+        S.from = at + 1.0; S.to = end;
+      }
+      const kR = side === 0 ? 'hegemony' : 'concord';
+      seg(R, KILL, A(kR, 'die', dirR), 10, {});
+      R.from = at; R.to = end; Dd.from = at; Dd.to = end;
+      acts.push(R, Dd, ...(S ? [S] : []));
+      hidden.push([defender, at, end]);
+      return { hit: HIT, shot: KILL - 0.1, kill: KILL, x, y };
+    },
+    // plazící se raideři v zemi nikoho (crawl ze hry), směr k nepříteli
+    crawlers({ at, end, x, y, n = 4, side = 1 }) {
+      
+      const k = side === 1 ? 'concord' : 'hegemony', dir = side === 1 ? 'north' : 'south';
+      const fr = A(k, 'crawl', dir);
+      for (let i = 0; i < n; i++) {
+        const ax = x + (i - (n - 1) / 2) * 16 + ((i * 7) % 5), ay = y + ((i * 11) % 9);
+        const a = actor(ax, ay);
+        seg(a, at + i * 0.1, fr, 7, { loop: true, from: [ax, ay], to: [ax, ay + (side === 1 ? -26 : 26)], dur: end - at });
+        a.from = at; a.to = end;
+        acts.push(a);
+      }
+    },
+    update(t) {
+      for (const [s, a, b] of hidden) if (s.sprite) s.sprite.visible = !(t >= a && t < b); // skutečný voják ustoupí herci (žádní dva na jednom místě)
+      for (const a of acts) {
+        if (!a.sp.parent) par()?.addChild(a.sp); // vrstva vojáků vzniká až se sprity
+        const on = t >= a.from && t < a.to;
+        a.sp.visible = on;
+        if (!on) continue;
+        const k = a.keys.filter((q) => q.t0 <= t).at(-1) || a.keys[0];
+        if (!k?.fr?.length) { a.sp.visible = false; continue; }
+        const i = Math.floor((t - k.t0) * k.fps);
+        const tx = k.fr[k.loop ? ((i % k.fr.length) + k.fr.length) % k.fr.length : Math.max(0, Math.min(k.fr.length - 1, i))];
+        if (a.sp.texture !== tx) { a.sp.texture = tx; a.sp.anchor.set(...anchorOf(tx, k.foot)); }
+        if (k.from && k.to) { const u = k.dur ? Math.min(1, (t - k.t0) / k.dur) : 1; a.sp.position.set(k.from[0] + (k.to[0] - k.from[0]) * u, k.from[1] + (k.to[1] - k.from[1]) * u); a.sp.zIndex = a.sp.y + 0.5; }
+      }
+    },
+  };
+}
