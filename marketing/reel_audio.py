@@ -433,7 +433,7 @@ def build_story(name="story"):
     elif name in ("front9",):  # bojová hudba (raid)
         music = war_score(dur, cue, hits=("deadly", "raid", "cta")) * 1.3 + rain(dur) * 0.2
     else:
-        music = (lament(dur) * 1.3 + drone(dur) * 0.35 + rain(dur) * 0.7) if name in ("barrage", "rip", "wire", "night6", "front6", "front7", "front8") else drone(dur) * 1.1 + rain(dur)
+        music = (lament(dur) * 1.3 + drone(dur) * 0.35 + rain(dur) * 0.7) if name in ("barrage", "rip", "wire", "night6", "front6", "front7", "front8", "bonds") else drone(dur) * 1.1 + rain(dur)
     fx = np.zeros(n)
     beat = 60 / 70
     # bubny: od Hegemonie, ztichnou před půlnocí a po dědicovi se rozjedou ke konci
@@ -442,7 +442,7 @@ def build_story(name="story"):
         quiet = any(a < t < b for a, b in quiet_parts)
         if not quiet:
             strength = 0.3 + 0.7 * min(1, (t - start) / (dur - start - 10))
-            dk = 0.4 if name in ("barrage", "rip", "night6", "front6", "front7", "front8", "front9") else 1  # u tesklivé hudby jen tlumený pohřební buben
+            dk = 0.4 if name in ("barrage", "rip", "night6", "front6", "front7", "front8", "front9", "bonds") else 1  # u tesklivé hudby jen tlumený pohřební buben
             add(music, drum(strength) * dk, t)
             if t > double and name not in ("barrage", "rip", "night6", "front6", "front7", "front8"):
                 add(music, drum(strength * 0.5), t + beat / 2)
