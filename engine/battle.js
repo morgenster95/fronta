@@ -266,7 +266,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   const shooters = theme.factions.flatMap((_, f) => front[f]);
   const taken = new Set(); // každý cíl nejvýš jeden zásah za den
   const fireLog = [];
-  for (const s of shooters) {
+  const rounds = Math.max(1, R.shots || 1); // výstřelů za den na střelce (roles.shots, 18. 11.; každý cíl dál nejvýš jeden zásah za den)
+  for (let round = 0; round < rounds; round++) for (const s of round ? shooters.filter(able) : shooters) { // v dalším kole střílí jen ti, kdo zůstali zdraví po předchozím (obě strany naráz)
     const f = s.faction, e = 1 - f;
     const fire = role(cfg, s, 'fire');
     if (!fire) continue;
@@ -285,7 +286,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     // pozorovatelna (15. 11., uživatel): pozorovatel hlásí, kde stojí nepřátelské kulomety, takže střelce strany s pozorovatelnou nepotlačí
     const p = fire * mult(theme, s) * (1 + lead) * (ctx.unsuppressed?.(s) ? 1 : 1 - suppress) * sat * (ctx.fireOf?.(s) ?? 1);
     stats[f].shots++;
-    const rand = rngFor(s.id, 'fire', day);
+    const rand = round ? rngFor(s.id, `fire${round}`, day) : rngFor(s.id, 'fire', day);
     if (rand() >= p) continue;
     let pool = near(targetsOf[e], X(s), range).filter((t) => !taken.has(t.id));
     if (!pool.length) continue; // naproti nikdo (prázdný úsek)
