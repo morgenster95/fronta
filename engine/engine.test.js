@@ -1375,3 +1375,26 @@ test('nábor: heslo strany i s překlepem nebo protahováním (CONCORRRRD, hegem
   assert.equal(p('Concordddd medic'), 1);
   for (const x of ['concert', 'congrats', 'condor', 'second', 'I love this game']) assert.equal(p(x), null, x);
 });
+
+test('noční raid: RAID pod postem přihlásí vojáka, příští boj raideři zasáhnou obránce, zabití se počítají, noviny mají článek', async () => {
+  const R = await import('./nightraid.js');
+  const s = emptyState(theme);
+  enlist(s, 160, 'nr');
+  s.day = 5;
+  R.openRaid(s, 'mR', 5);
+  const vol = s.soldiers.filter((x) => x.faction === 1).slice(0, 25);
+  const reply = applyComment(s, { id: 'cR1', userId: vol[0].id, username: vol[0].handle, text: 'RAAAID 🔪', mediaId: 'mR' }, theme, story, map);
+  assert.equal(reply.type, 'nightRaid'); assert.equal(reply.reason, 'ok');
+  for (const x of vol.slice(1)) R.joinRaid(s, x);
+  assert.equal(R.joinRaid(s, vol[1]), 'already');
+  dailyTick(s, theme, story);
+  const n = s.raid.nights.at(-1);
+  assert.equal(n.sides[1].n, 25);
+  assert.ok(n.sides[1].kills + n.sides[1].wounded > 0, 'raideři někoho zasáhli');
+  assert.equal(s.raid.open, null);
+  const news = s.chronicle.at(-1).blocks.find((b) => b.kind === 'raid');
+  assert.match(news.text, /25 Concord raiders went over/);
+  const victims = s.soldiers.filter((x) => (x.fallen || []).some((r) => r.cause?.kind === 'shot' && vol.some((v) => v.handle === r.cause.by)));
+  assert.equal(victims.length >= n.sides[1].kills - 1, true);
+  for (const x of s.soldiers) for (const [, t] of x.record) assert.doesNotMatch(t, /\{\w+\}|undefined/);
+});

@@ -2833,5 +2833,46 @@
     "{name} spent the night in no man's land with pliers and a roll of wire. Every flare meant lying flat in the mud. The gap at {sector} is closed now.",
     "{name} crawled out with the wiring party. When a flare went up, {he} lay still and counted to ten. The wire at {sector} holds again.",
     "Out on the wire with the wiring party. {name} tore {his} hands on the barbs and did not make a sound. The new wire at {sector} is up."
+  ],
+  "nightRaidKill": [
+    "{name} went over the top with the night raiders, face black with soot. In the {side} trench a man turned around too late. {target} did not get up again.",
+    "No rifles, only shovels and knives. {name} dropped into the {side} trench by a dugout door and met {target} coming out. It was over in seconds.",
+    "The flare went up just as {name} reached the {side} parapet. {name} jumped down first. {target} was the man waiting there, and {target} fell.",
+    "{name} crawled through a gap in the {side} wire and slid into their trench. {target} reached for a rifle. {name} was faster with the sharpened shovel.",
+    "Twenty yards of mud, one gap in the wire, one jump. {name} landed next to {target} in the {side} trench. Only {name} climbed back out.",
+    "{name} counted the steps of the {side} sentry, waited for the turn, and went in. {target} never saw the shovel coming.",
+    "The raid hit the {side} line at the darkest hour. {name} fought {target} in a trench no wider than a door. {name} came home with {target}'s cap badge.",
+    "{name} went in with a pistol and a trench club. In the {side} trench {target} put up a fight, but not for long."
+  ],
+  "nightRaidWound": [
+    "{name} went over with the raiders and dropped into the {side} trench. {target} was hit hard before the whistle called everyone back.",
+    "{name} jumped into the {side} trench and swung the shovel at the first shape that moved. It was {target}. The {side} medics will be busy.",
+    "In the dark of the {side} trench {name} hit {target} with a trench club, then ran for the wire before the flares went up.",
+    "The {side} sentry, {target}, shouted once. {name} silenced the shout with the flat of a shovel and was back over the parapet a minute later.",
+    "{name} threw a bomb into a {side} dugout and dived for cover. When the smoke cleared, {target} was down and screaming for a medic."
+  ],
+  "nightRaidStabbed": [
+    "The raiders came over the parapet in the dark. {name} was hit hard in the fight at {sector} before anyone could fire. The raider was {target} of the {side}.",
+    "At {sector} a shape dropped into the trench out of the night. {name} turned around and took a shovel blow. {target} of the {side} was already gone.",
+    "{name} was on the dawn watch at {sector} when the {side} raiders came. A club, a shout, and {name} was on the trench floor waiting for the medic.",
+    "Nobody heard the {side} raiders cut the wire. {name} only heard boots on the duckboards at {sector}, then nothing but pain."
+  ],
+  "nightRaidKilled": [
+    "The {side} raiders came over at {sector} in the middle of the night. {name} met them first and did not survive the fight.",
+    "{name} was on watch at {sector} when the night raid hit. The men found {name} at dawn by the dugout door.",
+    "A flare, boots, a short fight in the dark at {sector}. {name} was killed before the rest of the squad was even awake.",
+    "The {side} raiders were in and out in two minutes. At {sector} they left {name} behind, dead on the duckboards."
+  ],
+  "nightRaidHurt": [
+    "On the way back from the night raid a flare went up. {name} was caught in the open and hit before reaching the wire.",
+    "{name} made it into the enemy trench and out again, but a machine gun swept no man's land on the way home. {name} crawled the last yards.",
+    "The raid was quick, the way back was not. {name} snagged on the wire and took a bullet before the others pulled {name} free.",
+    "{name} came back from the night raid on two stretcher poles. Nobody is sure which side fired the shot."
+  ],
+  "nightRaidBack": [
+    "{name} went over with the night raiders, found the enemy trench empty at that spot, and came back with a bag of their biscuits.",
+    "Night raid. {name} crossed no man's land, saw the enemy sentry too late to reach, and came back without a scratch. Next time, says {name}.",
+    "{name} joined the raid, lay in a shell hole for an hour while the flares burned, and made it home. That counts as a good night out here.",
+    "{name} came back from the raid with mud to the eyebrows and an enemy helmet as a souvenir."
   ]
 }

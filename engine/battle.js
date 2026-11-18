@@ -258,6 +258,75 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     state.wiring.open = null;
   }
 
+  // 0b) noční raid (theme.battle.raid, engine/nightraid.js): dobrovolníci vpadnou do nepřátelského zákopu poblíž svého úseku.
+  //     Úspěch roste s potrhaným drátem nepřítele a mlhou/deštěm, klesá s kulomety obránců. Zásah raidera je zblízka (lopatka, bajonet,
+  //     pistole): hlavně těžký a kritický, zabití se počítá do závodu. Raider může padnout nebo být raněn.
+  const RC = cfg.raid, ro = state.raid?.open;
+  if (RC && ro && ro.day < day) {
+    const raiders = ro.ids.map((id) => state.soldiers.find((x) => x.id === id)).filter((x) => x && x.status === 'active' && !x.wound && !busy.has(x.id));
+    const res = theme.factions.map(() => ({ n: 0, kills: 0, wounded: 0, fell: 0, hurt: 0, empty: 0, best: {} }));
+    const hitByRaid = new Set();
+    const wk = RC.weather?.[state.weather] ?? 1;
+    for (const s of raiders) {
+      const f = s.faction, e = 1 - f, r = res[f];
+      r.n++;
+      s.raids = (s.raids || 0) + 1;
+      gainXp(theme, s, RC.xp || 0);
+      if (RC.badgeAt && s.raids >= RC.badgeAt && !(s.medals || []).includes('raider')) s.medals = [...(s.medals || []), 'raider'];
+      const rand = rngFor(theme.id, s.id, 'raid', day);
+      const defenders = near(lineup(state, e, (x) => able(x) && x.line === 'front'), X(s), range * (RC.reach || 2));
+      const mgs = defenders.filter((x) => x.archetype === 'machinegunner').length;
+      const wire = wireAvg(e) ?? cfg.wire.start;
+      const pWin = Math.max(RC.minWin ?? 0.15, Math.min(RC.maxWin ?? 0.85, (RC.base + (RC.perGap || 0) * (1 - wire)) * wk * mult(theme, s) - (RC.perMG || 0) * mgs));
+      const pool = defenders.filter((x) => !hitByRaid.has(x.id));
+      if (pool.length && rand() < pWin) {
+        const t = pool[Math.floor(rand() * pool.length)];
+        hitByRaid.add(t.id);
+        const sev = severity(t, RC.severity, rngFor(theme.id, t.id, 'raidSev', day), false);
+        const prev = t.wound;
+        wound(t, prev ? 'crit' : sev, { by: { handle: s.handle, name: s.name, role: s.archetype, faction: f }, raid: true });
+        const dies = (t.wound.sev === 'crit' && rand() < (RC.kill ?? 0.8)) || (t.wound.sev === 'heavy' && rand() < (RC.killHeavy ?? 0.5));
+        if (dies) { t.wound.outright = 'raid'; r.kills++; r.best[s.handle] = (r.best[s.handle] || 0) + 1; }
+        else r.wounded++;
+        stats[f].hits.fire.raider = (stats[f].hits.fire.raider || 0) + 1;
+        s.hits = (s.hits || 0) + 1;
+        ev(s, 'raid', eventEntry(dies ? 'nightRaidKill' : 'nightRaidWound', s, day, theme, story, { target: t.name, targetHandle: t.handle, side: short(theme, e) }, today) + ` (@${t.handle})`);
+        if (!dies) ev(t, 'wounded', eventEntry('nightRaidStabbed', t, day, theme, story, { target: s.name, side: short(theme, f) }, today) + ` Raider: ${s.name} of the ${short(theme, f)} (@${s.handle}).`);
+      } else r.empty++;
+      // cesta zpátky: světlice, kulomet, drát
+      const pHurt = Math.min(RC.maxHurt ?? 0.6, (RC.hurt ?? 0.25) + (RC.hurtPerMG || 0) * mgs);
+      const rr = rngFor(theme.id, s.id, 'raidBack', day);
+      if (rr() < pHurt) {
+        const sev = severity(s, RC.severity, rngFor(theme.id, s.id, 'raidBackSev', day), false);
+        const shooter = defenders.filter((x) => x.archetype === 'machinegunner' || x.archetype === 'rifleman' || x.archetype === 'sniper')[Math.floor(rr() * Math.max(1, defenders.length))] || null;
+        wound(s, sev, { raid: true, ...(shooter ? { by: { handle: shooter.handle, name: shooter.name, role: shooter.archetype, faction: e } } : {}) });
+        if ((sev === 'crit' && rr() < (RC.raiderKill ?? 0.6)) || (sev === 'heavy' && rr() < (RC.raiderKillHeavy ?? 0.3))) { s.wound.outright = 'raid'; r.fell++; }
+        else r.hurt++;
+        if (!s.wound.outright) ev(s, sev === 'light' ? 'hit' : 'wounded', eventEntry('nightRaidHurt', s, day, theme, story, {}, today));
+      } else if (!res[f].best[s.handle] && rr() < 0.5) ev(s, 'raid', eventEntry('nightRaidBack', s, day, theme, story, {}, today));
+    }
+    if (raiders.length) {
+      const nm = (f) => short(theme, f);
+      const parts = theme.factions.map((_, f) => {
+        const r = res[f];
+        if (!r.n) return null;
+        const best = Object.entries(r.best).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0];
+        const hero = best && state.soldiers.find((x) => x.handle === best[0]);
+        return `${r.n} ${nm(f)} raider${r.n > 1 ? 's' : ''} went over: ${r.kills} ${nm(1 - f)} dead, ${r.wounded} wounded in their own trench. ` +
+          `${r.fell ? `${r.fell} raider${r.fell > 1 ? 's' : ''} did not come back` : 'Every raider came back'}${r.hurt ? `, ${r.hurt} hurt` : ''}.` +
+          (hero ? ` Bravest of the night: ${hero.name} (@${hero.handle}), ${best[1]} ${best[1] > 1 ? 'men' : 'man'}.` : '');
+      }).filter(Boolean);
+      const home = theme.factions.map((_, f) => f).filter((f) => !res[f].n);
+      out.news.push({
+        day, kind: 'raid', h: RC.newsHead || 'Night raid',
+        text: parts.join(' ') + (home.length === 1 ? ` The ${nm(home[0])} sent nobody over and waited behind the parapet.` : ''),
+        raid: res.map(({ best, ...x }) => x),
+      });
+    }
+    state.raid.nights = [...(state.raid.nights || []), { day, media: ro.media, ids: ro.ids.length, sides: res.map(({ best, ...x }) => x) }].slice(-60);
+    state.raid.open = null;
+  }
+
   // 1) palba hráčů
   const front = theme.factions.map((_, f) => lineup(state, f, (s) => able(s) && s.line === 'front'));
   // cíle: zdraví vojáci v linii a od 15. 11. i ranění, kteří od včerejška leží v zákopu bez nosítek (uživatel: „taky se na ně střílí“)
@@ -380,13 +449,13 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   const deathsToday = theme.factions.map(() => 0);
   const alive = theme.factions.map((_, f) => state.soldiers.filter((s) => s.faction === f && s.status !== 'fallen').length);
   const cap = theme.factions.map((_, f) => Math.max(cfg.maxDeaths.min, Math.floor(alive[f] * cfg.maxDeaths.share)));
-  const die = (s, kind, cause, vars = {}) => {
+  const die = (s, kind, cause, vars = {}, raid = false) => {
     const f = s.faction;
     if (deathsToday[f] >= cap[f]) { stats[f].capped++; return false; } // pojistka: přežije do zítřka
     deathsToday[f]++;
     stats[f].deaths[cause]++;
     const by = s.wound?.by;
-    ev(s, 'fallen', eventEntry(kind, s, day, theme, story, vars, today) + (cause === 'shot' && by ? ` Shot by ${by.name} of the ${short(theme, by.faction)} (@${by.handle}).` : ''));
+    ev(s, 'fallen', eventEntry(kind, s, day, theme, story, vars, today) + (cause === 'shot' && by ? ` ${raid ? 'Killed in the night raid by' : 'Shot by'} ${by.name} of the ${short(theme, by.faction)} (@${by.handle}).` : ''));
     fallSoldier(s, day, ['wounds', 'shell', 'shot'].includes(cause) ? cause : 'nobed', cause === 'shot' && by ? { by: by.handle } : {});
     if (cause === 'shot' && by) { const k = state.soldiers.find((x) => x.handle === by.handle); if (k) k.kills = (k.kills || 0) + 1; }
     return true;
@@ -400,8 +469,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     for (const s of state.soldiers.filter((x) => x.faction === f && x.wound?.outright)) {
       const how = s.wound.outright, by = s.wound.by;
       delete s.wound.outright;
-      const key = how === 'shot' ? 'killedShot' : 'killedShell';
-      die(s, story[key] ? key : 'diedNoBed', how, by ? { target: by.name, targetHandle: by.handle, side: short(theme, by.faction) } : {});
+      const key = how === 'raid' ? 'nightRaidKilled' : how === 'shot' ? 'killedShot' : 'killedShell';
+      die(s, story[key] ? key : 'diedNoBed', how === 'raid' ? 'shot' : how, by ? { target: by.name, targetHandle: by.handle, side: short(theme, by.faction) } : {}, how === 'raid');
     }
     const place = () => {
       side.beds = side.beds.filter((id) => state.soldiers.some((s) => s.id === id && isWounded(s) && s.wound.place === 'bed'));

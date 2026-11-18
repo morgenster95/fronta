@@ -12,6 +12,7 @@ import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { ROOT, loadTheme, loadState, saveState } from '../tools/lib.mjs';
 import { openWiring, wiringMedia } from '../engine/wiring.js';
+import { openRaid, raidMedia } from '../engine/nightraid.js';
 import { fireTriggers, openItemVote } from './triggers.mjs';
 import { openShells } from '../engine/shells.js';
 import { openPilotCall } from '../engine/pilots.js';
@@ -165,6 +166,7 @@ async function main() {
       // kolo se opakovalo (stav z origin/main): hlasování otevřít znovu, jen pokud ještě neběží
       const st = loadState(theme);
       if (item.wiring && !wiringMedia(st, item.published.id) && !(st.wiring?.nights || []).some((n) => n.media === item.published.id)) { openWiring(st, item.published.id, st.day); saveState(st); }
+      if (item.raid && !raidMedia(st, item.published.id) && !(st.raid?.nights || []).some((n) => n.media === item.published.id)) { openRaid(st, item.published.id, st.day); saveState(st); }
       if (item.shells && !st.shells && !(st.chronicle || []).some((c) => (c.blocks || []).some((b) => b.kind === 'shells')) ) { openShells(st, { ...item.shells, mediaId: item.published.id, openedAt: item.published.at }); saveState(st); }
       if (item.vote && st.vote?.mediaId !== item.published.id && !(st.events || []).some((e) => e.mediaId === item.published.id)) {
         if (openItemVote(st, item) === 'open') saveState(st);
@@ -186,6 +188,12 @@ async function main() {
       const st = loadState(theme);
       if (!wiringMedia(st, item.published.id)) { openWiring(st, item.published.id, st.day); saveState(st); }
       console.log(`⛓ ${item.id}: wiring party otevřena (heslo ${theme.battle?.wiring?.keyword || 'WIRE'})`);
+    }
+    // noční raid pod tímto postem (engine/nightraid.js): přihlášky RAID do příštího denního tahu
+    if (item.raid) {
+      const st = loadState(theme);
+      if (!raidMedia(st, item.published.id)) { openRaid(st, item.published.id, st.day); saveState(st); }
+      console.log(`🗡 ${item.id}: noční raid otevřen (heslo ${theme.battle?.raid?.keyword || 'RAID'})`);
     }
     // nábor pilotů (engine/pilots.js): komentáře PILOT pod tímto postem jsou přihlášky, losuje se v ranních novinách
     if (item.pilots) {

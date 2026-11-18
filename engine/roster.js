@@ -11,6 +11,7 @@ import { orderDanger, orderRecover, orderShell, orderFire, orderHeal, orderExpos
 import { resolveShells } from './shells.js';
 import { resolvePilotCall, pilotFire, pilotSortie, pilotsPublic } from './pilots.js';
 import { wiringKeyword, joinWiring } from './wiring.js';
+import { raidCall, joinRaid } from './nightraid.js';
 import { battleTick, battlePublic, build as buildStructure, ensureBattle, levelOf, gunsSilent } from './battle.js';
 import { awardHouseBadges, noticeDeath } from './house.js';
 import { ensureValley, valleyTick, valleyDanger, valleyRecover, raidKeyword, volunteer, valleyPublic } from './valley.js';
@@ -149,6 +150,11 @@ export function applyComment(state, comment, theme, story, map) {
   if (wiringKeyword(state, theme, comment)) {
     if (!existing) return { type: 'wiring', handle, soldier: { handle }, reason: 'notEnlisted' };
     return { type: 'wiring', handle, soldier: existing, reason: joinWiring(state, existing, theme) };
+  }
+  // noční raid (engine/nightraid.js): heslo RAID pod otevřeným postem = přihláška na příští noc
+  if (raidCall(state, theme, comment) && (existing || parsed?.type !== 'enlist')) { // nováček s heslem strany nejdřív narukuje
+    if (!existing) return { type: 'nightRaid', handle, soldier: { handle }, reason: 'notEnlisted' };
+    return { type: 'nightRaid', handle, soldier: existing, reason: joinRaid(state, existing) };
   }
   // heslo otevřené výpravy (např. CHURCH): přihláška dobrovolníka
   const raid = raidKeyword(state, theme, comment.text);

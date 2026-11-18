@@ -743,6 +743,28 @@
       "cut": 0.15,
       "_": "dopis z domova (hráč ho na webu pošle svému vojákovi, přihlášený majitel, jednou za den): voják má v příštím tahu o `cut` menší šanci na zásah všeho druhu; neodeslaný dopis = žádný buff (retence)"
     },
+    "raid": {
+      "keyword": "RAID",
+      "_": "18. 11. (uživatel): noční raid; přihláška RAID pod postem s `raid: true`, vyhodnocení v příštích novinách (engine/battle.js krok 0b, engine/nightraid.js). base = šance vpadnout a zasáhnout obránce, +perGap × potrhaný drát nepřítele, −perMG za každý kulomet obránců poblíž; weather násobí (mlha a déšť pomáhají). Zásah zblízka: hlavně těžký a kritický, kill/killHeavy = smrt obránce (počítá se do závodu o zabití). Cesta zpět: hurt + hurtPerMG × kulomety.",
+      "base": 0.45,
+      "perGap": 0.3,
+      "perMG": 0.04,
+      "minWin": 0.15,
+      "maxWin": 0.85,
+      "reach": 2,
+      "weather": { "fog": 1.25, "rain": 1.1, "storm": 1.05, "clear": 0.85, "frost": 0.9 },
+      "severity": { "light": 0.6, "heavy": 0.25 },
+      "kill": 0.85,
+      "killHeavy": 0.6,
+      "hurt": 0.25,
+      "hurtPerMG": 0.03,
+      "maxHurt": 0.6,
+      "raiderKill": 0.6,
+      "raiderKillHeavy": 0.35,
+      "xp": 4,
+      "badgeAt": 3,
+      "newsHead": "Night raid"
+    },
     "wiring": {
       "keyword": "WIRE",
       "base": 0.06,

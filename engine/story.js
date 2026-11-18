@@ -133,7 +133,7 @@ export function silenceGuns(story, words) {
       const kept = v.filter((x) => !loud(x)).map(walk);
       return kept.length ? kept : v.map(walk);
     }
-    if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, walk(x)]));
+    if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, k.startsWith('nightRaid') ? x : walk(x)])); // noční raid (18. 11.) má vlastní texty se slovem „raid“, výpravy ne
     return v;
   };
   const out = walk(story);

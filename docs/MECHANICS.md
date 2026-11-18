@@ -467,3 +467,13 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 
 ## 2026-11-18 Noviny bez seznamů jmen (NASAZENO od novin 19. 11.)
 - Uživatel: v novinách jen čísla. „Casualties of the day“, „Roll call“ a „New on the line“ už nevypisují jména ani @handle padlých, raněných a nováčků (každý to najde u svého vojáka a v Roll of Honour). Příběhy („From the service records“) a zvláštní zprávy (piloti, tituly, War Bonds) jména dál mají.
+
+## 2026-11-18 Noční raid (NASAZENO, otevírá ho post s `raid: true`)
+- Uživatel: přihláška na noční raid pod postem (komentář RAID), podložená příběhem.
+- Přihlásit se může jen zdravý voják (ne pilot). Vyhodnocení v příštích novinách před bojem (`engine/battle.js` krok 0b, `engine/nightraid.js`, `theme.battle.raid`).
+- Raider vpadne do nepřátelského zákopu u svého úseku: šance zasáhnout obránce `0,45 + 0,3 × potrhaný drát nepřítele`, × počasí (mlha 1,25, déšť 1,1, jasno 0,85), −0,04 za každý kulomet obránců poblíž; mez 15–85 %.
+  Zásah zblízka: 40 % lehký, 35 % těžký, 25 % kritický; smrt obránce kritický 85 %, těžký 60 %. **Zabití se počítají do závodu o zabití (Blackwater Canal)** a raiderovi do `kills`.
+- Cesta zpět: zásah 25 % + 3 % za kulomet (max 60 %), smrt raidera kritický 60 %, těžký 35 %.
+- Simulace (20 raiderů na stranu, stav 18. 11.): raideři zabijí ~4–5 a zraní ~6–7 nepřátel, sami ztratí ~2 padlé a ~4 raněné. Odznak `raider` po 3 raidech, XP 4.
+- Noviny: článek „Night raid“ s počty a nejstatečnějším raiderem (jméno + @handle). Deníky: `nightRaidKill/Wound/Stabbed/Killed/Hurt/Back` (story.json; slovo „raid“ tu nevadí, výpravy jsou dál vypnuté).
+- Bot odpoví na RAID (zapsán / nejdřív narukuj / raněný zůstává u mediků / pilot létá).

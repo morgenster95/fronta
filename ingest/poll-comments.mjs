@@ -244,6 +244,17 @@ async function main() {
           await replyOnce(c, text).catch((e) => console.warn(e.message));
         }
       }
+      if (res.type === 'nightRaid') {
+        console.log(`🗡 raid @${res.handle}: ${res.reason}`);
+        const text = {
+          ok: `@${res.handle}, you're on the raid list tonight. Black your face, leave your letters behind, follow the sergeant. Results in the Trench Gazette at 13:00 UTC.`,
+          notEnlisted: `@${res.handle}, you need a soldier first. Comment ${theme.factions.map((f) => f.keyword).join(' or ')} to enlist, then RAID again.`,
+          wounded: `@${res.handle}, your soldier is wounded and stays with the medics tonight. Only fit men go over.`,
+          pilot: `@${res.handle}, pilots fly, they don't crawl. Your plane needs you tomorrow.`,
+          fallen: null, already: null, closed: null, captured: null,
+        }[res.reason];
+        if (text && process.env.IG_REPLY === '1' && !process.env.DRY_RUN) await replyOnce(c, text).catch((e) => console.warn(e.message));
+      }
       if (res.type === 'wiring') {
         console.log(`⛓ wiring party @${res.handle}: ${res.reason}`);
         const text = {
