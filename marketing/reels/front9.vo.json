@@ -1,0 +1,66 @@
+{
+ "seconds": 51.0,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.15,
+   2.07,
+   "Thirty-three men died on this front today.",
+   "hook"
+  ],
+  [
+   2.47,
+   4.53,
+   "From today every rifle fires twice a day. The war just got deadlier.",
+   "deadly"
+  ],
+  [
+   7.25,
+   8.03,
+   "Twenty Concord men fell, and thirteen from the Hegemony. Hegemony pillboxes still stand. Concord's lie in ruins.",
+   "toll"
+  ],
+  [
+   15.53,
+   4.8,
+   "Marek Ham was passing a message along the trench. He never finished the sentence.",
+   "story"
+  ],
+  [
+   20.58,
+   6.29,
+   "Two of you now fly. Dorian for the Hegemony, Nils for the Concord. Tomorrow they fight.",
+   "pilots"
+  ],
+  [
+   27.12,
+   5.19,
+   "A hundred and one new soldiers joined yesterday. Six hundred and sixteen hold the line.",
+   "army"
+  ],
+  [
+   32.56,
+   4.73,
+   "Blackwater Canal. The Hegemony lead, fifty-two kills to forty-two.",
+   "race"
+  ],
+  [
+   37.54,
+   2.08,
+   "Tonight, both sides go over the top.",
+   "raid"
+  ],
+  [
+   39.87,
+   5.29,
+   "Shovels, knives, one jump into the enemy trench. Every kill counts for the canal.",
+   "raid2"
+  ],
+  [
+   45.41,
+   2.12,
+   "Comment RAID, and your soldier goes with them.",
+   "cta"
+  ]
+ ]
+}
