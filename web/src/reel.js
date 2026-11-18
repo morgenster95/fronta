@@ -125,6 +125,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'trialA' || name === 'trialB') {
+    // testovací reely pro neodběratele (A/B háček, ~16 s, smyčka): reel-trial.js
+    return import('./reel-trial.js').then(async ({ startTrialReel }) => {
+      await startTrialReel({ cam, life, map, theme, soldiers, tex, anims }, name.slice(-1));
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'sebs') {
     // krátký reel o propagandistovi Konradu Sebsovi (@_sebs.c_): jeho plakáty, voják, slova, bunkry, titul, výzva kreslit (reel-sebs.js)
     return import('./reel-sebs.js').then(async ({ startSebsReel }) => {

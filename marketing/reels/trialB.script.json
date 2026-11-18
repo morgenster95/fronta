@@ -1,0 +1,14 @@
+{
+ "seconds": 18,
+ "auto": true,
+ "drums": ["hook", [], "side"],
+ "hero": { "victim": "c10ud_b3rry3.0", "name": "Edmund \"Smokes\" Rry", "days": 8, "shooter": "jimmysparrow17" },
+ "lines": [
+  [0.15, "This soldier belonged to a real player.", "hook"],
+  [0, "Yesterday, another player shot him.", "shot"],
+  [0, "This morning, his family sent another.", "heir"],
+  [0, "Every comment here becomes a soldier.", "spawn"],
+  [0, "Five hundred players. One war.", "army"],
+  [0, "Comment HEGEMONY or CONCORD.", "cta"]
+ ]
+}

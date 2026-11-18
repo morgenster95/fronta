@@ -64,7 +64,9 @@ async function publish(item) {
   const url = (f) => `${MEDIA}/${f}`;
   let creation;
   if (item.type === 'reel') {
-    creation = (await call('POST', `${USER}/media`, { media_type: 'REELS', video_url: url(item.files[0]), caption: item.caption, share_to_feed: 'true' })).id;
+    // testovací reel (IG „trial reels“, 18. 11.): ukáže se nejdřív jen neodběratelům; item.trial = 'MANUAL' (povýšit ručně v aplikaci) nebo 'SS_PERFORMANCE' (IG sám podle výkonu)
+    const trial = item.trial ? { trial_params: JSON.stringify({ graduation_strategy: item.trial === true ? 'MANUAL' : item.trial }) } : {};
+    creation = (await call('POST', `${USER}/media`, { media_type: 'REELS', video_url: url(item.files[0]), caption: item.caption, ...(item.trial ? {} : { share_to_feed: 'true' }), ...trial })).id;
   } else if (item.type === 'image') {
     creation = (await call('POST', `${USER}/media`, { image_url: url(item.files[0]), caption: item.caption })).id;
   } else if (item.type === 'carousel') {

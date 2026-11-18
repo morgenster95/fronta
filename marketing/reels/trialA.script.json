@@ -1,0 +1,13 @@
+{
+ "seconds": 16,
+ "auto": true,
+ "drums": ["hook", [], "side"],
+ "lines": [
+  [0.15, "I let five hundred strangers fight a war in my comments.", "hook"],
+  [0, "Every soldier here is a real person.", "real"],
+  [0, "One comment, and you're on the line.", "spawn"],
+  [0, "Every day at one, the newspaper decides who lives.", "war"],
+  [0, "Pick a side.", "side"],
+  [0, "Comment HEGEMONY or CONCORD.", "cta"]
+ ]
+}
