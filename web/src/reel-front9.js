@@ -79,10 +79,23 @@ export async function startDay9Reel({ cam, life, map, soldiers, tex, anims }) {
   const [defH, shH] = pickDef(fH, Math.floor(fH.length / 2));
   const [defC, shC] = pickDef(fC, Math.floor(fC.length / 2) + 6);
   const fight = await makeFight({ anims, soldiers });
-  const F1 = fight.scene({ at: 0.15, defender: defH, side: 1, shooter: shH, end: tt.deadly });
-  const F2 = fight.scene({ at: tt.raid2 + 0.1, defender: defC, side: 0, shooter: shC, end: END });
-  fight.crawlers({ at: tt.raid, end: tt.raid2, x: mC.x, y: mid + 10, n: 5, side: 1 });
-  const K = [[0, defH.x - 4, defH.y - 22, 8.0], [tt.deadly - 0.01, defH.x - 2, defH.y - 22, 8.6]];
+  // háček: souboj lopatek hned od prvního snímku (oba už stojí v zákopu), obránce padne, soused raidera zastřelí
+  const F1 = fight.scene({ at: 0, defender: defH, side: 1, shooter: shH, end: tt.deadly });
+  // raid: víc dvojic najednou v zákopu Concordu (raideři Hegemonie), jeden obránce vyhraje, střelec je vidět od začátku
+  const iC = fC.indexOf(defC);
+  const crowd = [fC[iC], fC[iC + 2], fC[iC + 4], fC[iC - 2]].filter(Boolean);
+  const F2 = fight.scene({ at: tt.raid2, defender: crowd[0], side: 0, shooter: shC === crowd[1] ? null : shC, end: END });
+  const F3 = fight.scene({ at: tt.raid2, defender: crowd[1], side: 0, win: 'defender', delay: 0.35, end: END });
+  const F4 = fight.scene({ at: tt.raid2, defender: crowd[2], side: 0, delay: 0.7, end: END });
+  const F5 = fight.scene({ at: tt.raid2, defender: crowd[3], side: 0, win: 'defender', delay: 0.2, end: END });
+  // druhá vlna dál vpravo (kamera se k ní posune), ať se bojuje až do výzvy
+  const W2 = tt.raid2 + 3.2;
+  const F6 = fight.scene({ at: tt.raid2, defender: fC[iC + 6], side: 0, delay: W2 - tt.raid2, end: END });
+  const F7 = fight.scene({ at: tt.raid2, defender: fC[iC + 8], side: 0, win: 'defender', delay: W2 - tt.raid2 + 0.5, end: END });
+  const F8 = fight.scene({ at: tt.raid2, defender: fC[iC + 10], side: 0, delay: W2 - tt.raid2 + 1.1, end: END });
+  // raideři Hegemonie se plazí zemí nikoho čelem k divákovi (k zákopu Concordu)
+  fight.crawlers({ at: tt.raid, end: tt.raid2, x: mC.x, y: mid - 14, n: 5, side: 0 });
+  const K = [[0, defH.x + 4, defH.y - 22, 8.0], [tt.deadly - 0.01, defH.x + 6, defH.y - 22, 8.6]];
   K.push([tt.deadly, mC.x - 300, mid, 1.15, 'cut'], [tt.toll - 0.01, mC.x + 300, mid, 1.25]);
   K.push([tt.toll, boxH.x - 20, boxH.y - 16, 3.4, 'cut'], [tToll2 - 0.01, boxH.x + 10, boxH.y - 16, 3.7]);
   K.push([tToll2, ruinC.x - 20, ruinC.y - 18, 3.4, 'cut'], [tt.story - 0.01, ruinC.x + 10, ruinC.y - 18, 3.7]);
@@ -91,7 +104,7 @@ export async function startDay9Reel({ cam, life, map, soldiers, tex, anims }) {
   K.push([tArmyC, mC.x + 240, mC.y - 10, 2.2, 'cut'], [tt.race - 0.01, mC.x - 240, mC.y - 10, 2.4]);
   K.push([tt.race, mH.x - 220, mid, 1.2, 'cut'], [tt.raid - 0.01, mH.x + 220, mid, 1.3]);
   K.push([tt.raid, mC.x, mid, 6.0, 'cut'], [tt.raid2 - 0.01, mC.x, mid - 14, 6.6]);
-  K.push([tt.raid2, defC.x + 4, defC.y - 22, 8.0, 'cut'], [END, defC.x + 2, defC.y - 22, 8.6]);
+  K.push([tt.raid2, defC.x + 22, defC.y - 22, 6.0, 'cut'], [tt.raid2 + 2.6, defC.x + 30, defC.y - 22, 6.2], [tt.raid2 + 3.4, (fC[iC + 8] || defC).x + 10, defC.y - 22, 6.2, 'ease'], [END, (fC[iC + 8] || defC).x + 16, defC.y - 22, 6.4]); // víc dvojic v záběru, pak druhá vlna
   const camPathAt = camPath(K);
   const camAt = (t) => {
     if (t >= tt.pilots && t < tt.army) { const p = planes?.poseOf?.(t < tPil2 ? 0 : 1, t * 1000); if (p) return [p.x + p.dir * 20, p.y + 10, 2.6]; }
@@ -99,7 +112,7 @@ export async function startDay9Reel({ cam, life, map, soldiers, tex, anims }) {
   };
   const sub = subtitles(vo);
   const night = (t) => t < tt.deadly || t >= tt.raid; // noc: háček a raid
-  const flashes = [F1?.hit, F1?.shot, F2?.hit, F2?.shot].filter(Boolean);
+  const flashes = [F1?.hit, F1?.shot, F2?.hit, F2?.shot, F3?.hit, F4?.hit, F6?.hit, F8?.hit].filter(Boolean);
   const fx = transitions([[tt.deadly, 'flash'], [tt.toll, 'whip'], [tToll2, 'whip'], [tt.story, 'black', 0.3], [tt.pilots, 'flash'], [tPil2, 'whip'], [tt.army, 'flash'], [tArmyC, 'whip'], [tt.race, 'flash'], [tt.raid, 'black', 0.35], [tt.raid2, 'whip']]);
   // palba dvakrát denně: výstřely po celé linii obou stran
   const line = soldiers.filter((s) => !s.vacant && s.slot?.line === 'front' && Math.abs(s.x - mC.x) < 700);
@@ -107,8 +120,7 @@ export async function startDay9Reel({ cam, life, map, soldiers, tex, anims }) {
   for (let k = 0, t = tt.deadly + 0.1; t < tt.toll - 0.2; t += 0.12, k++) shots.push([t, line[(k * 37) % Math.max(1, line.length)]]);
   for (let k = 0, t = tt.story + 0.5; t < tt.story + 1.2; t += 0.6, k++) shots.push([t, by(D.story.by)].filter(Boolean));
   const SFX = shots.filter((s) => s[1]).map(([t]) => [+t.toFixed(2), 'shoot', 0]);
-  if (F1) SFX.push([+F1.hit.toFixed(2), 'stamp', 0], [+F1.shot.toFixed(2), 'shoot', 0]);
-  if (F2) SFX.push([+F2.hit.toFixed(2), 'stamp', 0], [+F2.shot.toFixed(2), 'shoot', 0]);
+  for (const F of [F1, F2, F3, F4, F5, F6, F7, F8]) { if (F?.hit) SFX.push([+F.hit.toFixed(2), 'stamp', 0]); if (F?.shot) SFX.push([+F.shot.toFixed(2), 'shoot', 0]); }
   SFX.push( [tt.toll, 'drum', 0], [tt.race, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]);
 
   document.body.classList.add('reel');
@@ -131,8 +143,8 @@ export async function startDay9Reel({ cam, life, map, soldiers, tex, anims }) {
     <div id="r9-boxH" class="r9-tag">HEGEMONY PILLBOX<small>still standing</small></div>
     <div id="r9-ruinC" class="r9-tag red">CONCORD PILLBOX<small>in ruins</small></div>
     <div id="r9-ham" class="r9-tag red">† ${D.story.name.toUpperCase()}<small>@${D.story.handle} · shot by @${D.story.by}</small></div>
-    <div id="r9-p0" class="r9-tag gold">✈ ${'DORIAN "OWL"'}<small>@${D.pilots[0][0]} · Hegemony pilot · 1 of ${D.pilots[0][2]}</small></div>
-    <div id="r9-p1" class="r9-tag gold">✈ ${'NILS ANTONIOO'}<small>@${D.pilots[1][0]} · Concord pilot · 1 of ${D.pilots[1][2]}</small></div>
+    <div id="r9-p0" class="r9-tag gold">✈ ${'DORIAN "OWL"'}<small>@${D.pilots[0][0]} · Hegemony pilot</small></div>
+    <div id="r9-p1" class="r9-tag gold">✈ ${'NILS ANTONIOO'}<small>@${D.pilots[1][0]} · Concord pilot</small></div>
     <div id="r9-army" class="r9-panel"><div class="t">THE FRONT TODAY</div><div class="row"><span>NEW YESTERDAY</span><b>+${D.joined}</b></div>
       <div class="row"><span>ON THE LINE</span><b>${D.army[0] + D.army[1]}</b></div></div>
     <div id="r9-tagH" class="r9-tag">HEGEMONY<b>${D.army[0]}</b></div>
@@ -162,7 +174,7 @@ export async function startDay9Reel({ cam, life, map, soldiers, tex, anims }) {
     fight.update(t);
     const n = night(t);
     show('#r9-night', n ? 1 : 0);
-    show('#r9-flare', n ? 0.85 + Math.sin(t * 11) * 0.1 : 0); // světlice nad frontou
+    show('#r9-flare', n ? 0.5 + Math.sin(t * 11) * 0.08 : 0); // světlice nad frontou
     const fh = flashes.find((q) => t >= q && t < q + 0.12);
     show('#r9-flash', fh != null ? 0.55 * (1 - (t - fh) / 0.12) : 0);
     paint({ ...f, black: Math.max(f.black, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) });

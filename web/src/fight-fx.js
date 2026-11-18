@@ -47,36 +47,40 @@ export async function makeFight({ anims, soldiers }) {
   const seg = (a, t0, fr, fps, { foot = null, loop = false, from = null, to = null, dur = 0 } = {}) => a.keys.push({ t0, fr, fps, foot, loop, from, to, dur });
 
   return {
-    // raider strany `side` vpadne zleva/zprava k obránci; obránce se brání lopatkou, padne; soused obránce zastřelí raidera
-    scene({ at, defender, side, shooter = null, end = at + 4 }) {
+    // souboj lopatek: raider strany `side` stojí u obránce už od prvního snímku (žádný pád z nebe), oba se rozmáchnou;
+    // win = 'raider' (obránce padne, pak raidera zastřelí soused obránce, je vidět od začátku) nebo 'defender' (padne raider)
+    scene({ at, defender, side, shooter = null, end = at + 4, win = 'raider', delay = 0 }) {
       if (!defender) return null;
-      const dx = side === 1 ? -1 : 1; // Concord přichází zleva (míří na východ), Hegemonie zprava (na západ)
+      const dx = side === 1 ? -1 : 1; // Concord stojí vlevo (míří na východ), Hegemonie vpravo (na západ)
       const dirR = side === 1 ? 'east' : 'west', dirD = side === 1 ? 'west' : 'east';
-      const kD = defender.faction === 0 ? 'hegemony' : 'concord';
+      const kD = defender.faction === 0 ? 'hegemony' : 'concord', kR = side === 0 ? 'hegemony' : 'concord';
       const x = defender.x, y = defender.y;
-      const R = actor(x + dx * 15, y), Dd = actor(x, y);
-      const HIT = at + 1.25, KILL = at + 2.3;
-      seg(R, at, [SH[side][0]], 1, { foot: FOOT[side], from: [x + dx * 15, y - 16], to: [x + dx * 15, y], dur: 0.3 });
-      seg(R, at + 0.3, SH[side], 9, { foot: FOOT[side] });
-      seg(Dd, at, [A(kD, 'walk', dirD)[0] || SH[defender.faction][0]], 1, { foot: A(kD, 'walk', dirD)[0] ? null : FOOT[defender.faction] });
-      seg(Dd, at + 0.35, SH[defender.faction], 9, { foot: FOOT[defender.faction] }); // brání se lopatkou
-      seg(Dd, HIT + 0.05, A(kD, 'die', dirD), 10, {});
-      // soused obránce (odstřelovač z boku) zastřelí raidera
+      const R = actor(x + dx * 13, y), Dd = actor(x, y);
+      const go = at + delay, HIT = go + 0.85, KILL = HIT + 0.95;
+      seg(R, at, [SH[side][0]], 1, { foot: FOOT[side] });
+      seg(R, go, SH[side], 10, { foot: FOOT[side], loop: win === 'defender' ? false : false });
+      seg(Dd, at, [SH[defender.faction][0]], 1, { foot: FOOT[defender.faction] });
+      seg(Dd, go + 0.05, SH[defender.faction], 10, { foot: FOOT[defender.faction] }); // brání se lopatkou
       let S = null;
-      if (shooter) {
-        const kS = shooter.faction === 0 ? 'hegemony_sniper' : 'concord_sniper';
-        S = actor(x - dx * 22, shooter.y);
-        seg(S, at + 1.0, [A(kS, 'fire-side', dirD)[0]], 1, {});
-        seg(S, at + 1.6, A(kS, 'fire-side', dirD), 12, {});
-        hidden.push([shooter, at, end]);
-        S.from = at + 1.0; S.to = end;
+      if (win === 'raider') {
+        seg(Dd, HIT + 0.05, A(kD, 'die', dirD), 10, {});
+        if (shooter) { // soused obránce (odstřelovač z boku) stojí vedle od začátku, zamíří a raidera zastřelí
+          const kS = shooter.faction === 0 ? 'hegemony_sniper' : 'concord_sniper';
+          S = actor(x - dx * 24, y);
+          const fs = A(kS, 'fire-side', dirD);
+          seg(S, at, [fs[0]], 1, {});
+          seg(S, KILL - 0.45, fs, 12, {});
+          hidden.push([shooter, at, end]);
+          S.from = at; S.to = end;
+          seg(R, KILL, A(kR, 'die', dirR), 10, {});
+        }
+      } else {
+        seg(R, HIT + 0.05, A(kR, 'die', dirR), 10, {});
       }
-      const kR = side === 0 ? 'hegemony' : 'concord';
-      seg(R, KILL, A(kR, 'die', dirR), 10, {});
       R.from = at; R.to = end; Dd.from = at; Dd.to = end;
       acts.push(R, Dd, ...(S ? [S] : []));
       hidden.push([defender, at, end]);
-      return { hit: HIT, shot: KILL - 0.1, kill: KILL, x, y };
+      return { hit: HIT, shot: S ? KILL - 0.1 : null, kill: KILL, x, y };
     },
     // plazící se raideři v zemi nikoho (crawl ze hry), směr k nepříteli
     crawlers({ at, end, x, y, n = 4, side = 1 }) {

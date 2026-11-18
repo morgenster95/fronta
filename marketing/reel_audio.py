@@ -368,6 +368,59 @@ def epic_score(dur, cue):
     return out + lowpass_fast(wet, 3500, 1)
 
 
+# --- bojová hudba „assault“ (18. 11., uživatel: hudba se opakuje, chce něco válečného): d moll, 132 bpm, rychlé žesťové ostinato,
+#     vojenský bubínek (šestnáctinové víření), tympány na dobách, smyčcové tremolo, údery v klíčových místech (cue). Bez klidné melodie. ---
+def snare(strength=1.0):
+    n = int(0.18 * SR)
+    nz = rng.standard_normal(n)
+    band = lowpass_fast(nz, 5200, 1) - lowpass_fast(nz, 900, 1)
+    t = np.arange(n) / SR
+    tone = np.sin(2 * np.pi * 185 * t) * env(n, 0.0005, 0.03)
+    return (band * env(n, 0.0005, 0.05) * 0.9 + tone * 0.35) * strength
+
+
+def war_score(dur, cue, hits=()):
+    n = int(dur * SR)
+    out = np.zeros(n)
+    beat = 60 / 132
+    hz = lambda m: 440.0 * 2 ** ((m - 69) / 12)
+    prog = [38, 38, 41, 36, 38, 34, 36, 33]  # basové tóny po taktech: D D F C D Bb C A
+    bars = int(dur / (beat * 4)) + 1
+    for b in range(bars):
+        root = prog[b % len(prog)]
+        t0 = b * beat * 4
+        grow = min(1.0, 0.45 + 0.55 * b / max(1, bars - 2))
+        # žesťové ostinato (osminy: 1 1 5 1 b3 1 5 4) – saw přes dolní propust, akcent na dobu
+        pat = [0, 0, 7, 0, 3, 0, 7, 5]
+        for i, iv in enumerate(pat):
+            f = hz(root + 12 + iv)
+            m = int(beat / 2 * 0.92 * SR)
+            note = lowpass_fast(saw(f, m), 1400 + 600 * grow, 1) * env(m, 0.004, 0.12)
+            add(out, note * (0.16 if i % 2 == 0 else 0.11) * grow, t0 + i * beat / 2)
+        # nízký žesťový akord celý takt
+        add(out, swell([hz(root), hz(root + 7), hz(root + 12)], beat * 4, 0.10 * grow, cutoff=700, attack=0.08), t0)
+        # tympány na 1 a 3, bubínek: šestnáctiny s akcenty, víření před každým čtvrtým taktem
+        add(out, drum(0.9 * grow), t0)
+        add(out, drum(0.6 * grow), t0 + beat * 2)
+        for k in range(16):
+            acc = 1.0 if k % 4 == 0 else 0.45
+            if (b % 4 == 3 and k >= 8) or k % 2 == 0 or k in (3, 11):
+                add(out, snare(acc * 0.55 * grow), t0 + k * beat / 4)
+        # smyčcové tremolo v druhé půlce (napětí)
+        if b >= bars // 3:
+            m = int(beat * 4 * SR)
+            tt = np.arange(m) / SR
+            trem = (0.6 + 0.4 * np.sign(np.sin(2 * np.pi * 12 * tt)))
+            add(out, lowpass_fast(saw(hz(root + 24 + 3), m), 2600, 1) * trem * env(m, 0.05, 2.5) * 0.05 * grow, t0)
+    # údery v klíčových místech
+    for at in [cue.get(k) for k in hits] + [0.0]:
+        if at is None:
+            continue
+        add(out, boom(True) * 0.5, at)
+        add(out, swell([hz(38), hz(45), hz(50), hz(53)], 1.6, 0.22, cutoff=1500, attack=0.02), at)
+    return lowpass_fast(out, 6000, 1) * 1.1
+
+
 def build_story(name="story"):
     meta = json.load(open(os.path.join(REELS, f"{name}.sfx.json")))
     start, quiet_parts, double = drums_of(name)
@@ -377,13 +430,15 @@ def build_story(name="story"):
     cue = {l[3]: l[0] for l in vo["lines"] if len(l) > 3}
     if name in ("ridge", "hill304"):  # vítězství na kótě: slavnostní hudba
         music = epic_score(dur, cue) * 1.5 + rain(dur) * 0.25
+    elif name in ("front9",):  # bojová hudba (raid)
+        music = war_score(dur, cue, hits=("deadly", "raid", "cta")) * 1.3 + rain(dur) * 0.2
     else:
-        music = (lament(dur) * 1.3 + drone(dur) * 0.35 + rain(dur) * 0.7) if name in ("barrage", "rip", "wire", "night6", "front6", "front7", "front8", "front9") else drone(dur) * 1.1 + rain(dur)
+        music = (lament(dur) * 1.3 + drone(dur) * 0.35 + rain(dur) * 0.7) if name in ("barrage", "rip", "wire", "night6", "front6", "front7", "front8") else drone(dur) * 1.1 + rain(dur)
     fx = np.zeros(n)
     beat = 60 / 70
     # bubny: od Hegemonie, ztichnou před půlnocí a po dědicovi se rozjedou ke konci
     t = start
-    while t < dur - 3 and name not in ("ridge", "hill304"):  # ridge má bubny přímo v hudbě (epic_score)
+    while t < dur - 3 and name not in ("ridge", "hill304", "front9"):  # ridge má bubny přímo v hudbě (epic_score)
         quiet = any(a < t < b for a, b in quiet_parts)
         if not quiet:
             strength = 0.3 + 0.7 * min(1, (t - start) / (dur - start - 10))
