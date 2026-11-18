@@ -13,6 +13,8 @@ const P = [
   ['flying_wizzerd', 'Walter "Ghost" Wizzerd', 'Officers\' Mess', true],
   ['cwilliam357', 'Florian "Spark" Cwilliam', 'War Bonds', false],
   ['jwessels530', 'Ulrich Jwessels', 'War Bonds', false],
+  ['vis.acquillae', 'Roland Acquillae', 'War Bonds · wounded', false],
+  ['0__freddie__0', 'House Freddie', 'War Bonds', false],
 ];
 
 const CSS = `${BASE}${FX_CSS}

@@ -1,12 +1,36 @@
 {
  "seconds": 24,
  "auto": true,
- "drums": ["hook", [], "cta"],
+ "drums": [
+  "hook",
+  [],
+  "cta"
+ ],
  "lines": [
-  [0.2, "These soldiers kept the front alive.", "hook"],
-  [0, "Edmund. Walter. Florian. Ulrich. They bought War Bonds, and the Gazette printed their names.", "names"],
-  [0, "Mud and Iron is free, with no ads. Their support pays for every new scene, every plane, every shovel.", "why"],
-  [0, "War Bonds. Field Post. Officers' Mess.", "tiers"],
-  [0, "If you'd like to help, the link is in our bio. If not, just keep fighting. That helps too.", "cta"]
+  [
+   0.2,
+   "These soldiers kept the front alive.",
+   "hook"
+  ],
+  [
+   0,
+   "Edmund. Walter. Florian. Ulrich. Roland. The Freddies. They bought War Bonds, and the Gazette printed their names.",
+   "names"
+  ],
+  [
+   0,
+   "Mud and Iron is free, with no ads. Their support pays for every new scene, every plane, every shovel.",
+   "why"
+  ],
+  [
+   0,
+   "War Bonds. Field Post. Officers' Mess.",
+   "tiers"
+  ],
+  [
+   0,
+   "If you'd like to help, the link is in our bio. If not, just keep fighting. That helps too.",
+   "cta"
+  ]
  ]
 }
