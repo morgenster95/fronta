@@ -1398,3 +1398,18 @@ test('noční raid: RAID pod postem přihlásí vojáka, příští boj raideři
   assert.equal(victims.length >= n.sides[1].kills - 1, true);
   for (const x of s.soldiers) for (const [, t] of x.record) assert.doesNotMatch(t, /\{\w+\}|undefined/);
 });
+
+test('podpora se dědí: nástupce padlého podporovatele má stužku i hvězdu (theme.inheritMedals)', async () => {
+  const { heir, fallSoldier } = await import('./soldier.js');
+  const R = await import('./roster.js');
+  const st = emptyState(theme);
+  enlist(st, 2, 'inh');
+  const s = st.soldiers[0];
+  s.medals = ['war-bonds', 'officers-star', 'first-wave'];
+  fallSoldier(s, 3, 'shot');
+  const n = heir(s, 4, theme, story);
+  assert.deepEqual(n.medals, ['war-bonds', 'officers-star']);
+  const t = st.soldiers[1]; t.fallen = [{ medals: ['war-bonds'] }]; t.medals = [];
+  assert.equal(R.inheritMedals(st, theme), 1);
+  assert.deepEqual(t.medals, ['war-bonds']);
+});

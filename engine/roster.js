@@ -757,3 +757,14 @@ export function nextEdition(state, theme) {
 export function shardOf(handle, n = SHARDS) {
   return hashString(handle) % n;
 }
+
+// Jednorázově (příkaz inheritMedals, 18. 11.): nástupcům vrátí dědičné medaile (theme.inheritMedals), které měl některý padlý předek. Bez zápisu do deníku.
+export function inheritMedals(state, theme) {
+  const keep = theme.inheritMedals || [];
+  let n = 0;
+  for (const s of state.soldiers) {
+    const had = new Set((s.fallen || []).flatMap((r) => r.medals || []).filter((m) => keep.includes(m)));
+    for (const m of had) if (!(s.medals || []).includes(m)) { s.medals = [...(s.medals || []), m]; n++; }
+  }
+  return n;
+}

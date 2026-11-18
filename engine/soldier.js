@@ -242,7 +242,7 @@ function pairEntry(kind, s, o, day, theme, story, rand, ev, today = null) {
 }
 
 // Nástupce z rodu: stejné IG jméno i místo, nové křestní jméno, odkaz na padlého.
-// Nástupce z rodu: NOVÝ voják. Nic nedědí (medaile, tituly, jizvy, výdrž, zkušenosti, role, hodnost), dny se mu počítají od nuly.
+// Nástupce z rodu: NOVÝ voják. Nic nedědí kromě medailí z theme.inheritMedals (podpora hráče: War Bonds, hvězda) (medaile, tituly, jizvy, výdrž, zkušenosti, role, hodnost), dny se mu počítají od nuly.
 // Zůstává jen rod: hráč (IG účet, převzetí), příjmení, stanoviště na frontě, domov, odznaky rodu a deník rodu (zápisy padlých se nemažou).
 export function heir(s, day, theme, story, today = null) {
   const rand = rngFor(s.id, 'heir', s.generation);
@@ -260,7 +260,7 @@ export function heir(s, day, theme, story, today = null) {
     status: 'active',
     enlisted: day,
     variant: Math.floor(rand() * 4),
-    medals: [],
+    medals: (s.medals || []).filter((m) => (theme.inheritMedals || []).includes(m)), // podpora patří hráči, ne vojákovi: stužka a hvězda přejdou na nástupce (18. 11.)
     titles: [],
     fallen: [...(s.fallen || []), prev],
     arc: null,

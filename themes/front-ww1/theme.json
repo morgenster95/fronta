@@ -950,6 +950,8 @@
   },
   "storyShare": 1,
   "_storyShare": "Podíl vojáků, kteří dostanou každý den zápis do deníku (1 = každý, jeden zápis za den; dřív 0,25). Při velkém počtu hráčů roste stav (data/state.json) o ~220 B na vojáka a den.",
+  "inheritMedals": ["war-bonds", "officers-star"],
+  "_inheritMedals": "18. 11. (uživatel): podpora patří hráči, ne vojákovi; stužka War Bonds a hvězda Officers' Mess přejdou na nástupce z rodu.",
   "support": {
     "_note": "Dobrovolná podpora přes Patreon (Ko-fi zamítlo platby 14. 11.): medaile bez herní výhody. url = stránka Patreonu (prázdné = tlačítko na webu se neukáže), platform = název služby v textech webu.",
     "url": "https://www.patreon.com/cw/MudandIron",

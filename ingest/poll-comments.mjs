@@ -15,7 +15,7 @@ import path from 'node:path';
 import { ROOT, loadTheme, loadMap, loadState, saveState, writePublic } from '../tools/lib.mjs';
 import { addShell } from '../engine/shells.js';
 import { addPilotApp, undoPilots } from '../engine/pilots.js';
-import { switchFaction, grantSupport, grantStar, revokeStar, rewriteSupport, linkSupport, grantTitle, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
+import { inheritMedals, switchFaction, grantSupport, grantStar, revokeStar, rewriteSupport, linkSupport, grantTitle, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 import { wiringReturns } from '../engine/wiring.js';
 import { deathReply } from '../engine/house.js';
@@ -149,6 +149,7 @@ async function main() {
         const r = applyComment(state, { id: `cmd-${c.id}`, userId: null, username: c.handle, text: c.text || theme.factions[c.faction].keyword, timestamp: new Date().toISOString() }, theme, story, map);
         console.log(r?.soldier ? `🪖 ruční nábor @${c.handle}: ${r.soldier.name}` : `🪖 příkaz ${c.id}: nenaverbováno (voják už existuje?)`);
       }
+      if (c.cmd === 'inheritMedals') console.log(`🎗 dědičné medaile vráceny nástupcům: ${inheritMedals(state, theme)}`);
       if (c.cmd === 'undoPilots') console.log(`✈ los pilotů vrácen: ${undoPilots(state, theme, c)} rolí, nábor znovu otevřen (${Object.keys(state.pilotCall?.apps || {}).length} přihlášek)`);
       if (c.cmd === 'title') { const r = grantTitle(state, c.handle, c); console.log(r ? `🎖 titul @${r.handle}: ${r.title}` : `🎖 příkaz ${c.id}: voják nenalezen nebo titul už má`); }
       if (c.cmd === 'linkSupport') console.log(`🎗 @${c.handle} doplněn do poděkování v novinách: ${linkSupport(state, c.handle, c.day)}×`);

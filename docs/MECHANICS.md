@@ -477,3 +477,7 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 - Simulace (20 raiderů na stranu, stav 18. 11.): raideři zabijí ~4–5 a zraní ~6–7 nepřátel, sami ztratí ~2 padlé a ~4 raněné. Odznak `raider` po 3 raidech, XP 4.
 - Noviny: článek „Night raid“ s počty a nejstatečnějším raiderem (jméno + @handle). Deníky: `nightRaidKill/Wound/Stabbed/Killed/Hurt/Back` (story.json; slovo „raid“ tu nevadí, výpravy jsou dál vypnuté).
 - Bot odpoví na RAID (zapsán / nejdřív narukuj / raněný zůstává u mediků / pilot létá).
+
+## 2026-11-18 Podpora se dědí v rodu (NASAZENO)
+- Uživatel: stužka má zůstat vidět i po smrti vojáka. `theme.inheritMedals = ["war-bonds", "officers-star"]`: nástupce z rodu dostane stužku War Bonds a hvězdu Officers' Mess (podpora patří hráči, ne vojákovi). Ostatní medaile se dál nedědí (zůstanou u padlého v albu rodu).
+- Jednorázový příkaz `inheritMedals` vrátil stužku nástupcům, kteří ji ztratili (18. 11.: Dorian „Parson“ Freddie, @0__freddie__0). `unstar` (v01py) se nedědí zpět, protože hvězda už u něj není.
