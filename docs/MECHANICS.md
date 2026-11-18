@@ -459,3 +459,4 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 - Simulace (20 běhů × 3 dny, stav 18. 11.): **~32 padlých a ~90 raněných denně** za obě strany (H ~15, C ~17); dřív ~9 / ~52. Varianta s palbou ×2 navíc dávala ~55 padlých a ~140 raněných (zamítnuto, přes strop).
 - Modifikátory dál fungují (ověřeno simulací): bunkry PILLBOXES (bez rozkazů Concord ~13 padlých/den místo ~17), pilot (násobí šanci na zásah), pozorovatelna.
   **Pozor:** pozorovatelna (`race.observation`: palba ×1,8, smrtelnost ×2) je s novou smrtelností drtivá: zkusmo zapnutá dnes by Concord ztrácel ~40 padlých denně proti ~13. Před další kótou s odměnou `observation` ji zmírnit (návrh fire 0,4, kill 0,25), zatím neaktivní.
+- 2026-11-18 (uživatel): pilot vylosovaný v novinách do boje té ranní bitvy NEJDE (letadlo už je ve hře a létá, ale bonus i riziko sestřelení platí až od další bitvy; `p.since + 1` v `engine/pilots.js`).

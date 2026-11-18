@@ -1308,6 +1308,9 @@ test('pilot: PILOT se nedá přát ani převelet, los dá jednoho pilota na stra
   assert.ok([a.handle, b.handle].includes(st.pilots[0].handle));
   const pil = st.soldiers.find((s) => s.handle === st.pilots[0].handle);
   assert.equal(pil.archetype, 'pilot');
+  st.day = st.pilots[0].since + 1; // den losu: bitva téhož rána, pilot ještě nebojuje
+  assert.equal(P.pilotFire(st, theme, 0, 'clear'), 1);
+  st.day += 1; // další bitva
   assert.equal(P.pilotFire(st, theme, 0, 'clear'), 1.12);
   assert.equal(P.pilotFire(st, theme, 0, 'fog'), 1); // mlha drží letadlo na zemi
   // sestřelení: šance 1 → role se uvolní a pilot padne nebo je raněn

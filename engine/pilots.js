@@ -70,6 +70,7 @@ export const flyable = (theme, weatherId) => !(theme.pilot?.grounded || ['storm'
 export function pilotFire(state, theme, faction, weatherId) {
   const p = state.pilots?.[faction];
   if (!p || !flyable(theme, weatherId)) return 1;
+  if (p.since != null && state.day <= p.since + 1) return 1; // 18. 11. (uživatel): v den losu pilot teprve nastoupil, letadlo létá, ale do boje jde až v další bitvě
   const s = find(state, p.handle);
   return alive(s) && s.archetype === 'pilot' && s.status !== 'wounded' ? 1 + (theme.pilot?.rifleman ?? 0.12) : 1;
 }
@@ -85,6 +86,7 @@ export function pilotSortie(state, theme, day, weatherId, fall, wound) {
     const s = find(state, p.handle);
     if (!alive(s) || s.archetype !== 'pilot') { endPilot(state, f, s && alive(s) ? s : null); continue; } // padl na zemi / převelen
     if (!flyable(theme, weatherId)) continue;
+    if (p.since != null && day <= p.since + 1) continue; // první den po losu: zatím jen zalétává za linií, žádné riziko sestřelení
     const cfg = theme.pilot || {};
     const mgs = state.soldiers.filter((x) => x.faction === 1 - f && x.archetype === 'machinegunner' && x.status === 'active').length;
     const risk = (cfg.shotDown ?? 0.05) + (cfg.perTenMG ?? 0.01) * Math.floor(mgs / 10);
