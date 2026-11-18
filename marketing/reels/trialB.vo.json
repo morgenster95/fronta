@@ -1,0 +1,42 @@
+{
+ "seconds": 16.1,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.15,
+   1.7,
+   "This soldier belonged to a real player.",
+   "hook"
+  ],
+  [
+   2.1,
+   1.8,
+   "Yesterday, another player shot him.",
+   "shot"
+  ],
+  [
+   4.15,
+   2.0,
+   "This morning, his family sent another.",
+   "heir"
+  ],
+  [
+   6.4,
+   1.65,
+   "Every comment here becomes a soldier.",
+   "spawn"
+  ],
+  [
+   8.3,
+   2.65,
+   "Five hundred players. One war.",
+   "army"
+  ],
+  [
+   11.2,
+   1.49,
+   "Comment HEGEMONY or CONCORD.",
+   "cta"
+  ]
+ ]
+}
