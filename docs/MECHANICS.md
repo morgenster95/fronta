@@ -460,3 +460,7 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 - Modifikátory dál fungují (ověřeno simulací): bunkry PILLBOXES (bez rozkazů Concord ~13 padlých/den místo ~17), pilot (násobí šanci na zásah), pozorovatelna.
   **Pozor:** pozorovatelna (`race.observation`: palba ×1,8, smrtelnost ×2) je s novou smrtelností drtivá: zkusmo zapnutá dnes by Concord ztrácel ~40 padlých denně proti ~13. Před další kótou s odměnou `observation` ji zmírnit (návrh fire 0,4, kill 0,25), zatím neaktivní.
 - 2026-11-18 (uživatel): pilot vylosovaný v novinách do boje té ranní bitvy NEJDE (letadlo už je ve hře a létá, ale bonus i riziko sestřelení platí až od další bitvy; `p.since + 1` v `engine/pilots.js`).
+
+## 2026-11-18 Nábor: heslo strany s překlepem (NASAZENO)
+- Uživatel: hráč napsal „concorrrrd“ (emoce) a nenarukoval. `parseComment` (`engine/roster.js`) teď po přesné shodě zkusí každé slovo: sloučí opakovaná písmena a povolí jednu chybu (záměna, vynechání, přidání, prohození sousedních písmen), první písmeno musí sedět, heslo aspoň 6 písmen.
+- Projde: CONCORRRRD, HEGEMONYYY, concrod, hegemny, Hegemoney, concorde. Neprojde: concert, congrats, condor, second.

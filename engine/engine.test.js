@@ -1365,3 +1365,13 @@ test('boj: dva výstřely denně (battle.roles.shots) dají víc zásahů než j
   for (let i = 0; i < 4; i++) { one += hits(1, i); two += hits(2, i); }
   assert.ok(two > one * 1.4, `2 výstřely ${two} vs 1 výstřel ${one}`);
 });
+
+test('nábor: heslo strany i s překlepem nebo protahováním (CONCORRRRD, hegemny, concrod), běžná slova ne', () => {
+  const p = (x) => parseComment(x, theme)?.faction ?? null;
+  assert.equal(p('concorrrrd'), 1);
+  assert.equal(p('HEGEMONYYYY 🔥'), 0);
+  assert.equal(p('concrod'), 1);
+  assert.equal(p('hegemny please'), 0);
+  assert.equal(p('Concordddd medic'), 1);
+  for (const x of ['concert', 'congrats', 'condor', 'second', 'I love this game']) assert.equal(p(x), null, x);
+});

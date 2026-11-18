@@ -103,7 +103,28 @@ export function parseComment(text, theme) {
     .filter((h) => h.at >= 0)
     .sort((a, b) => a.at - b.at);
   if (hits.length) return { type: 'enlist', faction: hits[0].i };
+  // 18. 11. (uživatel): překlepy a citové protahování („CONCORRRRD“, „HEGEMONYYY“, „concrod“, „hegemny“) – první slovo, které je heslu blízko
+  for (const w of t.match(/[A-Z]+/g) || []) {
+    const i = theme.factions.findIndex((f) => nearKeyword(w, f.keyword));
+    if (i >= 0) return { type: 'enlist', faction: i };
+  }
   return null;
+}
+
+// slovo odpovídá heslu i s překlepem: po sloučení opakovaných písmen se liší nejvýš o jednu záměnu, vynechání, přidání
+// nebo prohození dvou sousedních písmen (jen u slov aspoň 6 písmen, ať se krátká slova nepletou)
+const squeeze = (w) => w.replace(/(.)\1+/g, '$1');
+function nearKeyword(word, keyword) {
+  const a = squeeze(word), b = squeeze(keyword);
+  if (a === b) return true;
+  if (b.length < 6 || Math.abs(a.length - b.length) > 1 || a[0] !== b[0]) return false;
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) {
+    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+  }
+  return d[a.length][b.length] <= 1;
 }
 
 // comment: { id, userId, username, text, timestamp, mediaId }
