@@ -1,0 +1,42 @@
+{
+ "seconds": 16.3,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.15,
+   2.78,
+   "I let five hundred strangers fight a war in my comments.",
+   "hook"
+  ],
+  [
+   3.18,
+   2.0,
+   "Every soldier here is a real person.",
+   "real"
+  ],
+  [
+   5.43,
+   1.68,
+   "One comment, and you're on the line.",
+   "spawn"
+  ],
+  [
+   7.36,
+   2.84,
+   "Every day at one, the newspaper decides who lives.",
+   "war"
+  ],
+  [
+   10.45,
+   0.68,
+   "Pick a side.",
+   "side"
+  ],
+  [
+   11.38,
+   1.49,
+   "Comment HEGEMONY or CONCORD.",
+   "cta"
+  ]
+ ]
+}
