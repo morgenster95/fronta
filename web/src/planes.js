@@ -42,7 +42,7 @@ function groundFire(g, pl, now) {
 
 export function initPlanes({ world, map, roster, openX0, openX1 }) {
   const sp = import.meta.env.DEV ? new URLSearchParams(location.search) : null;
-  const q = sp ? (sp.get('planes') ?? (['pilot', 'front8'].includes(sp.get('reel')) ? '0:0,1:1' : null)) : null; // reel „pilot“ ukazuje obě letadla
+  const q = sp ? (sp.get('planes') ?? (['pilot', 'front8', 'front9'].includes(sp.get('reel')) ? '0:0,1:1' : null)) : null; // reel „pilot“ ukazuje obě letadla
   const dev = q ? q.split(',').map((x) => { const [f, v] = x.split(':'); return { f: Number(f), v: Number(v) || 0 }; }) : [];
   const planes = [];
   for (const f of [0, 1]) {

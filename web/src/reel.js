@@ -141,6 +141,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'front9') {
+    // Day reel Day 9 (18. 11.): háček s bojem v zákopu, palba 2× denně, ztráty, příběh, noví piloti, počty, závod, výzva RAID (reel-front9.js)
+    return import('./reel-front9.js').then(async ({ startDay9Reel }) => {
+      await startDay9Reel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'front8') {
     // Day reel Day 8 (17. 11.): výsledek souboje o bunkry (ruiny), příběhy (kbelík, čaj), ztráty a proč, závod, noví patroni s hvězdou, přírůstky, nábor pilotů (reel-front8.js)
     return import('./reel-front8.js').then(async ({ startDay8Reel }) => {
