@@ -5,6 +5,9 @@ Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co
 `docs/SCHEDULE.md` (rytmus dne), `docs/MAP_MISSIONS.md` (výpravy, vypnuté), **`docs/MECHANICS.md` (deník domluvených mechanik)**. `docs/DESIGN.md` je původní návrh, neaktualizuje se.
 
 ## 18. 11. (cloud): VÍC PADLÝCH, TESTOVACÍ REELY
+- **Noviny od 19. 11. jen čísla** (ztráty, Roll call, nováčci bez jmen a @handle; příběhy a zvláštní zprávy jména mají).
+- **Noční raid (NASAZENO):** post s `raid: true` otevře přihlášky RAID, vyhodnotí příští noviny, zabití se počítají do závodu o Blackwater Canal (`docs/MECHANICS.md`). Day reel Day 9 `reel-front9` (51 s, výzva RAID) čeká na schválení; do fronty s `raid: true`.
+- **Cinematiky (pravidlo uživatele 18. 11.):** žádné detailní obrázky pozadí z PixelLabu se sprity uvnitř (nesedí měřítko). Boj točit **přímo na mapě hry** (`web/src/fight-fx.js`: herci ze sprity hry ve vlastní vrstvě) nebo kreslit v kódu v rozlišení hry se sprity ze hry. Z PixelLabu jen sprity/animace ve stejném měřítku (lopatka `art/cine/anim/shovel_*`).
 - **Boj od novin 18. 11.:** střelec střílí 2× denně (`battle.roles.shots`), smrtelnost těžký 0,7 / kritický 0,8 / odstřelovač 0,9 → ~32 padlých a ~90 raněných denně (dřív ~9 / ~52). Detaily a varování k pozorovatelně v `docs/MECHANICS.md`. Ověřit po novinách 18. 11., že čísla sedí, a ukázat uživateli „Proč“.
 - **Letadlo** dnes skoro nic nedělá (+0,05 padlého/den); návrh 3–4 vlastní zásahy denně čeká na souhlas.
 - **Testovací reely** `reel-trialA` („I let 500 strangers fight a war in my comments“) a `reel-trialB` (skutečný padlý @c10ud_b3rry3.0, zastřelen @jimmysparrow17) jsou hotové (`web/src/reel-trial.js`, Release `media`); **vydává je uživatel sám ručně jako trial reel** (do fronty je nedávat). `ingest/publish.mjs` umí `item.trial` (`trial_params`), zatím neověřeno naostro.
