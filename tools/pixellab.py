@@ -77,7 +77,7 @@ def existing_dirs(char_id, name):
 
 def anim(char_id, name, direction, extra, max_cost):
     for e in ledger():
-        if e["character"] == char_id and e["name"] == name and e["direction"] == direction:
+        if e.get("character") == char_id and e.get("name") == name and e.get("direction") == direction:
             sys.exit(f"STOP: {name}/{direction} už je v ledgeru ({e['time']}, skupina {e.get('group')}). Nic neodesláno.")
     have = existing_dirs(char_id, name)
     if direction in have:
