@@ -1,0 +1,36 @@
+{
+ "seconds": 32.1,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.2,
+   1.74,
+   "These soldiers kept the front alive.",
+   "hook"
+  ],
+  [
+   2.19,
+   8.37,
+   "Edmund. Walter. Florian. Ulrich. They bought War Bonds, and the Gazette printed their names.",
+   "names"
+  ],
+  [
+   10.81,
+   6.66,
+   "Mud and Iron is free, with no ads. Their support pays for every new scene, every plane, every shovel.",
+   "why"
+  ],
+  [
+   17.72,
+   4.12,
+   "War Bonds. Field Post. Officers' Mess.",
+   "tiers"
+  ],
+  [
+   22.09,
+   6.52,
+   "If you'd like to help, the link is in our bio. If not, just keep fighting. That helps too.",
+   "cta"
+  ]
+ ]
+}
