@@ -145,6 +145,10 @@ async function main() {
         const r = switchFaction(state, theme, map, c.handle, c.faction);
         console.log(r ? `⇄ @${r.handle}: ${r.from} → ${r.to}, ${r.unit}, ${r.sector}` : `⇄ příkaz ${c.id}: nic se nezměnilo`);
       }
+      if (c.cmd === 'enlist') { // ruční nábor (18. 11.): komentář, který bot nepoznal (např. před opravou překlepů); IG ID se doplní z dalšího komentáře hráče
+        const r = applyComment(state, { id: `cmd-${c.id}`, userId: null, username: c.handle, text: c.text || theme.factions[c.faction].keyword, timestamp: new Date().toISOString() }, theme, story, map);
+        console.log(r?.soldier ? `🪖 ruční nábor @${c.handle}: ${r.soldier.name}` : `🪖 příkaz ${c.id}: nenaverbováno (voják už existuje?)`);
+      }
       if (c.cmd === 'undoPilots') console.log(`✈ los pilotů vrácen: ${undoPilots(state, theme, c)} rolí, nábor znovu otevřen (${Object.keys(state.pilotCall?.apps || {}).length} přihlášek)`);
       if (c.cmd === 'title') { const r = grantTitle(state, c.handle, c); console.log(r ? `🎖 titul @${r.handle}: ${r.title}` : `🎖 příkaz ${c.id}: voják nenalezen nebo titul už má`); }
       if (c.cmd === 'linkSupport') console.log(`🎗 @${c.handle} doplněn do poděkování v novinách: ${linkSupport(state, c.handle, c.day)}×`);
