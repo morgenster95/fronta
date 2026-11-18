@@ -446,3 +446,8 @@ První: Konrad Sebs (@_sebs.c_, Hegemonie, odstřelovač, First Wave), „Propag
 ## 2026-11-17: Role jen při náboru (NASAZENO)
 Uživatel: hráč s rolí se jen zeptal, co dělá poručík, a bot mu napsal „už jsi poručík“; navíc delší věta se zmínkou role („the medic carried me back…“) mohla hráči, který ještě nevyužil první volbu zdarma, roli potichu změnit.
 Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom komentáři, „CONCORD medic“). Kdo už vojáka má, tomu komentář roli nemění a bot mlčí. Změna role jen převelením z karty vojáka na webu. Člověku bez vojáka bot na zmínku role dál poradí, jak narukovat i s rolí (`notEnlisted`).
+
+## 2026-11-18 Pilot: změřený účinek (NÁVRH na posílení, čeká na uživatele)
+- Simulace 60 běhů (skript ve scratchpadu, stav 18. 11. ráno, los pilotů ve 13:00 UTC): bonus puškařů ×1,12 přidá straně **~0,4 zásahu denně** (Hegemonie puškaři 7,6 → 8,0, Concord 9,4 → 9,9) a **~0,05 padlého denně**. V novinách ani ve ztrátách to není poznat.
+- I ×1,35 dá jen ~+1,4 zásahu a ~+0,1 padlého denně (puškaři mají malou šanci na zásah, pilot je jen násobí).
+- Návrh: letadlo dělá vlastní viditelnou věc, např. **průzkum: 2–3 zásahy denně navíc** do nepřátelské linie (zpráva „Spotted from the air“ se jménem pilota), nebo **označí cíl** pro kulomety (×1,15 kulometčíkům celé strany). Bez souhlasu neměnit.
