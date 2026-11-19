@@ -492,3 +492,7 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 ## 2026-11-19 Závod o zabití: oprava a shoda (NASAZENO před novinami 19. 11.)
 - Chyba: závod „kdo první zabije 100“ počítal jen padlé, kteří už mají nástupce; nástupci vznikají až po vyhodnocení závodu, takže se kanál vyhlásil o den později a noviny psaly „-20 more“. Teď se počítají i dnešní padlí (`killCounts` v `engine/race.js`).
 - Obě strany přes 100 týž den: vyhrává ta, která zabila víc. Při přesné shodě nikdo, závod běží dál, dokud jedna nevede (uživatel 19. 11.).
+
+## 2026-11-19 Péče mediků: víc práce na raněného (NASAZENO)
+- Uživatel: medici stíhají i při velkých ztrátách. `battle.care.*.need`: lehce raněný 1 (dřív 0,4), těžce 2 (dřív 1), kriticky 3 (dřív 2); medik dál zvládne 2 body denně. Hegemonie (méně mediků) se dostane pod 100 % pokrytí dřív.
+- Nanečisto na 3 dny (s bombardováním Concordu po kanálu): péče přidá ~+10 % padlých. Hlavní váha je bombardování: zasáhne 40 % úseků Concordu a s 800 vojáky to dělá 80–150 padlých denně (viz návrh níž).

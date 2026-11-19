@@ -564,16 +564,16 @@
     "_newbieDays": "ochrana nováčků je VYPNUTÁ (0 dní, od 2026-11-12 na pokyn uživatele): kritický zásah i zhoršení rány hrozí od prvního dne. Dřív 3 dny bez kritického zásahu kulkou a bez zhoršení.",
     "critCooldown": 7,
     "care": {
-      "_note": "need = práce mediků na raněného za den (medik má 1). Na lůžku need 0 (léčí nemocnice).",
+      "_note": "need = práce mediků na raněného za den (medik má roles.medic.work = 2). Na lůžku need 0 (léčí nemocnice). 19. 11. (uživatel): lehce 1 (dřív 0,4), těžce 2 (dřív 1), kriticky 3 (dřív 2), ať medici při velkých ztrátách nestíhají.",
       "light": {
-        "need": 0.4,
+        "need": 1,
         "heal": 1,
         "baseHeal": 0.4,
         "worsen": 0.25,
         "_": "lehce: leží v zákopu; s plnou péčí (1 medik) je druhý den v pořádku; bez péče se zahojí jen s baseHeal a hrozí zhoršení na těžce"
       },
       "heavy": {
-        "need": 1,
+        "need": 2,
         "worsen": 0.3,
         "trench": 1.5,
         "heal": 0.35,
@@ -586,7 +586,7 @@
         "_resolve": "15. 11. (uživatel: rychleji ozdravovat nebo zabíjet): od minDays 1 se může zahojit; po maxDays 2 nocích se rozhodne: zahojí se s šancí resolveHeal + resolveCare × péče, jinak zemře."
       },
       "crit": {
-        "need": 2,
+        "need": 3,
         "dieBase": 0.5,
         "dieNoCare": 0.7,
         "stabilize": 3,
