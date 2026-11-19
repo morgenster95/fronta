@@ -11,6 +11,8 @@ jobs:
         run: |
           dig +short assets.mudandiron.app CNAME || true
           dig +short assets.mudandiron.app A || true
+          echo "apex A:";  dig +short mudandiron.app A @1.1.1.1; dig +short mudandiron.app A @8.8.8.8
+          echo "apex TXT:"; dig +short mudandiron.app TXT @1.1.1.1; dig +short mudandiron.app TXT @8.8.8.8
       - name: HTTPS a hlavičky
         run: |
           for u in https://assets.mudandiron.app/game/assets.sha https://assets.mudandiron.app/game/assets/soldiers/atlas.json; do
