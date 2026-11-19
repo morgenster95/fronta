@@ -34,3 +34,9 @@ jobs:
           body=$(curl -sSL --max-time 30 "https://mudandiron.web.app$js")
           echo "assets.mudandiron.app: $(grep -c 'assets.mudandiron.app' <<< "$body")"
           n=$(grep -oE '[a-z0-9-]+\.github\.io[^"'"'"' ]*' <<< "$body" | sort -u); echo "github.io v kódu: ${n:-žádné}"
+      - name: Hra na mudandiron.app
+        run: |
+          for u in https://mudandiron.app/ https://mudandiron.app/data/roster.json https://mudandiron.app/__/auth/handler https://www.mudandiron.app/; do
+            echo "== $u"; curl -sS -o /dev/null -D - --max-time 20 "$u" 2>&1 | grep -iE '^(HTTP|server|location|content-type)|curl' || echo "NEDOSTUPNÉ"
+          done
+          echo "== certifikát"; echo | openssl s_client -connect mudandiron.app:443 -servername mudandiron.app 2>/dev/null | openssl x509 -noout -subject -issuer -dates || true
