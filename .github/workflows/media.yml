@@ -26,6 +26,7 @@ jobs:
           # přechod: video, které ještě leží v repu, nahrát do Release
           for f in marketing/promo/*.mp4; do [ -f "$f" ] && gh release upload media "$f" --clobber; done
           gh release download media -D site --clobber || true
+          rm -f site/reel_news*.mp4 # Front News (YouTube) jen v Release ke stažení, ne na web (uživatel 19. 11.)
           cp -r marketing/promo/. site/
           cp -r web/public/assets site/game/assets
           (cd web/public/assets && find . -type f | LC_ALL=C sort | xargs sha1sum | sha1sum | cut -d' ' -f1) > site/game/assets.sha
