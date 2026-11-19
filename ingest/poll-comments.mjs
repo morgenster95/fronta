@@ -157,6 +157,12 @@ async function main() {
         if (txt && !c.noNews) state.news = [...(state.news || []), { day: state.day, kind: 'race', h: c.newsHead || 'Supplies, not guns', text: txt }];
         console.log(`🚚 odměna ${c.id_obj} → ${c.reward}: ${txt || 'nic'}`);
       }
+      if (c.cmd === 'fixEntry') { // oprava jednoho zápisu v deníku vojáka (jen na výslovný pokyn uživatele; výjimka z nedotknutelných deníků)
+        const x = state.soldiers.find((y) => y.handle === c.handle);
+        let n = 0;
+        for (const r of x?.record || []) if (r[0] === c.day && r[1].includes(c.find)) { r[1] = r[1].replace(c.find, c.replace); n++; }
+        console.log(`✎ deník @${c.handle} den ${c.day}: ${n}×`);
+      }
       if (c.cmd === 'amendChronicle') { // oprava textu už vydaných novin (jen na výslovný pokyn uživatele; výjimka z nedotknutelné kroniky)
         const ch = (state.chronicle || []).find((x) => x.day === c.day);
         let n = 0;
