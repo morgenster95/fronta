@@ -313,5 +313,10 @@
     "id": "endsafer-hill304-20261119",
     "cmd": "endSafer",
     "id_obj": "hill304"
+  },
+  {
+    "id": "support-sebastiano_maccario-20261119",
+    "cmd": "support",
+    "handle": "sebastiano_maccario"
   }
 ]
