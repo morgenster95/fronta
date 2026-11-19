@@ -499,3 +499,7 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 
 ## 2026-11-19 Odměna kóty „lepší logistika“ (NASAZENO), Blackwater Canal
 - Uživatel: kanál nemá dávat bombardování, ale lepší logistiku. `reward: "logistics"` (`theme.race.logistics`: 3 dny, 2 výstřely denně): vítěz kóty po 3 bitvy střílí 2× denně, ostatní 1×. Hráčům se píše jen „better supplies“ (uživatel: neříkat, že střílí víc). Kanál (Hegemonie, Day 10) převeden příkazem `convertReward` (bombardování zrušeno) a text v dnešních novinách opraven příkazem `amendChronicle` (výjimka z nedotknutelné kroniky na pokyn uživatele). Logistika = jen 3 dny zásob, žádná výšina ani bezpečnější týden (`v.to` = den dobytí).
+
+## 2026-11-19 NÁVRH na později: závod „Hold the line“ (Grey Mill zatím 300 nováčků)
+- Uživatel: nápad se líbí, „někdy využijeme“; teď zůstává Grey Mill = první k 300 novým vojákům.
+- Návrh: závod 3 bitvy, kótu dostane strana s menším podílem padlých (padlí / velikost armády); odměna „Bread from the mill“ (3 dny rychlejší hojení těžce raněných, méně smrtí bez péče). Varianty: „Supply run“ (komentáře FLOUR jako souboj granátů), „Mill raid“ (150 zabitých při raidech).

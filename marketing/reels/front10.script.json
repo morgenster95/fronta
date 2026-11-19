@@ -1,0 +1,76 @@
+{
+ "seconds": 70,
+ "auto": true,
+ "drums": [
+  "open",
+  [],
+  "big"
+ ],
+ "lines": [
+  [
+   0.2,
+   "Day ten. One hundred and eighty-six men went over the top in the dark.",
+   "open"
+  ],
+  [
+   0,
+   "Shovels, knives, pistols. Sixty-seven defenders never got up again.",
+   "raid"
+  ],
+  [
+   0,
+   "Seventeen raiders never came home.",
+   "raid2"
+  ],
+  [
+   0,
+   "The bravest of the night: Bastian Enjoyer for the Hegemony, Ulrich Alessiosanto for the Concord. Two men each.",
+   "brave"
+  ],
+  [
+   0,
+   "That raid decided the canal. The Hegemony took Blackwater Canal, one hundred and twenty kills to one hundred. Better supplies now come up the water.",
+   "canal"
+  ],
+  [
+   0,
+   "Gideon Cubes had the deadliest rifle on the front.",
+   "hero"
+  ],
+  [
+   0,
+   "One hundred and twenty-six fell. Fifty-eight Hegemony, sixty-eight Concord. Most of them in the raid.",
+   "toll"
+  ],
+  [
+   0,
+   "Both armies dug a second hospital. The surgeons will be busy.",
+   "hosp"
+  ],
+  [
+   0.4,
+   "And the front has never been this strong.",
+   "big"
+  ],
+  [
+   0,
+   "Seven hundred and ninety-one new soldiers in a single day.",
+   "big2"
+  ],
+  [
+   0,
+   "One thousand four hundred and thirty-five now hold the line. Hegemony six hundred and sixteen. Concord eight hundred and nineteen.",
+   "army"
+  ],
+  [
+   0,
+   "Florian, Casimir, Quentin and Pavel bought War Bonds. The front thanks you.",
+   "bonds"
+  ],
+  [
+   0,
+   "Next: Grey Mill. First to three hundred new soldiers takes it. Comment Hegemony or Concord.",
+   "cta"
+  ]
+ ]
+}
