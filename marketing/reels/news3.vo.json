@@ -1,0 +1,126 @@
+{
+ "seconds": 95.8,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.6,
+   1.52,
+   "Three minutes to ten at night.",
+   "cold"
+  ],
+  [
+   2.37,
+   5.11,
+   "A runner came down the Concord trench with one number on a scrap of paper. One hundred.",
+   "cold2"
+  ],
+  [
+   7.73,
+   2.72,
+   "This is Front News. Day three.",
+   "ident"
+  ],
+  [
+   10.7,
+   2.7,
+   "All evening the Concord had been counting new soldiers.",
+   "ridge"
+  ],
+  [
+   13.65,
+   4.04,
+   "By ten at night it was ninety-four for the Hegemony, and one hundred for the Concord.",
+   "ridge1"
+  ],
+  [
+   17.94,
+   5.69,
+   "The hundredth man was a cook, Lucien Jro. With him, Verdel Ridge belonged to the Concord.",
+   "ridge2"
+  ],
+  [
+   23.88,
+   3.08,
+   "Within the hour, the guns on the ridge turned toward the Hegemony.",
+   "guns"
+  ],
+  [
+   27.21,
+   2.72,
+   "All night, the shells came down on the Hegemony line.",
+   "guns2"
+  ],
+  [
+   30.18,
+   5.21,
+   "Fifteen men were hit in the first night. The wire in front of them was torn to shreds.",
+   "guns3"
+  ],
+  [
+   35.64,
+   6.45,
+   "In the hospital dugout, the surgeon worked on Bram Yoollyfox until the lamp ran dry. It was not enough.",
+   "ward"
+  ],
+  [
+   42.34,
+   5.6,
+   "Lucien Jewnipers slipped away in the night. The orderly who sat with him said he was not afraid.",
+   "ward2"
+  ],
+  [
+   48.19,
+   3.58,
+   "Nils Wolfmananton died with a rosary of rough beads in his hand.",
+   "ward3"
+  ],
+  [
+   52.02,
+   4.83,
+   "The Hegemony answered the only way it could. Edmund Potato raised his rifle.",
+   "shot"
+  ],
+  [
+   57.1,
+   3.29,
+   "Henrik Eccentricred of the Concord fell, and never moved again.",
+   "shot2"
+  ],
+  [
+   60.64,
+   5.93,
+   "Day three gave the war its first dead. Five for the Hegemony. One for the Concord.",
+   "dead"
+  ],
+  [
+   66.82,
+   4.93,
+   "Then it rained from dusk to dawn. The trenches filled with water, and with men.",
+   "rain"
+  ],
+  [
+   72.0,
+   8.41,
+   "Seventy-two new soldiers came up the line. The Hegemony now held one hundred and eighteen. The Concord, one hundred and twenty.",
+   "rain2"
+  ],
+  [
+   80.66,
+   3.98,
+   "And a new race began at once. Hill 304.",
+   "hill"
+  ],
+  [
+   84.89,
+   2.99,
+   "By morning, the Hegemony led, twenty-four to twenty.",
+   "hill2"
+  ],
+  [
+   88.13,
+   4.22,
+   "This was Front News. Next time: the guns do not stop.",
+   "out"
+  ]
+ ]
+}
