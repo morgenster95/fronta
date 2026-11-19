@@ -141,6 +141,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'thousand') {
+    // náborový reel 1,000+ (19. 11.): počítadlo, bubliny komentářů, přehlídka otáčejících se rolí, výzva (reel-thousand.js)
+    return import('./reel-thousand.js').then(async ({ startThousandReel }) => {
+      await startThousandReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'news2') {
     // Front News, epizoda Day 2 (19. 11.): studený začátek detailem v kresleném zákopu (reel-news2.js, cine-trench.js)
     return import('./reel-news2.js').then(async ({ startNews2Reel }) => {

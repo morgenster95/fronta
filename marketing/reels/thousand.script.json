@@ -1,0 +1,81 @@
+{
+ "seconds": 40,
+ "auto": true,
+ "drums": [
+  "hook",
+  [],
+  "cta"
+ ],
+ "lines": [
+  [
+   0.2,
+   "Over a thousand soldiers are now at war.",
+   "hook"
+  ],
+  [
+   0,
+   "Every one of them started as a comment.",
+   "comment"
+  ],
+  [
+   0,
+   "Pick a side. Then pick who you are.",
+   "pick"
+  ],
+  [
+   0,
+   "Riflemen hold the line.",
+   "rifleman"
+  ],
+  [
+   0,
+   "Machine gunners own it.",
+   "machinegunner"
+  ],
+  [
+   0,
+   "Snipers duel across the wire.",
+   "sniper"
+  ],
+  [
+   0,
+   "Medics carry your friends out.",
+   "medic"
+  ],
+  [
+   0,
+   "Runners carry orders under fire.",
+   "runner"
+  ],
+  [
+   0,
+   "Sappers dig under the enemy.",
+   "sapper"
+  ],
+  [
+   0,
+   "Signallers keep the wires alive.",
+   "signaller"
+  ],
+  [
+   0,
+   "Cooks feed the line.",
+   "cook"
+  ],
+  [
+   0,
+   "Chaplains keep the faith.",
+   "chaplain"
+  ],
+  [
+   0,
+   "Pilots fly above it all.",
+   "pilot"
+  ],
+  [
+   0.2,
+   "Comment your side and your role. You are in within minutes.",
+   "cta"
+  ]
+ ]
+}
