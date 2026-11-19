@@ -18,6 +18,7 @@ import { addPilotApp, undoPilots } from '../engine/pilots.js';
 import { inheritMedals, switchFaction, grantSupport, grantStar, revokeStar, rewriteSupport, linkSupport, grantTitle, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 import { wiringReturns } from '../engine/wiring.js';
+import { build } from '../engine/battle.js';
 import { deathReply } from '../engine/house.js';
 
 // Nové aplikace Meta: Unified login + systémový token z firemního portfolia → graph.facebook.com (token nevyprší).
@@ -150,6 +151,11 @@ async function main() {
         console.log(r?.soldier ? `🪖 ruční nábor @${c.handle}: ${r.soldier.name}` : `🪖 příkaz ${c.id}: nenaverbováno (voják už existuje?)`);
       }
       if (c.cmd === 'inheritMedals') console.log(`🎗 dědičné medaile vráceny nástupcům: ${inheritMedals(state, theme)}`);
+      if (c.cmd === 'build') { // ruční stavba (19. 11., uživatel: každé straně jednu nemocnici navíc); zpráva do příštích novin
+        const txt = build(state, theme, c.faction, c.kind);
+        if (txt && c.newsText !== '') state.news = [...(state.news || []), { day: state.day, kind: 'build', h: c.newsHead || 'New hospitals behind the line', text: c.newsText || `${txt}.` }];
+        console.log(`🏗 stavba ${c.kind} pro stranu ${c.faction}: ${txt || 'nic (max nebo chybí podmínka)'}`);
+      }
       if (c.cmd === 'undoPilots') console.log(`✈ los pilotů vrácen: ${undoPilots(state, theme, c)} rolí, nábor znovu otevřen (${Object.keys(state.pilotCall?.apps || {}).length} přihlášek)`);
       if (c.cmd === 'title') { const r = grantTitle(state, c.handle, c); console.log(r ? `🎖 titul @${r.handle}: ${r.title}` : `🎖 příkaz ${c.id}: voják nenalezen nebo titul už má`); }
       if (c.cmd === 'linkSupport') console.log(`🎗 @${c.handle} doplněn do poděkování v novinách: ${linkSupport(state, c.handle, c.day)}×`);
