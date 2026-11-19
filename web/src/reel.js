@@ -173,6 +173,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'front10') {
+    // Day reel Day 10 (19. 11.): raid ve hře, kanál pro Hegemonii, ztráty, hrdinská oslava 1 435 vojáků, War Bonds, Grey Mill (reel-front10.js)
+    return import('./reel-front10.js').then(async ({ startDay10Reel }) => {
+      await startDay10Reel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'front9') {
     // Day reel Day 9 (18. 11.): háček s bojem v zákopu, palba 2× denně, ztráty, příběh, noví piloti, počty, závod, výzva RAID (reel-front9.js)
     return import('./reel-front9.js').then(async ({ startDay9Reel }) => {
