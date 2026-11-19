@@ -29,6 +29,12 @@ export function makeTrenchCine(tex = {}, anims = {}) {
     cSit: A('concord', 'sit-wounded', 'west'),
     hMg: A('hegemony_machinegunner', 'fire-prone', 'east'),
     cStand: fromTex(tex.concord?.west, NIGHT),
+    // Front News Day 3: spojka, dělostřelci na hřebeni, lazaret
+    cRun: A('concord', 'run', 'west'),
+    cEast: fromTex(tex.concord?.east, NIGHT), cWestPlain: fromTex(tex.concord?.west, NIGHT),
+    cKneel: A('concord', 'kneel', 'east'),
+    hLie: A('hegemony', 'lying-wounded', 'east'), hLieW: A('hegemony', 'lying-wounded', 'west'),
+    hMed: A('hegemony_medic', 'bandage', 'east'),
   };
   const at = (arr, i) => arr[Math.max(0, Math.min(arr.length - 1, i))];
   const put = (fr, x, feet) => { if (fr) g.drawImage(fr, Math.round(x - fr.width / 2), Math.round(feet - (fr.height === 64 ? 46 : 30))); };
@@ -75,7 +81,83 @@ export function makeTrenchCine(tex = {}, anims = {}) {
   }
   const glow = (x, y, r, a) => { const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgba(255,246,220,${a})`); gr.addColorStop(1, 'rgba(255,246,220,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); };
 
+  // lazaret: teplé světlo lampy místo noční modři
+  const WARM = 'rgba(120,70,20,0.18)';
+  const AW = (k, a, d) => (anims[k]?.[a]?.[d] || []).map((t) => fromTex(t, WARM));
+  const W2 = { lie: AW('hegemony', 'lying-wounded', 'east'), lieW: AW('hegemony', 'lying-wounded', 'west'), med: AW('hegemony_medic', 'bandage', 'east') };
+  // obloha bez obzoru (celá výška) pro scénu na hřebeni
+  function skyFull(o) {
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const u = (y / 100) * (SKY.length - 1) + (by(x, y) - 0.5);
+      g.fillStyle = SKY[Math.max(0, Math.min(SKY.length - 1, Math.round(u)))]; g.fillRect(x, y, 1, 1);
+    }
+    if (o.flash) { g.fillStyle = `rgba(255,236,190,${0.35 * o.flash})`; g.fillRect(0, 0, W, H); }
+  }
+  // polní dělo z boku (hlaveň doleva = na Hegemonii), kreslené v kódu; recoil = posun hlavně
+  function gun(x, y, recoil) {
+    const r = Math.round(recoil);
+    g.fillStyle = PAL.dark; g.fillRect(x - 14 + r, y - 13, 26, 3); // hlaveň
+    g.fillStyle = PAL.steel; g.fillRect(x - 14 + r, y - 13, 26, 1);
+    g.fillStyle = PAL.mud1; g.fillRect(x + 6, y - 17, 12, 11); g.fillStyle = PAL.grey; g.fillRect(x + 6, y - 17, 12, 1); // štít
+    g.fillStyle = PAL.mud0; g.fillRect(x + 12, y - 8, 22, 3); // lafeta k zemi
+    for (const [cx, rr] of [[x + 10, 7]]) { g.strokeStyle = PAL.ink; g.lineWidth = 2; g.beginPath(); g.arc(cx, y - 2, rr, 0, Math.PI * 2); g.stroke(); g.strokeStyle = PAL.mud3; g.lineWidth = 1; for (let k = 0; k < 6; k++) { const a = k * Math.PI / 3; g.beginPath(); g.moveTo(cx, y - 2); g.lineTo(cx + Math.cos(a) * rr, y - 2 + Math.sin(a) * rr); g.stroke(); } }
+  }
+
   const scenes = {
+    // spojka Concordu běží zákopem zprava doleva s číslem na papíře; hlídky stojí u valu
+    runner(t, o) {
+      sky(t, o); nml('left'); trenchBack('right');
+      const span0 = 90;
+      for (let x = span0; x < W; x++) for (let y = PAR + 4; y < H; y++) if (x < span0 + 1) px(PAL.ink, x, y);
+      put(S.cWestPlain, 118, PAR + 12); put(S.cEast, 206, PAR + 12);
+      const X = 252 - t * 22; // běží zákopem celý studený začátek (~8 s)
+      if (X > 80) put(at(S.cRun, Math.floor(t * 12) % Math.max(1, S.cRun.length)), X, FLOOR);
+      // papír v ruce (světlý obdélníček u pasu)
+      if (X > 80) px(PAL.white, Math.round(X - 6), FLOOR - 16, 3, 2);
+      trenchFront('right');
+      if (o.storm) rain(t);
+    },
+    // baterie na hřebeni Verdel Ridge v noci: dělo pálí doleva, záblesk, kouř; granát NELETÍ přes frontu (dopad je samostatný záběr ve hře)
+    battery(t, o) {
+      const P0 = 0.6, every = 1.6, k = t < P0 ? -1 : Math.floor((t - P0) / every), u = t < P0 ? 9 : (t - P0) % every;
+      skyFull({ flash: u < 0.12 ? 1 - u / 0.12 : 0 });
+      // hřeben
+      for (let x = 0; x < W; x++) { const top = 92 - Math.round(10 * Math.sin((x + 40) / 70) + 4 * Math.sin(x / 13)); for (let y = top; y < H; y++) px(y - top < 2 ? PAL.mud2 : by(x, y) < 0.15 ? PAL.mud1 : PAL.mud0, x, y); }
+      const GX = 112, GY = 98;
+      if (u < 0.15) { const gr = g.createRadialGradient(GX - 16, GY - 12, 0, GX - 16, GY - 12, 60); gr.addColorStop(0, 'rgba(255,220,150,0.35)'); gr.addColorStop(1, 'rgba(255,220,150,0)'); g.fillStyle = gr; g.fillRect(0, 0, W, H); }
+      put(S.cWestPlain, GX + 32, GY + 2); put(at(S.cKneel, 3), GX + 52, GY + 2);
+      gun(GX, GY, u < 0.25 ? 4 * (1 - u / 0.25) : 0);
+      if (u < 0.1) { glow(GX - 18, GY - 12, 12, 1); px(PAL.white, GX - 22, GY - 13, 5, 2); px(PAL.gold, GX - 27, GY - 14, 5, 4); }
+      // kouř po výstřelech stoupá a řídne
+      for (let j = Math.max(0, k - 2); j <= k; j++) {
+        const age = t - P0 - j * every; if (age < 0) continue;
+        for (let q = 0; q < 6; q++) { const r = 2 + age * 3 + q, a = Math.max(0, 0.5 - age * 0.18); if (a <= 0) continue;
+          g.fillStyle = `rgba(150,145,135,${a})`; g.beginPath(); g.arc(GX - 20 - q * 3 + age * 6, GY - 14 - age * 9 - q, r * 0.6, 0, Math.PI * 2); g.fill(); }
+      }
+      if (o.storm) rain(t);
+    },
+    // lazaret v krytu: trámy, lampa (o.dim 0..1 = dohasíná), tři lůžka s raněnými, ošetřovatel u prvního
+    ward(t, o) {
+      const dim = o.dim || 0, fl = 0.9 + 0.1 * Math.sin(t * 17) * Math.sin(t * 5.3), FL = 100;
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) px(y >= FL ? (by(x, y) < 0.25 ? PAL.mud2 : PAL.mud1) : (y % 9 === 0 ? PAL.mud0 : by(x, y) < 0.15 ? PAL.mud2 : PAL.mud1), x, y); // stěna z prken
+      px(PAL.mud3, 0, FL, W, 1);
+      for (let x = 14; x < W; x += 56) { px(PAL.mud3, x, 22, 5, FL - 22); px(PAL.mud0, x + 5, 22, 1, FL - 22); } // sloupy
+      px(PAL.mud3, 0, 18, W, 5); px(PAL.mud0, 0, 23, W, 1); // strop, trám
+      // police s lahvemi a bednou obvazů
+      px(PAL.mud3, 150, 56, 44, 2); for (const [bx, c] of [[154, PAL.water], [160, PAL.grey], [166, PAL.water], [176, PAL.rust], [184, PAL.grey]]) { px(c, bx, 49, 4, 7); px(PAL.pale, bx + 1, 50, 1, 2); }
+      px(PAL.sand, 30, 60, 22, 12); px(PAL.mud3, 30, 60, 22, 1); px(PAL.rust, 39, 63, 4, 6); px(PAL.rust, 37, 65, 8, 2); // bedna s křížem
+      // lůžka (nosítka na kozách) a ranění na nich
+      const beds = [[66, W2.lie], [134, W2.lieW], [202, W2.lie]];
+      for (const [bx] of beds) { px(PAL.mud3, bx - 19, FL - 12, 38, 3); px(PAL.sand, bx - 19, FL - 13, 38, 1); px(PAL.mud0, bx - 17, FL - 9, 2, 9); px(PAL.mud0, bx + 15, FL - 9, 2, 9); }
+      for (const [bx, fr] of beds) put(at(fr, 2), bx, FL - 5);
+      put(at(W2.med, Math.floor(t * 5) % Math.max(1, W2.med.length)), 42, FL + 4); // ošetřovatel u prvního lůžka
+      // lampa na trámu
+      const LX = 110, LY = 36; px(PAL.ink, LX, 23, 1, 9); px(PAL.mud3, LX - 3, LY - 4, 7, 2); px(PAL.gold, LX - 2, LY - 2, 5, 5); px(PAL.white, LX - 1, LY - 1, 3, 3 * (1 - dim) | 0 || 1);
+      const L = (1 - dim) * fl;
+      const gr = g.createRadialGradient(LX, LY, 0, LX, LY, 160); gr.addColorStop(0, `rgba(255,205,130,${0.6 * L})`); gr.addColorStop(0.55, `rgba(210,130,60,${0.24 * L})`); gr.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = gr; g.fillRect(0, 0, W, H);
+      g.fillStyle = `rgba(10,9,8,${0.05 + 0.5 * dim})`; g.fillRect(0, 0, W, H);
+    },
     duelA(t, o) {
       const SHOT = o.shot ?? 1.6, X = 118, FEET = PAR + 12; // stojí na stupínku, ramena a puška nad valem
       sky(t, o); nml('right'); trenchBack('left');

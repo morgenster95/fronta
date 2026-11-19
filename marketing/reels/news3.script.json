@@ -1,0 +1,111 @@
+{
+ "seconds": 150,
+ "auto": true,
+ "drums": [
+  "ident",
+  [],
+  "hill"
+ ],
+ "lines": [
+  [
+   0.6,
+   "Three minutes to ten at night.",
+   "cold"
+  ],
+  [
+   0,
+   "A runner came down the Concord trench with one number on a scrap of paper. One hundred.",
+   "cold2"
+  ],
+  [
+   0.3,
+   "This is Front News. Day three.",
+   "ident"
+  ],
+  [
+   0.4,
+   "All evening the Concord had been counting new soldiers.",
+   "ridge"
+  ],
+  [
+   0,
+   "By ten at night it was ninety-four for the Hegemony, and one hundred for the Concord.",
+   "ridge1"
+  ],
+  [
+   0,
+   "The hundredth man was a cook, Lucien Jro. With him, Verdel Ridge belonged to the Concord.",
+   "ridge2"
+  ],
+  [
+   0.4,
+   "Within the hour, the guns on the ridge turned toward the Hegemony.",
+   "guns"
+  ],
+  [
+   0,
+   "All night, the shells came down on the Hegemony line.",
+   "guns2"
+  ],
+  [
+   0,
+   "Fifteen men were hit in the first night. The wire in front of them was torn to shreds.",
+   "guns3"
+  ],
+  [
+   0.4,
+   "In the hospital dugout, the surgeon worked on Bram Yoollyfox until the lamp ran dry. It was not enough.",
+   "ward"
+  ],
+  [
+   0,
+   "Lucien Jewnipers slipped away in the night. The orderly who sat with him said he was not afraid.",
+   "ward2"
+  ],
+  [
+   0,
+   "Nils Wolfmananton died with a rosary of rough beads in his hand.",
+   "ward3"
+  ],
+  [
+   0.4,
+   "The Hegemony answered the only way it could. Edmund Potato raised his rifle.",
+   "shot"
+  ],
+  [
+   0,
+   "Henrik Eccentricred of the Concord fell, and never moved again.",
+   "shot2"
+  ],
+  [
+   0.4,
+   "Day three gave the war its first dead. Five for the Hegemony. One for the Concord.",
+   "dead"
+  ],
+  [
+   0.4,
+   "Then it rained from dusk to dawn. The trenches filled with water, and with men.",
+   "rain"
+  ],
+  [
+   0,
+   "Seventy-two new soldiers came up the line. The Hegemony now held one hundred and eighteen. The Concord, one hundred and twenty.",
+   "rain2"
+  ],
+  [
+   0.4,
+   "And a new race began at once. Hill 304.",
+   "hill"
+  ],
+  [
+   0,
+   "By morning, the Hegemony led, twenty-four to twenty.",
+   "hill2"
+  ],
+  [
+   0.4,
+   "This was Front News. Next time: the guns do not stop.",
+   "out"
+  ]
+ ]
+}
