@@ -79,7 +79,7 @@ function winRace(state, theme, story, st, f, recruit) {
   };
   // odměna kóty: dělostřelectvo (výchozí) nebo pozorovatelna (theme.race.observation) na pár dní
   if (v.reward === 'observation') v.obsTo = day + (R.observation?.days || 3);
-  else if (v.reward === 'logistics') v.logTo = day + (R.logistics?.days || 3); // lepší zásobování: vítěz střílí víckrát denně (19. 11.)
+  else if (v.reward === 'logistics') { v.logTo = day + (R.logistics?.days || 3); v.to = day; } // lepší zásobování (19. 11.): jen zásoby, žádná výšina ani bezpečnější týden
   else v.barrageTo = day + R.barrageDays;
   state.victories = [...(state.victories || []), v];
   // stuha všem vojákům vítězné strany, titul hrdinovi, zápis každému vojákovi obou stran
@@ -104,9 +104,9 @@ function winRace(state, theme, story, st, f, recruit) {
       ? `The ${short(theme, f)} killed ${st.need} enemy soldiers first (${st.counts[f]} against ${st.counts[1 - f]}) and took ${st.name}. The deadliest rifle belonged to @${recruit.handle}. `
       : `The ${short(theme, f)} reached ${st.need} soldiers first (${st.counts[f]} against ${st.counts[1 - f]}) and took ${st.name}. The deciding rifle belonged to @${recruit.handle}. `) + `${v.reward === 'observation'
         ? `${(R.observation?.victory || '').replace('{days}', R.observation?.days || 3).replace('{objective}', st.name).replace('{them}', short(theme, 1 - f)).replace('{us}', short(theme, f))}, `
-        : v.reward === 'logistics' ? `${logisticsText(R, st.name, short(theme, f))}, `
+        : v.reward === 'logistics' ? `${logisticsText(R, st.name, short(theme, f))}. `
       : `For ${R.barrageDays} days the guns on the heights will pound the ${short(theme, 1 - f)} lines, `}` +
-      `and for ${R.days} days the high ground keeps the ${short(theme, f)} safer. The race for ${raceObjective(theme, state.race.idx + 1).name} begins now: ${raceGoal(theme, state.race.idx + 1)}.`,
+      `${v.reward === 'logistics' ? '' : `and for ${R.days} days the high ground keeps the ${short(theme, f)} safer. `}The race for ${raceObjective(theme, state.race.idx + 1).name} begins now: ${raceGoal(theme, state.race.idx + 1)}.`,
   }];
   state.race = { idx: state.race.idx + 1, base: counts(state, theme), startDay: day, killsFrom: Object.fromEntries(state.soldiers.filter((s) => s.kills).map((s) => [s.handle, s.kills])) };
   return v;
@@ -135,7 +135,7 @@ export const logisticsText = (R, objective, us) => (R.logistics?.victory || 'For
 export function convertReward(state, theme, id, reward) {
   const v = (state.victories || []).find((x) => x.id === id);
   if (!v || reward !== 'logistics') return null;
-  delete v.barrageTo; v.reward = 'logistics'; v.logTo = v.day + (theme.race.logistics?.days || 3);
+  delete v.barrageTo; v.reward = 'logistics'; v.logTo = v.day + (theme.race.logistics?.days || 3); v.to = v.day; // jen zásoby, žádný bezpečnější týden
   const us = theme.factions[v.faction].name.replace(/^The /, '');
   return `Correction from headquarters: ${v.name} brought no guns. It brought better supplies. ${logisticsText(theme.race, v.name, us)}.`;
 }
