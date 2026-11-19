@@ -297,7 +297,8 @@
         "name": "the Weeping Orchard"
       }
     ],
-    "logistics": { "days": 3, "shots": 2, "victory": "For {days} days fresh supplies come up the canal: every {us} rifle fires {shots} times a day",
+    "logistics": { "days": 3, "shots": 2, "victory": "For {days} days better supplies come up {objective} to the {us} line",
+      "_victory": "uživatel 19. 11.: hráčům jen „lepší logistika“, ne že střílí víc",
       "_": "19. 11. (uživatel): odměna kóty místo bombardování; vítěz {days} dní střílí {shots}× denně (ostatní 1×)." },
     "observation": {
       "days": 3,

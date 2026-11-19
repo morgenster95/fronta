@@ -128,7 +128,7 @@ export function activeLogistics(state, day) {
   const v = (state.victories || []).filter((x) => x.logTo != null && day >= x.from && day <= x.logTo).at(-1);
   return v ? { by: v.faction, name: v.name, to: v.logTo } : null;
 }
-export const logisticsText = (R, objective, us) => (R.logistics?.victory || 'For {days} days fresh supplies come up through {objective}: every {us} rifle fires {shots} times a day')
+export const logisticsText = (R, objective, us) => (R.logistics?.victory || 'For {days} days better supplies come up {objective} to the {us} line')
   .replace('{days}', R.logistics?.days || 3).replace('{objective}', objective).replace('{us}', us).replace('{shots}', R.logistics?.shots || 2);
 
 // Oprava odměny už vyhlášené kóty (příkaz convertReward): bombardování → logistika. Vrací text opravy do novin nebo null.
@@ -137,7 +137,7 @@ export function convertReward(state, theme, id, reward) {
   if (!v || reward !== 'logistics') return null;
   delete v.barrageTo; v.reward = 'logistics'; v.logTo = v.day + (theme.race.logistics?.days || 3);
   const us = theme.factions[v.faction].name.replace(/^The /, '');
-  return `Correction from headquarters: ${v.name} brought no guns. It brought supplies. ${logisticsText(theme.race, v.name, us)}.`;
+  return `Correction from headquarters: ${v.name} brought no guns. It brought better supplies. ${logisticsText(theme.race, v.name, us)}.`;
 }
 
 export function activeBarrage(state, day, visual = false) {
