@@ -31,7 +31,7 @@ export function makeTrenchCine(tex = {}, anims = {}) {
     cStand: fromTex(tex.concord?.west, NIGHT),
     // Front News Day 3: spojka, dělostřelci na hřebeni, lazaret
     cRun: A('concord', 'run', 'west'),
-    cEast: fromTex(tex.concord?.east, NIGHT), cWestPlain: fromTex(tex.concord?.west, NIGHT),
+    cEast: fromTex(tex.concord?.east, NIGHT), cWestPlain: fromTex(tex.concord?.west, NIGHT), cNorth: fromTex(tex.concord?.north, NIGHT),
     cKneel: A('concord', 'kneel', 'east'),
     hLie: A('hegemony', 'lying-wounded', 'east'), hLieW: A('hegemony', 'lying-wounded', 'west'),
     hMed: A('hegemony_medic', 'bandage', 'east'),
@@ -69,11 +69,7 @@ export function makeTrenchCine(tex = {}, anims = {}) {
   }
   function trenchFront(side) {
     const [x0, x1] = span(side);
-    for (let r = 0; r < 4; r++) for (let x = x0 + (r % 2) * 4 - 4; x < x1; x += 8) {
-      const y = PAR + r * 5;
-      g.fillStyle = r === 0 ? PAL.bone : r === 3 ? PAL.mud3 : PAL.sand; g.fillRect(x, y, 7, 5);
-      px(PAL.pale, x + 1, y, 5, 1); px(PAL.mud2, x, y + 4, 7, 1); px(PAL.mud1, x + 7, y, 1, 5);
-    }
+    sandbags(x0, x1, PAR, 4);
   }
   function rain(t) {
     g.fillStyle = 'rgba(170,180,195,0.4)';
@@ -103,18 +99,46 @@ export function makeTrenchCine(tex = {}, anims = {}) {
     for (const [cx, rr] of [[x + 10, 7]]) { g.strokeStyle = PAL.ink; g.lineWidth = 2; g.beginPath(); g.arc(cx, y - 2, rr, 0, Math.PI * 2); g.stroke(); g.strokeStyle = PAL.mud3; g.lineWidth = 1; for (let k = 0; k < 6; k++) { const a = k * Math.PI / 3; g.beginPath(); g.moveTo(cx, y - 2); g.lineTo(cx + Math.cos(a) * rr, y - 2 + Math.sin(a) * rr); g.stroke(); } }
   }
 
+  const BAGC = [[PAL.sand, PAL.bone, PAL.mud3], [PAL.mud3, PAL.sand, PAL.mud2], [PAL.bone, PAL.pale, PAL.sand]];
+  const bagSprites = BAGC.map(([body, hi, sh]) => {
+    const c = off(12, 7), q = c.getContext('2d'), P = (col, x, y, w = 1, h = 1) => { q.fillStyle = col; q.fillRect(x, y, w, h); };
+    P(PAL.ink, 1, 0, 10, 1); P(PAL.ink, 0, 1, 1, 5); P(PAL.ink, 11, 1, 1, 5); P(PAL.ink, 1, 6, 10, 1); // obrys se zaoblenými rohy
+    P(body, 1, 1, 10, 5); P(hi, 2, 1, 7, 1); P(hi, 1, 2, 2, 1); P(sh, 1, 5, 10, 1); P(sh, 9, 2, 2, 3); // tělo, světlo nahoře, stín dole a vpravo
+    P(sh, 4, 3, 3, 1); P(PAL.mud1, 10, 1, 1, 1); P(sh, 10, 2, 1, 1); // šev a zavázaný roh
+    return c;
+  });
+  // řada pytlů (vazba jako cihly), y = horní hrana nejvyšší řady
+  function sandbags(x0, x1, y, rows) {
+    for (let r = rows - 1; r >= 0; r--) for (let x = x0 - ((r % 2) ? 6 : 0) - 12, i = 0; x < x1; x += 11, i++) {
+      const v = (i * 7 + r * 3) % 3; g.drawImage(bagSprites[v], x, y + r * 5);
+    }
+  }
+
   const scenes = {
     // spojka Concordu běží zákopem zprava doleva s číslem na papíře; hlídky stojí u valu
     runner(t, o) {
-      sky(t, o); nml('left'); trenchBack('right');
-      const span0 = 90;
-      for (let x = span0; x < W; x++) for (let y = PAR + 4; y < H; y++) if (x < span0 + 1) px(PAL.ink, x, y);
-      put(S.cWestPlain, 118, PAR + 12); put(S.cEast, 206, PAR + 12);
-      const X = 252 - t * 22; // běží zákopem celý studený začátek (~8 s)
-      if (X > 80) put(at(S.cRun, Math.floor(t * 12) % Math.max(1, S.cRun.length)), X, FLOOR);
-      // papír v ruce (světlý obdélníček u pasu)
-      if (X > 80) px(PAL.white, Math.round(X - 6), FLOOR - 16, 3, 2);
-      trenchFront('right');
+      // pohled ZEVNITŘ zákopu Concordu: zadní stěna s pytli nahoře, hlídky na stupínku koukají přes val (zády k nám),
+      // vpředu prkenná podlaha, spojka běží zprava doleva celá vidět (hlavou nic nezakrývá)
+      const TOP = 66, STEPY = 97, DECK = 120;
+      for (let y = 0; y < TOP; y++) for (let x = 0; x < W; x++) { const u = (y / TOP) * (SKY.length - 2) + (by(x, y) - 0.5); g.fillStyle = SKY[Math.max(0, Math.min(SKY.length - 1, Math.round(u)))]; g.fillRect(x, y, 1, 1); }
+      if (o.flash) { g.fillStyle = `rgba(227,217,195,${0.5 * o.flash})`; g.fillRect(0, 0, W, TOP); }
+      // světlice daleko nad zemí nikoho (jen záře na obloze)
+      const fl = (t * 0.35) % 1; glow(70 + fl * 30, 10 + fl * 14, 26, 0.25 * Math.sin(fl * Math.PI));
+      // zadní stěna: hlína, svislé kůly a vodorovná prkna obložení
+      for (let y = TOP + 14; y < DECK; y++) for (let x = 0; x < W; x++) px(by(x, y) < 0.12 ? PAL.mud2 : PAL.mud1, x, y);
+      for (let y = TOP + 22; y < STEPY; y += 9) { px(PAL.mud2, 0, y, W, 2); px(PAL.mud0, 0, y + 2, W, 1); }
+      for (let x = 8; x < W; x += 30) { px(PAL.mud3, x, TOP + 14, 3, DECK - TOP - 14); px(PAL.mud0, x + 3, TOP + 14, 1, DECK - TOP - 14); }
+      // stupínek (fire step) a pytle na valu
+      px(PAL.mud3, 0, STEPY, W, 3); px(PAL.mud0, 0, STEPY + 3, W, 1);
+      sandbags(0, W, TOP, 3);
+      // hlídky na stupínku zády k nám, hlavy nad pytli
+      for (const hx of [52, 150, 214]) put(S.cNorth, hx, STEPY + 1);
+      // podlaha z prken (duckboards) a bláto
+      for (let y = DECK; y < H; y++) for (let x = 0; x < W; x++) px(y < DECK + 6 ? ((x % 9) === 0 ? PAL.mud0 : (x % 9) < 2 ? PAL.sand : PAL.mud3) : (by(x, y) < 0.2 ? PAL.mud1 : PAL.mud0), x, y);
+      px(PAL.water, 30, DECK + 8, 26, 1); px(PAL.water, 150, DECK + 10, 34, 1);
+      // spojka: běží celý záběr, papír v ruce
+      const X = 262 - t * 26;
+      if (X > -20) { put(at(S.cRun, Math.floor(t * 12) % Math.max(1, S.cRun.length)), X, DECK + 4); px(PAL.white, Math.round(X - 7), DECK - 13, 3, 2); }
       if (o.storm) rain(t);
     },
     // baterie na hřebeni Verdel Ridge v noci: dělo pálí doleva, záblesk, kouř; granát NELETÍ přes frontu (dopad je samostatný záběr ve hře)
