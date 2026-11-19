@@ -6,7 +6,7 @@
 set -u
 repo="${GITHUB_REPOSITORY:-morgenster95/fronta}"
 owner="${repo%%/*}"; name="${repo#*/}"
-base="https://$(echo "$owner" | tr 'A-Z' 'a-z').github.io/$name/game"
+base="${ASSET_HOST:-https://assets.mudandiron.app}/game" # GitHub Pages pod vlastní doménou přes Cloudflare (od 19. 11.: web neprozradí GitHub ani repo)
 want=$(cd web/public/assets && find . -type f | LC_ALL=C sort | xargs sha1sum | sha1sum | cut -d' ' -f1)
 have=$(curl -sf --max-time 10 "$base/assets.sha" | tr -d '[:space:]' || true)
 if [ -n "$have" ] && [ "$have" = "$want" ]; then

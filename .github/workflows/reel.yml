@@ -65,4 +65,4 @@ jobs:
           done
           # push z GITHUB_TOKEN nespouští jiné workflow → Pages nasadit ručně
           gh workflow run media.yml --ref main
-          echo "Video: https://morgenster95.github.io/fronta/reel_${{ steps.p.outputs.name }}.mp4" >> $GITHUB_STEP_SUMMARY
+          echo "Video: https://assets.mudandiron.app/reel_${{ steps.p.outputs.name }}.mp4" >> $GITHUB_STEP_SUMMARY

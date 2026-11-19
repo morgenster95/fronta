@@ -25,3 +25,10 @@ jobs:
       - name: Video pro IG (Release media → Pages)
         run: |
           curl -sS -o /dev/null -D - --max-time 20 https://assets.mudandiron.app/reel_thousand.mp4 | grep -iE '^(HTTP|content-type|content-length|location)' || echo "NEDOSTUPNÉ"
+      - name: Živý web neodkazuje na GitHub
+        run: |
+          js=$(curl -sSL --max-time 20 https://mudandiron.web.app/ | grep -oE '/assets/index-[A-Za-z0-9_-]+\.js' | head -1)
+          echo "hlavní skript: $js"
+          body=$(curl -sSL --max-time 30 "https://mudandiron.web.app$js")
+          echo "assets.mudandiron.app: $(grep -c 'assets.mudandiron.app' <<< "$body")"
+          n=$(grep -oE '[a-z0-9-]+\.github\.io[^"'"'"' ]*' <<< "$body" | sort -u); echo "github.io v kódu: ${n:-žádné}"

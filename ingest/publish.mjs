@@ -6,7 +6,7 @@
 //          node ingest/publish.mjs --due           zveřejní položky, jejichž publishAt už nastal (pro smyčku),
 //                                                  a položky s `trigger`, jejichž událost ve hře nastala (ingest/triggers.mjs)
 // Když soubor ještě není na GitHub Pages (workflow media ještě neproběhl), položka počká a zkusí se v dalším kole.
-// Proměnné: IG_ACCESS_TOKEN, IG_USER_ID, MEDIA_URL (výchozí https://morgenster95.github.io/fronta), DRY_RUN=1
+// Proměnné: IG_ACCESS_TOKEN, IG_USER_ID, MEDIA_URL (výchozí https://assets.mudandiron.app = GitHub Pages za Cloudflare, od 19. 11.), DRY_RUN=1
 import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
@@ -22,7 +22,7 @@ const TOKEN = process.env.IG_ACCESS_TOKEN;
 const USER = process.env.IG_USER_ID;
 const QUEUE = path.join(ROOT, 'marketing', 'queue.json');
 // Soubory pro Instagram: marketing/promo/ → GitHub Pages (workflow media.yml), Firebase Hosting je nenosí.
-const MEDIA = process.env.MEDIA_URL || 'https://morgenster95.github.io/fronta';
+const MEDIA = process.env.MEDIA_URL || 'https://assets.mudandiron.app'; // GitHub Pages pod vlastní doménou přes Cloudflare (web neprozradí repo)
 
 // je soubor opravdu na webu? (Instagram by jinak zveřejnění odmítl)
 async function live(item) {
