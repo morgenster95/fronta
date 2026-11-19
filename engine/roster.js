@@ -3,7 +3,7 @@
 import { createSoldier, tickSoldier, heir, selectForStory, addEntry, fallSoldier } from './soldier.js';
 import { enlistEntry, weatherFor, eventEntry, tplKey, makeBackground, backgroundLine, silenceGuns } from './story.js';
 import { writeChronicle } from './chronicle.js';
-import { checkRace, checkKillRace, raceStatus, raceDanger, activeBarrage, activeObservation, awardHonors } from './race.js';
+import { checkRace, checkKillRace, raceStatus, raceDanger, activeBarrage, activeObservation, activeLogistics, awardHonors } from './race.js';
 import { pick, weighted, rngFor } from './rng.js';
 import { hashString } from './rng.js';
 import { openRange } from './mapgen.js';
@@ -533,12 +533,14 @@ export function dailyTick(state, theme, story, ctx = {}) {
   const fireOf = (s) => orderFire(state, s.faction, day, s.archetype) * obsOf(s) * (s.archetype === 'rifleman' ? pilotFire(state, theme, s.faction, weather?.id) : 1); // letecký průzkum zlepšuje puškaře
   // pozorovatel hlásí přesné místo: zásah střelce s pozorovatelnou častěji zabije na místě (×(1 + observation.kill))
   const killOf = (s) => (obsOf(s) > 1 ? 1 + (theme.race.observation.kill || 0) : 1);
-  const unsuppressed = (s) => !!(obs && s.faction === obs.by); // strana s pozorovatelnou: kulomety naproti ji nepotlačí
+  const unsuppressed = (s) => !!(obs && s.faction === obs.by);
+  const logi = theme.race?.logistics && activeLogistics(state, day);
+  const shotsOf = (s) => (logi && s.faction === logi.by ? theme.race.logistics.shots || 2 : null); // lepší logistika: víc výstřelů vítězi // strana s pozorovatelnou: kulomety naproti ji nepotlačí
   const healOf = (s) => orderHeal(state, s.faction, day);
   const exposedOf = (s) => orderExposed(state, s.faction, day) * letterOf(s);
   const dieOf = (s) => orderDie(state, s.faction, day);
   pilotSortie(state, theme, day, weather?.id, fallSoldier, (s, sev) => { s.wound = { sev, day }; s.status = 'wounded'; s.woundsTaken = (s.woundsTaken || 0) + 1; }); // denní vzlet: bouře/mlha drží na zemi, jinak malá šance sestřelení
-  const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf, shellOf, fireOf, killOf, unsuppressed, healOf, exposedOf, dieOf }) : { events: [], news: [], ids: new Set() };
+  const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf, shellOf, fireOf, killOf, unsuppressed, healOf, exposedOf, dieOf, shotsOf }) : { events: [], news: [], ids: new Set() };
   if (theme.race) checkKillRace(state, theme, story); // závod „kdo první zabije N“: zpráva o dobytí jde do state.news (níž se přidá do novin)
   const events = [...raid.events, ...fight.events];
   const today = new Set(); // šablony použité dnes (rozmanitost mezi vojáky)

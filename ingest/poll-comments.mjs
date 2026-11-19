@@ -19,6 +19,7 @@ import { inheritMedals, switchFaction, grantSupport, grantStar, revokeStar, rewr
 import { volunteer, raidReply } from '../engine/valley.js';
 import { wiringReturns } from '../engine/wiring.js';
 import { build } from '../engine/battle.js';
+import { convertReward } from '../engine/race.js';
 import { deathReply } from '../engine/house.js';
 
 // Nové aplikace Meta: Unified login + systémový token z firemního portfolia → graph.facebook.com (token nevyprší).
@@ -151,6 +152,17 @@ async function main() {
         console.log(r?.soldier ? `🪖 ruční nábor @${c.handle}: ${r.soldier.name}` : `🪖 příkaz ${c.id}: nenaverbováno (voják už existuje?)`);
       }
       if (c.cmd === 'inheritMedals') console.log(`🎗 dědičné medaile vráceny nástupcům: ${inheritMedals(state, theme)}`);
+      if (c.cmd === 'convertReward') { // oprava odměny kóty (19. 11.: kanál = logistika, ne bombardování)
+        const txt = convertReward(state, theme, c.id_obj, c.reward);
+        if (txt && !c.noNews) state.news = [...(state.news || []), { day: state.day, kind: 'race', h: c.newsHead || 'Supplies, not guns', text: txt }];
+        console.log(`🚚 odměna ${c.id_obj} → ${c.reward}: ${txt || 'nic'}`);
+      }
+      if (c.cmd === 'amendChronicle') { // oprava textu už vydaných novin (jen na výslovný pokyn uživatele; výjimka z nedotknutelné kroniky)
+        const ch = (state.chronicle || []).find((x) => x.day === c.day);
+        let n = 0;
+        for (const b of ch?.blocks || []) if (b.text?.includes(c.find)) { b.text = b.text.replace(c.find, c.replace); n++; }
+        console.log(`✎ noviny dne ${c.day} opraveny: ${n}×`);
+      }
       if (c.cmd === 'build') { // ruční stavba (19. 11., uživatel: každé straně jednu nemocnici navíc); zpráva do příštích novin
         const txt = build(state, theme, c.faction, c.kind);
         if (txt && c.newsText !== '') state.news = [...(state.news || []), { day: state.day, kind: 'build', h: c.newsHead || 'New hospitals behind the line', text: c.newsText || `${txt}.` }];

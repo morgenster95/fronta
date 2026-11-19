@@ -496,3 +496,6 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 ## 2026-11-19 Péče mediků: víc práce na raněného (NASAZENO)
 - Uživatel: medici stíhají i při velkých ztrátách. `battle.care.*.need`: lehce raněný 1 (dřív 0,4), těžce 2 (dřív 1), kriticky 3 (dřív 2); medik dál zvládne 2 body denně. Hegemonie (méně mediků) se dostane pod 100 % pokrytí dřív.
 - Nanečisto na 3 dny (s bombardováním Concordu po kanálu): péče přidá ~+10 % padlých. Hlavní váha je bombardování: zasáhne 40 % úseků Concordu a s 800 vojáky to dělá 80–150 padlých denně (viz návrh níž).
+
+## 2026-11-19 Odměna kóty „lepší logistika“ (NASAZENO), Blackwater Canal
+- Uživatel: kanál nemá dávat bombardování, ale lepší logistiku. `reward: "logistics"` (`theme.race.logistics`: 3 dny, 2 výstřely denně): vítěz kóty po 3 bitvy střílí 2× denně, ostatní 1×. Kanál (Hegemonie, Day 10) převeden příkazem `convertReward` (bombardování zrušeno) a text v dnešních novinách opraven příkazem `amendChronicle` (výjimka z nedotknutelné kroniky na pokyn uživatele).

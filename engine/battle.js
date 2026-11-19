@@ -347,8 +347,9 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   const shooters = theme.factions.flatMap((_, f) => front[f]);
   const taken = new Set(); // každý cíl nejvýš jeden zásah za den
   const fireLog = [];
-  const rounds = Math.max(1, R.shots || 1); // výstřelů za den na střelce (roles.shots, 18. 11.; každý cíl dál nejvýš jeden zásah za den)
-  for (let round = 0; round < rounds; round++) for (const s of round ? shooters.filter(able) : shooters) { // v dalším kole střílí jen ti, kdo zůstali zdraví po předchozím (obě strany naráz)
+  const shotsOf = (s) => ctx.shotsOf?.(s) ?? Math.max(1, R.shots || 1); // výstřelů za den (roles.shots; lepší logistika vítěze kóty víc)
+  const rounds = Math.max(1, ...shooters.map(shotsOf)); // každý cíl dál nejvýš jeden zásah za den
+  for (let round = 0; round < rounds; round++) for (const s of (round ? shooters.filter(able) : shooters).filter((x) => shotsOf(x) > round)) { // v dalším kole střílí jen ti, kdo zůstali zdraví po předchozím (obě strany naráz)
     const f = s.faction, e = 1 - f;
     const fire = role(cfg, s, 'fire');
     if (!fire) continue;

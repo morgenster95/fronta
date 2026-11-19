@@ -1413,3 +1413,16 @@ test('podpora se dědí: nástupce padlého podporovatele má stužku i hvězdu 
   assert.equal(R.inheritMedals(st, theme), 1);
   assert.deepEqual(t.medals, ['war-bonds']);
 });
+
+test('lepší logistika: vítěz kóty s reward logistics střílí víckrát denně, oprava bombardování na logistiku', async () => {
+  const R = await import('./race.js');
+  const s = emptyState(theme);
+  enlist(s, 160, 'lg');
+  s.day = 5;
+  s.victories = [{ id: 'canal', name: 'Blackwater Canal', faction: 0, day: 4, from: 5, to: 11, barrageTo: 7 }];
+  const txt = R.convertReward(s, theme, 'canal', 'logistics');
+  assert.match(txt, /supplies/);
+  assert.equal(s.victories[0].barrageTo, undefined);
+  assert.equal(R.activeBarrage(s, 6), null);
+  assert.equal(R.activeLogistics(s, 6).by, 0);
+});

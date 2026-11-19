@@ -79,6 +79,7 @@ function winRace(state, theme, story, st, f, recruit) {
   };
   // odměna kóty: dělostřelectvo (výchozí) nebo pozorovatelna (theme.race.observation) na pár dní
   if (v.reward === 'observation') v.obsTo = day + (R.observation?.days || 3);
+  else if (v.reward === 'logistics') v.logTo = day + (R.logistics?.days || 3); // lepší zásobování: vítěz střílí víckrát denně (19. 11.)
   else v.barrageTo = day + R.barrageDays;
   state.victories = [...(state.victories || []), v];
   // stuha všem vojákům vítězné strany, titul hrdinovi, zápis každému vojákovi obou stran
@@ -103,7 +104,8 @@ function winRace(state, theme, story, st, f, recruit) {
       ? `The ${short(theme, f)} killed ${st.need} enemy soldiers first (${st.counts[f]} against ${st.counts[1 - f]}) and took ${st.name}. The deadliest rifle belonged to @${recruit.handle}. `
       : `The ${short(theme, f)} reached ${st.need} soldiers first (${st.counts[f]} against ${st.counts[1 - f]}) and took ${st.name}. The deciding rifle belonged to @${recruit.handle}. `) + `${v.reward === 'observation'
         ? `${(R.observation?.victory || '').replace('{days}', R.observation?.days || 3).replace('{objective}', st.name).replace('{them}', short(theme, 1 - f)).replace('{us}', short(theme, f))}, `
-        : `For ${R.barrageDays} days the guns on the heights will pound the ${short(theme, 1 - f)} lines, `}` +
+        : v.reward === 'logistics' ? `${logisticsText(R, st.name, short(theme, f))}, `
+      : `For ${R.barrageDays} days the guns on the heights will pound the ${short(theme, 1 - f)} lines, `}` +
       `and for ${R.days} days the high ground keeps the ${short(theme, f)} safer. The race for ${raceObjective(theme, state.race.idx + 1).name} begins now: ${raceGoal(theme, state.race.idx + 1)}.`,
   }];
   state.race = { idx: state.race.idx + 1, base: counts(state, theme), startDay: day, killsFrom: Object.fromEntries(state.soldiers.filter((s) => s.kills).map((s) => [s.handle, s.kills])) };
@@ -121,6 +123,23 @@ export function raceDanger(state, theme, faction, day) {
 }
 
 // aktivní dělostřelectvo: cílová frakce, nebo null. visual = pro web už v den dobytí (palba je vidět hned, zásahy počítá boj až od dalšího dne)
+// lepší logistika (odměna kóty, 19. 11.): dny from..logTo vítěz střílí theme.race.logistics.shots× denně
+export function activeLogistics(state, day) {
+  const v = (state.victories || []).filter((x) => x.logTo != null && day >= x.from && day <= x.logTo).at(-1);
+  return v ? { by: v.faction, name: v.name, to: v.logTo } : null;
+}
+export const logisticsText = (R, objective, us) => (R.logistics?.victory || 'For {days} days fresh supplies come up through {objective}: every {us} rifle fires {shots} times a day')
+  .replace('{days}', R.logistics?.days || 3).replace('{objective}', objective).replace('{us}', us).replace('{shots}', R.logistics?.shots || 2);
+
+// Oprava odměny už vyhlášené kóty (příkaz convertReward): bombardování → logistika. Vrací text opravy do novin nebo null.
+export function convertReward(state, theme, id, reward) {
+  const v = (state.victories || []).find((x) => x.id === id);
+  if (!v || reward !== 'logistics') return null;
+  delete v.barrageTo; v.reward = 'logistics'; v.logTo = v.day + (theme.race.logistics?.days || 3);
+  const us = theme.factions[v.faction].name.replace(/^The /, '');
+  return `Correction from headquarters: ${v.name} brought no guns. It brought supplies. ${logisticsText(theme.race, v.name, us)}.`;
+}
+
 export function activeBarrage(state, day, visual = false) {
   // boj: dny from..barrageTo (poslední noc je tah dne barrageTo); web (visual): od dne dobytí do dne PŘED posledním tahem,
   // po posledním tahu už děla mlčí i na mapě (pokyn uživatele 14. 11.)

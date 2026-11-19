@@ -281,6 +281,7 @@
         "name": "Blackwater Canal",
         "need": 100,
         "type": "kills",
+        "reward": "logistics",
         "rewardText": "The first side to kill 100 enemy soldiers takes Blackwater Canal: a safer week for its soldiers, a ribbon for everyone on the winning side, and the title of hero for its deadliest soldier."
       },
       {
@@ -296,6 +297,8 @@
         "name": "the Weeping Orchard"
       }
     ],
+    "logistics": { "days": 3, "shots": 2, "victory": "For {days} days fresh supplies come up the canal: every {us} rifle fires {shots} times a day",
+      "_": "19. 11. (uživatel): odměna kóty místo bombardování; vítěz {days} dní střílí {shots}× denně (ostatní 1×)." },
     "observation": {
       "days": 3,
       "fire": 0.8,
