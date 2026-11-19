@@ -141,6 +141,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'news1') {
+    // Front News, epizoda Day 1 (19. 11.): široké zpravodajské video na YouTube (reel-news1.js)
+    return import('./reel-news1.js').then(async ({ startNews1Reel }) => {
+      await startNews1Reel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'bonds') {
     // reel o podpoře (18. 11.): podporovatelé ve hře, proč, tři úrovně bez cen, jemná výzva (reel-bonds.js)
     return import('./reel-bonds.js').then(async ({ startBondsReel }) => {

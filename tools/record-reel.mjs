@@ -18,7 +18,8 @@ fs.mkdirSync(tmp, { recursive: true });
 
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, protocolTimeout: 600000, args: process.platform === 'win32' ? ['--enable-gpu', '--ignore-gpu-blocklist', '--use-angle=d3d11'] : ['--no-sandbox', '--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
 const page = await browser.newPage();
-await page.setViewport({ width: 540, height: 960, deviceScaleFactor: 1 });
+const WIDE = /^news/.test(name); // Front News (YouTube, 19. 11.): na šířku 960×540 → 1920×1080
+await page.setViewport({ width: WIDE ? 960 : 540, height: WIDE ? 540 : 960, deviceScaleFactor: 1 });
 await page.goto(`${base}/?reel=${name}&vacant=700`, { waitUntil: 'networkidle0', timeout: 120000 });
 await page.waitForFunction(() => window.__reel?.ready, { timeout: 120000 });
 await page.evaluate(() => document.fonts.ready);
@@ -38,6 +39,6 @@ for (let f = 0; f < total; f++) {
 console.timeEnd('frames');
 await browser.close();
 execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(FPS), '-i', path.join(tmp, 'f%05d.png'),
-  '-vf', 'scale=1080:1920:flags=neighbor', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '18', '-preset', 'medium', '-movflags', '+faststart', out]);
+  '-vf', WIDE ? 'scale=1920:1080:flags=neighbor' : 'scale=1080:1920:flags=neighbor', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '18', '-preset', 'medium', '-movflags', '+faststart', out]);
 fs.rmSync(tmp, { recursive: true, force: true });
 console.log(`hotovo: ${out}`);

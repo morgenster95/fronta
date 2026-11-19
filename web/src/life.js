@@ -261,6 +261,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
   }
 
   let lastNow = 0, lastView = null;
+  let quiet = false;
   function update(now, dt, view, chunkSoldiers, showSprites) {
     lastNow = now;
     lastView = view;
@@ -273,6 +274,7 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     t.burst -= dt * heat;
     t.shell -= dt;
     t.flare -= dt;
+    if (quiet) { t.shot = Math.max(t.shot, 400); t.distant = Math.max(t.distant, 400); t.shell = Math.max(t.shell, 400); t.flare = Math.max(t.flare, 400); } // reel řídí palbu sám (Front News)
     if (showSprites && t.shot < 0) {
       t.shot = rnd(...RATE.shot);
       // střílí hlavně přední linie čelem k nepříteli
@@ -389,6 +391,6 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     shell,
     flareAt: (x, y) => particles.push({ kind: 'flare', x, y, vy: -0.05, life: 7000, max: 7000 }),
     // ladění v konzoli (jen dev)
-    debug: { shoot: (list) => list.forEach((s) => shoot([s], lastNow)), shell: (x, y, big) => shell(x, y, big), sendMedic: (s) => sendMedic(s, lastNow), burst: () => burst(lastView, lastNow), actors },
+    debug: { quiet: (v) => { quiet = v; }, flare: () => lastView && flare(lastView), shoot: (list) => list.forEach((s) => shoot([s], lastNow)), shell: (x, y, big) => shell(x, y, big), sendMedic: (s) => sendMedic(s, lastNow), burst: () => burst(lastView, lastNow), actors },
   };
 }

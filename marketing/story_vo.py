@@ -21,7 +21,7 @@ TMP = os.path.join(REELS, "_vo")
 NAME = sys.argv[1] if len(sys.argv) > 1 else "story"
 # profil vypravěče podle scénáře: (hlas, rychlost, výška); reel „ridge“ má energičtější hlas
 PROFILES = {"ridge": ("en-US-GuyNeural", "+12%", "+0Hz")}
-PROFILE = PROFILES.get(NAME)
+PROFILE = PROFILES.get(NAME) or (("en-GB-RyanNeural", "+0%", "-3Hz") if NAME.startswith("news") else None)  # Front News: klidný hlas hlasatele
 VOICE = sys.argv[2] if len(sys.argv) > 2 else (PROFILE[0] if PROFILE else "en-GB-RyanNeural")
 SR = 44100
 

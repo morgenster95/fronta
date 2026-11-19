@@ -7,6 +7,7 @@
 set -euo pipefail
 NAME="${1:?scénář, např. raid}"
 CRF="${2:-29}"
+[[ "$NAME" =~ ^news ]] && CRF="${2:-20}"   # Front News na YouTube: vyšší kvalita (YouTube si video stejně překóduje)
 cd "$(dirname "$0")/.."
 PY="${PYTHON:-python3}"; command -v "$PY" >/dev/null || PY=python
 

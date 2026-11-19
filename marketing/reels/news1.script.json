@@ -1,0 +1,111 @@
+{
+ "seconds": 120,
+ "auto": true,
+ "drums": [
+  "ident",
+  [],
+  "race"
+ ],
+ "lines": [
+  [
+   0.6,
+   "This is Front News.",
+   "ident"
+  ],
+  [
+   0,
+   "November the ninth. Day one of the war.",
+   "date"
+  ],
+  [
+   0.4,
+   "It began with an empty trench. Two armies, and not a single soldier on the line.",
+   "empty"
+  ],
+  [
+   0,
+   "Then, on the evening of November the eighth, the first name went up. Valentin Hodnepijumal. The first soldier of the Hegemony.",
+   "first0"
+  ],
+  [
+   0,
+   "Not long after, Felix Kagr answered for the Concord.",
+   "first1"
+  ],
+  [
+   0,
+   "All through the night and the next day, they kept coming. Comment by comment, the trenches filled.",
+   "fill"
+  ],
+  [
+   0,
+   "For most of the day the Hegemony stayed ahead. Then, close to midnight, the Concord caught up, and passed them.",
+   "overtake"
+  ],
+  [
+   0,
+   "By the first morning paper, one hundred and twenty soldiers held the line. Hegemony, fifty-seven. Concord, sixty-three.",
+   "count"
+  ],
+  [
+   0.4,
+   "The first shots came the same day.",
+   "shots"
+  ],
+  [
+   0,
+   "A Concord sniper, Ulrich Gpt, hit Wendel Freddie of the Hegemony. The first man badly wounded in this war.",
+   "blood"
+  ],
+  [
+   0,
+   "Two more were grazed. Nobody died. Not yet.",
+   "nodead"
+  ],
+  [
+   0.4,
+   "But that night, the front was not only about rifles.",
+   "night"
+  ],
+  [
+   0,
+   "Edmund Biwott of the Concord threw a tin of tobacco into the enemy trench. The note said: for the one who sings.",
+   "tin"
+  ],
+  [
+   0,
+   "It was picked up by Valentin Hodnepijumal. The very first soldier of the Hegemony kept the tin.",
+   "tin2"
+  ],
+  [
+   0,
+   "Out in no man's land, Yann Vee and Silas Zdsh crawled into the same shell hole. They stared at each other.",
+   "hole"
+  ],
+  [
+   0,
+   "Then each crawled home. Neither has told anyone.",
+   "hole2"
+  ],
+  [
+   0.4,
+   "And a race had begun. The first army to reach one hundred soldiers takes Verdel Ridge, and its guns.",
+   "race"
+  ],
+  [
+   0,
+   "Concord sixty-three. Hegemony fifty-seven. Thirty-seven more, and the heights are theirs.",
+   "race2"
+  ],
+  [
+   0.4,
+   "Day one. One hundred and twenty soldiers. Three wounded. No dead.",
+   "sum"
+  ],
+  [
+   0,
+   "This was Front News. Next time: the race for the ridge.",
+   "out"
+  ]
+ ]
+}

@@ -11,7 +11,7 @@ const files = import.meta.glob('../../art/cine/anim/shovel_*.png', { eager: true
 // kotva jako v life.js (pata na řádku 30 původních 32 px); u lopatek z PixelLabu pata podle spodku postavy v 1. snímku
 const anchorOf = (t, foot) => [0.5, foot != null ? foot / t.height : (30 + (t.height - 32) / 2) / t.height];
 
-export async function makeFight({ anims, soldiers }) {
+export async function makeFight({ anims, soldiers, tex = {} }) {
   const load = async (side) => {
     const urls = Object.keys(files).filter((k) => k.includes(`shovel_${side}_`)).sort().map((k) => files[k]);
     const tx = await Promise.all(urls.map((u) => Assets.load(u)));
@@ -34,6 +34,7 @@ export async function makeFight({ anims, soldiers }) {
   };
   const acts = []; // { sp, keys: [[t0, frames, fps, foot, loop, x0, y0, x1, y1, dur]], hide?: soldier, from, to }
   const hidden = [];
+  const props = [];
 
   function actor(x, y) {
     const sp = new Sprite(Texture.EMPTY);
@@ -95,8 +96,36 @@ export async function makeFight({ anims, soldiers }) {
         acts.push(a);
       }
     },
+    // obecný herec (Front News, 19. 11.): úseky { t0, key, anim, dir, fps, loop, move: [x1, y1, dur] } nebo { t0, key, dir } = stojí (statický sprite)
+    puppet({ x, y, from, to, keys, hide = null }) {
+      const a = actor(x, y);
+      let px = x, py = y;
+      for (const k of keys) {
+        const fr = k.anim ? A(k.key, k.anim, k.dir) : [tex[k.key]?.[k.dir]].filter(Boolean);
+        const mv = k.move ? { from: [px, py], to: [k.move[0], k.move[1]], dur: k.move[2] } : { from: [px, py], to: [px, py], dur: 0 };
+        seg(a, k.t0, fr, k.fps || 8, { loop: !!k.loop, ...mv });
+        if (k.move) { px = k.move[0]; py = k.move[1]; }
+      }
+      a.from = from; a.to = to;
+      acts.push(a);
+      if (hide) hidden.push([hide, from, to]);
+      return a;
+    },
+    // rekvizita z malého obrázku (canvas), poloha z funkce pos(t) → [x, y] nebo null (neviditelná)
+    prop({ canvas, from, to, pos }) {
+      const sp = new Sprite(Texture.from(canvas));
+      if (sp.texture.source) sp.texture.source.scaleMode = 'nearest';
+      sp.anchor.set(0.5, 0.5); sp.visible = false;
+      props.push({ sp, from, to, pos });
+    },
     update(t) {
       for (const [s, a, b] of hidden) if (s.sprite) s.sprite.visible = !(t >= a && t < b); // skutečný voják ustoupí herci (žádní dva na jednom místě)
+      for (const p of props) {
+        if (!p.sp.parent) par()?.addChild(p.sp);
+        const q = t >= p.from && t < p.to ? p.pos(t) : null;
+        p.sp.visible = !!q;
+        if (q) { p.sp.position.set(q[0], q[1]); p.sp.zIndex = q[1] + 50; }
+      }
       for (const a of acts) {
         if (!a.sp.parent) par()?.addChild(a.sp); // vrstva vojáků vzniká až se sprity
         const on = t >= a.from && t < a.to;

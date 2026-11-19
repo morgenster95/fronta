@@ -102,6 +102,11 @@ async function boot() {
     getJson('/assets/soldiers/manifest.json', { cache: 'no-cache' }),
   ]);
   setDayShift(theme); // zobrazené číslo dne (theme.dayShift, web/src/day.js)
+  // Front News (zpětné zpravodajství, /?reel=news…): mapa bez pozdějších staveb a událostí (bunkry, letadla, pozorovatelna, nemocnice, ruiny)
+  if (import.meta.env.DEV && /^news/.test(new URLSearchParams(location.search).get('reel') || '')) {
+    roster.orders = []; roster.pilots = (roster.pilots || []).map(() => null); roster.observation = null; roster.barrage = null; roster.shells = null; roster.victories = [];
+    for (const b of roster.battle || []) if (b) { b.built = {}; b.party = {}; }
+  }
   const map = generateFront(theme.map);
   const worldW = map.W * map.tile, worldH = map.H * map.tile;
   // otevřené sektory; zbytek mapy je „neprozkoumaný“ (ztmavený) a kamera tam nepustí
