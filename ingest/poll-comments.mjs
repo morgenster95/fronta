@@ -157,6 +157,11 @@ async function main() {
         if (txt && !c.noNews) state.news = [...(state.news || []), { day: state.day, kind: 'race', h: c.newsHead || 'Supplies, not guns', text: txt }];
         console.log(`🚚 odměna ${c.id_obj} → ${c.reward}: ${txt || 'nic'}`);
       }
+      if (c.cmd === 'endSafer') { // konec „bezpečnějšího týdne“ po kótě (19. 11., uživatel): raceDanger od příštího tahu neplatí
+        const v = (state.victories || []).find((x) => x.id === c.id_obj);
+        if (v) v.to = Math.min(v.to, state.day);
+        console.log(`🛡 bezpečnější týden ${c.id_obj} ukončen: ${v ? `to = ${v.to}` : 'kóta nenalezena'}`);
+      }
       if (c.cmd === 'fixEntry') { // oprava jednoho zápisu v deníku vojáka (jen na výslovný pokyn uživatele; výjimka z nedotknutelných deníků)
         const x = state.soldiers.find((y) => y.handle === c.handle);
         let n = 0;

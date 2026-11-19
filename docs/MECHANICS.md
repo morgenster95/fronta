@@ -503,3 +503,7 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 ## 2026-11-19 NÁVRH na později: závod „Hold the line“ (Grey Mill zatím 300 nováčků)
 - Uživatel: nápad se líbí, „někdy využijeme“; teď zůstává Grey Mill = první k 300 novým vojákům.
 - Návrh: závod 3 bitvy, kótu dostane strana s menším podílem padlých (padlí / velikost armády); odměna „Bread from the mill“ (3 dny rychlejší hojení těžce raněných, méně smrtí bez péče). Varianty: „Supply run“ (komentáře FLOUR jako souboj granátů), „Mill raid“ (150 zabitých při raidech).
+
+## 2026-11-19 · Konec „bezpečnějšího týdne“ po Hill 304 (NASAZENO)
+- Uživatel: zrušit. Po Hill 304 dál běžel skrytý `raceDanger` (Hegemonie šance na zásah ×0,6, Concord ×1,25) až do vnitřního dne 13 (noviny 21. 11.); hráčům se o něm nepsalo.
+- Příkaz `endSafer` `{ id_obj }` nastaví `victory.to = state.day`, takže od novin 20. 11. neplatí. Pozor: výchozí odměna nových kót (`barrage`) bezpečnější týden pořád dává (`theme.race.winDanger/loseDanger`, `days`), týká se Grey Mill.
