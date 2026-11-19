@@ -1,0 +1,27 @@
+# Ruční kontrola zrcadla obrázků na vlastní doméně (assets.mudandiron.app přes Cloudflare → GitHub Pages).
+# Nic nemění, jen vypíše DNS, hlavičky a porovná otisk obrázků se starou adresou github.io.
+name: check-assets
+on: { workflow_dispatch: {} }
+permissions: { contents: read }
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: DNS
+        run: |
+          dig +short assets.mudandiron.app CNAME || true
+          dig +short assets.mudandiron.app A || true
+      - name: HTTPS a hlavičky
+        run: |
+          for u in https://assets.mudandiron.app/game/assets.sha https://assets.mudandiron.app/game/assets/soldiers/atlas.json; do
+            echo "== $u"; curl -sS -o /dev/null -D - --max-time 20 -H 'Origin: https://mudandiron.web.app' "$u" | grep -iE '^(HTTP|server|location|access-control-allow-origin|content-type|cf-cache-status|cache-control)' || echo "NEDOSTUPNÉ"
+          done
+      - name: Stejná verze jako github.io
+        run: |
+          a=$(curl -sSL --max-time 20 https://assets.mudandiron.app/game/assets.sha || true)
+          b=$(curl -sSL --max-time 20 https://morgenster95.github.io/fronta/game/assets.sha || true)
+          echo "nová doména: ${a:-?}"; echo "github.io:   ${b:-?}"
+          [ -n "$a" ] && [ "$a" = "$b" ] && echo "SHODA" || echo "NESHODA"
+      - name: Video pro IG (Release media → Pages)
+        run: |
+          curl -sS -o /dev/null -D - --max-time 20 https://assets.mudandiron.app/reel_thousand.mp4 | grep -iE '^(HTTP|content-type|content-length|location)' || echo "NEDOSTUPNÉ"
