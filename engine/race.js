@@ -29,7 +29,9 @@ const counts = (state, theme) => theme.factions.map((_, f) => state.soldiers.fil
 // zabití: padlí soupeře od začátku závodu (záznamy rodů s.fallen, den padnutí > začátek závodu); recruits: noví vojáci
 function killCounts(state, theme) {
   const from = state.race.startDay ?? Infinity;
-  return theme.factions.map((_, f) => state.soldiers.reduce((a, s) => a + (s.faction !== f ? (s.fallen || []).filter((r) => (r.day ?? -1) > from).length : 0), 0));
+  // 19. 11.: počítají se i dnešní padlí, kteří ještě nemají nástupce (status 'fallen'; nástupci vznikají až po vyhodnocení závodu),
+  // jinak se závod rozhodl o den později a noviny psaly „-20 more“
+  return theme.factions.map((_, f) => state.soldiers.reduce((a, s) => a + (s.faction !== f ? (s.fallen || []).filter((r) => (r.day ?? -1) > from).length + (s.status === 'fallen' && (s.fallenDay ?? -1) > from ? 1 : 0) : 0), 0));
 }
 
 export function raceStatus(state, theme) {
@@ -58,7 +60,9 @@ export function checkKillRace(state, theme, story) {
   if (!st || st.type !== 'kills') return null;
   const ok = st.counts.map((n) => n >= st.need);
   if (!ok.some(Boolean)) return null;
-  const f = ok[0] && ok[1] ? (st.counts[0] >= st.counts[1] ? 0 : 1) : ok[0] ? 0 : 1;
+  // obě strany přes N týž den: vyhrává ta, která zabila víc; při přesné shodě nikdo, závod běží dál (19. 11., uživatel)
+  if (ok[0] && ok[1] && st.counts[0] === st.counts[1]) return null;
+  const f = ok[0] && ok[1] ? (st.counts[0] > st.counts[1] ? 0 : 1) : ok[0] ? 0 : 1;
   const from = state.race.killsFrom || {};
   const alive = state.soldiers.filter((s) => s.faction === f && s.status !== 'fallen');
   const hero = alive.sort((a, b) => ((b.kills || 0) - (from[b.handle] || 0)) - ((a.kills || 0) - (from[a.handle] || 0)) || (b.order || 0) - (a.order || 0))[0];
