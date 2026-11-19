@@ -286,7 +286,9 @@
       },
       {
         "id": "mill",
-        "name": "Grey Mill"
+        "name": "Grey Mill",
+        "need": 300,
+        "_need": "19. 11. (uživatel): 100 nováčků je při stovkách denně hned, zatím 300; nový typ závodu o mlýn čeká na schválení"
       },
       {
         "id": "quarry",
