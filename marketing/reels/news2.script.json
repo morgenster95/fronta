@@ -1,0 +1,106 @@
+{
+ "seconds": 150,
+ "auto": true,
+ "drums": [
+  "ident",
+  [],
+  "race"
+ ],
+ "lines": [
+  [
+   0.4,
+   "Day two began with a sniper.",
+   "cold"
+  ],
+  [
+   0,
+   "Rafael Gaita of the Hegemony waited for one head above the Concord wall.",
+   "aim"
+  ],
+  [
+   0,
+   "Nils Photo raised his. He was carried back badly wounded.",
+   "hit"
+  ],
+  [
+   0.3,
+   "This is Front News. Day two.",
+   "ident"
+  ],
+  [
+   0.4,
+   "The trenches kept filling. Forty-six new soldiers came up the line.",
+   "recruits"
+  ],
+  [
+   0,
+   "Twenty-five for the Hegemony, twenty-one for the Concord. The gap between the armies shrank to almost nothing.",
+   "recruits2"
+  ],
+  [
+   0.4,
+   "Then the storm came. Lightning showed the ground in sudden pieces.",
+   "storm"
+  ],
+  [
+   0,
+   "Hegemony machine guns swept the Concord parapet. Jonas Steini and Benedikt Jakubwilkuu were grazed.",
+   "mg"
+  ],
+  [
+   0,
+   "Three wounded. Still no dead. And two Hegemony soldiers did not answer the roll call. Bastian Hanka and Albin Chloe were missing.",
+   "missing"
+  ],
+  [
+   0.4,
+   "That day, both armies were asked one question. What does your side build?",
+   "vote"
+  ],
+  [
+   0,
+   "Both gave the same answer. A hospital. Seventeen to eleven for the Hegemony. Twenty-five to seven for the Concord.",
+   "vote2"
+  ],
+  [
+   0.4,
+   "And across the wire, strange things happened.",
+   "wire"
+  ],
+  [
+   0,
+   "A football flew over from the Concord side, with Anselm Rock's name scratched on it. Gustav Jul of the Hegemony kicked it back.",
+   "ball"
+  ],
+  [
+   0,
+   "Teodor Acakostic and Yann Vee traded insults for an hour. By the end, they were trading recipes.",
+   "recipes"
+  ],
+  [
+   0,
+   "And on a quiet night, Marek Ham and Edmund Matteozrybak called their names across no man's land, just to hear another voice.",
+   "names"
+  ],
+  [
+   0,
+   "Seven days later, Marek Ham was killed passing a message along the trench.",
+   "ham"
+  ],
+  [
+   0.4,
+   "The race for Verdel Ridge was now a knife edge. Concord eighty-four. Hegemony eighty-two.",
+   "race"
+  ],
+  [
+   0,
+   "Sixteen more soldiers, and the heights would fall. Before that night was over, they did.",
+   "race2"
+  ],
+  [
+   0.4,
+   "This was Front News. Next time: the ridge falls.",
+   "out"
+  ]
+ ]
+}
