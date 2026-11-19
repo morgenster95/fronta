@@ -1,6 +1,6 @@
 // DOM vrstva: počty, hledání @handle, karta vojáka se služebním záznamem, panel „Enlist“, sdílení.
 import { shardOf } from '../../engine/roster.js';
-import { startClaim, sendTransfer, sendLetter, signInAsOwner, myAccount, signOutHere, signInHere } from './claim.js';
+import { startClaim, sendTransfer, sendLetter, signInAsOwner, myAccount, signOutHere, signInHere, warmAuth } from './claim.js';
 import { shareCard } from './share.js';
 import { paperTexture, tornClip } from './paper.js';
 import { initValley } from './valley.js';
@@ -315,6 +315,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     $('card-house').hidden = false;
     $('card-house').onclick = () => house.openHouse(s.handle);
     $('card-claim').hidden = s.claimed;
+    $('card-claim').onpointerdown = warmAuth;
     $('card-claim').onclick = () => startClaim(s, theme, toast);
     // převelení: jen převzatý voják, ne důstojník
     $('card-transfer').hidden = true;
@@ -439,6 +440,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       box.hidden = !s.claimed;
       if (!s.claimed) return;
       box.innerHTML = 'Your soldier? <a href="#" id="card-signin">Sign in</a> to manage it.';
+      $('card-signin').onpointerdown = warmAuth; // stáhnout Firebase už při stisku, ať prohlížeč nezablokuje okno přihlášení
       $('card-signin').onclick = async (e) => {
         e.preventDefault();
         if (await signInHere(s, toast).catch(() => false)) renderAccount(s);

@@ -4,6 +4,15 @@ import { firebaseConfig, claimEnabled } from './firebase-config.js';
 
 const IN_APP = /Instagram|FBAN|FBAV|FB_IAB|Line\/|Twitter/i;
 
+// Firebase se stahuje až při kliknutí; než se stáhne, prohlížeč už nemusí brát okno přihlášení jako reakci na klik a zablokuje ho
+// (dřív: „Sign-in failed“ při prvním kliknutí, na druhé fungovalo). Proto: stažení začne už při stisku (warmAuth na pointerdown)
+// a zablokované okno nahradí přesměrování na Google (authDomain = doména webu, takže funguje všude) s návratem na kartu.
+export function warmAuth() {
+  if (!claimEnabled || !firebaseConfig.apiKey) return;
+  import('firebase/app').catch(() => {});
+  import('firebase/auth').catch(() => {});
+}
+
 // Přihlášení Googlem (sdílené pro převzetí i převelení). Vrací { app, user } nebo null.
 async function signIn(soldier, toast, param = 'claim') {
   const back = soldier ? `${location.origin}/?s=${encodeURIComponent(soldier.handle)}&${param}=1` : `${location.origin}/?${param}=1`;
@@ -33,6 +42,12 @@ async function signIn(soldier, toast, param = 'claim') {
       }
       user = (await signInWithPopup(auth, provider)).user;
     } catch (e) {
+      if (e?.code === 'auth/popup-blocked' || e?.code === 'auth/cancelled-popup-request') {
+        try { localStorage.setItem('mi.auth', '1'); } catch {}
+        history.replaceState(null, '', back); // po návratu z Google pokračuje stejná akce na kartě (?claim=1 / ?account=1)
+        await signInWithRedirect(auth, provider);
+        return null;
+      }
       const r = await getRedirectResult(auth).catch(() => null);
       user = r?.user;
       if (!user) {
