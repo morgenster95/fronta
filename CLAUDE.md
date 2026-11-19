@@ -4,6 +4,13 @@ Tenhle soubor čte Claude Code i v cloudu (aplikace Claude v mobilu, claude.ai/c
 Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co je teď ve hře), `docs/BATTLE.md` a `docs/COMBAT_ROLES.md` (boj), `docs/ONBOARDING.md` (rekruti a provoz),
 `docs/SCHEDULE.md` (rytmus dne), `docs/MAP_MISSIONS.md` (výpravy, vypnuté), **`docs/MECHANICS.md` (deník domluvených mechanik)**. `docs/DESIGN.md` je původní návrh, neaktualizuje se.
 
+## 19. 11. VEČER: VLASTNÍ DOMÉNA mudandiron.app (NASAZENO)
+- Hra běží na **https://mudandiron.app** (Firebase Hosting, web `mudandiron`; Cloudflare DNS: A `@` 199.36.158.100 + TXT `hosting-site=mudandiron`, oba **DNS only**). `mudandiron.web.app` přesměrovává (skript v `web/index.html`, zachová `?s=handle`). `authDomain: 'mudandiron.app'`, doména v Firebase Auth i v OAuth klientovi (uživatel 19. 11.).
+- Přihlášení hráčů: jen se jednou znovu přihlásí stejným Google účtem (nároky jsou ve Firestore podle uid), žádné nové ověření.
+- Zrcadlo obrázků a média pro IG: **https://assets.mudandiron.app** (CNAME na GitHub Pages, **Proxied**, SSL Full strict) → web ani DNS neprozradí GitHub/repo. `tools/asset-base.sh`, `ingest/publish.mjs`. Kontrola: workflow `check-assets` (ruční).
+- Front News videa (`reel_news*`) jen v Release `media`, z Pages je `media.yml` maže. Cloudflare jako hosting zamítnut (Pages 500 buildů/měs., R2 chce kartu), plán `docs/CLOUDFLARE.md` jen pro případ potřeby. Blaze zatím nezapnut (uživatel zvažuje, rozpočet 5 $).
+- Grey Mill odměna: návrh +50 % práce mediků + hojení ×2 na 3 dny (simulace: samotné hojení nepomáhá, pokrytí mediky teď ~61 % H / ~72 % C); čeká na potvrzení.
+
 ## 18. 11. (cloud): VÍC PADLÝCH, TESTOVACÍ REELY
 - **Noviny od 19. 11. jen čísla** (ztráty, Roll call, nováčci bez jmen a @handle; příběhy a zvláštní zprávy jména mají).
 - **Noční raid (NASAZENO):** post s `raid: true` otevře přihlášky RAID, vyhodnotí příští noviny, zabití se počítají do závodu o Blackwater Canal (`docs/MECHANICS.md`). Day reel Day 9 `reel-front9` (51 s, výzva RAID) ZVEŘEJNĚN 18. 11. 15:59 UTC (https://www.instagram.com/reel/Df44fdCAGM2/), story s videem 16:08 UTC; raid otevřen, **ověřit po novinách 19. 11.** článek „Night raid“, zabití v závodě, deníky raiderů. Bojová hudba `war_score` v `marketing/reel_audio.py` (uživatel chtěl změnu hudby).
@@ -158,7 +165,7 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
 - **Videa nejsou v gitu** (od 2026-11-12; dřív se commitovala a historie repa rostla o desítky MB denně, smazání ji nezmenší): workflow `reel` nahraje video do GitHub Release `media`,
   workflow `media` ho odtud vystaví na GitHub Pages (`marketing/promo/*.mp4` je v `.gitignore`; obrázky postů zůstávají v gitu). Hodinu po zveřejnění na IG `ingest/publish.mjs` video z Release smaže.
   Uživatel chce videa mít u sebe: každé hotové video mu pošli ke stažení (nebo odkaz na GitHub Pages) ještě před publikací. Video, které vyrobíš lokálně, nahraj do Release (`gh release upload media <soubor> --clobber`, jen v Actions) nebo přes workflow `reel`.
-- Hra běží naostro: https://mudandiron.web.app, IG @mudandiron. Automatika = smyčka `.github/workflows/front-loop.yml` (`tools/loop.sh`)
+- Hra běží naostro: https://mudandiron.app (dřív mudandiron.web.app, přesměrovává), IG @mudandiron. Automatika = smyčka `.github/workflows/front-loop.yml` (`tools/loop.sh`)
   každých ~5 min: stáhne komentáře, odpoví, publikuje frontu `marketing/queue.json`, denní tah v 13:00 UTC, nasadí web.
   Smyčka commituje do main → **před pushem vždy `git pull --rebase`**; `data/state.json` ručně neupravuj.
 - **Jeden zápis za den** (od 2026-11-11): každý živý voják má každý den právě jeden zápis do deníku (`theme.storyShare = 1`; dřív dostával zápis jen ~1× za 4 dny, proto byly v deníku mezery). Zápisy téhož dne se spojují (`addEntry` v `engine/soldier.js`), raněný a nezvěstný má krátký denní zápis (`wardBed/wardStretcher/wardTrench/wardLight/wardMissing`). Starší zápisy se nepřepisovaly (mezery z Dne 2–3 zůstanou).

@@ -64,7 +64,7 @@ round() {
     else
       echo "NASAZENÍ SELHALO:"
       grep -iE "error|quota|denied|permission|exceed" "${RUNNER_TEMP:-/tmp}/deploy.log" | head -10
-      alert deploy-failed "Web se nenasazuje" "Smyčka nemůže nasadit web mudandiron.web.app, hráči vidí stará data.
+      alert deploy-failed "Web se nenasazuje" "Smyčka nemůže nasadit web mudandiron.app, hráči vidí stará data.
 
 \`\`\`
 $(grep -iE "error|quota|denied|exceed" "${RUNNER_TEMP:-/tmp}/deploy.log" | head -5)

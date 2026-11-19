@@ -2,9 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <script>
+      // stará adresa (mudandiron.web.app, fronta-ig.*) → vlastní doména; zachová cestu, ?s=handle i #, ať fungují staré odkazy (19. 11.)
+      if (/(^|\.)(web\.app|firebaseapp\.com)$/.test(location.hostname)) location.replace('https://mudandiron.app' + location.pathname + location.search + location.hash);
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#1c1a17" />
     <title>Mud &amp; Iron</title>
+    <link rel="canonical" href="https://mudandiron.app/" />
     <meta name="description" content="Mud &amp; Iron: every Instagram follower is a soldier in an endless trench war. Comment CONCORD or HEGEMONY on @mudandiron and find yourself on the front." />
     <link rel="icon" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />

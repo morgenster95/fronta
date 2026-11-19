@@ -3,7 +3,7 @@
 // claimEnabled zapnout až po: Google přihlášení ve Firebase + autorizovaná doména + redirect URI u OAuth klienta.
 export const firebaseConfig = {
   apiKey: 'AIzaSyBcByl96KI___xFnsVYQhvLf_JYO80kJKE',
-  authDomain: 'mudandiron.web.app',
+  authDomain: 'mudandiron.app', // vlastní doména od 19. 11. (mudandiron.web.app přesměrovává sem, index.html)
   projectId: 'fronta-ig',
   appId: '1:878232454698:web:4ee667630bbede0b4ea553',
   messagingSenderId: '878232454698',

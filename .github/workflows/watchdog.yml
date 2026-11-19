@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 5
     env:
       GH_TOKEN: ${{ github.token }}
-      SITE: ${{ vars.SITE_URL || 'https://mudandiron.web.app' }}
+      SITE: ${{ vars.SITE_URL || 'https://mudandiron.app' }}
     steps:
       - uses: actions/checkout@v4
       - name: Check
