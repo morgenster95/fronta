@@ -263,7 +263,9 @@ export function placeSoldier(s, map, state) {
     const [from, to] = openRange(map, state.openSectors ?? 8);
     const open = map.slots[s.faction].filter((x) => x.sector >= from && x.sector < to);
     const free = open.filter((x) => !taken.has(`${x.x},${x.y}`));
-    if (free.length && (free.length - 1) / open.length >= 0.1) { slot = free[0]; break; }
+    // 19. 11. (uživatel): nováčci jdou do PŘEDNÍ linie; když je v otevřené části plná, fronta se rozšíří o další sektory (vypadá to lépe)
+    const frontFree = free.filter((x) => x.line === 'front');
+    if (frontFree.length) { slot = frontFree[0]; break; }
     if ((state.openSectors ?? 8) >= map.sectors) { slot = free[0] ?? null; break; }
     state.openSectors = Math.min(map.sectors, (state.openSectors ?? 8) + 2);
     state.log?.push([state.day, `front expanded to ${state.openSectors} sectors`]);

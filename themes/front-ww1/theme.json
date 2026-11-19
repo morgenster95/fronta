@@ -546,10 +546,10 @@
     "_hit": "pozadí: dělostřelectvo, granáty, miny (~60 % zásahů). Pásmo 0.008–0.03",
     "line": {
       "front": 1,
-      "support": 0.6,
-      "comm": 0.45,
-      "reserve": 0.35,
-      "rear": 0
+      "support": 1,
+      "comm": 1,
+      "reserve": 1,
+      "rear": 1
     },
     "barrage": 1.3,
     "experience": 0.4,
@@ -681,7 +681,8 @@
       },
       "kill": 0.8,
       "killHeavy": 0.7,
-      "shots": 2,
+      "shots": 1,
+      "_shots19": "19. 11.: zpět na 1 výstřel denně, protože od teď střílí všichni vojáci ve všech liniích (dřív jen přední). 2 výstřely × všichni = ~110 padlých první den a do 3 dnů ~200 denně (medici by nestíhali); 1 výstřel = stabilně ~65 padlých a ~210 raněných denně při 1 400 hráčích.",
       "_shots": "18. 11. (uživatel: na 500 hráčů je ~9 padlých denně málo, cíl ~30): každý střelec střílí 2× denně (2. kolo jen kdo zůstal zdravý, obě strany naráz), smrtelnost těžký 0,7 (dřív 0,25), kritický 0,8 (dřív 0,5), kritický od odstřelovače 0,9 (dřív 0,6). Simulace: ~32 padlých a ~90 raněných denně za obě strany.",
       "_killHeavy": "15. 11. (uživatel: musí se umírat i přímo palbou): kritický zásah kulkou zabije na místě s kill 0,5 (dřív 0,2), těžký s killHeavy 0,12.",
       "saturation": 0,
@@ -745,8 +746,8 @@
       "cut": 0.15,
       "_": "dopis z domova (hráč ho na webu pošle svému vojákovi, přihlášený majitel, jednou za den): voják má v příštím tahu o `cut` menší šanci na zásah všeho druhu; neodeslaný dopis = žádný buff (retence)"
     },
-    "shootLines": { "front": 1, "support": 0.6 },
-    "_shootLines": "19. 11. (uživatel: hráčů je 2× víc, ale padlých pořád stejně): střílí i podpůrná linie (palba ×0,6). Dřív jen přední a vojáci v podpůrné a spojovací linii navíc nemohli být zasaženi (chyběli v battle.line), takže noví hráči řazení dozadu nebojovali vůbec.",
+    "shootLines": { "front": 1, "support": 1, "comm": 1, "reserve": 1, "rear": 1 },
+    "_shootLines": "19. 11. (uživatel: linie nerozlišovat): všichni vojáci na frontě střílí a jdou zasáhnout stejně, ať stojí v kterékoli linii. Dřív jen přední a vojáci v podpůrné a spojovací linii navíc nemohli být zasaženi (chyběli v battle.line), takže noví hráči řazení dozadu nebojovali vůbec.",
     "pillbox": { "permanent": true, "wear": 0.06, "barrage": 0.1, "perRaid": 0.004, "sapperRepair": 0.004, "maxRepair": 0.15,
       "_": "19. 11. (uživatel): bunkry zůstávají natrvalo a válka je opotřebovává (denně 6 %, pod bombardováním +10 %, každý zásah raidera do zákopu +0,4 %), každý zdravý ženista strany opraví 0,4 % (nejvýš 15 % denně). Stav = 1 − ruined, bonus palby a ruiny na mapě podle něj." },
     "raid": {
