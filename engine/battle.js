@@ -308,7 +308,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       if (rr() < pHurt) {
         const sev = severity(s, RC.severity, rngFor(theme.id, s.id, 'raidBackSev', day), false);
         const shooter = defenders.filter((x) => x.archetype === 'machinegunner' || x.archetype === 'rifleman' || x.archetype === 'sniper')[Math.floor(rr() * Math.max(1, defenders.length))] || null;
-        wound(s, sev, { raid: true, ...(shooter ? { by: { handle: shooter.handle, name: shooter.name, role: shooter.archetype, faction: e } } : {}) });
+        wound(s, sev, { raid: true, back: true, ...(shooter ? { by: { handle: shooter.handle, name: shooter.name, role: shooter.archetype, faction: e } } : {}) });
         if ((sev === 'crit' && rr() < (RC.raiderKill ?? 0.6)) || (sev === 'heavy' && rr() < (RC.raiderKillHeavy ?? 0.3))) { s.wound.outright = 'raid'; r.fell++; }
         else r.hurt++;
         if (!s.wound.outright) ev(s, sev === 'light' ? 'hit' : 'wounded', eventEntry('nightRaidHurt', s, day, theme, story, {}, today));
@@ -482,7 +482,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     for (const s of state.soldiers.filter((x) => x.faction === f && x.wound?.outright)) {
       const how = s.wound.outright, by = s.wound.by;
       delete s.wound.outright;
-      const key = how === 'raid' ? 'nightRaidKilled' : how === 'shot' ? 'killedShot' : 'killedShell';
+      const key = how === 'raid' ? (s.wound.back ? 'nightRaidFell' : 'nightRaidKilled') : how === 'shot' ? 'killedShot' : 'killedShell'; // raider padlý na cestě zpět má vlastní texty (19. 11.: dřív dostal text obránce)
       die(s, story[key] ? key : 'diedNoBed', how === 'raid' ? 'shot' : how, by ? { target: by.name, targetHandle: by.handle, side: short(theme, by.faction) } : {}, how === 'raid');
     }
     const place = () => {

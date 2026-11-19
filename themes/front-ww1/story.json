@@ -2874,5 +2874,12 @@
     "Night raid. {name} crossed no man's land, saw the enemy sentry too late to reach, and came back without a scratch. Next time, says {name}.",
     "{name} joined the raid, lay in a shell hole for an hour while the flares burned, and made it home. That counts as a good night out here.",
     "{name} came back from the raid with mud to the eyebrows and an enemy helmet as a souvenir."
+  ],
+  "nightRaidFell": [
+    "{name} went over with the night raiders and never came back. The flare caught {name} on the wire, halfway home.",
+    "The raid was over in minutes. On the way back a machine gun swept no man's land, and {name} did not reach the parapet.",
+    "{name} made it into the enemy trench and out again. Twenty yards from home, a single shot ended it.",
+    "The squad counted heads when the raiders came back. {name} was missing. At dawn they saw {name} lying by the wire.",
+    "{name} was the last raider out of the enemy trench, covering the others. The others made it home. {name} did not."
   ]
 }
