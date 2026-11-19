@@ -318,5 +318,15 @@
     "id": "support-sebastiano_maccario-20261119",
     "cmd": "support",
     "handle": "sebastiano_maccario"
+  },
+  {
+    "id": "star-rakan_1027-20261119",
+    "cmd": "star",
+    "handle": "rakan_1027"
+  },
+  {
+    "id": "support-scottjseale-20261119",
+    "cmd": "support",
+    "handle": "scottjseale"
   }
 ]
