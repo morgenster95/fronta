@@ -546,6 +546,8 @@
     "_hit": "pozadí: dělostřelectvo, granáty, miny (~60 % zásahů). Pásmo 0.008–0.03",
     "line": {
       "front": 1,
+      "support": 0.6,
+      "comm": 0.45,
       "reserve": 0.35,
       "rear": 0
     },
@@ -743,6 +745,10 @@
       "cut": 0.15,
       "_": "dopis z domova (hráč ho na webu pošle svému vojákovi, přihlášený majitel, jednou za den): voják má v příštím tahu o `cut` menší šanci na zásah všeho druhu; neodeslaný dopis = žádný buff (retence)"
     },
+    "shootLines": { "front": 1, "support": 0.6 },
+    "_shootLines": "19. 11. (uživatel: hráčů je 2× víc, ale padlých pořád stejně): střílí i podpůrná linie (palba ×0,6). Dřív jen přední a vojáci v podpůrné a spojovací linii navíc nemohli být zasaženi (chyběli v battle.line), takže noví hráči řazení dozadu nebojovali vůbec.",
+    "pillbox": { "permanent": true, "wear": 0.06, "barrage": 0.1, "perRaid": 0.004, "sapperRepair": 0.004, "maxRepair": 0.15,
+      "_": "19. 11. (uživatel): bunkry zůstávají natrvalo a válka je opotřebovává (denně 6 %, pod bombardováním +10 %, každý zásah raidera do zákopu +0,4 %), každý zdravý ženista strany opraví 0,4 % (nejvýš 15 % denně). Stav = 1 − ruined, bonus palby a ruiny na mapě podle něj." },
     "raid": {
       "keyword": "RAID",
       "_": "18. 11. (uživatel): noční raid; přihláška RAID pod postem s `raid: true`, vyhodnocení v příštích novinách (engine/battle.js krok 0b, engine/nightraid.js). base = šance vpadnout a zasáhnout obránce, +perGap × potrhaný drát nepřítele, −perMG za každý kulomet obránců poblíž; weather násobí (mlha a déšť pomáhají). Zásah zblízka: hlavně těžký a kritický, kill/killHeavy = smrt obránce (počítá se do závodu o zabití). Cesta zpět: hurt + hurtPerMG × kulomety.",
@@ -754,8 +760,11 @@
       "reach": 2,
       "weather": { "fog": 1.25, "rain": 1.1, "storm": 1.05, "clear": 0.85, "frost": 0.9 },
       "severity": { "light": 0.6, "heavy": 0.25 },
-      "kill": 0.85,
-      "killHeavy": 0.6,
+      "kill": 0.95,
+      "killHeavy": 0.75,
+      "rounds": 2,
+      "rest": true,
+      "_deadly": "19. 11. (uživatel: raid má být opravdu smrtící): až 2 souboje za noc (druhý jen po vítězném prvním), smrtelnost zblízka kritický 0,95, těžký 0,75; raideři ráno v bitvě nestřílí (vyčerpaní).",
       "hurt": 0.25,
       "hurtPerMG": 0.03,
       "maxHurt": 0.6,

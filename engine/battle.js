@@ -261,6 +261,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   // 0b) noční raid (theme.battle.raid, engine/nightraid.js): dobrovolníci vpadnou do nepřátelského zákopu poblíž svého úseku.
   //     Úspěch roste s potrhaným drátem nepřítele a mlhou/deštěm, klesá s kulomety obránců. Zásah raidera je zblízka (lopatka, bajonet,
   //     pistole): hlavně těžký a kritický, zabití se počítá do závodu. Raider může padnout nebo být raněn.
+  const resting = new Set(); // raideři té noci (ráno nestřílí, když battle.raid.rest)
+  const raidHits = theme.factions.map(() => 0); // zásahy raiderů do zákopu strany (opotřebení bunkrů)
   const RC = cfg.raid, ro = state.raid?.open;
   if (RC && ro && ro.day < day) {
     const raiders = ro.ids.map((id) => state.soldiers.find((x) => x.id === id)).filter((x) => x && x.status === 'active' && !x.wound && !busy.has(x.id));
@@ -278,8 +280,14 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       const mgs = defenders.filter((x) => x.archetype === 'machinegunner').length;
       const wire = wireAvg(e) ?? cfg.wire.start;
       const pWin = Math.max(RC.minWin ?? 0.15, Math.min(RC.maxWin ?? 0.85, (RC.base + (RC.perGap || 0) * (1 - wire)) * wk * mult(theme, s) - (RC.perMG || 0) * mgs));
+      if (RC.rest) resting.add(s.id);
+      // souboje: až RC.rounds za noc, další jen když raider vyhrál předchozí (19. 11., uživatel: raid má být opravdu smrtící)
+      let won = 0;
+      for (let round = 0; round < (RC.rounds || 1) && (round === 0 || won === round); round++) {
       const pool = defenders.filter((x) => !hitByRaid.has(x.id));
       if (pool.length && rand() < pWin) {
+        won++;
+        raidHits[e]++;
         const t = pool[Math.floor(rand() * pool.length)];
         hitByRaid.add(t.id);
         const sev = severity(t, RC.severity, rngFor(theme.id, t.id, 'raidSev', day), false);
@@ -292,7 +300,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         s.hits = (s.hits || 0) + 1;
         ev(s, 'raid', eventEntry(dies ? 'nightRaidKill' : 'nightRaidWound', s, day, theme, story, { target: t.name, targetHandle: t.handle, side: short(theme, e) }, today) + ` (@${t.handle})`);
         if (!dies) ev(t, 'wounded', eventEntry('nightRaidStabbed', t, day, theme, story, { target: s.name, side: short(theme, f) }, today) + ` Raider: ${s.name} of the ${short(theme, f)} (@${s.handle}).`);
-      } else r.empty++;
+      } else if (round === 0) r.empty++;
+      }
       // cesta zpátky: světlice, kulomet, drát
       const pHurt = Math.min(RC.maxHurt ?? 0.6, (RC.hurt ?? 0.25) + (RC.hurtPerMG || 0) * mgs);
       const rr = rngFor(theme.id, s.id, 'raidBack', day);
@@ -328,7 +337,10 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   }
 
   // 1) palba hráčů
-  const front = theme.factions.map((_, f) => lineup(state, f, (s) => able(s) && s.line === 'front'));
+  // střílí přední linie a od 19. 11. i podpůrná (battle.shootLines: linie → násobek palby; dřív jen přední, takže s přibývajícími hráči,
+  // kteří se řadí dozadu, palba nerostla); raideři té noci ráno nestřílí (vyčerpaní, battle.raid.rest)
+  const SL = cfg.shootLines || { front: 1 };
+  const front = theme.factions.map((_, f) => lineup(state, f, (s) => able(s) && (SL[s.line] ?? 0) > 0 && !resting.has(s.id)));
   // cíle: zdraví vojáci v linii a od 15. 11. i ranění, kteří od včerejška leží v zákopu bez nosítek (uživatel: „taky se na ně střílí“)
   const lying = (s) => s.status === 'wounded' && s.wound?.place === 'trench' && s.wound.day < day && !busy.has(s.id);
   const targetsOf = theme.factions.map((_, f) => lineup(state, f, (s) => (able(s) || (cfg.hitLying && lying(s))) && (cfg.line[s.line] ?? 0) > 0));
@@ -353,7 +365,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const foes = R.saturation ? near(targetsOf[e], X(s), range).length : 0;
     const sat = R.saturation ? Math.min(1, (R.saturation * foes) / Math.max(1, mates.length)) : 1;
     // pozorovatelna (15. 11., uživatel): pozorovatel hlásí, kde stojí nepřátelské kulomety, takže střelce strany s pozorovatelnou nepotlačí
-    const p = fire * mult(theme, s) * (1 + lead) * (ctx.unsuppressed?.(s) ? 1 : 1 - suppress) * sat * (ctx.fireOf?.(s) ?? 1);
+    const p = fire * (SL[s.line] ?? 1) * mult(theme, s) * (1 + lead) * (ctx.unsuppressed?.(s) ? 1 : 1 - suppress) * sat * (ctx.fireOf?.(s) ?? 1);
     stats[f].shots++;
     const rand = round ? rngFor(s.id, `fire${round}`, day) : rngFor(s.id, 'fire', day);
     if (rand() >= p) continue;
@@ -620,6 +632,18 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         v += add;
       }
       side.wire[sec] = Math.round(Math.max(0, Math.min(1, v)) * 100) / 100;
+    }
+    // bunkry (rozkaz PILLBOXES, 19. 11., uživatel): zůstávají natrvalo, válka je opotřebovává (denně, víc pod bombardováním a po zásazích raiderů),
+    // ženisti strany je opravují (každý zdravý ženista kousek, a k tomu dál drát). Stav = 1 − ruined (stejné pole jako po souboji granátů, na mapě ruiny).
+    const PB = cfg.pillbox;
+    if (PB) for (const o of (state.orders || []).filter((x) => x.faction === f && x.kw === 'PILLBOXES' && day >= x.from)) {
+      if (PB.permanent) o.to = Math.max(o.to, day + 2);
+      const sappers = state.soldiers.filter((x) => x.faction === f && x.archetype === 'sapper' && able(x)).length;
+      const wear = (PB.wear || 0) + (barrage?.target === f ? PB.barrage || 0 : 0) + raidHits[f] * (PB.perRaid || 0);
+      const fix = Math.min(PB.maxRepair ?? 1, sappers * (PB.sapperRepair || 0));
+      const before = o.ruined || 0;
+      o.ruined = Math.round(Math.max(0, Math.min(1, before + wear - fix)) * 100) / 100;
+      stats[f].pillbox = { before, after: o.ruined, wear: Math.round(wear * 100) / 100, fix: Math.round(fix * 100) / 100, sappers };
     }
   });
 

@@ -481,3 +481,9 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 ## 2026-11-18 Podpora se dědí v rodu (NASAZENO)
 - Uživatel: stužka má zůstat vidět i po smrti vojáka. `theme.inheritMedals = ["war-bonds", "officers-star"]`: nástupce z rodu dostane stužku War Bonds a hvězdu Officers' Mess (podpora patří hráči, ne vojákovi). Ostatní medaile se dál nedědí (zůstanou u padlého v albu rodu).
 - Jednorázový příkaz `inheritMedals` vrátil stužku nástupcům, kteří ji ztratili (18. 11.: Dorian „Parson“ Freddie, @0__freddie__0). `unstar` (v01py) se nedědí zpět, protože hvězda už u něj není.
+
+## 2026-11-19 Palba roste s počtem hráčů, smrtelnější raid, bunkry natrvalo s opotřebením (NASAZENO)
+- **Chyba:** střílela jen přední linie a vojáci v podpůrné (`support`) a spojovací (`comm`) linii nemohli být zasaženi (chyběli v `battle.line`). Noví hráči se řadí dozadu, takže při 1 400 hráčích bojovala asi jen třetina. Oprava: `battle.line` + `support 0,6`, `comm 0,45` (šance být zasažen), `battle.shootLines = { front: 1, support: 0,6 }` (podpůrná linie střílí se 60 % palby).
+- **Raid (uživatel: má být opravdu smrtící):** až 2 souboje za noc (druhý jen po vítězném prvním), smrtelnost zblízka kritický 0,95 (dřív 0,85), těžký 0,75 (dřív 0,6); raideři ráno nestřílí (`raid.rest`).
+- **Bunkry (uživatel: zůstanou, válka je opotřebovává, ženisti opravují):** `battle.pillbox`: rozkaz PILLBOXES už nevyprší, denně −6 %, pod bombardováním −10 %, každý zásah raidera do zákopu −0,4 %; každý zdravý ženista +0,4 % (nejvýš +15 % denně). Ženisti dál opravují i drát (bez wiring party). Stav = 1 − `ruined`, podle něj bonus palby a ruiny na mapě.
+- Nanečisto 19. 11. (1 404 hráčů, raid 185 dobrovolníků): noviny ~113 padlých (H 54, C 59), z toho raid ~86. Bez raidu ~44 padlých denně (H 24–31, C 17–19), dřív ~36.
