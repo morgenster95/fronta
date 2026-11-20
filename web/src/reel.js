@@ -181,6 +181,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'roll') {
+    // akviziční trial reel: všechna jména podle pořadí narukování, „pause to find yourself“ (reel-roll.js)
+    return import('./reel-roll.js').then(async ({ startRollReel }) => {
+      await startRollReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'zaza') {
     // akviziční trial reel: rod Zaza, 4 smrti na jednom stanovišti (reel-zaza.js)
     return import('./reel-zaza.js').then(async ({ startZazaReel }) => {

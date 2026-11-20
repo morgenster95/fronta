@@ -1,0 +1,46 @@
+{
+ "seconds": 40,
+ "auto": true,
+ "drums": [
+  "hook",
+  [],
+  "cta"
+ ],
+ "lines": [
+  [
+   0.2,
+   "If you commented on my posts, you are in this video.",
+   "hook"
+  ],
+  [
+   0,
+   "Every name here is a real person, fighting a real war in my comments.",
+   "real"
+  ],
+  [
+   0.3,
+   "One thousand eight hundred and sixty-one of them. In the order they enlisted.",
+   "count"
+  ],
+  [
+   0.3,
+   "Pause, and find yourself.",
+   "pause"
+  ],
+  [
+   6,
+   "Your soldier has a name, a family and a diary. Some have already died. Some are still holding the line.",
+   "diary"
+  ],
+  [
+   3,
+   "Not here yet? Comment Hegemony or Concord. You will be in the next one.",
+   "cta"
+  ],
+  [
+   0,
+   "Mud and Iron. Free at mudandiron dot app.",
+   "end"
+  ]
+ ]
+}
