@@ -1,5 +1,5 @@
 {
- "seconds": 32.8,
+ "seconds": 31.1,
  "voice": "en-GB-RyanNeural",
  "lines": [
   [
@@ -16,30 +16,30 @@
   ],
   [
    6.85,
-   4.2,
-   "One thousand eight hundred and sixty-one of them. In the order they enlisted.",
+   2.5,
+   "Almost two thousand of them, in the order they enlisted.",
    "count"
   ],
   [
-   11.3,
+   9.6,
    1.67,
    "Pause, and find yourself.",
    "pause"
   ],
   [
-   13.22,
+   11.52,
    7.11,
    "Your soldier has a name, a family and a diary. Some have already died. Some are still holding the line.",
    "diary"
   ],
   [
-   20.58,
+   18.88,
    5.19,
    "Not here yet? Comment Hegemony or Concord. You will be in the next one.",
    "cta"
   ],
   [
-   26.02,
+   24.32,
    3.37,
    "Mud and Iron. Free at mudandiron dot app.",
    "end"
