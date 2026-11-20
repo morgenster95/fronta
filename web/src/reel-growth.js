@@ -15,7 +15,7 @@ const CSS = `${BASE}${FX_CSS}
 #rg-stats { left: 6%; right: 6%; top: 66%; display: flex; justify-content: space-around; background: rgba(14,13,12,0.9); border: 3px solid #524a3f; padding: 14px 8px; opacity: 0; font-family: 'Silkscreen', monospace; text-align: center; }
 #rg-stats b { display: block; font-size: 64px; font-weight: 400; line-height: 1; } #rg-stats span { font-size: 22px; color: #c9b99a; letter-spacing: 0.08em; }
 #rg-stats .s b { color: #e3d9c3; } #rg-stats .f b { color: #c8553d; }
-#rg-hook { left: 5%; right: 5%; top: 36%; text-align: center; font-family: 'Silkscreen', monospace; color: #e3d9c3; text-shadow: 5px 5px 0 #0e0d0c; background: rgba(14,13,12,0.82); padding: 14px 8px 18px; border-top: 3px solid #d98f3f; border-bottom: 3px solid #d98f3f; opacity: 0; }
+#rg-hook { left: 5%; right: 5%; top: 58%; text-align: center; font-family: 'Silkscreen', monospace; color: #e3d9c3; text-shadow: 5px 5px 0 #0e0d0c; background: rgba(14,13,12,0.82); padding: 14px 8px 18px; border-top: 3px solid #d98f3f; border-bottom: 3px solid #d98f3f; opacity: 0; }
 #rg-hook .a { font-size: 34px; line-height: 1.2; } #rg-hook .b { font-size: 54px; color: #d98f3f; line-height: 1.1; margin-top: 6px; }
 #rg-cta { left: 6%; right: 6%; top: 56%; text-align: center; background: rgba(14,13,12,0.95); border: 4px solid #d98f3f; padding: 16px; opacity: 0; }
 #rg-cta .big { font-family: 'Silkscreen', monospace; font-size: 40px; color: #d98f3f; line-height: 1.15; }
@@ -43,9 +43,13 @@ export async function startGrowthReel({ cam, life, map, soldiers }) {
   const G0 = tt.grow, G1 = tt.now;
   const dayAt = (t) => (t < G0 ? 1 : t >= G1 ? 11 : 1 + 10 * clamp01((t - G0) / (G1 - G0)));
   const statAt = (d) => { const i = Math.min(DAYS.length - 2, Math.floor(d) - 1), u = d - Math.floor(d); if (d >= 11) return DAYS[10]; return [d, DAYS[i][1] + (DAYS[i + 1][1] - DAYS[i][1]) * u, DAYS[i][2] + (DAYS[i + 1][2] - DAYS[i][2]) * u]; };
-  // kamera na zákopu Concordu (blíž, ať je vidět, jak se plní), pak pomalé oddálení přes obě linie
-  const cy = (real.find((s) => s.faction === 1 && s.slot?.line === 'front') || real[0]).y;
-  const K = [[0, xc, cy - 20, 1.6], [G0, xc + 120, cy - 20, 1.5], [G1, xc + 480, cy - 30, 1.25], [tt.cta - 0.01, xc + 700, mid, 0.75, 'ease'], [tt.cta, xc, mid, 0.9, 'cut'], [END, xc + 200, mid, 0.95]];
+  // kamera na první linii Hegemonie (uprostřed mapy; Concord je u spodního okraje a kamera by se zarazila), zblízka, ať je vidět, jak se plní
+  const fy = real.filter((s) => s.faction === 0 && s.slot?.line === 'front').map((s) => s.y).sort((a, b) => a - b);
+  const cy = fy[Math.floor(fy.length / 2)] ?? mid;
+  // Day 1: kamera tam, kde je nejvíc prvních 124 vojáků první linie Hegemonie (ať není zákop prázdný)
+  const early = real.slice(0, DAYS[0][1]).filter((s) => s.faction === 0 && s.slot?.line === 'front' && Math.abs(s.y - cy) < 60).map((s) => s.x);
+  let ex = xc, best = -1; for (const a of early) { const k = early.filter((b) => Math.abs(b - a) < 130).length; if (k > best) { best = k; ex = a; } }
+  const K = [[0, ex, cy, 2.4], [G0, ex + 40, cy, 2.3], [G1, ex + 260, cy, 1.9], [tt.cta - 0.01, xc + 700, mid, 0.75, 'ease'], [tt.cta, xc, mid, 0.9, 'cut'], [END, xc + 200, mid, 0.95]];
   const camAt = camPath(K);
   const sub = subtitles(vo);
   const fx = transitions([[tt.boom, 'flash'], [tt.now, 'flash'], [tt.cta, 'black', 0.4]]);
