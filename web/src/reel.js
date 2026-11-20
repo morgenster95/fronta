@@ -149,6 +149,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'news4') {
+    // Front News, epizoda Day 4 (12.–13. 11.): kráter a známka, druhá noc pod děly, drát a drátaři, nemocnice, padlí, War Bonds, Hill 304 (reel-news4.js, cine-trench.js)
+    return import('./reel-news4.js').then(async ({ startNews4Reel }) => {
+      await startNews4Reel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'news3') {
     // Front News, epizoda Day 3 (11. 11.): spojka s číslem 100, pád Verdel Ridge, děla, lazaret, první padlí, déšť, Hill 304 (reel-news3.js, cine-trench.js)
     return import('./reel-news3.js').then(async ({ startNews3Reel }) => {

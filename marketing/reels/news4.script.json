@@ -1,0 +1,116 @@
+{
+ "seconds": 150,
+ "auto": true,
+ "drums": [
+  "ident",
+  [],
+  "hill"
+ ],
+ "lines": [
+  [
+   0.6,
+   "Dawn, behind the Hegemony line.",
+   "cold"
+  ],
+  [
+   0,
+   "The men dug in the crater for an hour. They found only his identity disc. Edmund Acquillae.",
+   "cold2"
+  ],
+  [
+   0.3,
+   "This is Front News. Day four.",
+   "ident"
+  ],
+  [
+   0.4,
+   "For a second night, the guns on Verdel Ridge fired on the Hegemony.",
+   "guns"
+  ],
+  [
+   0,
+   "Twenty-six men were hit. Ten were killed where they stood, by direct hits.",
+   "guns2"
+  ],
+  [
+   0,
+   "The bearers could not reach every stretcher under the shells.",
+   "guns3"
+  ],
+  [
+   0.4,
+   "And the shells did something worse. They tore down the wire.",
+   "wire"
+  ],
+  [
+   0,
+   "Only a quarter of the Hegemony wire was still standing. In twenty-three sectors, a man could walk straight through.",
+   "wire2"
+  ],
+  [
+   0,
+   "So the call went out for wiring parties. Crawl out after dark, fix the wire, and when a flare goes up, drop flat and wait.",
+   "wire3"
+  ],
+  [
+   0.4,
+   "In the Hegemony hospital, every bed was full. Twenty-three men waited on stretchers.",
+   "ward"
+  ],
+  [
+   0,
+   "The medics could reach two out of three.",
+   "ward2"
+  ],
+  [
+   0.4,
+   "The Concord did not get away clean. Norbert Fransinlak, a Hegemony sniper, was watching their parapet.",
+   "shot"
+  ],
+  [
+   0,
+   "Isidor Jackmdunn looked over it for one second too long.",
+   "shot2"
+  ],
+  [
+   0.4,
+   "Day four cost the Hegemony eleven dead. The Concord, three.",
+   "dead"
+  ],
+  [
+   0,
+   "Edmund Acquillae's family kept sending men. Today the third Acquillae serves on the line. A medic.",
+   "fam"
+  ],
+  [
+   0.4,
+   "And something new began. Three soldiers bought War Bonds with their own money, to keep the front fed.",
+   "bonds"
+  ],
+  [
+   0.4,
+   "Through the rain, eighty-one new soldiers came up the line.",
+   "new"
+  ],
+  [
+   0,
+   "The Hegemony now held one hundred and seventy. The Concord, one hundred and fifty.",
+   "new2"
+  ],
+  [
+   0.4,
+   "In the race for Hill 304, the Hegemony pulled far ahead. Seventy-six to fifty.",
+   "hill"
+  ],
+  [
+   0,
+   "Twenty-four more, and the hill is theirs.",
+   "hill2"
+  ],
+  [
+   0.4,
+   "This was Front News. Next time: the hill.",
+   "out"
+  ]
+ ]
+}
