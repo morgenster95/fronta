@@ -35,6 +35,7 @@ export function makeTrenchCine(tex = {}, anims = {}) {
     cKneel: A('concord', 'kneel', 'east'),
     hLie: A('hegemony', 'lying-wounded', 'east'), hLieW: A('hegemony', 'lying-wounded', 'west'),
     hMed: A('hegemony_medic', 'bandage', 'east'),
+    cSitW: A('concord', 'sit-wounded', 'west'), cSitE: A('concord', 'sit-wounded', 'east'),
   };
   const at = (arr, i) => arr[Math.max(0, Math.min(arr.length - 1, i))];
   const put = (fr, x, feet) => { if (fr) g.drawImage(fr, Math.round(x - fr.width / 2), Math.round(feet - (fr.height === 64 ? 46 : 30))); };
@@ -114,28 +115,41 @@ export function makeTrenchCine(tex = {}, anims = {}) {
     }
   }
 
+  const TOP = 66, STEPY = 97, DECK = 120; // zákop zevnitř (runner, sick)
+  function inside(t, o) {
+      // pohled ZEVNITŘ zákopu Concordu: zadní stěna s pytli nahoře, hlídky na stupínku koukají přes val (zády k nám),
+    // vpředu prkenná podlaha, spojka běží zprava doleva celá vidět (hlavou nic nezakrývá)
+    
+    for (let y = 0; y < TOP; y++) for (let x = 0; x < W; x++) { const u = (y / TOP) * (SKY.length - 2) + (by(x, y) - 0.5); g.fillStyle = SKY[Math.max(0, Math.min(SKY.length - 1, Math.round(u)))]; g.fillRect(x, y, 1, 1); }
+    if (o.flash) { g.fillStyle = `rgba(227,217,195,${0.5 * o.flash})`; g.fillRect(0, 0, W, TOP); }
+    // světlice daleko nad zemí nikoho (jen záře na obloze)
+    const fl = (t * 0.35) % 1; glow(70 + fl * 30, 10 + fl * 14, 26, 0.25 * Math.sin(fl * Math.PI));
+    // zadní stěna: hlína, svislé kůly a vodorovná prkna obložení
+    for (let y = TOP + 14; y < DECK; y++) for (let x = 0; x < W; x++) px(by(x, y) < 0.12 ? PAL.mud2 : PAL.mud1, x, y);
+    for (let y = TOP + 22; y < STEPY; y += 9) { px(PAL.mud2, 0, y, W, 2); px(PAL.mud0, 0, y + 2, W, 1); }
+    for (let x = 8; x < W; x += 30) { px(PAL.mud3, x, TOP + 14, 3, DECK - TOP - 14); px(PAL.mud0, x + 3, TOP + 14, 1, DECK - TOP - 14); }
+    // stupínek (fire step) a pytle na valu
+    px(PAL.mud3, 0, STEPY, W, 3); px(PAL.mud0, 0, STEPY + 3, W, 1);
+    sandbags(0, W, TOP, 3);
+    // hlídky na stupínku zády k nám, hlavy nad pytli
+    if (o.sentries !== false) for (const hx of [52, 150, 214]) put(S.cNorth, hx, STEPY + 1);
+    // podlaha z prken (duckboards) a bláto
+    for (let y = DECK; y < H; y++) for (let x = 0; x < W; x++) px(y < DECK + 6 ? ((x % 9) === 0 ? PAL.mud0 : (x % 9) < 2 ? PAL.sand : PAL.mud3) : (by(x, y) < 0.2 ? PAL.mud1 : PAL.mud0), x, y);
+    px(PAL.water, 30, DECK + 8, 26, 1); px(PAL.water, 150, DECK + 10, 34, 1);
+  }
+
   const scenes = {
     // spojka Concordu běží zákopem zprava doleva s číslem na papíře; hlídky stojí u valu
+    // mokrý zákop, kde se schyluje k nemocem: voda na podlaze, vojáci sedí u stěny, déšť, krysa (20. 11.)
+    sick(t, o) {
+      inside(t, { ...o, sentries: false });
+      for (let x = 0; x < W; x++) if (by(x, DECK + 3) < 0.7) px(PAL.water, x, DECK + 2 + ((x >> 3) % 2), 1, 1);
+      for (const [x, fr, k] of [[40, S.cSitW, 0], [96, S.cSitE, 3], [168, S.cSitW, 5], [214, S.cSitE, 2]]) put(at(fr, k + Math.floor(t * 2) % 2), x, DECK + 2);
+      const rx = ((t * 18) % 300) - 30; px(PAL.mud1, Math.round(rx), DECK + 1, 5, 2); px(PAL.mud0, Math.round(rx) + 5, DECK + 1, 2, 1); px(PAL.mud0, Math.round(rx) - 3, DECK + 2, 3, 1); // krysa
+      rain(t); if (o.storm) rain(t + 0.37);
+    },
     runner(t, o) {
-      // pohled ZEVNITŘ zákopu Concordu: zadní stěna s pytli nahoře, hlídky na stupínku koukají přes val (zády k nám),
-      // vpředu prkenná podlaha, spojka běží zprava doleva celá vidět (hlavou nic nezakrývá)
-      const TOP = 66, STEPY = 97, DECK = 120;
-      for (let y = 0; y < TOP; y++) for (let x = 0; x < W; x++) { const u = (y / TOP) * (SKY.length - 2) + (by(x, y) - 0.5); g.fillStyle = SKY[Math.max(0, Math.min(SKY.length - 1, Math.round(u)))]; g.fillRect(x, y, 1, 1); }
-      if (o.flash) { g.fillStyle = `rgba(227,217,195,${0.5 * o.flash})`; g.fillRect(0, 0, W, TOP); }
-      // světlice daleko nad zemí nikoho (jen záře na obloze)
-      const fl = (t * 0.35) % 1; glow(70 + fl * 30, 10 + fl * 14, 26, 0.25 * Math.sin(fl * Math.PI));
-      // zadní stěna: hlína, svislé kůly a vodorovná prkna obložení
-      for (let y = TOP + 14; y < DECK; y++) for (let x = 0; x < W; x++) px(by(x, y) < 0.12 ? PAL.mud2 : PAL.mud1, x, y);
-      for (let y = TOP + 22; y < STEPY; y += 9) { px(PAL.mud2, 0, y, W, 2); px(PAL.mud0, 0, y + 2, W, 1); }
-      for (let x = 8; x < W; x += 30) { px(PAL.mud3, x, TOP + 14, 3, DECK - TOP - 14); px(PAL.mud0, x + 3, TOP + 14, 1, DECK - TOP - 14); }
-      // stupínek (fire step) a pytle na valu
-      px(PAL.mud3, 0, STEPY, W, 3); px(PAL.mud0, 0, STEPY + 3, W, 1);
-      sandbags(0, W, TOP, 3);
-      // hlídky na stupínku zády k nám, hlavy nad pytli
-      for (const hx of [52, 150, 214]) put(S.cNorth, hx, STEPY + 1);
-      // podlaha z prken (duckboards) a bláto
-      for (let y = DECK; y < H; y++) for (let x = 0; x < W; x++) px(y < DECK + 6 ? ((x % 9) === 0 ? PAL.mud0 : (x % 9) < 2 ? PAL.sand : PAL.mud3) : (by(x, y) < 0.2 ? PAL.mud1 : PAL.mud0), x, y);
-      px(PAL.water, 30, DECK + 8, 26, 1); px(PAL.water, 150, DECK + 10, 34, 1);
+      inside(t, o);
       // spojka: běží celý záběr, papír v ruce
       const X = 262 - t * 26;
       if (X > -20) { put(at(S.cRun, Math.floor(t * 12) % Math.max(1, S.cRun.length)), X, DECK + 4); px(PAL.white, Math.round(X - 7), DECK - 13, 3, 2); }
@@ -175,6 +189,10 @@ export function makeTrenchCine(tex = {}, anims = {}) {
       for (const [bx] of beds) { px(PAL.mud3, bx - 19, FL - 12, 38, 3); px(PAL.sand, bx - 19, FL - 13, 38, 1); px(PAL.mud0, bx - 17, FL - 9, 2, 9); px(PAL.mud0, bx + 15, FL - 9, 2, 9); }
       for (const [bx, fr] of beds) put(at(fr, 2), bx, FL - 5);
       put(at(W2.med, Math.floor(t * 5) % Math.max(1, W2.med.length)), 42, FL + 4); // ošetřovatel u prvního lůžka
+      if (o.full) { // přeplněno: ranění na nosítkách na zemi mezi lůžky, druhý ošetřovatel
+        for (const [bx, fr] of [[100, W2.lieW], [168, W2.lie], [236, W2.lieW]]) { px(PAL.sand, bx - 16, FL + 14, 32, 2); px(PAL.mud3, bx - 16, FL + 16, 32, 1); put(at(fr, 1), bx, FL + 18); }
+        put(at(W2.med, (Math.floor(t * 5) + 3) % Math.max(1, W2.med.length)), 140, FL + 22);
+      }
       // lampa na trámu
       const LX = 110, LY = 36; px(PAL.ink, LX, 23, 1, 9); px(PAL.mud3, LX - 3, LY - 4, 7, 2); px(PAL.gold, LX - 2, LY - 2, 5, 5); px(PAL.white, LX - 1, LY - 1, 3, 3 * (1 - dim) | 0 || 1);
       const L = (1 - dim) * fl;

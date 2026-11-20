@@ -1,0 +1,91 @@
+{
+ "seconds": 90,
+ "auto": true,
+ "drums": [
+  "open",
+  [],
+  "big"
+ ],
+ "lines": [
+  [
+   0.3,
+   "Day eleven. One hundred and nine men fell.",
+   "open"
+  ],
+  [
+   0,
+   "And every bed in both hospitals is taken.",
+   "hosp"
+  ],
+  [
+   0,
+   "Thirty-four men wait on stretchers outside the door. The Hegemony medics reach only seven of every ten wounded.",
+   "hosp2"
+  ],
+  [
+   0.3,
+   "In cold, wet, crowded trenches, the next enemy is not a bullet. It is sickness.",
+   "sick"
+  ],
+  [
+   0,
+   "The front needs medics. New soldiers, comment Hegemony medic, or Concord medic.",
+   "medic"
+  ],
+  [
+   0.3,
+   "Rafael Ali died before the medic came. His squad kept his place on the fire step empty.",
+   "ali"
+  ],
+  [
+   0,
+   "Today his heir, Karel Ali, took that place. As a medic.",
+   "ali2"
+  ],
+  [
+   0.2,
+   "Hugo Kitty was killed passing a message along the trench. He never finished the sentence.",
+   "kitty"
+  ],
+  [
+   0.3,
+   "Grey Mill is close. Hegemony two hundred and nine, Concord one hundred and eighty-five, of three hundred.",
+   "mill"
+  ],
+  [
+   0,
+   "Whoever takes it gets a heavy howitzer, for good. It fires every day on the most crowded enemy trench, until it is destroyed.",
+   "gun"
+  ],
+  [
+   0.3,
+   "Every army needs a voice. Konrad Sebs for the Hegemony. Bastian Wizzerd for the Concord.",
+   "voice"
+  ],
+  [
+   0,
+   "Walter, Anselm, Quentin, Zeno and Lucien bought War Bonds. The front thanks you.",
+   "bonds"
+  ],
+  [
+   0.3,
+   "Six hundred and fifteen soldiers joined yesterday. And the Concord passed one thousand.",
+   "big"
+  ],
+  [
+   0,
+   "One thousand eight hundred and seventeen now hold the line. Hegemony eight hundred and seventeen. Concord, one thousand.",
+   "army"
+  ],
+  [
+   0.3,
+   "Coming soon on Patreon: Front News, the first days of the war.",
+   "cta"
+  ],
+  [
+   0,
+   "Play free at mudandiron dot app. Comment Hegemony or Concord.",
+   "cta2"
+  ]
+ ]
+}

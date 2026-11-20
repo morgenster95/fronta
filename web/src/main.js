@@ -363,6 +363,7 @@ async function boot() {
   const wireFx = await initWire({ world, anchor: terrainLayer, roster, map, anims, theme, openX0, openX1, V, volunteers });
   if (wireFx) propImages.noWire = true;
   const obsFx = await initObservation({ world, anchor: terrainLayer, over: overLayer, roster, map, theme, tex, openX0, openX1, V }); // pozorovatelna na kótě (odměna)
+  if (import.meta.env.DEV && new URLSearchParams(location.search).get('reel') === 'front11') roster.guns = [{ id: 'teaser', faction: 0, cond: 1, destroyed: false, last: null }]; // Day reel 11: ukázka odměny za Grey Mill
   const gunFx = await initGuns({ world, anchor: terrainLayer, roster, map, theme, tex, life: { debug: { shell: (...a) => life.debug.shell(...a) } }, openX0, openX1, V }); // těžké dělo (odměna Grey Mill, web/src/guns.js)
 
   const placed = soldiers.filter((s) => s.slot && s.status !== 4 && s.status !== 2 && s.status !== 3);
