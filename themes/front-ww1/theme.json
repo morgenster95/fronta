@@ -288,7 +288,9 @@
         "id": "mill",
         "name": "Grey Mill",
         "need": 300,
-        "_need": "19. 11. (uživatel): 100 nováčků je při stovkách denně hned, zatím 300; nový typ závodu o mlýn čeká na schválení"
+        "_need": "19. 11. (uživatel): 100 nováčků je při stovkách denně hned, zatím 300; nový typ závodu o mlýn čeká na schválení",
+        "reward": "gun",
+        "rewardText": "Takes the mill and a heavy howitzer that stays for good: every day it shells the most crowded stretch of the enemy line. It wears out and can be destroyed; only sappers with time to spare can keep it firing."
       },
       {
         "id": "quarry",
@@ -299,9 +301,13 @@
         "name": "the Weeping Orchard"
       }
     ],
-    "logistics": { "days": 3, "shots": 2, "victory": "For {days} days better supplies come up {objective} to the {us} line",
+    "logistics": {
+      "days": 3,
+      "shots": 2,
+      "victory": "For {days} days better supplies come up {objective} to the {us} line",
       "_victory": "uživatel 19. 11.: hráčům jen „lepší logistika“, ne že střílí víc",
-      "_": "19. 11. (uživatel): odměna kóty místo bombardování; vítěz {days} dní střílí {shots}× denně (ostatní 1×)." },
+      "_": "19. 11. (uživatel): odměna kóty místo bombardování; vítěz {days} dní střílí {shots}× denně (ostatní 1×)."
+    },
     "observation": {
       "days": 3,
       "fire": 0.8,
@@ -322,7 +328,12 @@
       "kill": 1,
       "_kill": "15. 11. (uživatel: pozorovatelna musí být znát na smrtích): střelci strany s pozorovatelnou (sniper, MG, puškař) mají palbu ×(1+fire) a šanci zabít na místě ×(1+kill)."
     },
-    "_need": "need: výchozí cíl závodu; objectives[].type 'kills' = vyhrává, kdo první zabije `need` nepřátel (padlí soupeře od začátku závodu); Blackwater Canal: kills 100 (uživatel 14. 11.: místo nových vojáků rozhodují zabití)"
+    "_need": "need: výchozí cíl závodu; objectives[].type 'kills' = vyhrává, kdo první zabije `need` nepřátel (padlí soupeře od začátku závodu); Blackwater Canal: kills 100 (uživatel 14. 11.: místo nových vojáků rozhodují zabití)",
+    "gun": {
+      "name": "the {objective} gun",
+      "victory": "The {us} dragged a heavy howitzer into a gun pit behind their line. From tomorrow it fires every day on the most crowded {them} trenches, until it is destroyed. Sappers keep it in repair.",
+      "_": "20. 11. (uživatel): odměna Grey Mill = jedno těžké dělo natrvalo s opotřebením (engine/gun.js, theme.battle.gun)"
+    }
   },
   "honors": {},
   "schedule": {
@@ -752,10 +763,23 @@
       "cut": 0.15,
       "_": "dopis z domova (hráč ho na webu pošle svému vojákovi, přihlášený majitel, jednou za den): voják má v příštím tahu o `cut` menší šanci na zásah všeho druhu; neodeslaný dopis = žádný buff (retence)"
     },
-    "shootLines": { "front": 1, "support": 1, "comm": 1, "reserve": 1, "rear": 1 },
+    "shootLines": {
+      "front": 1,
+      "support": 1,
+      "comm": 1,
+      "reserve": 1,
+      "rear": 1
+    },
     "_shootLines": "19. 11. (uživatel: linie nerozlišovat): všichni vojáci na frontě střílí a jdou zasáhnout stejně, ať stojí v kterékoli linii. Dřív jen přední a vojáci v podpůrné a spojovací linii navíc nemohli být zasaženi (chyběli v battle.line), takže noví hráči řazení dozadu nebojovali vůbec.",
-    "pillbox": { "permanent": true, "wear": 0.06, "barrage": 0.1, "perRaid": 0.004, "sapperRepair": 0.004, "maxRepair": 0.15,
-      "_": "19. 11. (uživatel): bunkry zůstávají natrvalo a válka je opotřebovává (denně 6 %, pod bombardováním +10 %, každý zásah raidera do zákopu +0,4 %), každý zdravý ženista strany opraví 0,4 % (nejvýš 15 % denně). Stav = 1 − ruined, bonus palby a ruiny na mapě podle něj." },
+    "pillbox": {
+      "permanent": true,
+      "wear": 0.06,
+      "barrage": 0.1,
+      "perRaid": 0.004,
+      "sapperRepair": 0.004,
+      "maxRepair": 0.15,
+      "_": "19. 11. (uživatel): bunkry zůstávají natrvalo a válka je opotřebovává (denně 6 %, pod bombardováním +10 %, každý zásah raidera do zákopu +0,4 %), každý zdravý ženista strany opraví 0,4 % (nejvýš 15 % denně). Stav = 1 − ruined, bonus palby a ruiny na mapě podle něj."
+    },
     "raid": {
       "keyword": "RAID",
       "_": "18. 11. (uživatel): noční raid; přihláška RAID pod postem s `raid: true`, vyhodnocení v příštích novinách (engine/battle.js krok 0b, engine/nightraid.js). base = šance vpadnout a zasáhnout obránce, +perGap × potrhaný drát nepřítele, −perMG za každý kulomet obránců poblíž; weather násobí (mlha a déšť pomáhají). Zásah zblízka: hlavně těžký a kritický, kill/killHeavy = smrt obránce (počítá se do závodu o zabití). Cesta zpět: hurt + hurtPerMG × kulomety.",
@@ -765,8 +789,17 @@
       "minWin": 0.15,
       "maxWin": 0.85,
       "reach": 2,
-      "weather": { "fog": 1.25, "rain": 1.1, "storm": 1.05, "clear": 0.85, "frost": 0.9 },
-      "severity": { "light": 0.6, "heavy": 0.25 },
+      "weather": {
+        "fog": 1.25,
+        "rain": 1.1,
+        "storm": 1.05,
+        "clear": 0.85,
+        "frost": 0.9
+      },
+      "severity": {
+        "light": 0.6,
+        "heavy": 0.25
+      },
       "kill": 0.95,
       "killHeavy": 0.75,
       "rounds": 2,
@@ -887,7 +920,46 @@
     },
     "_daily": "Denní meze raněných (min 1 / max 30 na 80 vojáků) odstraněny 14. 11. na pokyn uživatele: ztráty dává jen náhoda (v simulaci se meze stejně neuplatnily). Engine je umí, kdyby byly potřeba: battle.daily { min, max, shellMax, per }.",
     "hitLying": true,
-    "_hitLying": "15. 11. (uživatel): na raněné, kteří od včerejška leží v zákopu bez nosítek, se střílí taky; lehký se zhorší, těžký a kritický zemře."
+    "_hitLying": "15. 11. (uživatel): na raněné, kteří od včerejška leží v zákopu bez nosítek, se střílí taky; lehký se zhorší, těžký a kritický zemře.",
+    "gun": {
+      "men": 20,
+      "tries": 6,
+      "hit": 0.6,
+      "kill": 0.75,
+      "power": [
+        [
+          0.6,
+          1
+        ],
+        [
+          0.3,
+          0.5
+        ],
+        [
+          0.01,
+          0.15
+        ]
+      ],
+      "wear": 0.04,
+      "perShooter": 0.0002,
+      "fireMax": 0.06,
+      "counterChance": 0.3,
+      "counter": 0.12,
+      "sapperRepair": 0.004,
+      "maxRepair": 0.08,
+      "rebuild": 0.5,
+      "news": {
+        "h": "{gun} fired",
+        "text": "From the gun pit behind the {us} line, {gun} shelled {them} sectors {from} to {to}. {hit} men were hit, {killed} killed outright. The gun is at {cond}%.",
+        "repair": "{us} sappers patched it up by {fix}%.",
+        "rebuilt": "After days of work the sappers have it firing again.",
+        "destroyedH": "{gun} is destroyed",
+        "destroyed": "{them} fire finally found the gun pit behind the {us} line. {gun} lies on its side in the mud. Only sappers with time to spare can bring it back.",
+        "wreckH": "Sappers at the wreck",
+        "wreck": "{us} sappers worked on the wreck of {gun} all day. It stands at {cond}%. At 50% it fires again."
+      },
+      "_": "20. 11. (uživatel): těžké dělo (odměna kóty reward 'gun', engine/gun.js). Každý den okno `men` vojáků nepřítele po sobě podle x (nejhustší z `tries` náhodných), zásah hit × síla podle stavu (power), kritický zabije s kill. Stav: −wear za den palby, −min(fireMax, perShooter × zdraví odstřelovači+kulometčíci nepřítele), protipalba nepřátelského děla counterChance × counter × jeho síla. Oprava jen z volné práce ženistů (po drátu ve vlastním úseku): sapperRepair za jednotku práce, nejvýš maxRepair denně. 0 = zničené, střílí znovu od rebuild."
+    }
   },
   "house": {
     "_note": "Odznaky rodu (engine/house.js): udělí se jednou a zůstávají v rodu napříč generacemi. Rodinné album na webu ukazuje i medaile a tituly všech generací.",
@@ -966,7 +1038,10 @@
   },
   "storyShare": 1,
   "_storyShare": "Podíl vojáků, kteří dostanou každý den zápis do deníku (1 = každý, jeden zápis za den; dřív 0,25). Při velkém počtu hráčů roste stav (data/state.json) o ~220 B na vojáka a den.",
-  "inheritMedals": ["war-bonds", "officers-star"],
+  "inheritMedals": [
+    "war-bonds",
+    "officers-star"
+  ],
   "_inheritMedals": "18. 11. (uživatel): podpora patří hráči, ne vojákovi; stužka War Bonds a hvězda Officers' Mess přejdou na nástupce z rodu.",
   "support": {
     "_note": "Dobrovolná podpora přes Patreon (Ko-fi zamítlo platby 14. 11.): medaile bez herní výhody. url = stránka Patreonu (prázdné = tlačítko na webu se neukáže), platform = název služby v textech webu.",

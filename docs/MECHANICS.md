@@ -507,3 +507,11 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 ## 2026-11-19 · Konec „bezpečnějšího týdne“ po Hill 304 (NASAZENO)
 - Uživatel: zrušit. Po Hill 304 dál běžel skrytý `raceDanger` (Hegemonie šance na zásah ×0,6, Concord ×1,25) až do vnitřního dne 13 (noviny 21. 11.); hráčům se o něm nepsalo.
 - Příkaz `endSafer` `{ id_obj }` nastaví `victory.to = state.day`, takže od novin 20. 11. neplatí. Pozor: výchozí odměna nových kót (`barrage`) bezpečnější týden pořád dává (`theme.race.winDanger/loseDanger`, `days`), týká se Grey Mill.
+
+## 2026-11-20 · Těžké dělo za Grey Mill + práce ženistů (NASAZENO v enginu, grafika na mapě se připravuje)
+- **Odměna Grey Mill = jedna těžká houfnice natrvalo** (`reward: 'gun'`, `engine/gun.js`, `theme.battle.gun`, `theme.race.gun`). Žádné bombardování, žádný bezpečnější týden.
+- **Palba:** každý den okno 20 vojáků nepřítele po sobě podle x (nejhustší ze 6 náhodných), zásah 0,6 × síla × linie, kritický zabije s 0,75. Síla podle stavu: ≥60 % plná, ≥30 % poloviční, jinak 15 %, 0 = zničené (střílí znovu od 50 %).
+- **Opotřebení:** −4 % za den palby, −min(6 %, 0,02 % × zdraví odstřelovači+kulometčíci nepřítele), protipalba nepřátelského děla 30 % šance × 12 % × jeho síla.
+- **Práce ženistů (uživatel: „ženista musí mít volnou práci“):** každý zdravý ženista má 1 jednotku práce denně; nejdřív drát ve svém úseku, zbytek (volná práce) dělo (0,4 % za jednotku, nejvýš 8 %/den) a pak bunkry (0,4 %, nejvýš 15 %). Dřív bunkry braly všechny ženisty bez ohledu na drát.
+- **Simulace (4×10 dní, dnešní stav):** jen Hegemonie s dělem: ~9 zásahů a ~2–3 zabití na místě denně, stav drží ~0,9 (oprava 2–8 %/den). Obě strany s dělem: Hegemonie (potrhaný drát, málo volných ženistů) klesne za 10 dní na ~0,54, Concord drží ~0,85. Hegemonie má kvůli drátu bunkry první dny bez opravy.
+- Noviny: denní zpráva „{gun} fired“ (úseky, zásahy, zabití, stav, oprava ženistů), zničení, práce na vraku. Texty v `theme.battle.gun.news`.

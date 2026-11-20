@@ -21,6 +21,7 @@ import { eventEntry } from './story.js';
 import { activeBarrage, activeObservation } from './race.js';
 import { orderStretchers, orderMedics, orderGuns, orderBarrage } from './orders.js';
 import { fallSoldier, addEntry } from './soldier.js';
+import { gunTargets, gunUpkeep } from './gun.js';
 
 const B = (theme) => theme.battle;
 const short = (theme, f) => theme.factions[f].name.replace(/^The /, '');
@@ -174,6 +175,10 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   }
 
   const able = (s) => s.status === 'active' && !s.wound && !busy.has(s.id);
+  // těžké dělo (reward 'gun', engine/gun.js): každý den nejhustší kus nepřátelské fronty; zásahy jako granát
+  const gunFire = gunTargets(state, theme, day, X, able);
+  const gunOn = (s) => gunFire.find((g) => g.target === s.faction && g.ids.has(s.id));
+  for (const g of gunFire) g.res = { hit: 0, killed: 0 };
   const coverOf = (s) => {
     const side = state.battle.sides[s.faction];
     const wire = side.wire[s.sector] ?? (side.wire[s.sector] = cfg.wire.start);
@@ -433,17 +438,19 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const side = state.battle.sides[s.faction];
     const rand = rngFor(s.id, 'battle', day);
     const underMine = !!mineAt.get(s.faction)?.has(s.sector); // mina vybuchla pod jeho úsekem
-    const underShells = (barrage?.target === s.faction && shelled.has(s.sector)) || underMine;
+    const gf = cfg.gun && gunOn(s); // pod palbou těžkého děla
+    const underShells = (barrage?.target === s.faction && shelled.has(s.sector)) || underMine || !!gf;
     const sig = share(near(signallers[s.faction], X(s), range).length, R.signaller.covers, near(targetsOf[s.faction], X(s), range).length);
     const own = R.signaller.counter * sig;
     // roles.signaller.counterShell: spojař navádí protipalbu i proti bombardování (snižuje zásahy granátem v jeho okolí, podle pokrytí)
-    const p = underMine ? cfg.mine.hit : underShells
+    const p = underMine ? cfg.mine.hit : gf ? cfg.gun.hit * gf.power * (cfg.line[s.line] ?? 1) * (1 - (R.signaller.counterShell || 0) * sig) : underShells
       ? cfg.shell.hit * (cfg.line[s.line] ?? 1) * (1 - cfg.buildings.sandbags.cover * count(side, 'sandbags')) * (1 - (R.signaller.counterShell || 0) * sig) * (ctx.shellOf?.(s) ?? 1)
       : cfg.hit * coverOf(s) * (ctx.dangerOf?.(s) ?? 1) * (barrage?.target === s.faction ? cfg.barrage : 1) * (1 - own); // spojař poblíž: telefon k vlastnímu dělostřelectvu, protipalba
     if (rand() >= p) continue;
     bgHit(s, severity(s, underShells ? cfg.shell.severity : cfg.severity, rand, underShells), underShells);
     // přímý zásah granátem (battle.shell.kill): kritický zásah pod granáty může zabít na místě, lůžko ani medik nepomůže
-    if (underShells && s.wound?.sev === 'crit' && cfg.shell.kill && rand() < cfg.shell.kill) s.wound.outright = 'shell';
+    if (underShells && s.wound?.sev === 'crit' && cfg.shell.kill && rand() < (gf ? cfg.gun.kill ?? cfg.shell.kill : cfg.shell.kill)) s.wound.outright = 'shell';
+    if (gf) { gf.res.hit++; if (s.wound?.outright) gf.res.killed++; }
   }
   // klidný den bez raněných nebývá: aspoň D.min zásahů z pozadí na stranu (vybráni podle vystavení, přední linie častěji)
   if (D?.min) theme.factions.forEach((_, f) => {
@@ -625,23 +632,49 @@ export function battleTick(state, theme, story, day, ctx = {}) {
 
     // drát: opotřebení, dělostřelectvo, opravy ženistů (úroveň zvyšuje)
     for (const sec of sectorsOf(state, f)) side.wire[sec] ??= cfg.wire.start;
+    // práce ženistů (20. 11., uživatel): každý zdravý ženista má za den 1 jednotku práce; nejdřív drát ve svém úseku, co zbude (volná práce), jde na dělo a bunkry
+    let spare = 0;
     for (const sec of Object.keys(side.wire)) {
       let v = side.wire[sec] - cfg.wire.decay - (barrage?.target === f ? cfg.wire.barrage : 0) - (barrage?.target === f && shelled.has(sec) ? cfg.shell.wire : 0);
       for (const sp of state.soldiers.filter((s) => s.faction === f && s.archetype === 'sapper' && able(s) && s.sector === sec)) {
         const add = R.sapper.repair * mult(theme, sp);
-        if (v < 1) gainXp(theme, sp, cfg.xp.gain.repair * Math.min(1, (1 - v) / add));
+        const used = v < 1 ? Math.min(1, (1 - v) / add) : 0;
+        if (v < 1) gainXp(theme, sp, cfg.xp.gain.repair * used);
+        spare += 1 - used;
         v += add;
       }
       side.wire[sec] = Math.round(Math.max(0, Math.min(1, v)) * 100) / 100;
+    }
+    spare += state.soldiers.filter((x) => x.faction === f && x.archetype === 'sapper' && able(x) && !(x.sector in side.wire)).length;
+    const sappersAll = state.soldiers.filter((x) => x.faction === f && x.archetype === 'sapper' && able(x)).length;
+    // těžké dělo strany: opotřebení, palba nepřítele na okop, protipalba nepřátelského děla; oprava z volné práce ženistů
+    for (const gun of (state.guns || []).filter((x) => x.faction === f)) {
+      const G = cfg.gun;
+      if (!G) break;
+      const shooters = state.soldiers.filter((x) => x.faction !== f && able(x) && (x.archetype === 'sniper' || x.archetype === 'machinegunner')).length;
+      const enemyGun = gunFire.find((g) => g.gun.faction !== f);
+      const counter = enemyGun && rngFor(theme.id, `counter:${gun.id}`, day)() < (G.counterChance || 0) ? (G.counter || 0) * enemyGun.power : 0;
+      const u = gunUpkeep(state, theme, day, gun, { enemyShooters: shooters, counter, spare });
+      spare = Math.max(0, spare - u.used);
+      const g = gunFire.find((x) => x.gun === gun);
+      gun.last = { day, target: g?.target ?? null, secs: g?.secs || [], x0: g?.x0 ?? null, x1: g?.x1 ?? null, hit: g?.res.hit || 0, killed: g?.res.killed || 0, wear: u.wear, fix: u.fix, counter: Math.round(counter * 100) / 100 };
+      stats[f].gun = { ...gun.last, cond: gun.cond, destroyed: gun.destroyed };
+      const fill = (t) => t.replaceAll('{gun}', gun.name).replaceAll('{us}', short(theme, f)).replaceAll('{them}', short(theme, 1 - f))
+        .replaceAll('{from}', g?.secs[0] || '').replaceAll('{to}', g?.secs.at(-1) || '').replaceAll('{hit}', String(g?.res.hit || 0)).replaceAll('{killed}', String(g?.res.killed || 0))
+        .replaceAll('{cond}', String(Math.round(gun.cond * 100))).replaceAll('{fix}', String(Math.round(u.fix * 100)));
+      if (u.destroyedNow) out.news.push({ day, kind: 'gun', h: fill(G.news.destroyedH), text: fill(G.news.destroyed) });
+      else if (g) out.news.push({ day, kind: 'gun', h: fill(G.news.h), text: fill(G.news.text) + (u.fix ? ' ' + fill(G.news.repair) : '') + (u.rebuiltNow ? ' ' + fill(G.news.rebuilt) : '') });
+      else if (gun.destroyed && u.fix) out.news.push({ day, kind: 'gun', h: fill(G.news.wreckH), text: fill(G.news.wreck) });
     }
     // bunkry (rozkaz PILLBOXES, 19. 11., uživatel): zůstávají natrvalo, válka je opotřebovává (denně, víc pod bombardováním a po zásazích raiderů),
     // ženisti strany je opravují (každý zdravý ženista kousek, a k tomu dál drát). Stav = 1 − ruined (stejné pole jako po souboji granátů, na mapě ruiny).
     const PB = cfg.pillbox;
     if (PB) for (const o of (state.orders || []).filter((x) => x.faction === f && x.kw === 'PILLBOXES' && day >= x.from)) {
       if (PB.permanent) o.to = Math.max(o.to, day + 2);
-      const sappers = state.soldiers.filter((x) => x.faction === f && x.archetype === 'sapper' && able(x)).length;
+      const sappers = sappersAll;
       const wear = (PB.wear || 0) + (barrage?.target === f ? PB.barrage || 0 : 0) + raidHits[f] * (PB.perRaid || 0);
-      const fix = Math.min(PB.maxRepair ?? 1, sappers * (PB.sapperRepair || 0));
+      const fix = Math.min(PB.maxRepair ?? 1, spare * (PB.sapperRepair || 0)); // jen volná práce ženistů (po drátu a dělu)
+      if (PB.sapperRepair) spare = Math.max(0, spare - fix / PB.sapperRepair);
       const before = o.ruined || 0;
       o.ruined = Math.round(Math.max(0, Math.min(1, before + wear - fix)) * 100) / 100;
       stats[f].pillbox = { before, after: o.ruined, wear: Math.round(wear * 100) / 100, fix: Math.round(fix * 100) / 100, sappers };

@@ -1,3 +1,4 @@
+import { grantGun } from './gun.js';
 import { showDay } from './day.js';
 // Závod frakcí o kóty: kdo první naverbuje `need` nových vojáků, dobude kótu.
 // Odměna („výšina“): dělostřelectvo na poraženého, nižší nebezpečí pro vítěze / vyšší pro poraženého, stuha, titul hrdiny,
@@ -80,6 +81,7 @@ function winRace(state, theme, story, st, f, recruit) {
   // odměna kóty: dělostřelectvo (výchozí) nebo pozorovatelna (theme.race.observation) na pár dní
   if (v.reward === 'observation') v.obsTo = day + (R.observation?.days || 3);
   else if (v.reward === 'logistics') { v.logTo = day + (R.logistics?.days || 3); v.to = day; } // lepší zásobování (19. 11.): jen zásoby, žádná výšina ani bezpečnější týden
+  else if (v.reward === 'gun') { v.to = day; grantGun(state, f, st.id, (R.gun?.name || 'The {objective} gun').replace('{objective}', st.name), day); } // těžké dělo natrvalo (20. 11.), žádný bezpečnější týden
   else v.barrageTo = day + R.barrageDays;
   state.victories = [...(state.victories || []), v];
   // stuha všem vojákům vítězné strany, titul hrdinovi, zápis každému vojákovi obou stran
@@ -105,8 +107,9 @@ function winRace(state, theme, story, st, f, recruit) {
       : `The ${short(theme, f)} reached ${st.need} soldiers first (${st.counts[f]} against ${st.counts[1 - f]}) and took ${st.name}. The deciding rifle belonged to @${recruit.handle}. `) + `${v.reward === 'observation'
         ? `${(R.observation?.victory || '').replace('{days}', R.observation?.days || 3).replace('{objective}', st.name).replace('{them}', short(theme, 1 - f)).replace('{us}', short(theme, f))}, `
         : v.reward === 'logistics' ? `${logisticsText(R, st.name, short(theme, f))}. `
+        : v.reward === 'gun' ? `${(R.gun?.victory || '').replaceAll('{objective}', st.name).replaceAll('{us}', short(theme, f)).replaceAll('{them}', short(theme, 1 - f))} `
       : `For ${R.barrageDays} days the guns on the heights will pound the ${short(theme, 1 - f)} lines, `}` +
-      `${v.reward === 'logistics' ? '' : `and for ${R.days} days the high ground keeps the ${short(theme, f)} safer. `}The race for ${raceObjective(theme, state.race.idx + 1).name} begins now: ${raceGoal(theme, state.race.idx + 1)}.`,
+      `${v.reward === 'logistics' || v.reward === 'gun' ? '' : `and for ${R.days} days the high ground keeps the ${short(theme, f)} safer. `}The race for ${raceObjective(theme, state.race.idx + 1).name} begins now: ${raceGoal(theme, state.race.idx + 1)}.`,
   }];
   state.race = { idx: state.race.idx + 1, base: counts(state, theme), startDay: day, killsFrom: Object.fromEntries(state.soldiers.filter((s) => s.kills).map((s) => [s.handle, s.kills])) };
   return v;
