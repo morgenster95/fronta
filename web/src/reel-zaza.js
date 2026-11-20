@@ -44,10 +44,10 @@ export async function startZazaReel({ cam, life, map, soldiers, tex, anims }) {
   const fight = await makeFight({ anims, soldiers, tex });
   const K0 = tt.karel + 6.6; // po vyřezání iniciál zpátky do hry, Karel padne
   // smrti na stejném místě: Yann (stojí, padne), Albin (přijde, padne), Emil (noční raid), Karel (stojí, padne); mezi tím skutečný voják skrytý
-  fight.puppet({ x: z.x, y: z.y, from: tt.hook, to: tt.albin, hide: z, keys: [{ t0: tt.hook, key: 'concord_medic', dir: 'north' }, { t0: tt.yann + 3.4, key: 'concord', anim: 'die', dir: 'north', fps: 8 }] });
-  fight.puppet({ x: z.x + 70, y: z.y, from: tt.albin, to: tt.emil, hide: z, keys: [{ t0: tt.albin, key: 'concord', anim: 'walk', dir: 'west', fps: 9, loop: true, move: [z.x, z.y, 1.4] }, { t0: tt.albin + 1.4, key: 'concord', dir: 'north' }, { t0: tt.albin + 2.6, key: 'concord', anim: 'die', dir: 'north', fps: 8 }] });
+  fight.puppet({ x: z.x, y: z.y, from: tt.hook, to: tt.albin, hide: z, keys: [{ t0: tt.hook, key: 'concord_medic', dir: 'north' }, { t0: tt.yann + 3.4, key: 'concord', anim: 'die', dir: 'west', fps: 8 }] });
+  fight.puppet({ x: z.x + 70, y: z.y, from: tt.albin, to: tt.emil, hide: z, keys: [{ t0: tt.albin, key: 'concord', anim: 'walk', dir: 'west', fps: 9, loop: true, move: [z.x, z.y, 1.4] }, { t0: tt.albin + 1.4, key: 'concord', dir: 'north' }, { t0: tt.albin + 2.6, key: 'concord', anim: 'die', dir: 'west', fps: 8 }] });
   const raid = fight.scene({ at: tt.emil, defender: z, side: 0, end: tt.karel });
-  fight.puppet({ x: z.x, y: z.y, from: K0 - 0.5, to: tt.dietrich, hide: z, keys: [{ t0: K0 - 0.5, key: 'concord', dir: 'north' }, { t0: K0 + 0.4, key: 'concord', anim: 'die', dir: 'north', fps: 8 }] });
+  fight.puppet({ x: z.x, y: z.y, from: K0 - 0.5, to: tt.dietrich, hide: z, keys: [{ t0: K0 - 0.5, key: 'concord', dir: 'north' }, { t0: K0 + 0.4, key: 'concord', anim: 'die', dir: 'west', fps: 8 }] });
 
   const K = [[0, z.x, z.y - 18, 5.0], [tt.real - 0.01, z.x, z.y - 18, 5.4], [tt.real, z.x, z.y - 18, 5.4], [tt.yann - 0.01, z.x, mid, 0.9, 'ease']];
   K.push([tt.yann, z.x, z.y - 18, 5.2, 'cut'], [tt.albin - 0.01, z.x, z.y - 18, 5.6], [tt.albin, z.x + 20, z.y - 18, 4.8, 'cut'], [tt.emil - 0.01, z.x, z.y - 18, 5.4]);
@@ -57,8 +57,22 @@ export async function startZazaReel({ cam, life, map, soldiers, tex, anims }) {
   const sub = subtitles(vo);
   const fx = transitions([[tt.yann, 'black', 0.3], [tt.albin, 'black', 0.4], [tt.emil, 'black', 0.4], [tt.karel, 'black', 0.4], [K0 - 0.5, 'black', 0.3], [tt.dietrich, 'flash'], [tt.cta, 'black', 0.4]]);
   const deaths = [tt.yann + 3.4, tt.albin + 2.6, raid?.kill ?? tt.emil + 2, K0 + 0.4];
+  // střelci (skuteční hráči Hegemonie naproti přes zemi nikoho): střih na ně těsně před každou smrtí, pak zpátky na stanoviště
+  const shooters = [
+    { h: 'chamra_universal', key: 'hegemony_machinegunner', d: deaths[0], what: 'MACHINE GUN' },
+    { h: 'angelogia55', key: 'hegemony_machinegunner', d: deaths[1], what: 'MACHINE GUN' },
+    { h: 'saam_1z', key: 'hegemony', d: deaths[3], what: 'RIFLE' },
+  ].map((o) => ({ ...o, s: by(o.h) })).filter((o) => o.s);
+  for (const o of shooters) {
+    o.t0 = o.d - 1.5; o.t1 = o.d - 0.12;
+    fight.puppet({ x: o.s.x, y: o.s.y, from: o.t0, to: o.t1, hide: o.s, keys: [{ t0: o.t0, key: o.key, anim: 'fire', dir: 'south', fps: 12, loop: true }] });
+  }
+  const shotAt = (t) => shooters.find((o) => t >= o.t0 && t < o.t1);
+  // sousedé na stanovišti R-F21 se během příběhu skryjí, ať je vidět jen rod Zaza
+  const near = soldiers.filter((q) => q !== z && Math.abs(q.x - z.x) < 40 && Math.abs(q.y - z.y) < 30);
   const SFX = [[tt.hook, 'drum', 0], [deaths[0] - 0.1, 'shoot', 0], [deaths[1] - 0.2, 'shoot', 0], [deaths[3] - 0.2, 'shoot', 0], [tt.dietrich, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]];
   if (raid?.hit) SFX.push([+raid.hit.toFixed(2), 'stamp', 0]);
+  for (const o of shooters) for (let k = 0; k < (o.what === 'RIFLE' ? 1 : 4); k++) SFX.push([+(o.t0 + 0.5 + k * 0.18).toFixed(2), 'shoot', 0]);
 
   document.body.classList.add('reel');
   const style = document.createElement('style');
@@ -75,6 +89,7 @@ export async function startZazaReel({ cam, life, map, soldiers, tex, anims }) {
     <div id="rz-a" class="rz-tag">ALBIN "SAINT" ZAZA ✝<small>day 9 · lasted 1 day · @angelogia55</small></div>
     <div id="rz-e" class="rz-tag">EMIL "BUTTON" ZAZA ✝<small>day 10 · night raid · @chamra_universal AGAIN</small></div>
     <div id="rz-k" class="rz-tag">KAREL ZAZA ✝<small>day 11 · killed on watch · @saam_1z</small></div>
+    <div id="rz-sh" class="rz-tag"><span></span><small></small></div>
     <div id="rz-d" class="rz-tag gold">DIETRICH ZAZA · THE 5TH<small>@tf.is.zaza · medic · alive</small></div>
     <div id="rz-cta"><div class="big">YOUR COMMENT<br>BECOMES A SOLDIER</div><div class="sm">comment HEGEMONY or CONCORD on @mudandiron</div><div class="url">mudandiron.app</div></div>
     <div id="rd-big"></div>
@@ -92,7 +107,11 @@ export async function startZazaReel({ cam, life, map, soldiers, tex, anims }) {
     const f = fx(t);
     fight.update(t);
     for (const q of soldiers) if (q.vacant && q.sprite && q.sprite.alpha < 1) { q.sprite.alpha = 1; q.sprite.tint = [0xffffff, 0xf0ece4, 0xe6e2da, 0xfff4e8][q.variant % 4]; } // žádní duchové
-    const [x, y, zz] = camAt(t);
+    const sh = shotAt(t);
+    const [x, y, zz] = sh ? [sh.s.x, sh.s.y - 18, 5.4] : camAt(t);
+    for (const q of near) if (q.sprite) q.sprite.visible = !(t >= tt.yann && t < tt.dietrich);
+    if (z.sprite) z.sprite.visible = t >= tt.dietrich; // skutečný voják (Dietrich) až na konci; předtím jen herci rodu (fight.hide se u více úseků přepisoval)
+    if (sh && !sh.fired && t > sh.t0 + 0.5) { sh.fired = true; life.debug.shoot?.([sh.s]); }
     cam.set(x, y, zz);
     const film = t >= tt.karel && t < K0 - 0.5;
     if (film) st.draw('initials', t - tt.karel, { old: 'EZ', new: 'KZ' });
@@ -111,6 +130,9 @@ export async function startZazaReel({ cam, life, map, soldiers, tex, anims }) {
     tagAt($('#rz-a'), { x: z.x, y: z.y + 50 }, cam, win(t, deaths[1] + 0.3, tt.emil - 0.05, 0.15), 0);
     tagAt($('#rz-e'), { x: z.x, y: z.y + 50 }, cam, win(t, deaths[2] + 0.3, tt.karel - 0.05, 0.15), 0);
     tagAt($('#rz-k'), { x: z.x, y: z.y + 50 }, cam, win(t, deaths[3] + 0.3, tt.dietrich - 0.05, 0.15), 0);
+    const shEl = $('#rz-sh');
+    if (sh) { shEl.querySelector('span').textContent = `@${sh.h}`; shEl.querySelector('small').textContent = `Hegemony · ${sh.what}`; }
+    tagAt(shEl, sh ? { x: sh.s.x, y: sh.s.y + 50 } : { x: 0, y: 0 }, cam, sh ? win(t, sh.t0 + 0.1, sh.t1 - 0.02, 0.1) : 0, 0);
     tagAt($('#rz-d'), { x: z.x, y: z.y + 50 }, cam, win(t, tt.dietrich + 0.3, tt.cta - 0.05, 0.15), 0);
     slam($('#rz-cta'), t, tt.cta + 0.3, END - 1.4, 1.3, -3);
     const logo = t >= END - 1.3;
@@ -122,5 +144,5 @@ export async function startZazaReel({ cam, life, map, soldiers, tex, anims }) {
     if (s && !logo && t >= tt.real) { subEl.style.opacity = 1; subEl.style.top = '13%'; if (subEl.dataset.text !== s) { subEl.dataset.text = s; subEl.innerHTML = `<span>${s}</span>`; } } else subEl.style.opacity = 0;
   }
 
-  window.__reel = { seconds: END, sfx: SFX, frame, ready: true };
+  window.__reel = { seconds: END, sfx: SFX, frame, ready: true, dbg: { deaths, tt } };
 }
