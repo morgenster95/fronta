@@ -13,6 +13,7 @@ import { initOrderFx } from './orders-fx.js';
 import { initPlanes } from './planes.js';
 import { initWire, placeVolunteers } from './wire.js';
 import { initObservation } from './observation.js';
+import { initGuns } from './guns.js';
 import { getJson, loadTexture, loadImage, loadAtlas } from './assets.js';
 import { setDayShift } from './day.js';
 
@@ -104,7 +105,7 @@ async function boot() {
   setDayShift(theme); // zobrazené číslo dne (theme.dayShift, web/src/day.js)
   // Front News (zpětné zpravodajství, /?reel=news…): mapa bez pozdějších staveb a událostí (bunkry, letadla, pozorovatelna, nemocnice, ruiny)
   if (import.meta.env.DEV && /^news/.test(new URLSearchParams(location.search).get('reel') || '')) {
-    roster.orders = []; roster.pilots = (roster.pilots || []).map(() => null); roster.observation = null; roster.barrage = null; roster.shells = null; roster.victories = [];
+    roster.orders = []; roster.pilots = (roster.pilots || []).map(() => null); roster.observation = null; roster.barrage = null; roster.shells = null; roster.victories = []; roster.guns = [];
     for (const b of roster.battle || []) if (b) { b.built = {}; b.party = {}; }
   }
   const map = generateFront(theme.map);
@@ -362,6 +363,7 @@ async function boot() {
   const wireFx = await initWire({ world, anchor: terrainLayer, roster, map, anims, theme, openX0, openX1, V, volunteers });
   if (wireFx) propImages.noWire = true;
   const obsFx = await initObservation({ world, anchor: terrainLayer, over: overLayer, roster, map, theme, tex, openX0, openX1, V }); // pozorovatelna na kótě (odměna)
+  const gunFx = await initGuns({ world, anchor: terrainLayer, roster, map, theme, tex, life: { debug: { shell: (...a) => life.debug.shell(...a) } }, openX0, openX1, V }); // těžké dělo (odměna Grey Mill, web/src/guns.js)
 
   const placed = soldiers.filter((s) => s.slot && s.status !== 4 && s.status !== 2 && s.status !== 3);
   const TINT = [0xffffff, 0xf0ece4, 0xe6e2da, 0xfff4e8];
@@ -680,7 +682,7 @@ async function boot() {
   const hospNav = hospitalNav({ world, cam, sites: hospitals?.sites, theme, soldiers, hidden: !!reelParam && reelParam !== 'news' });
 
   // --- smyčka ---
-  if (import.meta.env.DEV) window.__front = { planeFx, obsFx, life, cam, soldiers, tex, anims, hospitals, orderFx, open: (s) => ui.openSoldier(s) }; // ladění v konzoli
+  if (import.meta.env.DEV) window.__front = { planeFx, obsFx, gunFx, life, cam, soldiers, tex, anims, hospitals, orderFx, open: (s) => ui.openSoldier(s) }; // ladění v konzoli
   const visibleSoldiers = [];
   // ?slow=N zpomalí animace a efekty N× (jen pro kontrolu výstřelů na snímcích obrazovky)
   const slow = Math.max(1, Number(new URLSearchParams(location.search).get('slow')) || 1);
@@ -736,6 +738,7 @@ async function boot() {
     // simulovaný život (výstřely, granáty, světlice, zdravotníci) + otřes kamery při blízkém dopadu
     orderFx.update(now, view);
     planeFx.update(now, view, sfx);
+    gunFx?.update(now, app.ticker.deltaMS, view);
     wireFx?.update(now);
     const sh = life.update(now, reelTime != null ? app.ticker.deltaMS : app.ticker.deltaMS / slow, view, visibleSoldiers, showSprites);
     if (sh) world.position.set(world.position.x + Math.round(sh.x), world.position.y + Math.round(sh.y));
