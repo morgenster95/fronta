@@ -22,6 +22,9 @@ function note(g, x, y, col, a = 1, k = 1) {
 const GLYPH = {
   S: [' ####', '#    ', '#    ', ' ### ', '    #', '    #', '#### '],
   '.': ['     ', '     ', '     ', '     ', '     ', '     ', '  #  '],
+  E: ['#####', '#    ', '#    ', '#### ', '#    ', '#    ', '#####'],
+  Z: ['#####', '    #', '   # ', '  #  ', ' #   ', '#    ', '#####'],
+  K: ['#   #', '#  # ', '# #  ', '##   ', '# #  ', '#  # ', '#   #'],
 };
 // pořadí řezu: body písmene od shora dolů po tazích (S: horní oblouk, levý bok, střed, pravý bok, spodní oblouk)
 function strokes(ch) {
@@ -235,7 +238,7 @@ export function makeStoryScenes(tex, anims = {}) {
       g.fillStyle = `rgba(163,151,130,${sm})`;
       for (let k = 1; k < (out ? 18 : 10); k++) g.fillRect(Math.round(cx + Math.sin(t * 2 + k * 0.7) * k * 0.7), top - 6 - k * 6, 1, 3);
     },
-    initials(t) {
+    initials(t, o = {}) {
       // lucerna vlevo nahoře se mírně houpe; staré iniciály S.S. nahoře, nové se vyřezávají pod ně
       g.drawImage(L.wall, 0, 0);
       const sw = Math.sin(t * 1.3) * 4;
@@ -246,12 +249,13 @@ export function makeStoryScenes(tex, anims = {}) {
       glow(g, 70 + sw, 150, 70, '#7a6046', 0.6, 1.0);
       // staré iniciály (zčernalé, tečky po písmenech)
       const X0 = 34, Y0 = 104, X1 = 34, Y1 = 188;
-      carve('S', X0, Y0); carve('.', X0 + 22, Y0); carve('S', X0 + 46, Y0); carve('.', X0 + 68, Y0);
+      const OLD = o.old || 'SS', NEW = o.new || 'SS'; // iniciály: staré (padlý) a nové (nástupce), dvě písmena
+      carve(OLD[0], X0, Y0); carve('.', X0 + 22, Y0); carve(OLD[1], X0 + 46, Y0); carve('.', X0 + 68, Y0);
       // čárky dnů vedle (poslední škrtnutá)
       g.fillStyle = '#160f0a'; for (let i = 0; i < 5; i++) g.fillRect(X0 + 100 + i * 5, Y0 + 4, 2, 20);
       for (let i = 0; i < 28; i++) g.fillRect(X0 + 98 + i, Y0 + 22 - Math.round(i * 0.6), 2, 2);
       // nové iniciály: písmena se vyřezávají postupně, nůž sleduje hrot řezu
-      const seq = [['S', X1, Y1], ['.', X1 + 22, Y1], ['S', X1 + 46, Y1], ['.', X1 + 68, Y1]];
+      const seq = [[NEW[0], X1, Y1], ['.', X1 + 22, Y1], [NEW[1], X1 + 46, Y1], ['.', X1 + 68, Y1]];
       let tip = null, k = Math.max(0, (t - 1.2) * 8);
       for (const [ch, x, y] of seq) {
         const n = strokes(ch).length;
@@ -286,12 +290,12 @@ export function makeStoryScenes(tex, anims = {}) {
   };
   return {
     canvas,
-    draw(name, t) {
+    draw(name, t, o = {}) {
       g.setTransform(1, 0, 0, 1, 0, 0);
       g.imageSmoothingEnabled = false;
       g.globalAlpha = 1;
       g.clearRect(0, 0, W, H);
-      scenes[name]?.(Math.max(0, t));
+      scenes[name]?.(Math.max(0, t), o);
     },
   };
 }

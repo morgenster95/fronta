@@ -181,6 +181,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'zaza') {
+    // akviziční trial reel: rod Zaza, 4 smrti na jednom stanovišti (reel-zaza.js)
+    return import('./reel-zaza.js').then(async ({ startZazaReel }) => {
+      await startZazaReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'front11') {
     // Day reel Day 11 (20. 11.): přeplněné nemocnice, nemoci, výzva MEDIC, Ali a Kitty, Grey Mill a dělo, propagandisté, War Bonds, Concord 1 000, Patreon a nová adresa (reel-front11.js)
     return import('./reel-front11.js').then(async ({ startDay11Reel }) => {

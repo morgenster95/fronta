@@ -432,6 +432,8 @@ def build_story(name="story"):
         music = epic_score(dur, cue) * 1.5 + rain(dur) * 0.25
     elif name.startswith("news"):  # Front News (YouTube): úvodní znělka + tlumená pochodová hudba pod hlasem hlasatele
         music = war_score(dur, cue, hits=("cold", "ident", "shots", "storm", "race", "out")) * 0.55 + drone(dur) * 0.5 + rain(dur) * 0.15
+    elif name in ("zaza",):  # akviziční: tíživý příběh rodu (lament), na konci bubny
+        music = lament(dur) * 1.3 + drone(dur) * 0.4 + rain(dur) * 0.4
     elif name in ("front11",):  # nemocnice a nemoci (tíživé), pak mlýn, dělo a 1 000 Concordu
         music = war_score(dur, cue, hits=("open", "sick", "mill", "gun", "big", "army", "cta")) * 1.1 + rain(dur) * 0.3
     elif name in ("front10",):  # bojová a hrdinská hudba (raid + 1 000 na frontě)
