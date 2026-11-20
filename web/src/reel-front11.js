@@ -105,7 +105,7 @@ export async function startDay11Reel({ cam, life, map, soldiers, tex, anims }) {
     <div id="r11-gun" class="r11-tag gold">THE PRIZE: A HEAVY HOWITZER<small>fires every day · until it is destroyed</small></div>
     <div id="r11-sebs" class="r11-tag gold">KONRAD SEBS<small>@_sebs.c_ · Propagandist of the Hegemony</small></div>
     <div id="r11-wiz" class="r11-tag gold">BASTIAN WIZZERD<small>@flying_wizzerd · Propagandist of the Concord</small></div>
-    <div id="r11-bonds" class="r11-tag gold">★ WAR BONDS<small>Walter · Anselm · Quentin · Zeno · Lucien · thank you</small></div>
+    <div id="r11-bonds" class="r11-tag gold">★ WAR BONDS<small>Walter · Anselm · Quentin<br>Zeno · Lucien</small></div>
     <div id="r11-big"><div class="k">THE CONCORD</div><b>1,000</b><div class="p">+${D.joined} SOLDIERS YESTERDAY</div></div>
     <div id="r11-tagH" class="r11-tag">HEGEMONY<b>${D.army[0]}</b></div>
     <div id="r11-tagC" class="r11-tag">CONCORD<b>${D.army[1].toLocaleString('en-US')}</b></div>
