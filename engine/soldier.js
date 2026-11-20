@@ -249,13 +249,19 @@ export function heir(s, day, theme, story, today = null) {
   const prev = lifeRecord(s);
   const gen = s.generation + 1;
   const roles = theme.archetypes.filter((a) => a.id !== 'officer').map((a) => [a.id, a.weight]);
+  // role, kterou si HRÁČ vybral (přání v komentáři nebo převelení na kartě), patří hráči, ne vojákovi: nástupce v ní pokračuje (20. 11., uživatel);
+  // čekající převelení se splní hned. Poručík a pilot se nedědí (vybírá je fronta / los). Bez volby hráče náhodná role jako dřív.
+  const keep = (r) => r && r !== 'officer' && r !== 'pilot' && theme.archetypes.some((a) => a.id === r);
+  const chosen = keep(s.pendingRole) ? s.pendingRole : (s.roleWish || s.transferDay != null) && keep(s.archetype) ? s.archetype : null;
   const n = {
     id: s.id, handle: s.handle, faction: s.faction, order: s.order, family: s.family, pronoun: s.pronoun,
     claimed: s.claimed, ownerUid: s.ownerUid, bio: s.bio, reply: s.reply, houseBadges: s.houseBadges, slot: s.slot, pos: s.pos, sector: s.sector, line: s.line, unit: s.unit, seen: s.seen,
     generation: gen,
     first: pick(rand, story.firstNames.filter((f) => f !== s.first)),
     nick: rand() < 0.35 ? pick(rand, story.nicknames) : null,
-    archetype: weighted(rand, roles),
+    archetype: chosen || weighted(rand, roles),
+    ...(s.roleWish ? { roleWish: s.roleWish } : {}),
+    ...(chosen ? { transferDay: s.pendingRole && keep(s.pendingRole) ? day : s.transferDay ?? null } : {}),
     rank: 0,
     status: 'active',
     enlisted: day,

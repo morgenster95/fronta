@@ -515,3 +515,8 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 - **Práce ženistů (uživatel: „ženista musí mít volnou práci“):** každý zdravý ženista má 1 jednotku práce denně; nejdřív drát ve svém úseku, zbytek (volná práce) dělo (0,4 % za jednotku, nejvýš 8 %/den) a pak bunkry (0,4 %, nejvýš 15 %). Dřív bunkry braly všechny ženisty bez ohledu na drát.
 - **Simulace (4×10 dní, dnešní stav):** jen Hegemonie s dělem: ~9 zásahů a ~2–3 zabití na místě denně, stav drží ~0,9 (oprava 2–8 %/den). Obě strany s dělem: Hegemonie (potrhaný drát, málo volných ženistů) klesne za 10 dní na ~0,54, Concord drží ~0,85. Hegemonie má kvůli drátu bunkry první dny bez opravy.
 - Noviny: denní zpráva „{gun} fired“ (úseky, zásahy, zabití, stav, oprava ženistů), zničení, práce na vraku. Texty v `theme.battle.gun.news`.
+
+## 2026-11-20 · Nástupce dědí roli, kterou si vybral hráč (NASAZENO)
+- Dřív nástupce padlého dostal vždy náhodnou roli; převelení i přání role z komentáře (i čekající převelení) se ztratilo. Uživatel: hráč si roli vybral, má mu zůstat.
+- Teď (`heir` v `engine/soldier.js`): když předchůdce měl roli z přání (`roleWish`) nebo z převelení (`transferDay`), nástupce v ní pokračuje; čekající převelení (`pendingRole`) se splní hned (nová lhůta od dne nástupu). Poručík a pilot se nedědí. Bez volby hráče náhodná role jako dřív.
+- Postižení před opravou: 24 převzatých hráčů, jejichž nástupce dostal jinou roli, než si vybrali (seznam v konverzaci 20. 11.); vrácení rolí jen se souhlasem uživatele.

@@ -1426,3 +1426,20 @@ test('lepší logistika: vítěz kóty s reward logistics střílí víckrát de
   assert.equal(R.activeBarrage(s, 6), null);
   assert.equal(R.activeLogistics(s, 6).by, 0);
 });
+
+test('nástupce pokračuje v roli, kterou si vybral hráč (převelení, přání, čekající převelení); jinak náhodná', async () => {
+  const { heir, fallSoldier } = await import('./soldier.js');
+  const st = emptyState(theme);
+  enlist(st, 4, 'rol');
+  const [a, b, c, d] = st.soldiers;
+  a.archetype = 'medic'; a.transferDay = 2; fallSoldier(a, 3, 'shot');
+  assert.equal(heir(a, 4, theme, story).archetype, 'medic');
+  b.archetype = 'sniper'; b.roleWish = 'sniper'; fallSoldier(b, 3, 'shot');
+  const nb = heir(b, 4, theme, story);
+  assert.equal(nb.archetype, 'sniper'); assert.equal(nb.roleWish, 'sniper');
+  c.archetype = 'rifleman'; c.transferDay = 1; c.pendingRole = 'sapper'; fallSoldier(c, 3, 'shot');
+  const nc = heir(c, 4, theme, story);
+  assert.equal(nc.archetype, 'sapper'); assert.equal(nc.transferDay, 4);
+  d.archetype = 'officer'; d.transferDay = 1; fallSoldier(d, 3, 'shot');
+  assert.notEqual(heir(d, 4, theme, story).archetype, 'officer');
+});
