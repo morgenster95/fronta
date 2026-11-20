@@ -1,0 +1,56 @@
+{
+ "seconds": 50,
+ "auto": true,
+ "drums": [
+  "hook",
+  [],
+  "cta"
+ ],
+ "lines": [
+  [
+   0.2,
+   "One man commented a hundred and fifty-two times to save his army.",
+   "hook"
+  ],
+  [
+   0.2,
+   "In my game, every comment was one artillery shell. For one day, both sides fired at each other's bunkers.",
+   "real"
+  ],
+  [
+   0.2,
+   "On the Concord side, one soldier fired more than anyone. Florian Monkey. A hundred and fifty-two shells. Half of everything his side fired.",
+   "him"
+  ],
+  [
+   0.2,
+   "But the Hegemony fired together. Otto Tyner, eighty-three. Brandon, sixty-seven. Angel, forty-six. And dozens more.",
+   "team"
+  ],
+  [
+   0.2,
+   "Three hundred and eighty-three shells, against three hundred and one.",
+   "result"
+  ],
+  [
+   0,
+   "The Hegemony guns knocked out forty-one percent of the Concord bunkers.",
+   "ruin"
+  ],
+  [
+   0.3,
+   "One man can't win a war alone.",
+   "moral"
+  ],
+  [
+   0.2,
+   "Your side needs you. Comment Hegemony or Concord.",
+   "cta"
+  ],
+  [
+   0,
+   "Mud and Iron. Free at mudandiron dot app.",
+   "end"
+  ]
+ ]
+}

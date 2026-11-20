@@ -181,6 +181,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'lone') {
+    // akviziční trial reel: jeden muž, 152 komentářů = granátů, Hegemonie přesto vyhrála (reel-lone.js)
+    return import('./reel-lone.js').then(async ({ startLoneReel }) => {
+      await startLoneReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'roll') {
     // akviziční trial reel: všechna jména podle pořadí narukování, „pause to find yourself“ (reel-roll.js)
     return import('./reel-roll.js').then(async ({ startRollReel }) => {
