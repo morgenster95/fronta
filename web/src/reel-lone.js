@@ -15,7 +15,7 @@ const CSS = `${BASE}${FX_CSS}
 #rl-hook .a { font-size: 44px; } #rl-hook .b { font-size: 96px; color: #d98f3f; line-height: 1; } #rl-hook .c { font-size: 34px; }
 #rl-feed { left: 6%; right: 6%; top: 20%; height: 44%; overflow: hidden; opacity: 0; background: rgba(14,13,12,0.88); border: 3px solid #524a3f; }
 #rl-feed .in { position: absolute; left: 0; right: 0; }
-#rl-feed div.c { display: flex; justify-content: space-between; font-family: 'VT323', monospace; font-size: 30px; line-height: 44px; height: 44px; padding: 0 14px; color: #e3d9c3; border-bottom: 1px solid #2b2722; white-space: nowrap; }
+#rl-feed div.c { display: flex; justify-content: space-between; font-family: 'VT323', monospace; font-size: 28px; line-height: 44px; height: 44px; padding: 0 12px; color: #e3d9c3; border-bottom: 1px solid #2b2722; white-space: nowrap; }
 #rl-feed div.c b { color: #d4cf86; font-weight: 400; } #rl-feed div.c i { color: #d98f3f; font-style: normal; }
 #rl-count { left: 0; right: 0; top: 66%; text-align: center; font-family: 'Silkscreen', monospace; color: #d4cf86; text-shadow: 5px 5px 0 #0e0d0c; opacity: 0; }
 #rl-count b { display: block; font-size: 120px; font-weight: 400; line-height: 1; } #rl-count span { font-size: 30px; color: #e3d9c3; }
@@ -68,7 +68,7 @@ export async function startLoneReel({ cam, life, map, soldiers, tex }) {
   for (let t = tHim2 + 0.3; t < tt.team; t += 0.6) SFX.push([+t.toFixed(2), 'shell', 1]);
   for (const s of [0.6, 1.4, 2.2]) SFX.push([+(tt.result + s).toFixed(2), 'shell', s > 2 ? 1 : 0]);
   // proud jeho komentářů: každý = 1 granát (text komentářů neznáme, proto jen pořadí)
-  const feed = Array.from({ length: 152 }, (_, i) => `<div class="c"><span><b>@autistic_monkey3</b> · comment #${i + 1}</span><i>+1 SHELL</i></div>`).join('');
+  const feed = Array.from({ length: 152 }, (_, i) => `<div class="c"><span><b>@autistic_monkey3</b> · comment #${i + 1}</span><i>+1 💥</i></div>`).join('');
 
   document.body.classList.add('reel');
   const style = document.createElement('style');
