@@ -344,5 +344,15 @@
     "cmd": "restoreRole",
     "handle": "donaldgregory334",
     "role": "sniper"
+  },
+  {
+    "id": "title-flying_wizzerd-20261120",
+    "cmd": "title",
+    "handle": "flying_wizzerd",
+    "title": "Propagandist of the Concord",
+    "entry": "The major nailed {name}'s posters to every dugout door and had the words read out at the dawn watch. From today {name} is the Propagandist of the Concord. The rifle stays too.",
+    "newsHead": "The Concord has a voice",
+    "newsText": "{name} (@{handle}) spreads the word of the front further than any other soldier. The major named {name} Propagandist of the Concord. \"Together, or not at all,\" the posters say. The men believe it.",
+    "_note": "pokyn uživatele 20. 11.: největší propagandista, stejný titul jako _sebs.c_ za Hegemonii (čestný, bez herní výhody)"
   }
 ]
