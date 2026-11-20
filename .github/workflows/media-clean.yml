@@ -1,0 +1,22 @@
+# Smazání stažených videí z Release „media“ (Front News a jiná videa, která už má uživatel u sebe).
+# Spouští se commitem marketing/reels/delete.json = {"files": ["reel_news1.mp4", ...], "v": n} nebo ručně.
+name: media-clean
+on:
+  push:
+    branches: [main]
+    paths: ['marketing/reels/delete.json']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Smazat videa z Release media
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for f in $(jq -r '.files[]' marketing/reels/delete.json); do
+            case "$f" in *.mp4) gh release delete-asset media "$f" -y && echo "smazáno $f" || echo "není: $f";; *) echo "přeskočeno $f";; esac
+          done
