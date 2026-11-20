@@ -1,0 +1,66 @@
+{
+ "seconds": 51.7,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.2,
+   2.27,
+   "This family has died four times in my game.",
+   "hook"
+  ],
+  [
+   2.72,
+   3.24,
+   "Every soldier here is a real person who commented on my posts.",
+   "real"
+  ],
+  [
+   6.21,
+   9.44,
+   "Yann Zaza, a medic, held post R F twenty-one. On day eight, a machine gun found him just after dawn. His tea was still hot.",
+   "yann"
+  ],
+  [
+   15.9,
+   6.0,
+   "His heir, Albin, lasted one day. Shot in the back, passing ammunition along the trench.",
+   "albin"
+  ],
+  [
+   22.15,
+   4.12,
+   "Then Emil. Killed in a night raid, by the same man who killed Yann.",
+   "emil"
+  ],
+  [
+   26.52,
+   5.44,
+   "Then Karel. He found his uncle's initials carved in the wall, and carved his own beneath them.",
+   "karel"
+  ],
+  [
+   32.21,
+   1.63,
+   "He was killed on watch the next morning.",
+   "karel2"
+  ],
+  [
+   34.09,
+   5.53,
+   "Today, Dietrich Zaza, the fifth, holds the same post. He is a medic too.",
+   "dietrich"
+  ],
+  [
+   39.87,
+   4.77,
+   "Will he make it? Comment Hegemony or Concord, and your soldier joins the war.",
+   "cta"
+  ],
+  [
+   44.89,
+   3.37,
+   "Mud and Iron. Free at mudandiron dot app.",
+   "end"
+  ]
+ ]
+}
