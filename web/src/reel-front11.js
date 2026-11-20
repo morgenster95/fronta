@@ -1,20 +1,20 @@
 // Day reel Day 11 (20. 11. 2026, noviny 20. 11. 13:00 UTC; /?reel=front11&vacant=700, jen vývojový server), na výšku:
 //  háček: přeplněný lazaret (kreslený detail, web/src/cine-trench.js 'ward' full) + DAY 11 / 109 FELL → plné nemocnice (tabule) → mokrý zákop a nemoci ('sick')
 //  → výzva MEDIC → Rafael Ali a jeho nástupce Karel (medik) → Hugo Kitty → závod o Grey Mill → dělo jako odměna (okop ve hře, web/src/guns.js)
-//  → hlasy fronty (propagandisté Sebs a Wizzerd) → War Bonds → +615 a Concord přes 1 000 → počty stran (pravidlo) → Patreon Front News + mudandiron.app.
+//  → hlasy fronty (propagandisté Sebs a Wizzerd) → War Bonds → +615 a Concord přes 1 000 → počty stran (pravidlo) → Patreon Front News + mudandiron.app. (20. 11. odpoledne: zkráceno na ~60 s, scény na výšku přes celé video, web/src/cine-vert.js)
 // Hlas: marketing/reels/front11.script.json, hudba war_score (front11 v reel_audio.py).
 import { CSS as BASE } from './reel-day1.js';
 import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, slam, clamp01, win, easeOut, tagAt } from './reel-kit.js';
-import { makeTrenchCine } from './cine-trench.js';
+import { makeVertCine } from './cine-vert.js';
 import script from '../../marketing/reels/front11.script.json';
 
 const files = import.meta.glob('../../marketing/reels/front11.vo.json', { eager: true, import: 'default' });
 const D = { fell: [51, 58], army: [817, 1000], race: [209, 185], joined: 615 };
 
 const CSS = `${BASE}${FX_CSS}
-#r11-cine { left: 0; right: 0; top: 24%; width: 100%; aspect-ratio: 16 / 9; image-rendering: pixelated; opacity: 0; border-top: 3px solid #0e0d0c; border-bottom: 3px solid #0e0d0c; }
+#r11-cine { inset: 0; width: 100%; height: 100%; image-rendering: pixelated; opacity: 0; }
 #r11-black { inset: 0; background: #0e0d0c; opacity: 0; }
-#r11-hook { left: 4%; right: 4%; top: 62%; text-align: center; font-family: 'Silkscreen', monospace; color: #e3d9c3; text-shadow: 5px 5px 0 #0e0d0c; }
+#r11-hook { left: 4%; right: 4%; top: 66%; text-align: center; font-family: 'Silkscreen', monospace; color: #e3d9c3; text-shadow: 5px 5px 0 #0e0d0c; }
 #r11-hook .d { font-size: 46px; letter-spacing: 0.1em; color: #c9b99a; }
 #r11-hook .n { font-size: 76px; line-height: 1; color: #c8553d; }
 #r11-hook .s { font-size: 30px; }
@@ -29,7 +29,7 @@ const CSS = `${BASE}${FX_CSS}
 .r11-panel .row b { font-size: 36px; font-weight: 400; }
 .r11-panel .bar { height: 16px; background: #1c1a17; border: 2px solid #524a3f; position: relative; margin-bottom: 6px; } .r11-panel .bar i { position: absolute; left: 0; top: 0; bottom: 0; }
 .r11-panel .note { font-family: 'VT323', monospace; font-size: 28px; color: #c9b99a; text-align: center; margin-top: 8px; }
-#r11-hosp { top: 62%; } #r11-mill { top: 30%; } #r11-medic { top: 62%; border-color: #a33b2b; }
+#r11-hosp { top: 68%; } #r11-mill { top: 30%; } #r11-medic { top: 62%; border-color: #a33b2b; }
 #r11-big { left: 0; right: 0; top: 28%; text-align: center; font-family: 'Silkscreen', monospace; color: #e3d9c3; text-shadow: 6px 6px 0 #0e0d0c; opacity: 0; }
 #r11-big .k { font-size: 30px; letter-spacing: 0.12em; color: #c9b99a; }
 #r11-big b { display: block; font-size: 120px; font-weight: 400; color: #c9c26a; line-height: 1; }
@@ -64,11 +64,10 @@ export async function startDay11Reel({ cam, life, map, soldiers, tex, anims }) {
   const ali = by('alice.is.ali') || mH, kit = by('buff_kitty85') || mC, sebs = by('_sebs.c_') || mH, wiz = by('flying_wizzerd') || mC;
   const rak = by('rakan_1027') || mC;
 
-  const tAli2 = tt.ali2, tVoice2 = (tt.voice + tt.bonds) / 2, tArmyC = (tt.army + tt.cta) / 2;
+  const tVoice2 = (tt.voice + tt.bonds) / 2, tArmyC = (tt.army + tt.cta) / 2;
   const K = [[tt.sick, mH.x, mH.y, 2, 'cut']];
   K.push([tt.medic, hosp.x - 40, hosp.y, 2.6, 'cut'], [tt.ali - 0.01, hosp.x + 40, hosp.y, 2.8]);
-  K.push([tt.ali, ali.x, ali.y - 24, 4.6, 'cut'], [tt.kitty - 0.01, ali.x + 6, ali.y - 24, 5.2]);
-  K.push([tt.kitty, kit.x, kit.y - 24, 4.6, 'cut'], [tt.mill - 0.01, kit.x - 6, kit.y - 24, 5.0]);
+  K.push([tt.ali, ali.x, ali.y - 24, 4.6, 'cut'], [tt.mill - 0.01, ali.x + 6, ali.y - 24, 5.2]);
   K.push([tt.mill, mH.x - 260, mid, 1.2, 'cut'], [tt.gun - 0.01, mH.x + 260, mid, 1.3]);
   K.push([tt.gun, gunPit.x, gunPit.y - 6, 3.4, 'cut'], [tt.voice - 0.01, gunPit.x, gunPit.y - 6, 4.0]);
   K.push([tt.voice, sebs.x, sebs.y - 24, 4.6, 'cut'], [tVoice2 - 0.01, sebs.x + 6, sebs.y - 24, 5.0], [tVoice2, wiz.x, wiz.y - 24, 4.6, 'cut'], [tt.bonds - 0.01, wiz.x - 6, wiz.y - 24, 5.0]);
@@ -78,7 +77,7 @@ export async function startDay11Reel({ cam, life, map, soldiers, tex, anims }) {
   K.push([tt.cta, mC.x, mid, 0.8, 'cut'], [END, mC.x + 200, mid, 0.85]);
   const camAt = camPath(K);
   const sub = subtitles(vo);
-  const fx = transitions([[tt.hosp, 'flash'], [tt.sick, 'black', 0.4], [tt.medic, 'flash'], [tt.ali, 'black', 0.4], [tAli2, 'flash'], [tt.kitty, 'whip'], [tt.mill, 'black', 0.4], [tt.gun, 'flash'],
+  const fx = transitions([[tt.hosp, 'flash'], [tt.sick, 'black', 0.4], [tt.medic, 'flash'], [tt.ali, 'black', 0.4], [tt.mill, 'black', 0.4], [tt.gun, 'flash'],
     [tt.voice, 'whip'], [tVoice2, 'whip'], [tt.bonds, 'flash'], [tt.big, 'flash'], [tt.army, 'flash'], [tArmyC, 'whip'], [tt.cta, 'black', 0.4]]);
   const SFX = [[tt.mill, 'drum', 0], [tt.big, 'drum', 0], [tt.army, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]];
   for (let k = 0; k < 4; k++) SFX.push([+(tt.gun + 0.6 + k * 2.2).toFixed(2), 'stamp', 0]);
@@ -92,14 +91,13 @@ export async function startDay11Reel({ cam, life, map, soldiers, tex, anims }) {
   const root = document.createElement('div');
   root.id = 'rd';
   root.innerHTML = `
-    <div id="r11-night"></div><div id="r11-black"></div>
+    <div id="r11-night"></div>
     <div id="r11-hook"><div class="d">DAY 11</div><div class="n">${D.fell[0] + D.fell[1]} FELL</div><div class="s">THE AID POSTS ARE FULL</div></div>
     <div id="r11-hosp" class="r11-panel"><div class="t">THE HOSPITALS</div>
       <div class="row"><span>BEDS</span><b>8/8 · 8/8</b></div><div class="row"><span>ON STRETCHERS</span><b>33 · 34</b></div>
       <div class="row"><span>MEDICS REACH</span><b>73% · 88%</b></div><div class="note">Hegemony · Concord</div></div>
     <div id="r11-medic" class="r11-panel"><div class="t">THE FRONT NEEDS MEDICS</div><div class="note">new soldiers: comment<br><b style="color:#e3d9c3">HEGEMONY MEDIC</b> or <b style="color:#e3d9c3">CONCORD MEDIC</b></div></div>
     <div id="r11-ali" class="r11-tag dead">RAFAEL ALI ✝<small>@alice.is.ali · heir Karel: MEDIC</small></div>
-    <div id="r11-kit" class="r11-tag dead">HUGO KITTY ✝<small>@buff_kitty85 · never finished the sentence</small></div>
     <div id="r11-mill" class="r11-panel"><div class="t">THE RACE FOR GREY MILL</div>
       <div class="row"><span>HEGEMONY</span><b>${D.race[0]}</b></div><div class="bar"><i style="width:${D.race[0] / 3}%;background:#8f8a82"></i></div>
       <div class="row"><span>CONCORD</span><b>${D.race[1]}</b></div><div class="bar"><i style="width:${D.race[1] / 3}%;background:#8a8a52"></i></div>
@@ -107,7 +105,7 @@ export async function startDay11Reel({ cam, life, map, soldiers, tex, anims }) {
     <div id="r11-gun" class="r11-tag gold">THE PRIZE: A HEAVY HOWITZER<small>fires every day · until it is destroyed</small></div>
     <div id="r11-sebs" class="r11-tag gold">KONRAD SEBS<small>@_sebs.c_ · Propagandist of the Hegemony</small></div>
     <div id="r11-wiz" class="r11-tag gold">BASTIAN WIZZERD<small>@flying_wizzerd · Propagandist of the Concord</small></div>
-    <div id="r11-bonds" class="r11-tag gold">★ WAR BONDS<small>Walter · Anselm · Quentin · Zeno · Lucien</small></div>
+    <div id="r11-bonds" class="r11-tag gold">★ WAR BONDS<small>Walter · Anselm · Quentin · Zeno · Lucien · thank you</small></div>
     <div id="r11-big"><div class="k">THE CONCORD</div><b>1,000</b><div class="p">+${D.joined} SOLDIERS YESTERDAY</div></div>
     <div id="r11-tagH" class="r11-tag">HEGEMONY<b>${D.army[0]}</b></div>
     <div id="r11-tagC" class="r11-tag">CONCORD<b>${D.army[1].toLocaleString('en-US')}</b></div>
@@ -116,7 +114,7 @@ export async function startDay11Reel({ cam, life, map, soldiers, tex, anims }) {
     <div id="rd-sub"></div>
   `;
   document.body.appendChild(root);
-  const ct = makeTrenchCine(tex, anims);
+  const ct = makeVertCine(tex, anims);
   ct.canvas.id = 'r11-cine';
   root.insertBefore(ct.canvas, root.querySelector('#r11-hook'));
   const paint = fxLayers(root);
@@ -131,10 +129,9 @@ export async function startDay11Reel({ cam, life, map, soldiers, tex, anims }) {
     cam.set(x, y, z);
     while (si < shots.length && shots[si][0] <= t) { if (shots[si][1]) life.debug.shoot([shots[si][1]]); si++; }
     // kreslené detaily: přeplněný lazaret (háček a nemocnice), mokrý zákop (nemoci)
-    const film = t < tt.sick ? ['ward', t, { full: true, dim: clamp01(t / (tt.sick + 1)) * 0.3 }] : t < tt.medic ? ['sick', t - tt.sick, { storm: true }] : null;
+    const film = t < tt.sick ? ['ward', t, { dim: clamp01(t / (tt.sick + 1)) * 0.3 }] : t < tt.medic ? ['trench', t - tt.sick + 2, {}] : null;
     if (film) ct.draw(film[0], film[1], film[2]);
     show('#r11-cine', film ? 1 : 0);
-    show('#r11-black', film ? 1 : 0);
     show('#r11-night', !film && t < tt.mill ? 1 : 0);
     paint({ ...f, black: Math.max(f.black, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) });
     const hk = $('#r11-hook');
@@ -142,8 +139,7 @@ export async function startDay11Reel({ cam, life, map, soldiers, tex, anims }) {
     hk.style.transform = `scale(${1 + 0.12 * clamp01(1 - t / 0.25)})`;
     show('#r11-hosp', win(t, tt.hosp + 0.2, tt.sick - 0.05, 0.2));
     show('#r11-medic', win(t, tt.medic + 0.3, tt.ali - 0.05, 0.2));
-    tagAt($('#r11-ali'), { x: ali.x, y: ali.y + 50 }, cam, win(t, tt.ali + 0.3, tt.kitty - 0.05, 0.15), 0);
-    tagAt($('#r11-kit'), { x: kit.x, y: kit.y + 50 }, cam, win(t, tt.kitty + 0.3, tt.mill - 0.05, 0.15), 0);
+    tagAt($('#r11-ali'), { x: ali.x, y: ali.y + 50 }, cam, win(t, tt.ali + 0.3, tt.mill - 0.05, 0.15), 0);
     show('#r11-mill', win(t, tt.mill + 0.2, tt.gun - 0.05, 0.2));
     tagAt($('#r11-gun'), { x: gunPit.x, y: gunPit.y + 60 }, cam, win(t, tt.gun + 0.3, tt.voice - 0.05, 0.2), 0);
     tagAt($('#r11-sebs'), { x: sebs.x, y: sebs.y + 50 }, cam, win(t, tt.voice + 0.3, tVoice2 - 0.05, 0.15), 0);
