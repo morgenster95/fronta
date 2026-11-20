@@ -1,0 +1,78 @@
+{
+ "seconds": 54.4,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.3,
+   2.98,
+   "Day eleven. A hundred and nine men fell.",
+   "open"
+  ],
+  [
+   3.53,
+   3.71,
+   "Every hospital bed is taken. The medics cannot keep up.",
+   "hosp"
+  ],
+  [
+   7.49,
+   3.98,
+   "Bodies in the mud, rain in the trench. Sickness comes next.",
+   "sick"
+  ],
+  [
+   11.72,
+   4.28,
+   "The front needs medics. Comment Hegemony medic, or Concord medic.",
+   "medic"
+  ],
+  [
+   16.25,
+   5.01,
+   "Rafael Ali died before the medic came. His heir took his place, as a medic.",
+   "ali"
+  ],
+  [
+   21.51,
+   5.78,
+   "Grey Mill: two hundred and nine to one eighty-five. The winner gets a heavy howitzer, for good.",
+   "mill"
+  ],
+  [
+   27.54,
+   2.79,
+   "The howitzer fires every day, until it is destroyed.",
+   "gun"
+  ],
+  [
+   30.58,
+   3.07,
+   "Two voices for the front: Konrad Sebs and Bastian Wizzerd.",
+   "voice"
+  ],
+  [
+   33.9,
+   2.68,
+   "Five new War Bonds. Thank you.",
+   "bonds"
+  ],
+  [
+   36.83,
+   4.7,
+   "Six hundred and fifteen joined yesterday. The Concord passed one thousand.",
+   "big"
+  ],
+  [
+   41.78,
+   4.18,
+   "Hegemony eight hundred and seventeen. Concord, one thousand.",
+   "army"
+  ],
+  [
+   46.21,
+   4.7,
+   "Soon on Patreon: Front News. Play free at mudandiron dot app.",
+   "cta"
+  ]
+ ]
+}
