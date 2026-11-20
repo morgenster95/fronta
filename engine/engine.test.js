@@ -480,7 +480,7 @@ test('rod: nástupce je nový voják – nic nedědí, dny od nuly, přijde hned
   assert.equal(n.generation, gen + 1, 'nástupce už je ve hře');
   assert.equal(n.status, 'active');
   assert.equal(n.enlisted, s.day, 'dny na frontě od nuly');
-  assert.deepEqual(n.medals, []);
+  assert.deepEqual(n.medals, ['first-wave']); // odznak narukování přechází na nástupce (20. 11.), medaile za kótu ne
   assert.deepEqual(n.titles, []);
   assert.ok(!n.scars && !n.treated && !n.woundsTaken && !n.raids && n.tough == null, 'žádné jizvy, zkušenosti ani výdrž po předkovi');
   assert.equal(n.rank, 0);
@@ -1408,7 +1408,7 @@ test('podpora se dědí: nástupce padlého podporovatele má stužku i hvězdu 
   s.medals = ['war-bonds', 'officers-star', 'first-wave'];
   fallSoldier(s, 3, 'shot');
   const n = heir(s, 4, theme, story);
-  assert.deepEqual(n.medals, ['war-bonds', 'officers-star']);
+  assert.deepEqual(n.medals, ['war-bonds', 'officers-star', 'first-wave']);
   const t = st.soldiers[1]; t.fallen = [{ medals: ['war-bonds'] }]; t.medals = [];
   assert.equal(R.inheritMedals(st, theme), 1);
   assert.deepEqual(t.medals, ['war-bonds']);
@@ -1442,4 +1442,16 @@ test('nástupce pokračuje v roli, kterou si vybral hráč (převelení, přán�
   assert.equal(nc.archetype, 'sapper'); assert.equal(nc.transferDay, 4);
   d.archetype = 'officer'; d.transferDay = 1; fallSoldier(d, 3, 'shot');
   assert.notEqual(heir(d, 4, theme, story).archetype, 'officer');
+});
+
+test('First Thousand: 101.–1 000. narukovaní dostanou odznak jednou, dědí se', async () => {
+  const R = await import('./roster.js');
+  const { heir, fallSoldier } = await import('./soldier.js');
+  const st = emptyState(theme);
+  enlist(st, 120, 'ft');
+  assert.equal(R.awardFirstThousand(st, theme, story), 20);
+  assert.equal(R.awardFirstThousand(st, theme, story), 0);
+  assert.ok(!st.soldiers[99].medals?.includes('first-thousand') && st.soldiers[100].medals.includes('first-thousand'));
+  const s = st.soldiers[110]; fallSoldier(s, 3, 'shot');
+  assert.ok(heir(s, 4, theme, story).medals.includes('first-thousand'));
 });

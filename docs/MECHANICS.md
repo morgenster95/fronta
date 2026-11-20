@@ -520,3 +520,7 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 - Dřív nástupce padlého dostal vždy náhodnou roli; převelení i přání role z komentáře (i čekající převelení) se ztratilo. Uživatel: hráč si roli vybral, má mu zůstat.
 - Teď (`heir` v `engine/soldier.js`): když předchůdce měl roli z přání (`roleWish`) nebo z převelení (`transferDay`), nástupce v ní pokračuje; čekající převelení (`pendingRole`) se splní hned (nová lhůta od dne nástupu). Poručík a pilot se nedědí. Bez volby hráče náhodná role jako dřív.
 - Postižení před opravou: 24 převzatých hráčů, jejichž nástupce dostal jinou roli, než si vybrali (seznam v konverzaci 20. 11.); vrácení rolí jen se souhlasem uživatele.
+
+## 2026-11-20 · First Thousand a dědění odznaků narukování (NASAZENO)
+- Odznak **First Thousand** pro narukované 101.–1 000. (pořadí v soupisce jako First Wave), jednorázově příkazem `firstThousand`: zápis do deníku (`story.firstThousand`, 4 varianty s číslem), zpráva „The First Thousand“ do novin.
+- **Dědění (uživatel):** na živého nástupce přechází podpora (War Bonds, hvězda) a odznaky narukování (First Wave, First Thousand), `theme.inheritMedals`. Vlastní zásluhy padlého (medaile kót, Raider's Cross, Medal of Valor…) zůstávají jemu; v albu rodu jsou vidět všechny generace. Příkaz `inheritMedals` vrátil First Wave rodům, kde voják padl.

@@ -16,7 +16,7 @@ import { ROOT, loadTheme, loadMap, loadState, saveState, writePublic } from '../
 import { addShell } from '../engine/shells.js';
 import { addPilotApp, undoPilots } from '../engine/pilots.js';
 import { addEntry } from '../engine/soldier.js';
-import { inheritMedals, switchFaction, grantSupport, grantStar, revokeStar, rewriteSupport, linkSupport, grantTitle, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
+import { awardFirstThousand, inheritMedals, switchFaction, grantSupport, grantStar, revokeStar, rewriteSupport, linkSupport, grantTitle, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 import { wiringReturns } from '../engine/wiring.js';
 import { build } from '../engine/battle.js';
@@ -166,6 +166,11 @@ async function main() {
           addEntry(x, state.day, `${x.name} asked for the old family post and took up the work of a ${nm}. The sergeant remembered the name and signed it without a question.`);
         }
         console.log(`⇄ ${c.handle}: role ${x ? x.archetype : 'voják nenalezen'}`);
+      }
+      if (c.cmd === 'firstThousand') { // odznak First Thousand (20. 11.): 101.–1 000. narukovaní + zpráva do novin
+        const n = awardFirstThousand(state, theme, story);
+        if (n && c.newsText) state.news = [...(state.news || []), { day: state.day, kind: 'honour', h: c.newsHead || 'The First Thousand', text: c.newsText }];
+        console.log(`🎖 First Thousand: ${n} vojáků`);
       }
       if (c.cmd === 'endSafer') { // konec „bezpečnějšího týdne“ po kótě (19. 11., uživatel): raceDanger od příštího tahu neplatí
         const v = (state.victories || []).find((x) => x.id === c.id_obj);

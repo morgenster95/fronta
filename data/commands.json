@@ -354,5 +354,16 @@
     "newsHead": "The Concord has a voice",
     "newsText": "{name} (@{handle}) spreads the word of the front further than any other soldier. The major named {name} Propagandist of the Concord. \"Together, or not at all,\" the posters say. The men believe it.",
     "_note": "pokyn uživatele 20. 11.: největší propagandista, stejný titul jako _sebs.c_ za Hegemonii (čestný, bez herní výhody)"
+  },
+  {
+    "id": "inherit-medals-20261120",
+    "cmd": "inheritMedals",
+    "_note": "First Wave nově přechází na nástupce (20. 11.)"
+  },
+  {
+    "id": "first-thousand-20261120",
+    "cmd": "firstThousand",
+    "newsHead": "The First Thousand",
+    "newsText": "A thousand soldiers answered the call before the first snow. From today each of them, and each heir who carries the family name, wears the ribbon of the First Thousand."
   }
 ]

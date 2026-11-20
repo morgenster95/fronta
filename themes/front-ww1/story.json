@@ -2881,5 +2881,11 @@
     "{name} made it into the enemy trench and out again. Twenty yards from home, a single shot ended it.",
     "The squad counted heads when the raiders came back. {name} was missing. At dawn they saw {name} lying by the wire.",
     "{name} was the last raider out of the enemy trench, covering the others. The others made it home. {name} did not."
+  ],
+  "firstThousand": [
+    "The clerk counted the names twice. {name} is number {n} of the first thousand to answer the call, and wears the ribbon of the First Thousand.",
+    "A thousand names now stand in the regimental book. {name} is number {n}. The sergeant pinned the ribbon of the First Thousand on without a speech.",
+    "{name} got a narrow grey ribbon today, the ribbon of the First Thousand. Number {n}. The men who came later will ask about it.",
+    "The company read out the roll of the First Thousand at the dawn watch. {name} answered to number {n}."
   ]
 }

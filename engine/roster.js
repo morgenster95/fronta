@@ -248,6 +248,22 @@ export function awardFirstWave(state, theme = null, story = null) {
   });
 }
 
+// Odznak „First Thousand“ (20. 11., uživatel): narukovaní 101.–1 000. (pořadí v soupisce jako u First Wave). Jednorázově příkazem firstThousand
+// (zápis do deníku, zpráva do novin); dědí se na nástupce (theme.inheritMedals), v albu rodu ho mají všechny generace. Idempotentní.
+export const FIRST_THOUSAND = 1000;
+export function awardFirstThousand(state, theme, story) {
+  let n = 0;
+  state.soldiers.slice(FIRST_WAVE, FIRST_THOUSAND).forEach((s, i) => {
+    s.medals ??= [];
+    if (s.medals.includes('first-thousand')) return;
+    s.medals.push('first-thousand');
+    const t = story?.firstThousand?.length ? story.firstThousand[(i * 7) % story.firstThousand.length] : '{name} is one of the first thousand to answer the call.';
+    addEntry(s, state.day, t.replaceAll('{name}', s.name).replaceAll('{n}', String(FIRST_WAVE + i + 1)));
+    n++;
+  });
+  return n;
+}
+
 // klíče šablon, které použili poslední narukovaní (aby nováčci po sobě neměli stejné věty)
 function recentKeys(state, n, except = null) {
   const keys = new Set();
