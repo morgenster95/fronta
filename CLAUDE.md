@@ -8,7 +8,7 @@ Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co
 - Hra běží na **https://mudandiron.app** (Firebase Hosting, web `mudandiron`; Cloudflare DNS: A `@` 199.36.158.100 + TXT `hosting-site=mudandiron`, oba **DNS only**). `mudandiron.web.app` přesměrovává (skript v `web/index.html`, zachová `?s=handle`). `authDomain: 'mudandiron.app'`, doména v Firebase Auth i v OAuth klientovi (uživatel 19. 11.).
 - Přihlášení hráčů: jen se jednou znovu přihlásí stejným Google účtem (nároky jsou ve Firestore podle uid), žádné nové ověření.
 - Zrcadlo obrázků a média pro IG: **https://assets.mudandiron.app** (CNAME na GitHub Pages, **Proxied**, SSL Full strict) → web ani DNS neprozradí GitHub/repo. `tools/asset-base.sh`, `ingest/publish.mjs`. Kontrola: workflow `check-assets` (ruční).
-- Front News videa (`reel_news*`) jen v Release `media`, z Pages je `media.yml` maže. Cloudflare jako hosting zamítnut (Pages 500 buildů/měs., R2 chce kartu), plán `docs/CLOUDFLARE.md` jen pro případ potřeby. Blaze zatím nezapnut (uživatel zvažuje, rozpočet 5 $).
+- Front News videa (`reel_news*`) jen v Release `media`, z Pages je `media.yml` maže. Mazání stažených videí z Release: commit `marketing/reels/delete.json` `{"files":[...],"v":n}` → workflow `media-clean` (sezení samo assety mazat nesmí, 403). Front News 1–4 smazány 20. 11. (uživatel má staženo). Cloudflare jako hosting zamítnut (Pages 500 buildů/měs., R2 chce kartu), plán `docs/CLOUDFLARE.md` jen pro případ potřeby. Blaze zatím nezapnut (uživatel zvažuje, rozpočet 5 $).
 - Grey Mill odměna: návrh +50 % práce mediků + hojení ×2 na 3 dny (simulace: samotné hojení nepomáhá, pokrytí mediky teď ~61 % H / ~72 % C); čeká na potvrzení.
 
 ## 18. 11. (cloud): VÍC PADLÝCH, TESTOVACÍ REELY
