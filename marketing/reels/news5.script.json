@@ -1,0 +1,101 @@
+{
+ "seconds": 150,
+ "auto": true,
+ "drums": [
+  "ident",
+  [],
+  "hill"
+ ],
+ "lines": [
+  [
+   0.6,
+   "Six in the evening. A new order went up, on the trench wall and on Instagram.",
+   "cold"
+  ],
+  [
+   0,
+   "Volunteers for the wire. Comment WIRE.",
+   "cold2"
+  ],
+  [
+   0.3,
+   "This is Front News. Day five.",
+   "ident"
+  ],
+  [
+   0.4,
+   "That night, sixty-seven men went out. Thirty-five Hegemony, thirty-two Concord.",
+   "party"
+  ],
+  [
+   0,
+   "They crawled out after dark, with coils of barbed wire and corkscrew posts that twist into the mud without a sound.",
+   "party2"
+  ],
+  [
+   0,
+   "The Hegemony put up five hundred and seventy-seven yards. The Concord, four hundred and eighty-two.",
+   "party3"
+  ],
+  [
+   0.4,
+   "Then the flares went up. Sixteen men were caught in the light.",
+   "flare"
+  ],
+  [
+   0.4,
+   "It was the last night of the guns on Verdel Ridge. Twenty-one men were hit. Seven were killed where they stood.",
+   "guns"
+  ],
+  [
+   0,
+   "By morning, much of the new wire was torn apart again. Without the wiring parties, it would have been down to nine percent.",
+   "guns2"
+  ],
+  [
+   0.4,
+   "The Hegemony had run out of room. Every bed was full. Twenty-four men lay on stretchers, and thirteen still lay in the trench.",
+   "ward"
+  ],
+  [
+   0,
+   "The medics could reach only four out of ten.",
+   "ward2"
+  ],
+  [
+   0.4,
+   "The day before, Felix Owenhart of the Concord had fallen. Now the next Owenhart, Edmund, was on the fire step.",
+   "shot"
+  ],
+  [
+   0,
+   "The bearers had just reached Dorian Coletonmarti. One shot, and it was over.",
+   "shot2"
+  ],
+  [
+   0.4,
+   "Day five cost the Hegemony nine dead. The Concord lost no one.",
+   "dead"
+  ],
+  [
+   0.4,
+   "Forty-seven new soldiers came up the line.",
+   "new"
+  ],
+  [
+   0,
+   "And the race for Hill 304 came down to the last few men. Ninety-seven to seventy-nine.",
+   "hill"
+  ],
+  [
+   0,
+   "Three more. That was all the Hegemony needed.",
+   "hill2"
+  ],
+  [
+   0.4,
+   "This was Front News. Next time: the hill falls.",
+   "out"
+  ]
+ ]
+}

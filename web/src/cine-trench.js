@@ -39,6 +39,7 @@ export function makeTrenchCine(tex = {}, anims = {}) {
     cSitW: A('concord', 'sit-wounded', 'west'), cSitE: A('concord', 'sit-wounded', 'east'),
     // Front News Day 4: kráter za úsvitu, ostřelovaný zákop Hegemonie, drátařská četa pod světlicí
     hNorth: fromTex(tex.hegemony?.north, NIGHT), hDuckN: A('hegemony', 'duck', 'north'), hDuckE: A('hegemony', 'duck', 'east'),
+    hMedWalk: A('hegemony_medic', 'walk', 'east'), hWalkW: A('hegemony', 'walk', 'west'), hWalkE: A('hegemony', 'walk', 'east'), hLieN: A('hegemony', 'lying-wounded', 'north'),
     hCrawl: A('hegemony', 'crawl', 'east'), hProne: A('hegemony', 'prone', 'east'), hWorkN: A('hegemony', 'work', 'east'),
   };
   const DAWN = 'rgba(150,90,60,0.16)';
@@ -206,6 +207,42 @@ export function makeTrenchCine(tex = {}, anims = {}) {
       const gr = g.createRadialGradient(LX, LY, 0, LX, LY, 160); gr.addColorStop(0, `rgba(255,205,130,${0.6 * L})`); gr.addColorStop(0.55, `rgba(210,130,60,${0.24 * L})`); gr.addColorStop(1, 'rgba(0,0,0,0)');
       g.fillStyle = gr; g.fillRect(0, 0, W, H);
       g.fillStyle = `rgba(10,9,8,${0.05 + 0.5 * dim})`; g.fillRect(0, 0, W, H);
+    },
+    // Day 5 studený začátek: rozkaz na stěně zákopu (výzva WIRE), voják si ho čte, další jdou kolem, déšť
+    order(t, o) {
+      inside(t, { ...o, heg: true, sentries: false });
+      const NX = 100, NY = TOP + 20; // papír přibitý na prkně
+      px(PAL.ink, NX - 1, NY - 1, 24, 18); px(PAL.pale, NX, NY, 22, 16); px(PAL.white, NX, NY, 22, 3); px(PAL.rust, NX + 2, NY + 1, 18, 1);
+      for (let r = 0; r < 4; r++) px(PAL.mud2, NX + 3, NY + 6 + r * 2, r === 3 ? 9 : 16, 1);
+      px(PAL.steel, NX + 10, NY - 2, 2, 2); // hřebík
+      put(S.hNorth, NX + 40, DECK + 4); // čte (vedle papíru, ať ho nezakrývá)
+      const X = 270 - ((t * 22) % 330); put(at(S.hWalkW, Math.floor(t * 8) % Math.max(1, S.hWalkW.length)), X, DECK + 6);
+      const X2 = -40 + ((t * 17 + 120) % 330); put(at(S.hWalkE, Math.floor(t * 8 + 3) % Math.max(1, S.hWalkE.length)), X2, DECK + 8);
+      rain(t);
+    },
+    // drátaři staví: zleva doprava přibývají kůly s napnutým novým drátem, jeden klečí a zakrucuje kůl, druhý se plazí napřed se svitkem
+    picket(t, o) {
+      sky(t, {});
+      for (let y = HOR; y < H; y++) for (let x = 0; x < W; x++) px((y - HOR) < 4 ? PAL.mud2 : by(x, y) < 0.16 ? PAL.mud2 : PAL.mud1, x, y);
+      for (const [cx, cy, r] of [[60, 124, 14], [210, 118, 10]]) { g.fillStyle = PAL.mud0; g.beginPath(); g.ellipse(cx, cy, r, r * 0.3, 0, 0, Math.PI * 2); g.fill(); px(PAL.water, cx - r + 4, cy, (r - 4) * 2, 1); }
+      const WY = 100, step = 24, head = 16 + Math.min(W - 40, t * 9); // kam až drát vede
+      for (let x = 12; x <= head; x += step) { px(PAL.sand, x, WY - 16, 2, 17); px(PAL.mud2, x + 2, WY - 16, 1, 17); for (let k = 0; k < 3; k++) px(PAL.steel, x - 1, WY - 15 + k * 5, 4, 1); }
+      for (let x = 12; x < head - 2; x++) { px(PAL.grey, x, WY - 13 + ((x >> 1) % 2), 1, 1); px(PAL.grey, x, WY - 7 + ((x >> 2) % 2), 1, 1); px(PAL.steel, x, WY - 2, 1, 1); }
+      put(at(S.hWorkN, Math.floor(t * 6) % Math.max(1, S.hWorkN.length)), head + 4, WY + 12);
+      const cx = Math.min(W - 10, head + 40); put(at(S.hCrawl, Math.floor(t * 7) % Math.max(1, S.hCrawl.length)), cx, WY + 16);
+      g.strokeStyle = PAL.grey; g.lineWidth = 1; for (let q = 0; q < 3; q++) { g.beginPath(); g.ellipse(cx - 18 + q, WY + 13, 4, 3, 0, 0, Math.PI * 2); g.stroke(); }
+      rain(t);
+    },
+    // přeplněno: těžce ranění leží v zákopu na prknech v dešti, medik obvazuje, druhý medik chodí od jednoho k druhému
+    trenchwounded(t, o) {
+      inside(t, { ...o, heg: true, sentries: false });
+      for (let x = 0; x < W; x++) if (by(x, DECK + 3) < 0.6) px(PAL.water, x, DECK + 2 + ((x >> 3) % 2), 1, 1);
+      // ranění leží na stupínku (fire step) podél celé stěny, jen jedna hlídka
+      for (const [x, fr, k] of [[30, S.hLie, 1], [78, S.hLieW, 2], [170, S.hLie, 0], [218, S.hLieW, 1]]) put(at(fr, k), x, STEPY + 4);
+      put(S.hNorth, 124, STEPY + 1);
+      put(at(S.hMed, Math.floor(t * 5) % Math.max(1, S.hMed.length)), 62, DECK + 6);
+      const mx = -20 + ((t * 14) % 290); put(at(S.hMedWalk, Math.floor(t * 8) % Math.max(1, S.hMedWalk.length)), mx, DECK + 10);
+      rain(t);
     },
     // Day 4 studený začátek: úsvit za linií Hegemonie, kráter po přímém zásahu, dva kopou, třetí stojí; v o.disc zvednou známku (identity disc) na šňůrce
     crater(t, o) {
