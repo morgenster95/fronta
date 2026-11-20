@@ -338,5 +338,11 @@
     "id": "support-edheadl-20261120",
     "cmd": "support",
     "handle": "edheadl"
+  },
+  {
+    "id": "restore-role-donaldgregory334-20261120",
+    "cmd": "restoreRole",
+    "handle": "donaldgregory334",
+    "role": "sniper"
   }
 ]
