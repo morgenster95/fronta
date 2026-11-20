@@ -1,0 +1,132 @@
+{
+ "seconds": 103.3,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.6,
+   1.97,
+   "Dawn, behind the Hegemony line.",
+   "cold"
+  ],
+  [
+   2.82,
+   6.54,
+   "The men dug in the crater for an hour. They found only his identity disc. Edmund Acquillae.",
+   "cold2"
+  ],
+  [
+   9.61,
+   2.8,
+   "This is Front News. Day four.",
+   "ident"
+  ],
+  [
+   12.66,
+   3.43,
+   "For a second night, the guns on Verdel Ridge fired on the Hegemony.",
+   "guns"
+  ],
+  [
+   16.34,
+   4.78,
+   "Twenty-six men were hit. Ten were killed where they stood, by direct hits.",
+   "guns2"
+  ],
+  [
+   21.37,
+   2.67,
+   "The bearers could not reach every stretcher under the shells.",
+   "guns3"
+  ],
+  [
+   24.29,
+   3.92,
+   "And the shells did something worse. They tore down the wire.",
+   "wire"
+  ],
+  [
+   28.46,
+   6.73,
+   "Only a quarter of the Hegemony wire was still standing. In twenty-three sectors, a man could walk straight through.",
+   "wire2"
+  ],
+  [
+   35.44,
+   8.08,
+   "So the call went out for wiring parties. Crawl out after dark, fix the wire, and when a flare goes up, drop flat and wait.",
+   "wire3"
+  ],
+  [
+   43.77,
+   5.44,
+   "In the Hegemony hospital, every bed was full. Twenty-three men waited on stretchers.",
+   "ward"
+  ],
+  [
+   49.46,
+   1.9,
+   "The medics could reach two out of three.",
+   "ward2"
+  ],
+  [
+   51.61,
+   6.64,
+   "The Concord did not get away clean. Norbert Fransinlak, a Hegemony sniper, was watching their parapet.",
+   "shot"
+  ],
+  [
+   58.5,
+   3.04,
+   "Isidor Jackmdunn looked over it for one second too long.",
+   "shot2"
+  ],
+  [
+   61.79,
+   4.21,
+   "Day four cost the Hegemony eleven dead. The Concord, three.",
+   "dead"
+  ],
+  [
+   66.25,
+   6.72,
+   "Edmund Acquillae's family kept sending men. Today the third Acquillae serves on the line. A medic.",
+   "fam"
+  ],
+  [
+   73.22,
+   5.86,
+   "And something new began. Three soldiers bought War Bonds with their own money, to keep the front fed.",
+   "bonds"
+  ],
+  [
+   79.33,
+   2.91,
+   "Through the rain, eighty-one new soldiers came up the line.",
+   "new"
+  ],
+  [
+   82.49,
+   5.15,
+   "The Hegemony now held one hundred and seventy. The Concord, one hundred and fifty.",
+   "new2"
+  ],
+  [
+   87.89,
+   5.87,
+   "In the race for Hill 304, the Hegemony pulled far ahead. Seventy-six to fifty.",
+   "hill"
+  ],
+  [
+   94.01,
+   2.17,
+   "Twenty-four more, and the hill is theirs.",
+   "hill2"
+  ],
+  [
+   96.43,
+   3.4,
+   "This was Front News. Next time: the hill.",
+   "out"
+  ]
+ ]
+}
