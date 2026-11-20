@@ -181,6 +181,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'growth') {
+    // akviziční trial reel: timelapse fronty Day 1 → Day 11 (reel-growth.js)
+    return import('./reel-growth.js').then(async ({ startGrowthReel }) => {
+      await startGrowthReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'lone') {
     // akviziční trial reel: jeden muž, 152 komentářů = granátů, Hegemonie přesto vyhrála (reel-lone.js)
     return import('./reel-lone.js').then(async ({ startLoneReel }) => {

@@ -1,0 +1,46 @@
+{
+ "seconds": 40,
+ "auto": true,
+ "drums": [
+  "hook",
+  [],
+  "cta"
+ ],
+ "lines": [
+  [
+   0.2,
+   "Day one. I started a war in my Instagram comments. A hundred and twenty-four people showed up.",
+   "hook"
+  ],
+  [
+   0.3,
+   "Every comment became a soldier, with a name and a post on the front.",
+   "grow"
+  ],
+  [
+   0,
+   "Day four, three hundred. Day nine, six hundred.",
+   "grow2"
+  ],
+  [
+   0,
+   "Then, in a single day, almost eight hundred joined.",
+   "boom"
+  ],
+  [
+   0.3,
+   "Day eleven. Almost two thousand soldiers. Three hundred and fifty-eight have already died.",
+   "now"
+  ],
+  [
+   0.3,
+   "Day twelve starts tomorrow. Comment Hegemony or Concord to join.",
+   "cta"
+  ],
+  [
+   0,
+   "Mud and Iron. Free at mudandiron dot app.",
+   "end"
+  ]
+ ]
+}
