@@ -44,7 +44,7 @@ def post_tiers():
     text_c(d, SW // 2, 39, "SUPPLY LINE", font(8, True), P["gold"])
     d.line((SW, 0, SW, H), fill=P["gold"])
     X0 = SW + 8
-    d.text((X0, 10), "SUPPORT MUD & IRON", font=font(8, True), fill=P["white"])
+    d.text((X0, 10), "SUPPORT MUD AND IRON", font=font(8, True), fill=P["white"])
     d.text((X0, 20), "ON PATREON", font=font(8, True), fill=P["gold"])
     rows = [("$4", "WAR BONDS", "RIBBON FOR YOUR SOLDIER"),
             ("$6", "FIELD POST", "+ A TRENCH DOG"),

@@ -31,8 +31,8 @@ for i, s in enumerate(title.split("|")[:2]):
     text(X, 46 + i * 10, s, font(8, True), P["white"])
 for i, s in enumerate(lines.split("|")[:5]):
     text(X, 74 + i * 9, s, font(8), P["pale"])
-text(X, 126, "MUD & IRON", font(8, True), P["gold"])
-text(X, 136, "FREE TO PLAY", font(8), P["sand"])
+# bez „&“ (v pixelovém písmu vypadá jako dolar) a bez „free to play“ (uživatel 21. 11.)
+text(X, 130, "MUD AND IRON", font(8, True), P["gold"])
 out = os.path.join(HERE, "promo", "patreon", f"post_{out_id}_1500x900.jpg")
 up(im, K).save(out, quality=95)
 print(out)
