@@ -110,3 +110,65 @@ def post_dogs():
 if __name__ == "__main__":
     post_tiers()
     post_dogs()
+
+
+# ---------------- obrázky úrovní 460×200 (mřížka 230×100 ×2, doporučení Patreonu) se psy, 21. 11. ----------------
+from make_patreon import TW, TH, label, dugout, tier_bonds  # noqa: E402
+
+
+def save_tier(im, name):
+    out = os.path.join(OUT, name)
+    up(im, 2).convert("RGB").save(out, quality=95, subsampling=0)
+    print(out)
+
+
+def tier_post_dog():
+    """Field Post: voják čte dopis, vedle sedí pes, na bedně dopisy a balík"""
+    im = dugout(12)
+    lamp(im, 112, 30, top=12)
+    im.alpha_composite(up(sprite("concord_south.png"), 2), (60, 16))
+    im.alpha_composite(up(sprite("hegemony_east.png"), 2), (136, 16))
+    light(im, 112, 50, 80, strength=1.0, steps=3)
+    shade(im, (0, 0, TW, TH), strength=0.55)
+    im.alpha_composite(up(dog("collie"), 2), (94, 22))  # pes až po světle (bez přebarvení)
+    im.alpha_composite(up(dog("jackrussell"), 2), (176, 22))
+    d = ImageDraw.Draw(im)
+    for k, (x, y) in enumerate(((16, 70), (26, 66), (20, 62))):  # obálky na bedně
+        d.rectangle((x, y, x + 14, y + 9), fill=P["white"], outline=P["sand"])
+        d.line((x, y, x + 7, y + 5), fill=P["sand"]); d.line((x + 14, y, x + 7, y + 5), fill=P["sand"])
+        d.rectangle((x + 6, y + 5, x + 8, y + 6), fill=P["rust"])
+    label(im, "FIELD POST")
+    save_tier(im, "tier_field_post.jpg")
+
+
+def tier_mess_dog():
+    """Officers' Mess: důstojníci obou stran se zlatou hvězdou u stolu, u každého pes"""
+    im = Image.new("RGBA", (TW, TH), P["dark"] + (255,))
+    planks(im, (0, 0, TW, TH), seed=11, vertical=True)
+    sandbag_wall(im, (0, 0, TW, 12), seed=4)
+    planks(im, (0, 72, TW, TH), seed=5, vertical=False)
+    d = ImageDraw.Draw(im)
+    d.line((0, 72, TW, 72), fill=P["ink"])
+    lamp(im, 112, 30, top=12)
+    im.alpha_composite(up(sprite("hegemony_officer_south.png"), 2), (20, 16))
+    im.alpha_composite(up(sprite("concord_officer_south.png"), 2), (146, 16))
+    d = ImageDraw.Draw(im)
+    d.rectangle((82, 56, 142, 60), fill=P["mud3"], outline=P["ink"])
+    d.rectangle((86, 61, 89, 80), fill=P["mud1"]); d.rectangle((135, 61, 138, 80), fill=P["mud1"])
+    d.rectangle((90, 52, 116, 55), fill=P["pale"]); d.line((93, 53, 112, 54), fill=P["rust"])
+    d.rectangle((124, 47, 125, 55), fill=P["white"]); d.point((124, 46), fill=P["gold"])
+    mug(d, 128, 49, 0)
+    light(im, 124, 48, 60, strength=1.0, steps=3)
+    shade(im, (0, 0, TW, TH), strength=0.6)
+    im.alpha_composite(up(dog("shepherd"), 2), (56, 22))
+    im.alpha_composite(up(dog("airedale"), 2), (108, 22))
+    d = ImageDraw.Draw(im)
+    for cx in (52, 178):
+        star(d, cx, 10)
+    label(im, "OFFICERS' MESS")
+    save_tier(im, "tier_officers_mess.jpg")
+
+
+if __name__ == "__main__":
+    tier_post_dog()
+    tier_mess_dog()
