@@ -52,15 +52,17 @@ Not on the front yet? Comment HEGEMONY or CONCORD under any post on @mudandiron 
 Image: `tier_field_post.jpg`
 
 **Description**
-Exclusive mail from the front, only for patrons.
-🗺️ Behind the scenes: how the front is made, new sprites and animations
-🔭 Sneak peeks at what's coming next: new hills, new roles, new events
-🎗️ Everything in War Bonds: the ribbon, the Gazette thanks and the diary line
-Still honour only. Your soldier fights like everyone else.
+A dog at your soldier's side, and letters from behind the lines.
+🐕 A trench dog for your soldier: one of five breeds, with its own name. It sits next to your soldier on the front map and shows on the soldier card.
+📖 Dog stories in your soldier's diary: the rat it caught, the night it would not leave the stretcher. Only soldiers with a dog get them.
+🏠 The dog belongs to your family. If your soldier falls, the dog stays with the next one.
+✉️ Behind the scenes, and Front News episodes before anyone else
+🎗️ Everything in War Bonds
+Looks and stories only. The dog never makes your soldier harder to hit.
 
 **Welcome note**
-Welcome to the Field Post, soldier. The mail bag is yours.
-Reply to this message with your Instagram handle and your soldier gets the War Bonds ribbon within a day. Patron-only posts from behind the lines land here. Keep them between us until they go public.
+Welcome to the Field Post, soldier. The mail bag is yours, and so is the dog.
+Reply to this message with your Instagram handle. Within a day your soldier gets the War Bonds ribbon and a trench dog. The front picks the breed and the name.
 
 ---
 
@@ -68,17 +70,15 @@ Reply to this message with your Instagram handle and your soldier gets the War B
 Image: `tier_officers_mess.jpg`
 
 **Description**
-A star over your soldier, and a dog at their side.
-🐕 A trench dog for your soldier: one of five breeds (Airedale, German shepherd, Jack Russell, border collie, dachshund), with its own name. It sits next to your soldier on the front map and shows on the soldier card.
-📖 Your diary gets dog stories: the rat it caught, the night it would not leave the stretcher. Only soldiers with a dog get them.
-🏠 The dog belongs to your family. If your soldier falls, the dog stays with the next one.
+A star over your soldier, and the dog of your choice.
 ⭐ A gold star hangs over your soldier on the front map, so you can always find them, even zoomed all the way out
+🐕 Pick your dog: choose the breed (Airedale, German shepherd, Jack Russell, border collie, dachshund) and give it a name
 🎗️ Everything in Field Post and War Bonds
-Looks and stories only. The dog and the star never make your soldier harder to hit.
+Looks and stories only. The star and the dog never make your soldier harder to hit.
 
 **Welcome note**
 Welcome to the Officers' Mess. Pull up a crate, and mind the dog.
-Reply to this message with your Instagram handle. Within a day your soldier gets the War Bonds ribbon, a gold star over their head, and a trench dog. Want a breed or a name? Tell us. Otherwise the front picks one for you.
+Reply to this message with your Instagram handle, the breed you want and your dog's name. Within a day your soldier gets the War Bonds ribbon, a gold star over their head, and your dog.
 
 ---
 

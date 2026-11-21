@@ -433,7 +433,7 @@ async function boot() {
       dsp.anchor.set(0.5, 1);
       const left = q.sprite.scale.x < 0; // pes sedí na straně, kam se voják dívá, otočený stejně
       dsp.scale.x = left ? -1 : 1;
-      dsp.x = q.x + (left ? -7 : 7); dsp.y = q.y + 6; // kousek před vojákem, ať ho nezakryjí sousedé v zákopu
+      dsp.x = q.x + (left ? -11 : 11); dsp.y = q.y + 1; // vedle vojáka na stejné čáře nohou (níž by ho zakryl val z pytlů)
       q.dogSprite = dsp;
       q.sprite.parent.addChild(dsp); // navrch bloku: pes je vidět i v hustě obsazeném zákopu
     }
