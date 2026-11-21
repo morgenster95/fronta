@@ -1197,11 +1197,11 @@
       "id": "story-reel-front12",
       "type": "story",
       "files": [
-        "reel_front12.mp4"
+        "story_reel-front12.jpg"
       ],
       "caption": "",
-      "publishAt": "2026-11-21T16:52:00Z",
-      "_note": "Story k položce reel-front12 (krátký reel = story je video)."
+      "publishAt": "2026-11-21T17:44:00Z",
+      "_note": "Story k položce reel-front12 (pravidlo: ke každé novince i story). "
     }
   ]
 }
