@@ -496,5 +496,12 @@
     "cmd": "dog",
     "handle": "viti_w02",
     "_note": "Patreon Officers' Mess (2026-11-21): Trench Dog, plemeno a jméno losuje hra"
+  },
+  {
+    "id": "switch-oran__rozenband-20261121",
+    "cmd": "switchFaction",
+    "handle": "oran__rozenband",
+    "faction": 0,
+    "_note": "Hráč chce k Hegemonii (2026-11-21), chce být ženista: roli si změní převelením po převzetí"
   }
 ]
