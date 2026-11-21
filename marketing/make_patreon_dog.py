@@ -30,13 +30,11 @@ def post_tiers():
     d = ImageDraw.Draw(im)
     d.line((0, 150, SW, 150), fill=P["ink"])
     lamp(im, 60, 70, top=12)
-    im.alpha_composite(up(sprite("hegemony_officer_east.png"), 2), (-10, 90))
-    im.alpha_composite(up(sprite("concord_officer_west.png"), 2), (60, 90))
-    im.alpha_composite(up(dog("airedale"), 2), (28, 90))  # pes Officers' Mess pod stolem
-    d = ImageDraw.Draw(im)
-    mug(d, 66, 123, 0)
+    im.alpha_composite(up(sprite("hegemony_officer_south.png"), 2), (-8, 90))  # důstojníci čelem k divákovi
+    im.alpha_composite(up(sprite("concord_officer_south.png"), 2), (64, 90))
     light(im, 60, 122, 70, strength=1.0, steps=3)
     shade(im, (0, 0, SW, H), strength=0.55)
+    im.alpha_composite(up(dog("shepherd"), 2), (28, 90))  # náš pes ze hry, až po světle a stínu (bez přebarvení)
     d = ImageDraw.Draw(im)
     star(d, 20, 84)
     star(d, 92, 84)
