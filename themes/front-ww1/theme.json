@@ -259,7 +259,7 @@
     ]
   },
   "race": {
-    "need": 100,
+    "need": 300,
     "days": 7,
     "barrageDays": 3,
     "winDanger": 0.6,
@@ -268,13 +268,15 @@
     "objectives": [
       {
         "id": "ridge",
-        "name": "Verdel Ridge"
+        "name": "Verdel Ridge",
+        "need": 100
       },
       {
         "id": "hill304",
         "name": "Hill 304",
         "reward": "observation",
-        "rewardText": "Takes the high ground and its observation tree: for 3 days the winner's snipers and machine gunners shoot straighter, a safer week for its soldiers, a ribbon for everyone on the winning side, and the title of hero for the soldier who tips the balance."
+        "rewardText": "Takes the high ground and its observation tree: for 3 days the winner's snipers and machine gunners shoot straighter, a safer week for its soldiers, a ribbon for everyone on the winning side, and the title of hero for the soldier who tips the balance.",
+        "need": 100
       },
       {
         "id": "canal",
@@ -296,7 +298,8 @@
         "id": "quarry",
         "name": "the Bone Quarry",
         "reward": "mine",
-        "rewardText": "Takes the quarry and its tunnels: the winner's sappers dig a mine under the enemy line for one day, and the next day it goes up under the most crowded enemy trench. The crater stays for good. Enemy sappers may hear the digging and cave the tunnel in."
+        "rewardText": "Takes the quarry and its tunnels: the winner's sappers dig a mine under the enemy line for one day, and the next day it goes up under the most crowded enemy trench. The crater stays for good. Enemy sappers may hear the digging and cave the tunnel in.",
+        "need": 300
       },
       {
         "id": "orchard",

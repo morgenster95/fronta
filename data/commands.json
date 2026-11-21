@@ -365,5 +365,15 @@
     "cmd": "firstThousand",
     "newsHead": "The First Thousand",
     "newsText": "A thousand soldiers answered the call before the first snow. From today each of them, and each heir who carries the family name, wears the ribbon of the First Thousand."
+  },
+  {
+    "id": "title-jro_se11-ridge-20261121",
+    "cmd": "title",
+    "handle": "jro_se11",
+    "title": "Hero of Verdel Ridge",
+    "entry": "The medal for Verdel Ridge finally came up the line. On Day 3, Lucien \"Shadow\" Jro was the hundredth man of the Concord, and with him the ridge was theirs. Lucien is gone now, and Cyril after him. The major pinned the medal on {name}: \"It belongs to the family. Wear it for both of them.\"",
+    "newsHead": "A medal for the Jro family",
+    "newsText": "On Day 3, Lucien \"Shadow\" Jro was the hundredth man of the Concord, and Verdel Ridge fell to them. The title never reached him. Lucien and Cyril Jro have both fallen since. Today {name} (@{handle}) carries it for the family: Hero of Verdel Ridge.",
+    "_note": "pokyn uživatele 21. 11.: hrdina první kóty titul nedostal (Verdel Ridge ho ještě nedávala), dodán rodu Jro"
   }
 ]

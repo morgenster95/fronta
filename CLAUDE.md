@@ -9,6 +9,7 @@ Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co
 - Přihlášení hráčů: jen se jednou znovu přihlásí stejným Google účtem (nároky jsou ve Firestore podle uid), žádné nové ověření.
 - Zrcadlo obrázků a média pro IG: **https://assets.mudandiron.app** (CNAME na GitHub Pages, **Proxied**, SSL Full strict) → web ani DNS neprozradí GitHub/repo. `tools/asset-base.sh`, `ingest/publish.mjs`. Kontrola: workflow `check-assets` (ruční).
 - Front News videa (`reel_news*`) jen v Release `media`, z Pages je `media.yml` maže. Mazání stažených videí z Release: commit `marketing/reels/delete.json` `{"files":[...],"v":n}` → workflow `media-clean` (sezení samo assety mazat nesmí, 403). Front News 1–4 smazány 20. 11. (uživatel má staženo). Cloudflare jako hosting zamítnut (Pages 500 buildů/měs., R2 chce kartu), plán `docs/CLOUDFLARE.md` jen pro případ potřeby. Blaze zatím nezapnut (uživatel zvažuje, rozpočet 5 $).
+- **Bone Quarry (od 21. 11.): odměna MINA** (`engine/mine.js`, `web/src/mine.js`): den po výhře noviny hlásí kopání, druhý den výbuch pod nejhustší první linií nepřítele, kráter natrvalo; protiminování ~13–15 %. Bombardování ani bezpečnější týden uživatel nechce. Detaily `docs/MECHANICS.md`.
 - Grey Mill odměna: návrh +50 % práce mediků + hojení ×2 na 3 dny (simulace: samotné hojení nepomáhá, pokrytí mediky teď ~61 % H / ~72 % C); čeká na potvrzení.
 
 ## 18. 11. (cloud): VÍC PADLÝCH, TESTOVACÍ REELY
@@ -225,6 +226,7 @@ Výprava a hlasování se přidají jen, když běží (`state.valley.open`, `st
 - **Day reel Dne 4** (`reel-day4`, 77 s): schválen a zařazen 13. 11. ve 12:06 UTC („nasaď hned“), story `story-reel-day4` (dopisová scéna) 12:16 UTC. Čísla v popisku: 45 zasažených, 6 padlých, Hill 304 H 74 : C 48, 74 dopisů, včera +104 (H +65, C +39), na frontě 316 (H 168, C 148).
   Ve Štábu fronty doplněno (13. 11. odpoledne): `reel-day4`, `story-reel-day4`, `reel-wire`, `story-reel-wire`.
 - Den 1 války = 2026-11-09; každé ranní vydání (denní tah, Gazette, výsledky) je ve 13:00 UTC, večerní reel nebo post ve 23:00 UTC.
+- **Závody o nábor: vždy 300 nových hráčů** (pokyn uživatele 21. 11.: „100 je málo, zapamatuj si to“; `theme.race.need = 300`, Grey Mill i Bone Quarry 300). Nové kóty s typem nábor dávej taky na 300.
 - **Závod o kóty:** kdo první naverbuje 100 vojáků, dobude kótu (Verdel Ridge dobyl Concord Den 3, teď Hill 304…, `theme.race.objectives`). **Odměna podle kóty** (`reward`): Verdel Ridge = dělostřelectvo,
   3 dny bombardování poraženého; **Hill 304 = pozorovatelna** (3 dny přesnější odstřelovači a kulometčíci vítěze, 5 stromů na mapě, ranní hlášení „Eyes on Hill 304“; uživatel nechtěl opakované bombardování, `docs/MECHANICS.md`).
   **Blackwater Canal: vyhrává, kdo první zabije 100 nepřátel** (`type: 'kills'`, ne noví vojáci). Reel o vítězství Hegemonie na Hill 304 (`web/src/reel-hill304.js`, útok na továrnu na kopci) čeká na schválení; vyjde přes frontu s `trigger: {race: 'hill304'}`. Do první dobyté kóty děla mlčí a texty o ostřelování se nepoužijí (`battle.gunsWords`).
