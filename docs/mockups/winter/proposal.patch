@@ -1,0 +1,168 @@
+diff --git a/web/src/main.js b/web/src/main.js
+index db2c61f2..0fd4a41f 100644
+--- a/web/src/main.js
++++ b/web/src/main.js
+@@ -637,7 +637,9 @@ async function boot() {
+   // počasí dne z denního tahu (bez údaje = déšť jako dřív)
+   const wx = new URLSearchParams(location.search).get('wx') || roster.weather;
+   const raining = !wx || wx === 'rain' || wx === 'storm';
+-  const tint = { fog: [0xa39782, 0.13], frost: [0xc4d6e4, 0.07], clear: [0xffe6b0, 0.03] }[wx];
++  const snowing = wx === 'snow' || wx === 'blizzard'; // NÁVRH zima (jen dev ?wx=snow|blizzard)
++  const tint = { fog: [0xa39782, 0.13], frost: [0xc4d6e4, 0.07], clear: [0xffe6b0, 0.03], snow: [0xd6e2ec, 0.08], blizzard: [0xdfe8ef, 0.2] }[wx];
++  const flakes = Array.from({ length: wx === 'blizzard' ? 700 : 300 }, () => ({ x: Math.random(), y: Math.random(), v: 0.4 + Math.random() * 0.8, p: Math.random() * 6.28, s: Math.random() < 0.3 ? 4 : 3 }));
+   fog.alpha = wx === 'clear' || wx === 'frost' ? 0.5 : 1;
+   const drops = Array.from({ length: wx === 'storm' ? 260 : 160 }, () => ({ x: Math.random(), y: Math.random(), v: 0.6 + Math.random() * 0.6 }));
+   let flashT = 0, nextFlash = 3000;
+@@ -808,6 +810,14 @@ async function boot() {
+       rain.moveTo(d.x * W, d.y * H).lineTo(d.x * W - 3, d.y * H + 12 * d.v);
+     }
+     if (raining) rain.stroke({ color: 0xa39782, alpha: 0.25, width: 1 });
++    if (snowing) for (const f of flakes) {
++      const bl = wx === 'blizzard';
++      f.y += (bl ? 0.006 : 0.0022) * f.v;
++      f.x += (bl ? -0.004 : Math.sin(now * 0.001 + f.p) * 0.0006) * f.v;
++      if (f.y > 1) { f.y = 0; f.x = Math.random() * 1.1; }
++      if (f.x < -0.05) f.x = 1.05;
++      rain.rect(Math.round(f.x * W), Math.round(f.y * H), f.s, f.s).fill({ color: 0xf4f7f8, alpha: 0.7 + 0.3 * f.v / 1.2 });
++    }
+     // vzdálené záblesky
+     flash.clear();
+     nextFlash -= app.ticker.deltaMS;
+diff --git a/web/src/terrain.js b/web/src/terrain.js
+index 4dc9a1cb..57f07309 100644
+--- a/web/src/terrain.js
++++ b/web/src/terrain.js
+@@ -8,8 +8,15 @@ export const PAL = [
+   '0e0d0c', '1c1a17', '2b2722', '3d3730', '524a3f', '6b6152', '857a68', 'a39782', 'c4b8a0', 'e3d9c3',
+   '3a3b2c', '545639', '6f7148', '8c8a5c', '4a4f52', '666d70', '8a9295', '2a3138', '5c2a22', '7e3b2a',
+   'a85a36', '9fa640', 'c9c26a', 'd98f3f',
++  // NÁVRH zima (jen dev): studené sněhové tóny 24–26
++  'eef1f2', 'c9d3d9', '9aa7b1',
+ ].map((h) => [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]);
+ 
++// NÁVRHY (jen dev server, nic se nenasazuje): ?trench=earth|timber|deep  ?snow=0..1
++const QS = typeof location !== 'undefined' ? new URLSearchParams(location.search) : new URLSearchParams();
++const LOOK = QS.get('trench') || '';
++const SNOW = Math.min(1, Math.max(0, Number(QS.get('snow')) || 0));
++
+ export const CHUNK = 64; // dlaždic
+ 
+ // hladký šum z mřížky hodnot (bilineární)
+@@ -67,7 +74,7 @@ export function paintChunk(map, cx, cy, images = {}) {
+           const r = hash2(wx, wy, 7);
+           let c;
+           if (t === T.TRENCH || t === T.DUGOUT) {
+-            c = trenchPixel(x, y, r, wx, wy, isTr(n), isTr(s), isTr(e), isTr(wv), t === T.DUGOUT);
++            c = LOOK ? trenchLook(x, y, r, wx, wy, isTr(n), isTr(s), isTr(e), isTr(wv), t === T.DUGOUT) : trenchPixel(x, y, r, wx, wy, isTr(n), isTr(s), isTr(e), isTr(wv), t === T.DUGOUT);
+             // bližší okraj: povrch země, který zakrývá spodek zákopu (horní vrstva)
+             if (!isTr(s) && y >= LIP_FROM && g(gx, gy + 1) !== T.PARAPET) putOver(px, py, lipPixel(y, r, wx, wy));
+           } else if (t === T.PARAPET) {
+@@ -137,9 +144,108 @@ export function paintChunk(map, cx, cy, images = {}) {
+     else if (p.type === 'tree') drawTree(ctx, px, py, p.x * 31 + p.y);
+     else if (p.type === 'debris') drawDebris(ctx, px, py, p.x + p.y * 17);
+   }
++  if (SNOW > 0) { snowPass(ctx, w, h, ox, oy, g, S, false); snowPass(octx, w, h, ox, oy, g, S, true); }
+   return { base: canvas, over: overCanvas };
+ }
+ 
++const BAY4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
++const BY = (x, y) => (BAY4[((y & 3) << 2) | (x & 3)] + 0.5) / 16;
++// ---------- NÁVRH: sníh (přebarví povrch země, pytle a rekvizity; dno zákopu zůstává bláto) ----------
++function snowPass(c2, w, h, ox, oy, g, S, over) {
++  const im = c2.getImageData(0, 0, w, h), d = im.data;
++  const P = (i) => PAL[i];
++  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
++    const i = (y * w + x) * 4;
++    if (d[i + 3] === 0) continue;
++    const wx = ox + x, wy = oy + y, t = g(Math.floor(wx / S), Math.floor(wy / S));
++    const inTr = t === T.TRENCH || t === T.DUGOUT;
++    const lum = (d[i] * 0.3 + d[i + 1] * 0.59 + d[i + 2] * 0.11) / 255;
++    // voda zamrzne
++    if (!inTr && d[i + 2] > d[i] + 8 && lum < 0.45 && SNOW > 0.45) { const q = P(hash2(wx, wy, 41) < 0.2 ? 24 : 25); d[i] = q[0]; d[i + 1] = q[1]; d[i + 2] = q[2]; continue; }
++    if (inTr && !over) { // v zákopu jen poprašek na horní hraně stěny
++      if (SNOW > 0.5 && lum > 0.42 && hash2(wx, wy, 43) < SNOW * 0.5) { const q = P(25); d[i] = q[0]; d[i + 1] = q[1]; d[i + 2] = q[2]; }
++      continue;
++    }
++    const tx = Math.floor(wx / S), ty = Math.floor(wy / S);
++    const nml = t === T.NML || t === T.WIRE || t === T.CRATER;
++    const bag = t === T.PARAPET;
++    // ušlapáno u zákopů (vojáci chodí), rozryto v zemi nikoho
++    let near = 0;
++    for (const [dx, dy] of [[0, -1], [0, 1], [0, -2], [0, 2], [-1, 0], [1, 0]]) { const u = g(tx + dx, ty + dy); if (u === T.TRENCH || u === T.DUGOUT) near++; }
++    const n = vnoise(wx / 6, wy / 5, 31) * 0.5 + vnoise(wx / 22, wy / 22, 32) * 0.35 + BY(wx, wy) * 0.15;
++    let cover = SNOW * (nml ? 0.8 : 1.05) - near * 0.03;
++    if (bag) { if (lum < 0.66 || SNOW < 0.25) continue; cover = 1; }
++    if (n > cover) continue;
++    // pod sněhem zůstává tvar terénu: světlá místa bílá, stíny modrošedé
++    const drift = vnoise(wx / 10, wy / 7, 34) + (BY(wx, wy) - 0.5) * 0.12; // závěje: plynulé světlé a stínované plochy
++    const ci = lum < 0.16 ? 26 : drift > 0.52 ? 24 : 25;
++    const q = P(cover - n < 0.035 ? 26 : ci);
++    d[i] = q[0]; d[i + 1] = q[1]; d[i + 2] = q[2];
++  }
++  c2.putImageData(im, 0, 0);
++}
++
++// ---------- NÁVRH: jiný vzhled zákopů ----------
++// earth  – hliněný, nepravidelné okraje, žádná prkna, rozbité rošty, bláto a louže
++// timber – dřevěné obložení (vodorovná fošna, svislé kůly), řada pytlů na horní hraně, světlé rošty
++// deep   – hluboký: vysoká tmavá stěna se stínem, světlá hrana nahoře, úzké dno
++function trenchLook(x, y, r, wx, wy, n, s, e, w, dugout) {
++  const WALLH = LOOK === 'deep' ? 18 : 14;
++  const jag = Math.floor(vnoise(wx / 5, wy / 5, 51) * 4); // nepravidelný okraj
++  if (dugout) {
++    if (y < 12) return x === 2 || x === 13 ? 2 : y === 1 ? 5 : 0;
++    return 1;
++  }
++  if (!n && y < WALLH) {
++    if (LOOK === 'earth') {
++      if (y < 1 + (jag >> 1)) return y === 0 ? 5 : 4; // drolící se hrana
++      const sh = y / WALLH, v = vnoise(wx / 4, wy / 3, 52) * 0.6 + r * 0.25 + (1 - sh) * 0.35;
++      if (r > 0.985) return 7; // kámen
++      if (hash2(wx, 3, 53) < 0.04 && y > 4) return 0; // kořen / prasklina
++      return v > 0.85 ? 4 : v > 0.6 ? 3 : v > 0.35 ? 2 : 1;
++    }
++    if (LOOK === 'timber') {
++      if (y < 5) return sandbagPixel(wx, wy, r); // řada pytlů na hraně
++      const post = ((wx % 22) + 22) % 22;
++      if (post < 2) return post === 0 ? 7 : 5; // svislý kůl
++      if (post === 2) return 1;
++      if ((y - 5) % 4 === 3) return 1; // spára fošen
++      const grain = hash2(wx >> 1, (y - 5) >> 2, 54);
++      return grain < 0.15 ? 4 : y < 8 ? 7 : 6;
++    }
++    // deep
++    if (y === 0) return 7;
++    if (y === 1) return 5;
++    const sh = y / WALLH;
++    return sh < 0.3 ? (r < 0.5 ? 4 : 3) : sh < 0.65 ? (r < 0.3 ? 3 : 2) : (r < 0.2 ? 2 : 1);
++  }
++  const belowWall = !n ? y - WALLH : 99;
++  if (belowWall === 0 || belowWall === 1) return 0;
++  // boční stěny: nepravidelná šířka (earth), dřevo (timber)
++  const sw = LOOK === 'earth' ? 2 + jag : 3;
++  if (!w && x < sw) return x === 0 ? (LOOK === 'timber' ? 6 : 4) : x === sw - 1 ? 0 : LOOK === 'timber' ? 5 : 2;
++  if (!e && x > 15 - sw) return x === 15 ? 0 : x === 16 - sw ? 1 : LOOK === 'timber' ? 4 : 2;
++  const horizontal = e || w;
++  const mud = () => { const v = vnoise(wx / 5, wy / 4, 55); if (v < 0.18) return r < 0.15 ? 15 : 17; return v < 0.5 ? 1 : 2; };
++  if (LOOK === 'earth') {
++    if (horizontal && n && y >= 2 && y <= 6) { // rošty, místy chybí
++      if (hash2(wx >> 3, wy, 56) < 0.3) return mud();
++      return y === 2 || y === 6 ? 1 : wx % 4 === 3 ? 1 : r < 0.1 ? 2 : 3;
++    }
++    if (!horizontal && x >= 6 && x <= 9) return hash2(wx, wy >> 3, 57) < 0.3 ? mud() : wy % 4 === 3 ? 1 : 3;
++    return mud();
++  }
++  if (LOOK === 'timber') {
++    if (horizontal && n && y >= 1 && y <= 7) return y === 1 || y === 7 ? 1 : wx % 4 === 3 ? 2 : r < 0.06 ? 5 : y < 4 ? 7 : 6;
++    if (!horizontal && x >= 4 && x <= 11) return x === 4 || x === 11 ? 1 : wy % 4 === 3 ? 2 : 6;
++    return mud();
++  }
++  // deep: úzké tmavé dno, rošt uprostřed
++  if (horizontal && n && y >= 2 && y <= 5) return y === 2 || y === 5 ? 0 : wx % 3 === 2 ? 1 : 4;
++  if (!horizontal && x >= 6 && x <= 9) return x === 6 || x === 9 ? 0 : wy % 3 === 2 ? 1 : 4;
++  return r < 0.5 ? 0 : 1;
++}
++
+ const WALL = 14; // výška viditelné vzdálené stěny (px)
+ const LIP_FROM = 7; // od kterého řádku spodní dlaždice zákopu začíná bližší okraj
+ const BAG_RISE = 5; // o kolik px pytle převyšují okraj
