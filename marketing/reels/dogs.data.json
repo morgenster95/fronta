@@ -94,5 +94,29 @@
   },
   "arrive": "Zeno \"Mole\" Theimperialr sorted the dressings by lamplight. When the next stretcher arrived, he could find everything without looking. A letter from home reached Zeno \"Mole\" Theimperialr before dusk. Zeno \"Mole\" Theimperialr read it twice and slept a little easier. Grey Mill is lost. Zeno \"Mole\" Theimperialr heard the news from a runner, said nothing, and checked his rifle twice. There will be another race. A Airedale terrier wandered in from no man's land at dawn, wet and hungry. It chose Zeno \"Mole\" Theimperialr. Zeno \"Mole\" Theimperialr gave it a name: Ginger.",
   "story": "A Airedale terrier wandered in from no man's land at dawn, wet and hungry. It chose Zeno \"Mole\" Theimperialr. Zeno \"Mole\" Theimperialr gave it a name: Ginger."
+ },
+ {
+  "handle": "w0lfer2210",
+  "name": "Benedikt \"Smokes\" Lfer",
+  "faction": 0,
+  "dog": {
+   "name": "Bobby",
+   "breed": "jackrussell",
+   "since": 12
+  },
+  "arrive": "",
+  "story": ""
+ },
+ {
+  "handle": "lewis_edwardss",
+  "name": "Albin Edwardss",
+  "faction": 0,
+  "dog": {
+   "name": "Holly",
+   "breed": "dachshund",
+   "since": 13
+  },
+  "arrive": "",
+  "story": ""
  }
 ]
