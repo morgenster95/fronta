@@ -99,3 +99,29 @@ export function slam(el, t, at, out, from = 1.35, rot = -5) {
   el.style.opacity = t < at || t > out ? 0 : Math.min(1, u * 1.5, (out - t) / 0.2);
   el.style.transform = `${el.dataset.base || ''} scale(${from + (1 - from) * u}) rotate(${rot * (1 - u)}deg)`;
 }
+
+// JEDNOTNÝ TITULEK DNE pro všechny Day reely (pravidlo uživatele 21. 11. 2026: označení dne vždy stejné a uprostřed obrazu,
+// ať se na IG pěkně zobrazí; žádné vlastní varianty v jednotlivých scénářích).
+// Psací stroj „DAY N“ (Silkscreen, krémová, číslo zlaté) + podtitulek pod ním, svisle přesně uprostřed na tmavém pruhu.
+//   const day = dayTitle(root); … v frame(t): day(t, { n: 13, sub: 'THE GUNS SPOKE ALL NIGHT', from: 0.2, to: 4 })
+export const DAY_CSS = `
+#rk-day { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; padding: 34px 0 30px;
+  background: linear-gradient(180deg, rgba(14,13,12,0) 0%, rgba(14,13,12,0.62) 22%, rgba(14,13,12,0.62) 78%, rgba(14,13,12,0) 100%); opacity: 0; pointer-events: none; z-index: 5; }
+#rk-day .big { font-family: 'Silkscreen', monospace; font-size: 84px; line-height: 1; letter-spacing: 0.04em; color: #e3d9c3; text-shadow: 6px 6px 0 #0e0d0c; min-height: 84px; white-space: nowrap; }
+#rk-day .big b { font-weight: 400; color: #d98f3f; }
+#rk-day .sub { font-family: 'Silkscreen', monospace; font-size: 22px; letter-spacing: 0.08em; padding: 0 24px; color: #c9b99a; text-shadow: 3px 3px 0 #0e0d0c; margin-top: 18px; min-height: 36px; }
+`;
+export function dayTitle(root) {
+  if (!document.getElementById('rk-day-css')) { const st = document.createElement('style'); st.id = 'rk-day-css'; st.textContent = DAY_CSS; document.head.appendChild(st); }
+  const el = document.createElement('div');
+  el.id = 'rk-day';
+  el.innerHTML = '<div class="big"></div><div class="sub"></div>';
+  root.appendChild(el);
+  const big = el.firstChild, sub = el.lastChild;
+  return (t, { n, sub: text = '', from = 0.2, to = 4, subAt = from + 1 }) => {
+    el.style.opacity = win(t, from, to, 0.3);
+    const s = typed(`DAY ${n}`, t, from + 0.1, 10), k = 4;
+    big.innerHTML = s.length > k ? `DAY <b>${s.slice(k)}</b>` : s;
+    sub.textContent = text && t > subAt ? typed(text, t, subAt, 30) : '';
+  };
+}

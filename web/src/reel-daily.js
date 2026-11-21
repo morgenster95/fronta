@@ -3,7 +3,7 @@
 // (auto: věty jdou hned za sebou). Střihy a přechody se řídí začátky vět (id) v day<N>.vo.json.
 import { makeCinema, CSS as BASE } from './reel-day1.js';
 import { paperTexture, tornClip } from './paper.js';
-import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, tagAt, slam, ease, easeOut, clamp01, win, typed } from './reel-kit.js';
+import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, tagAt, slam, ease, easeOut, clamp01, win, typed, dayTitle } from './reel-kit.js';
 import voteImg from '../../marketing/promo/vote_build_1.jpg'; // běžící hlasování HOSPITAL / PILLBOXES / AMMO (15. 11.)
 import { makeScenes, pickScene, CINEMA_CSS } from './cinema.js';
 import { makeWireScenes } from './cinema-wire.js';
@@ -201,6 +201,7 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     <div id="rd-every"><span>EVERY MORNING · 13:00 UTC</span></div>
   `;
   document.body.appendChild(root);
+  const dayT = dayTitle(root);
   const cine = makeCinema(tex, anims);
   root.prepend(cine.canvas);
   // filmové mezizáběry: úvod a závěr se mezi dny střídají, k nosítkům obvaziště při lucerně, k výpravě kostel
@@ -270,9 +271,8 @@ export function startDailyReel({ name, cam, life, map, theme, soldiers, tex, ani
     show('#rd-cine2', sc ? 1 : 0);
     paint({ ...f, black: Math.max(f.black, t < 0.4 ? 1 - t / 0.4 : 0, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) });
 
-    show('#rd-day', night ? Math.min(1, t / 0.3) : 0);
-    $('#rd-day .big').textContent = typed(`DAY ${data.label ?? data.day}`, t, 0.4, 12);
-    $('#rd-day .sub').textContent = t > at('guns') ? typed(data.silent ? 'THE GUNS ARE SILENT' : 'THE GUNS SPOKE ALL NIGHT', t, at('guns'), 30) : '';
+    show('#rd-day', 0);
+    dayT(t, { n: data.label ?? data.day, sub: data.silent ? 'THE GUNS ARE SILENT' : 'THE GUNS SPOKE ALL NIGHT', from: 0.3, to: night ? 1e9 : -1, subAt: at('guns') });
 
     const logo = t >= tCta + 0.4;
     const bigEl = $('#rd-big');
