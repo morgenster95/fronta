@@ -1,6 +1,7 @@
 // Stav světa (soupiska) a jeho změny: komentář → narukování, kód → převzetí, denní tah, export statických dat pro web.
 
 import { createSoldier, tickSoldier, heir, selectForStory, addEntry, fallSoldier } from './soldier.js';
+import { dogStories } from './dog.js';
 import { enlistEntry, weatherFor, eventEntry, tplKey, makeBackground, backgroundLine, silenceGuns } from './story.js';
 import { writeChronicle } from './chronicle.js';
 import { checkRace, checkKillRace, raceStatus, raceDanger, activeBarrage, activeObservation, activeLogistics, awardHonors } from './race.js';
@@ -595,6 +596,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
     const sctx = { active: active.has(s.id), danger, weather, events, comrade, foe, today, recover, battle: !!theme.battle };
     for (const text of tickSoldier(s, day, theme, story, sctx)) addEntry(s, day, text);
   }
+  dogStories(state, theme, story, day, today); // příběhy psů (Trench Dog): jen vojáci se psem
   awardHouseBadges(state, theme); // odznaky rodu (zůstávají v rodu)
   const news = [...(state.news || []).filter((n) => n.day >= day - 1), ...raid.news, ...fight.news]; // zprávy o dobytí kóty jdou první
   // pošta: hráč „posílá“ svému vojákovi dopis z domova; kdo ho včera dostal, má o něm zápis (v novinách se nezmiňuje)
@@ -707,7 +709,7 @@ export function buildPublic(state, theme) {
     shells: state.shells ? { counts: state.shells.counts, target: state.shells.target, openedAt: state.shells.openedAt } : null, // souboj komentářů: živé počty granátů
     updated: new Date().toISOString(),
     nextEdition: nextEdition(state, theme),
-    fields: ['handle', 'faction', 'x', 'y', 'dir', 'line', 'medals', 'archetype', 'rank', 'status', 'variant', 'claimed', 'generation', 'name'],
+    fields: ['handle', 'faction', 'x', 'y', 'dir', 'line', 'medals', 'archetype', 'rank', 'status', 'variant', 'claimed', 'generation', 'name', 'dog'],
     soldiers: state.soldiers.map((s) => [
       s.handle,
       s.faction,
@@ -723,6 +725,7 @@ export function buildPublic(state, theme) {
       s.claimed ? 1 : 0,
       s.generation,
       s.name,
+      s.dog?.breed || '', // plemeno psa (Trench Dog), prázdné = bez psa
     ]),
   };
   const NS = shardCount(state.soldiers.length);
@@ -763,6 +766,7 @@ export function buildPublic(state, theme) {
       level: theme.battle ? levelOf(theme, s).name : null,
       hits: s.hits || 0,
       hitsBy: s.hitsBy || {},
+      dog: s.dog ? { name: s.dog.name, breed: s.dog.breed, since: s.dog.since } : null,
     };
   }
   // žebříčky a pamětní listina: samostatné soubory, web je načte až po otevření záložky (hlavní data nerostou)

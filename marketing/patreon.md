@@ -31,7 +31,7 @@ Everything here is honour only. A ribbon never makes a soldier shoot straighter 
 
 ---
 
-## Tier 1: War Bonds ($3 / month)
+## Tier 1: War Bonds ($4 / month)
 Image: `tier_war_bonds.jpg`
 
 **Description**
@@ -48,7 +48,7 @@ Not on the front yet? Comment HEGEMONY or CONCORD under any post on @mudandiron 
 
 ---
 
-## Tier 2: Field Post ($5 / month)
+## Tier 2: Field Post ($6 / month)
 Image: `tier_field_post.jpg`
 
 **Description**
@@ -68,14 +68,17 @@ Reply to this message with your Instagram handle and your soldier gets the War B
 Image: `tier_officers_mess.jpg`
 
 **Description**
-A star over your soldier.
+A star over your soldier, and a dog at their side.
+🐕 A trench dog for your soldier: one of five breeds (Airedale, German shepherd, Jack Russell, border collie, dachshund), with its own name. It sits next to your soldier on the front map and shows on the soldier card.
+📖 Your diary gets dog stories: the rat it caught, the night it would not leave the stretcher. Only soldiers with a dog get them.
+🏠 The dog belongs to your family. If your soldier falls, the dog stays with the next one.
 ⭐ A gold star hangs over your soldier on the front map, so you can always find them, even zoomed all the way out
 🎗️ Everything in Field Post and War Bonds
-Looks only. The star never makes your soldier harder to hit.
+Looks and stories only. The dog and the star never make your soldier harder to hit.
 
 **Welcome note**
-Welcome to the Officers' Mess. Pull up a crate.
-Reply to this message with your Instagram handle. Within a day your soldier gets the War Bonds ribbon and a gold star over their head on the front.
+Welcome to the Officers' Mess. Pull up a crate, and mind the dog.
+Reply to this message with your Instagram handle. Within a day your soldier gets the War Bonds ribbon, a gold star over their head, and a trench dog. Want a breed or a name? Tell us. Otherwise the front picks one for you.
 
 ---
 
@@ -85,7 +88,7 @@ Image: `post_thank_you.jpg`
 **Title:** The front has a supply line
 
 The war on Instagram is free and it will stay free. If you want to help keep it running, this is the place.
-From 3 dollars a month your soldier gets the War Bonds ribbon and a thank-you in the Trench Gazette.
+From 4 dollars a month your soldier gets the War Bonds ribbon and a thank-you in the Trench Gazette.
 Honour only. Nobody buys a better rifle here.
 Thank you for keeping the front fed.
 

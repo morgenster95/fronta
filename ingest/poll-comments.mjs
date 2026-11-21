@@ -16,6 +16,7 @@ import { ROOT, loadTheme, loadMap, loadState, saveState, writePublic } from '../
 import { addShell } from '../engine/shells.js';
 import { addPilotApp, undoPilots } from '../engine/pilots.js';
 import { addEntry } from '../engine/soldier.js';
+import { grantDog, revokeDog } from '../engine/dog.js';
 import { awardFirstThousand, inheritMedals, switchFaction, grantSupport, grantStar, revokeStar, rewriteSupport, linkSupport, grantTitle, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 import { wiringReturns } from '../engine/wiring.js';
@@ -205,6 +206,14 @@ async function main() {
       if (c.cmd === 'star') {
         const r = grantStar(state, theme, c.handle);
         console.log(r ? `★ Officers' Mess: @${r.handle} (${r.name})` : `★ příkaz ${c.id}: voják nenalezen nebo hvězdu už má`);
+      }
+      if (c.cmd === 'dog') { // Trench Dog (nejvyšší úroveň Patreonu): pes u vojáka, jméno se vylosuje, plemeno náhodně nebo c.breed
+        const r = grantDog(state, theme, story, c.handle, { breed: c.breed, name: c.name });
+        console.log(r ? `🐕 pes pro @${r.handle}: ${r.dog.name} (${r.dog.breed})` : `🐕 příkaz ${c.id}: voják nenalezen nebo psa už má`);
+      }
+      if (c.cmd === 'undog') {
+        const r = revokeDog(state, c.handle);
+        console.log(r ? `🐕 pes odebrán: @${r.handle}` : `🐕 příkaz ${c.id}: nic k odebrání`);
       }
       if (c.cmd === 'unstar') {
         const r = revokeStar(state, theme, c.handle);

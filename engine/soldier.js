@@ -278,5 +278,10 @@ export function heir(s, day, theme, story, today = null) {
   n.name = displayName(n);
   n.relation = pick(rand, story.relations);
   n.record.push([day, eventEntry('heir', n, day, theme, story, { relation: n.relation, prevName: prev.name }, today)]);
+  // pes rodu (Trench Dog, engine/dog.js) zůstává s rodinou
+  if (s.dog) {
+    n.dog = { ...s.dog };
+    if (story.dogHeir?.length) addEntry(n, day, eventEntry('dogHeir', n, day, theme, story, { dog: s.dog.name, breed: theme.dog?.breeds?.find((b) => b.id === s.dog.breed)?.name || 'dog', prevName: prev.name }, today));
+  }
   return n;
 }

@@ -438,3 +438,7 @@ body.reel:not(.show-nav) .hosp-ptr { display: none; }
 .camp-list .dot { display: inline-block; width: 10px; height: 10px; margin-right: 8px; background: #524a3f; vertical-align: middle; }
 .camp-list .dot.now { background: #d98f3f; }
 .camp-list .hot { color: #d98f3f; font-weight: 600; }
+
+/* Trench Dog na kartě vojáka */
+.dog-line { display: inline-flex; align-items: center; gap: 6px; }
+.dog-line img { width: 32px; height: 32px; image-rendering: pixelated; }

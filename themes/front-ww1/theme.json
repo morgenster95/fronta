@@ -1107,5 +1107,31 @@
     ],
     "newsHead": "A pilot takes the air",
     "downHead": "Plane down"
+  },
+  "dog": {
+    "storyChance": 0.5,
+    "breeds": [
+      {
+        "id": "airedale",
+        "name": "Airedale terrier"
+      },
+      {
+        "id": "shepherd",
+        "name": "German shepherd"
+      },
+      {
+        "id": "jackrussell",
+        "name": "Jack Russell terrier"
+      },
+      {
+        "id": "collie",
+        "name": "border collie"
+      },
+      {
+        "id": "dachshund",
+        "name": "dachshund"
+      }
+    ],
+    "_": "Trench Dog (21. 11., uživatel): pes pro nejvyšší úroveň Patreonu; příkazy {cmd:'dog', handle, breed?, name?} a {cmd:'undog', handle}; engine/dog.js"
   }
 }

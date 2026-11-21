@@ -1471,3 +1471,24 @@ test('mina z kóty: den kopání, pak výbuch v nepřátelské první linii (neb
   const mm = s.mines[0];
   if (mm.status === 'blown') { assert.ok(mm.blown.hit > 0 && mm.blown.x1 >= mm.blown.x0); assert.equal(mm.blown.target, 0); }
 });
+
+import { grantDog, revokeDog } from './dog.js';
+test('Trench Dog: pes se jménem a plemenem, příběhy jen u vojáka se psem, nástupce psa zdědí', () => {
+  const s = emptyState(theme);
+  for (let i = 0; i < 40; i++) applyComment(s, { id: `d${i}`, userId: `du${i}`, username: `dogman${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
+  const r = grantDog(s, theme, story, '@dogman3', { breed: 'collie' });
+  assert.ok(r && r.dog.name && r.dog.breed === 'collie');
+  assert.equal(grantDog(s, theme, story, 'dogman3'), null, 'druhého psa nedostane');
+  const owner = s.soldiers.find((x) => x.handle === 'dogman3');
+  assert.match(owner.record.at(-1)[1], new RegExp(r.dog.name));
+  for (let d = 0; d < 6; d++) dailyTick(s, theme, story);
+  const dogLines = (x) => x.record.filter((e) => e[1].includes(r.dog.name)).length;
+  assert.ok(dogLines(owner.status === 'fallen' ? owner : s.soldiers.find((x) => x.handle === 'dogman3')) >= 2, 'pes má v deníku příběhy');
+  assert.ok(s.soldiers.filter((x) => x.handle !== 'dogman3').every((x) => !x.record.some((e) => e[1].includes(r.dog.name))), 'ostatní vojáci příběhy psa nemají');
+  const cur = s.soldiers.find((x) => x.handle === 'dogman3');
+  cur.status = 'fallen'; cur.fallenDay = s.day;
+  dailyTick(s, theme, story);
+  const heir = s.soldiers.find((x) => x.handle === 'dogman3');
+  assert.equal(heir.dog?.name, r.dog.name, 'pes zůstává v rodu');
+  assert.ok(revokeDog(s, 'dogman3') && !s.soldiers.find((x) => x.handle === 'dogman3').dog);
+});

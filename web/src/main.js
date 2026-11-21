@@ -235,6 +235,7 @@ async function boot() {
       claimed: !!row[F.claimed],
       generation: row[F.generation],
       name: row[F.name],
+      dog: F.dog != null ? row[F.dog] || null : null, // plemeno psa (Trench Dog)
       medals: row[F.medals] ? row[F.medals].split(',') : [],
       slot,
       x: slot ? slot.x : null,
@@ -416,6 +417,26 @@ async function boot() {
       soldierLayer.addChild(c);
     }
     chunkSoldiers.get(k).addChild(sp);
+  }
+  // Trench Dog: pes sedí vedle svého vojáka (raněný voják: pes leží); sprity props/dog_<plemeno>_<sit|lie>.png, náhled /?dogs=30 (jen dev)
+  {
+    const devDogs = import.meta.env.DEV ? Number(new URLSearchParams(location.search).get('dogs')) || 0 : 0;
+    const breeds = (theme.dog?.breeds || []).map((b) => b.id);
+    const withDog = placed.filter((q, i) => !q.vacant && (q.dog || (devDogs && breeds.length && i % Math.max(1, Math.floor(placed.length / devDogs)) === 0)));
+    const dogTex = {};
+    await Promise.all(withDog.map((q) => `${q.dog || breeds[q.i % breeds.length]}_${q.wounded ? 'lie' : 'sit'}`).filter((k, i, a) => a.indexOf(k) === i)
+      .map((k) => loadTexture(`/assets/props/dog_${k}.png${V}`).then((t) => { dogTex[k] = t; }).catch(() => {})));
+    for (const q of withDog) {
+      const t = dogTex[`${q.dog || breeds[q.i % breeds.length]}_${q.wounded ? 'lie' : 'sit'}`];
+      if (!t || !q.sprite) continue;
+      const dsp = new Sprite(t);
+      dsp.anchor.set(0.5, 30 / 32);
+      const left = q.sprite.scale.x < 0; // pes sedí na straně, kam se voják dívá, otočený stejně
+      dsp.scale.x = left ? -1 : 1;
+      dsp.x = q.x + (left ? -9 : 9); dsp.y = q.y + 1;
+      q.dogSprite = dsp;
+      const c = q.sprite.parent; c.addChildAt(dsp, c.getChildIndex(q.sprite) + 1);
+    }
   }
   const starMedal = theme.support?.star?.medal;
   const starred = soldiers.filter((q, i) => q.slot && !q.vacant && ((starMedal && q.medals?.includes(starMedal)) || (devStar && i % Math.max(1, Math.floor(soldiers.length / devStar)) === 0)));

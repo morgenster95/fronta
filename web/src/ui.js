@@ -7,6 +7,7 @@ import { initValley } from './valley.js';
 import { initHouse } from './house.js';
 import { dayLabel, dayNo } from './day.js';
 import { renderCampaign } from './campaign.js';
+import { BASE } from './assets.js';
 
 const $ = (id) => document.getElementById(id);
 const STATUS = ['On the line', 'Wounded', 'Missing in action', 'Prisoner of war', 'Fallen'];
@@ -357,6 +358,11 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       fam.unshift(`<span class="medal">🎖 ${esc(v?.name ?? 'Battle')}</span> fought on the winning side${v ? `, ${dayLabel(v.day)}` : ''}`);
     }
     for (const title of rec.titles || []) fam.unshift(`<span class="title">★ ${esc(title)}</span>`);
+    // Trench Dog (nejvyšší úroveň podpory): pes rodu s obrázkem plemene
+    if (rec.dog) {
+      const br = theme.dog?.breeds?.find((b) => b.id === rec.dog.breed);
+      fam.unshift(`<span class="dog-line"><img src="${BASE}/assets/props/dog_${esc(rec.dog.breed)}_sit.png" alt="" width="32" height="32"><span><span class="medal">🐕 ${esc(rec.dog.name)}</span> ${esc(br?.name || 'dog')}, trench dog of the House of ${esc(rec.family)}</span></span>`);
+    }
     $('card-family').innerHTML = fam.join('<br>');
     // zápisy téhož dne (starší záznamy z úvodu, smrt a příchod nástupce) se ukážou pod jedním nadpisem dne
     const li = (list) => {
