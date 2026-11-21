@@ -440,6 +440,8 @@ def build_story(name="story"):
         music = war_score(dur, cue, hits=("hook", "count", "pause", "cta")) * 1.1 + rain(dur) * 0.15
     elif name in ("zaza",):  # akviziční: tíživý příběh rodu (lament), na konci bubny
         music = lament(dur) * 1.3 + drone(dur) * 0.4 + rain(dur) * 0.4
+    elif name in ("front12",):  # Day reel Day 12: psi (klid), pak dělo a válka
+        music = war_score(dur, cue, hits=("day", "gun", "fell", "race", "joined", "cta")) * 1.1 + rain(dur) * 0.25
     elif name in ("trialC",):  # akviziční trial: rychlá bojová hudba
         music = war_score(dur, cue, hits=("hook", "real", "gun", "dogs", "mine", "cta")) * 1.2 + rain(dur) * 0.1
     elif name in ("dogs",):  # novinka Trench Dogs: jemná, teplá hudba (tklivá melodie + rain), bez válečných bubnů
@@ -456,7 +458,7 @@ def build_story(name="story"):
     beat = 60 / 70
     # bubny: od Hegemonie, ztichnou před půlnocí a po dědicovi se rozjedou ke konci
     t = start
-    while t < dur - 3 and name not in ("ridge", "hill304", "front9", "front10", "front11", "roll", "lone", "growth", "dogs", "trialC") and not name.startswith("news"):  # ridge má bubny přímo v hudbě (epic_score)
+    while t < dur - 3 and name not in ("ridge", "hill304", "front9", "front10", "front11", "roll", "lone", "growth", "dogs", "trialC", "front12") and not name.startswith("news"):  # ridge má bubny přímo v hudbě (epic_score)
         quiet = any(a < t < b for a, b in quiet_parts)
         if not quiet:
             strength = 0.3 + 0.7 * min(1, (t - start) / (dur - start - 10))
