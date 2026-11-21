@@ -211,6 +211,18 @@ async function main() {
         const r = grantDog(state, theme, story, c.handle, { breed: c.breed, name: c.name });
         console.log(r ? `🐕 pes pro @${r.handle}: ${r.dog.name} (${r.dog.breed})` : `🐕 příkaz ${c.id}: voják nenalezen nebo psa už má`);
       }
+      if (c.cmd === 'news') { // zvláštní zpráva do příštích novin (uživatel)
+        state.news ??= []; state.news.push({ day: state.day, kind: 'special', h: c.h, text: c.text });
+        console.log(`📰 zpráva do novin: ${c.h}`);
+      }
+      if (c.cmd === 'newsEdit') { // oprava ještě nevydané zprávy (state.news, ne kronika ani deníky)
+        let n = 0; for (const x of state.news || []) if (x.day >= state.day - 1 && typeof x.text === 'string' && x.text.includes(c.find)) { x.text = x.text.replaceAll(c.find, c.replace); n++; }
+        console.log(`📰 oprava zprávy: ${n}×`);
+      }
+      if (c.cmd === 'setLogTo') { // konec lepších zásob z kóty (interní, v novinách se nehlásí)
+        const v = (state.victories || []).find((x) => x.id === c.id_victory);
+        if (v && v.logTo != null) { v.logTo = c.to; console.log(`📦 zásoby ${v.id} do dne ${c.to}`); }
+      }
       if (c.cmd === 'renameDog') { // patron si vybral jméno psa
         const r = renameDog(state, theme, story, c.handle, c.name);
         console.log(r ? `🐕 pes @${r.handle}: ${r.old} → ${r.name}` : `🐕 příkaz ${c.id}: voják bez psa nebo stejné jméno`);

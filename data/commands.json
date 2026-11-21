@@ -423,5 +423,42 @@
     "cmd": "dog",
     "handle": "scottjseale",
     "_note": "Trench Dog, Patreon Field Post (pokyn uživatele 21. 11.)"
+  },
+  {
+    "id": "star-w0lfer2210-20261121",
+    "cmd": "star",
+    "handle": "w0lfer2210",
+    "_note": "Patreon Officers' Mess 21. 11. (hvězda + stužka)"
+  },
+  {
+    "id": "dog-w0lfer2210-20261121",
+    "cmd": "dog",
+    "handle": "w0lfer2210",
+    "_note": "Trench Dog, Officers' Mess 21. 11."
+  },
+  {
+    "id": "news-trenchdogs-20261121",
+    "cmd": "news",
+    "h": "Trench dogs reach the front",
+    "text": "Today the first trench dogs came up the line. An Airedale, a German shepherd, Jack Russells, collies and a dachshund now sit beside their soldiers on both sides of the wire. Blue, Spot, Socks, Gyp, Ginger, Bess and Scout have already learned where the rations are kept. The men say a trench with a dog in it feels less like a grave."
+  },
+  {
+    "id": "news-bigger-army-20261121",
+    "cmd": "news",
+    "h": "Why the bigger army bleeds",
+    "text": "The Concord holds the line with more men than the Hegemony, and still loses more of them. Half of its new soldiers came up this week and have not learned where to keep their heads. Crates of Hegemony ammunition come up Blackwater Canal every night, so their gunners never stop to count rounds. And the Concord medics cannot reach every stretcher: too many wounded, too few hands. Numbers alone do not hold a trench. Medics, gunners and luck do."
+  },
+  {
+    "id": "newsedit-mill-300-20261121",
+    "cmd": "newsEdit",
+    "find": "the first side to bring 100 new soldiers takes it",
+    "replace": "the first side to bring 300 new soldiers takes it"
+  },
+  {
+    "id": "logto-canal-20261121",
+    "cmd": "setLogTo",
+    "id_victory": "canal",
+    "to": 13,
+    "_note": "pokyn uživatele 21. 11.: dvojitá palba Hegemonie končí po dnešních novinách (dnes poslední), v novinách nehlásit"
   }
 ]
