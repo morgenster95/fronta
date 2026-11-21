@@ -361,7 +361,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     // Trench Dog (nejvyšší úroveň podpory): pes rodu s obrázkem plemene
     if (rec.dog) {
       const br = theme.dog?.breeds?.find((b) => b.id === rec.dog.breed);
-      fam.unshift(`<span class="dog-line"><img src="${BASE}/assets/props/dog_${esc(rec.dog.breed)}_sit.png" alt="" width="32" height="32"><span><span class="medal">🐕 ${esc(rec.dog.name)}</span> ${esc(br?.name || 'dog')}, trench dog of the House of ${esc(rec.family)}</span></span>`);
+      fam.unshift(`<span class="dog-line"><img src="${BASE}/assets/props/dog_${esc(rec.dog.breed)}_sit.png" alt="" width="64" height="64"><span><span class="medal">🐕 ${esc(rec.dog.name)}</span> ${esc(br?.name || 'dog')}, trench dog of the House of ${esc(rec.family)}</span></span>`);
     }
     $('card-family').innerHTML = fam.join('<br>');
     // zápisy téhož dne (starší záznamy z úvodu, smrt a příchod nástupce) se ukážou pod jedním nadpisem dne

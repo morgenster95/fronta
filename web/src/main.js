@@ -418,24 +418,24 @@ async function boot() {
     }
     chunkSoldiers.get(k).addChild(sp);
   }
-  // Trench Dog: pes sedí vedle svého vojáka (raněný voják: pes leží); sprity props/dog_<plemeno>_<sit|lie>.png, náhled /?dogs=30 (jen dev)
+  // Trench Dog: pes sedí vedle svého vojáka (vždy sedí, sjednocené sprity se spodkem na stejné čáře); sprity props/dog_<plemeno>_<sit|lie>.png, náhled /?dogs=30 (jen dev)
   {
     const devDogs = import.meta.env.DEV ? Number(new URLSearchParams(location.search).get('dogs')) || 0 : 0;
     const breeds = (theme.dog?.breeds || []).map((b) => b.id).concat(theme.dog ? [] : ['airedale', 'shepherd', 'jackrussell', 'collie', 'dachshund']);
     const withDog = placed.filter((q, i) => !q.vacant && (q.dog || (devDogs && breeds.length && i % Math.max(1, Math.floor(placed.length / devDogs)) === 0)));
     const dogTex = {};
-    await Promise.all(withDog.map((q) => `${q.dog || breeds[q.i % breeds.length]}_${q.wounded ? 'lie' : 'sit'}`).filter((k, i, a) => a.indexOf(k) === i)
+    await Promise.all(withDog.map((q) => `${q.dog || breeds[q.i % breeds.length]}_sit`).filter((k, i, a) => a.indexOf(k) === i)
       .map((k) => loadTexture(`/assets/props/dog_${k}.png${V}`).then((t) => { dogTex[k] = t; }).catch(() => {})));
     for (const q of withDog) {
-      const t = dogTex[`${q.dog || breeds[q.i % breeds.length]}_${q.wounded ? 'lie' : 'sit'}`];
+      const t = dogTex[`${q.dog || breeds[q.i % breeds.length]}_sit`]; // vždy stejná poloha (sedí), ať jsou psi na mapě jednotní (uživatel 21. 11.)
       if (!t || !q.sprite) continue;
       const dsp = new Sprite(t);
-      dsp.anchor.set(0.5, 30 / 32);
+      dsp.anchor.set(0.5, 1);
       const left = q.sprite.scale.x < 0; // pes sedí na straně, kam se voják dívá, otočený stejně
       dsp.scale.x = left ? -1 : 1;
-      dsp.x = q.x + (left ? -9 : 9); dsp.y = q.y + 1;
+      dsp.x = q.x + (left ? -7 : 7); dsp.y = q.y + 6; // kousek před vojákem, ať ho nezakryjí sousedé v zákopu
       q.dogSprite = dsp;
-      const c = q.sprite.parent; c.addChildAt(dsp, c.getChildIndex(q.sprite) + 1);
+      q.sprite.parent.addChild(dsp); // navrch bloku: pes je vidět i v hustě obsazeném zákopu
     }
   }
   const starMedal = theme.support?.star?.medal;

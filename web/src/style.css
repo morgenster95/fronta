@@ -441,4 +441,4 @@ body.reel:not(.show-nav) .hosp-ptr { display: none; }
 
 /* Trench Dog na kartě vojáka */
 .dog-line { display: inline-flex; align-items: center; gap: 6px; }
-.dog-line img { width: 32px; height: 32px; image-rendering: pixelated; }
+.dog-line img { width: 64px; height: 64px; margin: -14px -6px -8px -14px; image-rendering: pixelated; }
