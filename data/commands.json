@@ -515,5 +515,17 @@
     "cmd": "dog",
     "handle": "hawkenram",
     "_note": "Patreon Officers' Mess (2026-11-21): Trench Dog, plemeno a jméno losuje hra"
+  },
+  {
+    "id": "support-rmr7015-20261121",
+    "cmd": "support",
+    "handle": "rmr7015",
+    "_note": "Patreon Field Post (2026-11-21): stužka"
+  },
+  {
+    "id": "dog-rmr7015-20261121",
+    "cmd": "dog",
+    "handle": "rmr7015",
+    "_note": "Patreon Field Post (2026-11-21): Trench Dog, plemeno a jméno losuje hra"
   }
 ]
