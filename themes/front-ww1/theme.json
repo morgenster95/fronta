@@ -294,7 +294,9 @@
       },
       {
         "id": "quarry",
-        "name": "the Bone Quarry"
+        "name": "the Bone Quarry",
+        "reward": "mine",
+        "rewardText": "Takes the quarry and its tunnels: in one day the winner's sappers dig a mine under the enemy line, then blow it under the most crowded enemy trench. The crater stays for good. Enemy sappers may hear the digging and cave the tunnel in."
       },
       {
         "id": "orchard",
@@ -333,6 +335,14 @@
       "name": "the {objective} gun",
       "victory": "The {us} dragged a heavy howitzer into a gun pit behind their line. From tomorrow it fires every day on the most crowded {them} trenches, until it is destroyed. Sappers keep it in repair.",
       "_": "20. 11. (uživatel): odměna Grey Mill = jedno těžké dělo natrvalo s opotřebením (engine/gun.js, theme.battle.gun)"
+    },
+    "mine": {
+      "victory": "From the quarry, {us} sappers started a tunnel under the {them} line. In a day it will be under them.",
+      "h": "The mine under the {them} line",
+      "text": "At dawn the ground under the {them} trench lifted and fell back. The {us} sappers had dug from {name} all night, and the mine went up under sectors {from} to {to}. {hit} {them} men were caught in it, {killed} of them killed outright. The crater will stay. Tunnellers: {diggers}.",
+      "collapsedH": "The {them} heard them digging",
+      "collapsed": "The {us} sappers were digging a tunnel from {name} under the {them} line. {listeners} {them} sappers took turns listening at the wall of their own trench. They heard the picks, blew a small charge, and the tunnel caved in. The {us} diggers ({diggers}) got out alive. The mine never went off.",
+      "_": "21. 11. (uživatel): odměna Bone Quarry = mina, kopou jeden den (engine/mine.js, theme.battle.mine)"
     }
   },
   "honors": {},
@@ -870,7 +880,15 @@
     "mine": {
       "hit": 0.85,
       "sectors": 3,
-      "_": "mina (rozkaz TUNNELLERS): šance zásahu každého v zasaženém úseku; závažnost a smrt na místě jako u granátů (shell)"
+      "_": "mina: hit = šance zásahu každého v zasaženém úseku/okně; kill = smrt na místě u kritického zásahu (jen mina z kóty); men/tries = okno nejhustší první linie; counter* = šance, že nepřátelští ženisti tunel zavalí (5 % + 0,1 % za ženistu, max 25 %)",
+      "men": 24,
+      "tries": 8,
+      "kill": 0.8,
+      "minHours": 12,
+      "diggers": 6,
+      "counterBase": 0.05,
+      "counterPer": 0.001,
+      "counterMax": 0.25
     },
     "shell": {
       "sectors": 4,

@@ -524,3 +524,12 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 ## 2026-11-20 · First Thousand a dědění odznaků narukování (NASAZENO)
 - Odznak **First Thousand** pro narukované 101.–1 000. (pořadí v soupisce jako First Wave), jednorázově příkazem `firstThousand`: zápis do deníku (`story.firstThousand`, 4 varianty s číslem), zpráva „The First Thousand“ do novin.
 - **Dědění (uživatel):** na živého nástupce přechází podpora (War Bonds, hvězda) a odznaky narukování (First Wave, First Thousand), `theme.inheritMedals`. Vlastní zásluhy padlého (medaile kót, Raider's Cross, Medal of Valor…) zůstávají jemu; v albu rodu jsou vidět všechny generace. Příkaz `inheritMedals` vrátil First Wave rodům, kde voják padl.
+
+## 2026-11-21 · Bone Quarry: mina pod frontou místo bombardování · NASAZENO (od výhry v závodě o Bone Quarry)
+- **Proč:** uživatel nechtěl další bombardování a bezpečnější týden („chci něco zajímavějšího“). Vybral minu (historicky Messines 1917), ale „ne 3 dny, ať kopou den“.
+- **Jak:** `theme.race.objectives[quarry].reward = 'mine'` → `grantMine` (`engine/mine.js`): vítěz dostane jednu minu, kopou ji až 6 jeho ženistů (jména v novinách).
+  Vybuchne v **příštích novinách** po výhře; když do nich zbývá méně než 12 h (`battle.mine.minHours`), až v těch dalších. Žádný bezpečnější týden ani bombardování; stuha vítězné straně a titul hrdiny zůstávají jako u jiných kót.
+- **Výbuch:** pod nejhustším úsekem nepřátelské **první linie** (okno 24 vojáků po sobě, nejkratší z 8 náhodných, `battle.mine.men/tries`), zásah 85 % (`hit`), závažnost jako u granátu, kritický zásah zabije na místě s 80 % (`kill`). Zpráva „The mine under the … line“ s úseky, zasaženými, zabitými a tunelovači.
+- **Protiminování:** nepřátelští ženisti můžou kopání zaslechnout a tunel zavalit: 5 % + 0,1 % za každého zdravého ženistu, nejvýš 25 % (`counterBase/counterPer/counterMax`; teď ~13–15 %). Pak mina nevybuchne, diggeři přežijí, zpráva „The … heard them digging“.
+- **Simulace na stavu 21. 11. (20 běhů):** vybuchla 18×, zavalena 2×; zasaženo průměrně 18 (12–22), zabito na místě 5 (2–9), další můžou zemřít na zranění.
+- **Mapa** (`web/src/mine.js`, `roster.mines`): při kopání vstup do štoly v první linii vítěze (rám z trámů, rumpál, pytle s vytěženou hlínou, ženista, odlétající hlína); po výbuchu obří kráter natrvalo v nepřátelské první linii; zavalená = zasypaný vstup. Dev náhled `/?mine=0`, `/?mine=0:blown`, `/?mine=1:collapsed`.

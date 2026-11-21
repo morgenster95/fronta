@@ -22,6 +22,7 @@ import { activeBarrage, activeObservation } from './race.js';
 import { orderStretchers, orderMedics, orderGuns, orderBarrage } from './orders.js';
 import { fallSoldier, addEntry } from './soldier.js';
 import { gunTargets, gunUpkeep } from './gun.js';
+import { mineBlasts } from './mine.js';
 
 const B = (theme) => theme.battle;
 const short = (theme, f) => theme.factions[f].name.replace(/^The /, '');
@@ -179,6 +180,9 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   const gunFire = gunTargets(state, theme, day, X, able);
   const gunOn = (s) => gunFire.find((g) => g.target === s.faction && g.ids.has(s.id));
   for (const g of gunFire) g.res = { hit: 0, killed: 0 };
+  // mina z kóty (reward 'mine', engine/mine.js): po dni kopání vybuchne pod nejhustším úsekem nepřátelské první linie, nebo ji nepřítel zavalí
+  const mineFire = mineBlasts(state, theme, day, X, able);
+  const mineOn = (s) => mineFire.find((m) => !m.collapsed && m.target === s.faction && m.ids.has(s.id));
   const coverOf = (s) => {
     const side = state.battle.sides[s.faction];
     const wire = side.wire[s.sector] ?? (side.wire[s.sector] = cfg.wire.start);
@@ -437,7 +441,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     if (newToday(s.faction) >= maxOf(s.faction)) continue;
     const side = state.battle.sides[s.faction];
     const rand = rngFor(s.id, 'battle', day);
-    const underMine = !!mineAt.get(s.faction)?.has(s.sector); // mina vybuchla pod jeho úsekem
+    const mf = mineOn(s); // mina z kóty vybuchla přímo pod ním
+    const underMine = !!mineAt.get(s.faction)?.has(s.sector) || !!mf; // mina vybuchla pod jeho úsekem
     const gf = cfg.gun && gunOn(s); // pod palbou těžkého děla
     const underShells = (barrage?.target === s.faction && shelled.has(s.sector)) || underMine || !!gf;
     const sig = share(near(signallers[s.faction], X(s), range).length, R.signaller.covers, near(targetsOf[s.faction], X(s), range).length);
@@ -449,8 +454,19 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     if (rand() >= p) continue;
     bgHit(s, severity(s, underShells ? cfg.shell.severity : cfg.severity, rand, underShells), underShells);
     // přímý zásah granátem (battle.shell.kill): kritický zásah pod granáty může zabít na místě, lůžko ani medik nepomůže
-    if (underShells && s.wound?.sev === 'crit' && cfg.shell.kill && rand() < (gf ? cfg.gun.kill ?? cfg.shell.kill : cfg.shell.kill)) s.wound.outright = 'shell';
-    if (gf) { gf.res.hit++; if (s.wound?.outright) gf.res.killed++; }
+    if (underShells && s.wound?.sev === 'crit' && cfg.shell.kill && rand() < (mf ? cfg.mine.kill ?? cfg.shell.kill : gf ? cfg.gun.kill ?? cfg.shell.kill : cfg.shell.kill)) s.wound.outright = 'shell';
+    if (mf) { mf.res.hit++; if (s.wound?.outright) mf.res.killed++; } else if (gf) { gf.res.hit++; if (s.wound?.outright) gf.res.killed++; }
+  }
+  // zprávy o minách z kóty (theme.race.mine)
+  for (const mb of mineFire) {
+    const m = mb.mine, T = theme.race?.mine || {};
+    const fill = (t) => (t || '').replaceAll('{name}', m.name).replaceAll('{us}', short(theme, m.faction)).replaceAll('{them}', short(theme, 1 - m.faction))
+      .replaceAll('{diggers}', m.diggers.map((h) => '@' + h).join(', ') || 'the sappers').replaceAll('{listeners}', String(m.collapsed?.listeners ?? 0))
+      .replaceAll('{from}', mb.secs?.[0] || '').replaceAll('{to}', mb.secs?.at(-1) || '').replaceAll('{hit}', String(mb.res?.hit || 0)).replaceAll('{killed}', String(mb.res?.killed || 0));
+    if (mb.collapsed) { out.news.push({ day, kind: 'mine', h: fill(T.collapsedH), text: fill(T.collapsed) }); continue; }
+    m.blown = { day, target: mb.target, secs: mb.secs, x0: mb.x0, x1: mb.x1, hit: mb.res.hit, killed: mb.res.killed };
+    stats[m.faction].mine = m.blown;
+    out.news.push({ day, kind: 'mine', h: fill(T.h), text: fill(T.text) });
   }
   // klidný den bez raněných nebývá: aspoň D.min zásahů z pozadí na stranu (vybráni podle vystavení, přední linie častěji)
   if (D?.min) theme.factions.forEach((_, f) => {

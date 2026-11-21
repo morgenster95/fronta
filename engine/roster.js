@@ -693,6 +693,7 @@ export function buildPublic(state, theme) {
     victories: (state.victories || []).slice(-10).reverse(),
     barrage: activeBarrage(state, state.day, true),
     observation: activeObservation(state, state.day, true), // pozorovatelna na kótě (web: falešný strom za linií vítěze)
+    mines: (state.mines || []).map((m) => ({ id: m.id, name: m.name, faction: m.faction, status: m.status, at: m.at, blown: m.blown ? { x0: m.blown.x0, x1: m.blown.x1, hit: m.blown.hit, killed: m.blown.killed, day: m.blown.day } : null })), // mina z kóty (web/src/mine.js)
     guns: (state.guns || []).map((g) => ({ id: g.id, name: g.name, faction: g.faction, cond: g.cond, destroyed: !!g.destroyed, since: g.since, last: g.last ? { x0: g.last.x0, x1: g.last.x1, secs: g.last.secs, hit: g.last.hit, killed: g.last.killed } : null })), // těžká děla (web/src/guns.js)
     history: (state.events || []).slice(-30).reverse(),
     valley: valley.roster,
