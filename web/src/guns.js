@@ -74,5 +74,6 @@ export async function initGuns({ world, anchor, roster, map, theme, tex, life, o
       }
     }
   }
-  return { update, guns: items.map((it) => ({ x: it.x, y: it.y, faction: it.f })) };
+  // fire(): výstřel hned (natáčení reelů)
+  return { update, fire() { for (const it of items) it.next = 0; }, guns: items.map((it) => ({ x: it.x, y: it.y, faction: it.f })) };
 }

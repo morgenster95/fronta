@@ -125,6 +125,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'trialC') {
+    // trial reel „I let 2,000 strangers…“ s aktuálními čísly, dělem a psy (reel-trialc.js)
+    return import('./reel-trialc.js').then(async ({ startTrialCReel }) => {
+      await startTrialCReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'trialA' || name === 'trialB') {
     // testovací reely pro neodběratele (A/B háček, ~16 s, smyčka): reel-trial.js
     return import('./reel-trial.js').then(async ({ startTrialReel }) => {

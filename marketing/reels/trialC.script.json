@@ -1,0 +1,46 @@
+{
+ "seconds": 22,
+ "auto": true,
+ "drums": [
+  "hook",
+  [],
+  "cta"
+ ],
+ "lines": [
+  [
+   0.15,
+   "I let two thousand strangers fight a war in my comments.",
+   "hook"
+  ],
+  [
+   0,
+   "Every soldier is a real person. Hundreds have already died.",
+   "real"
+  ],
+  [
+   0.2,
+   "They captured a cannon. Now it shells the enemy every day.",
+   "gun"
+  ],
+  [
+   0.2,
+   "Then I gave them dogs.",
+   "dogs"
+  ],
+  [
+   0,
+   "Real dogs, with names, beside real players.",
+   "dogs2"
+  ],
+  [
+   0.2,
+   "Next, someone digs a mine under the enemy line.",
+   "mine"
+  ],
+  [
+   0.2,
+   "Comment HEGEMONY or CONCORD. You're in within minutes.",
+   "cta"
+  ]
+ ]
+}
