@@ -1,0 +1,102 @@
+{
+ "seconds": 63.5,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.3,
+   0.7,
+   "Day twelve.",
+   "day"
+  ],
+  [
+   1.25,
+   3.57,
+   "Every trench had one. Today the dogs came up the line.",
+   "dogs"
+  ],
+  [
+   5.07,
+   5.01,
+   "Spot, Gyp, Bobby and the rest now sit beside their soldiers, on both sides of the wire.",
+   "dogs2"
+  ],
+  [
+   10.33,
+   3.69,
+   "Behind the Hegemony line, the Grey Mill gun opened fire for the first time.",
+   "gun"
+  ],
+  [
+   14.27,
+   3.77,
+   "Three Concord men were hit. All three died where they stood.",
+   "gun2"
+  ],
+  [
+   18.29,
+   5.08,
+   "A hundred and twenty-six fell today. Forty-five Hegemony, eighty-one Concord.",
+   "fell"
+  ],
+  [
+   23.62,
+   5.56,
+   "The Concord is the bigger army, but its medics reached only seven in ten, and the Hegemony guns never stopped.",
+   "why"
+  ],
+  [
+   29.43,
+   2.66,
+   "Bastian Wizzerd was named Propagandist of the Concord.",
+   "wiz"
+  ],
+  [
+   32.34,
+   3.86,
+   "And Benedikt Lfer joined the Officers' Mess. The front thanks him.",
+   "bonds"
+  ],
+  [
+   36.45,
+   5.09,
+   "The race for the Bone Quarry has begun. Concord thirty-one, Hegemony twenty-six.",
+   "race"
+  ],
+  [
+   41.79,
+   2.61,
+   "First to three hundred digs a mine under the enemy line.",
+   "race2"
+  ],
+  [
+   44.65,
+   3.26,
+   "Yesterday three hundred and thirty-six new soldiers came up the line.",
+   "joined"
+  ],
+  [
+   48.16,
+   2.22,
+   "Two thousand and thirty-four now hold the front.",
+   "army"
+  ],
+  [
+   50.63,
+   1.8,
+   "Nine hundred and thirty-three Hegemony.",
+   "armyH"
+  ],
+  [
+   52.68,
+   2.11,
+   "One thousand one hundred and one Concord.",
+   "armyC"
+  ],
+  [
+   55.04,
+   5.04,
+   "Comment HEGEMONY or CONCORD to join. Trench Dogs come with Field Post on Patreon.",
+   "cta"
+  ]
+ ]
+}
