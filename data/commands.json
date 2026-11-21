@@ -503,5 +503,17 @@
     "handle": "oran__rozenband",
     "faction": 0,
     "_note": "Hráč chce k Hegemonii (2026-11-21), chce být ženista: roli si změní převelením po převzetí"
+  },
+  {
+    "id": "star-hawkenram-20261121",
+    "cmd": "star",
+    "handle": "hawkenram",
+    "_note": "Patreon Officers' Mess (2026-11-21): hvězda + stužka"
+  },
+  {
+    "id": "dog-hawkenram-20261121",
+    "cmd": "dog",
+    "handle": "hawkenram",
+    "_note": "Patreon Officers' Mess (2026-11-21): Trench Dog, plemeno a jméno losuje hra"
   }
 ]
