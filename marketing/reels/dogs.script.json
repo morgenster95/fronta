@@ -1,0 +1,76 @@
+{
+ "seconds": 45,
+ "auto": true,
+ "drums": [
+  "cta",
+  [],
+  "cta"
+ ],
+ "lines": [
+  [
+   0.5,
+   "Every trench had one.",
+   "hook"
+  ],
+  [
+   0.3,
+   "Trench Dogs have arrived on the front.",
+   "title"
+  ],
+  [
+   0.4,
+   "Airedale.",
+   "b0"
+  ],
+  [
+   0.15,
+   "German shepherd.",
+   "b1"
+  ],
+  [
+   0.15,
+   "Jack Russell.",
+   "b2"
+  ],
+  [
+   0.15,
+   "Border collie.",
+   "b3"
+  ],
+  [
+   0.15,
+   "And one very brave dachshund.",
+   "b4"
+  ],
+  [
+   0.4,
+   "Each one has its own name, and it never leaves its soldier.",
+   "map"
+  ],
+  [
+   0,
+   "They sit beside real players, on the real front.",
+   "map2"
+  ],
+  [
+   0.4,
+   "Now and then, a dog gets its own story in your soldier's diary.",
+   "diary"
+  ],
+  [
+   0.4,
+   "And if your soldier falls, the dog stays with the family. It waits for the next one.",
+   "family"
+  ],
+  [
+   0.5,
+   "Trench Dogs come with Field Post and Officers' Mess on Patreon.",
+   "cta"
+  ],
+  [
+   0,
+   "The game stays free. Thank you for keeping the front fed.",
+   "cta2"
+  ]
+ ]
+}

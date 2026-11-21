@@ -3106,10 +3106,10 @@
     "Ziggy"
   ],
   "dogArrive": [
-    "A {breed} came up the line with the ration party and would not leave {name}'s side. {name} named the dog {dog}. The sergeant pretended not to see.",
+    "{aBreedC} came up the line with the ration party and would not leave {name}'s side. {name} named the dog {dog}. The sergeant pretended not to see.",
     "{name} found a muddy {breed} shivering under a duckboard and shared {his} bread. Now the dog follows {him} everywhere. {name} calls it {dog}.",
-    "A {breed} wandered in from no man's land at dawn, wet and hungry. It chose {name}. {name} gave it a name: {dog}.",
-    "The quartermaster had a {breed} pup nobody wanted. {name} took it and called it {dog}. The whole squad already spoils it."
+    "{aBreedC} wandered in from no man's land at dawn, wet and hungry. It chose {name}. {name} gave it a name: {dog}.",
+    "The quartermaster had {aBreed} pup nobody wanted. {name} took it and called it {dog}. The whole squad already spoils it."
   ],
   "dog": [
     "{dog} caught a rat as big as itself and laid it at {name}'s boots. The squad cheered.",

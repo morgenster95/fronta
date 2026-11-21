@@ -229,6 +229,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'dogs') {
+    // novinka Trench Dogs (21. 11.): příchod psa, plemena, psi patronů ve hře, deník, rod, Patreon od Field Post (reel-dogs.js, cine-dogs.js)
+    return import('./reel-dogs.js').then(async ({ startDogsReel }) => {
+      await startDogsReel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'front11') {
     // Day reel Day 11 (20. 11.): přeplněné nemocnice, nemoci, výzva MEDIC, Ali a Kitty, Grey Mill a dělo, propagandisté, War Bonds, Concord 1 000, Patreon a nová adresa (reel-front11.js)
     return import('./reel-front11.js').then(async ({ startDay11Reel }) => {

@@ -7,6 +7,9 @@ import { eventEntry } from './story.js';
 
 const norm = (h) => String(h || '').toLowerCase().replace(/^@/, '');
 export const breedName = (theme, id) => theme.dog?.breeds?.find((b) => b.id === id)?.name || 'dog';
+// „an Airedale terrier“ / „a German shepherd“ (správný člen podle první hlásky)
+const withArticle = (n) => `${/^[aeiou]/i.test(n) ? 'an' : 'a'} ${n}`;
+const dogVars = (theme, d) => { const b = breedName(theme, d.breed), a = withArticle(b); return { dog: d.name, breed: b, aBreed: a, aBreedC: a[0].toUpperCase() + a.slice(1) }; };
 
 export function grantDog(state, theme, story, handle, { breed = null, name = null } = {}) {
   const D = theme.dog;
@@ -19,7 +22,7 @@ export function grantDog(state, theme, story, handle, { breed = null, name = nul
   const free = (story.dogNames || ['Rags']).filter((n) => !taken.has(n));
   const pool = free.length ? free : story.dogNames || ['Rags'];
   s.dog = { name: name || pool[Math.floor(r() * pool.length)], breed: b, since: state.day };
-  if (s.status !== 'fallen') addEntry(s, state.day, eventEntry('dogArrive', s, state.day, theme, story, { dog: s.dog.name, breed: breedName(theme, b) }));
+  if (s.status !== 'fallen') addEntry(s, state.day, eventEntry('dogArrive', s, state.day, theme, story, dogVars(theme, s.dog)));
   return { handle: s.handle, name: s.name, dog: s.dog };
 }
 
@@ -29,7 +32,7 @@ export function renameDog(state, theme, story, handle, name) {
   const nm = String(name || '').trim().slice(0, 24);
   if (!s || !s.dog || !nm || s.dog.name === nm) return null;
   const old = s.dog.name; s.dog.name = nm;
-  if (s.status !== 'fallen' && story.dogRename?.length) addEntry(s, state.day, eventEntry('dogRename', s, state.day, theme, story, { dog: nm, oldDog: old, breed: breedName(theme, s.dog.breed) }));
+  if (s.status !== 'fallen' && story.dogRename?.length) addEntry(s, state.day, eventEntry('dogRename', s, state.day, theme, story, { ...dogVars(theme, s.dog), oldDog: old }));
   return { handle: s.handle, old, name: nm };
 }
 
@@ -50,7 +53,7 @@ export function dogStories(state, theme, story, day, today = null) {
     if (rngFor(s.id, 'dogday', day)() >= (D.storyChance ?? 0.5)) continue;
     const kind = s.status === 'wounded' || s.wound ? 'dogWard' : 'dog';
     if (!story[kind]?.length) continue;
-    addEntry(s, day, eventEntry(kind, s, day, theme, story, { dog: s.dog.name, breed: breedName(theme, s.dog.breed) }, today));
+    addEntry(s, day, eventEntry(kind, s, day, theme, story, dogVars(theme, s.dog), today));
     n++;
   }
   return n;
