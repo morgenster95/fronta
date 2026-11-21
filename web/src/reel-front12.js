@@ -26,12 +26,12 @@ const CSS = `${BASE}${FX_CSS}
 .f12-panel .row b { font-size: 36px; font-weight: 400; } .f12-panel .row b.r { color: #c8553d; }
 .f12-panel .bar { height: 16px; background: #1c1a17; border: 2px solid #524a3f; position: relative; margin-bottom: 6px; } .f12-panel .bar i { position: absolute; left: 0; top: 0; bottom: 0; }
 .f12-panel .note { font-family: 'VT323', monospace; font-size: 28px; color: #c9b99a; text-align: center; margin-top: 8px; }
-#f12-fell { top: 60%; border-color: #a33b2b; } #f12-race { top: 58%; }
+#f12-fell { top: 50%; border-color: #a33b2b; } #f12-race { top: 44%; }
 #f12-big { left: 0; right: 0; top: 26%; text-align: center; font-family: 'Silkscreen', monospace; color: #e3d9c3; text-shadow: 6px 6px 0 #0e0d0c; opacity: 0; }
 #f12-big .k { font-size: 30px; letter-spacing: 0.12em; color: #c9b99a; } #f12-big b { display: block; font-size: 120px; font-weight: 400; color: #c9c26a; line-height: 1; } #f12-big .p { font-size: 34px; color: #d98f3f; margin-top: 10px; }
-#f12-side { left: 0; right: 0; top: 64%; text-align: center; font-family: 'Silkscreen', monospace; opacity: 0; }
+#f12-side { left: 0; right: 0; top: 58%; text-align: center; font-family: 'Silkscreen', monospace; opacity: 0; }
 #f12-side span { display: inline-block; padding: 10px 18px; background: rgba(14,13,12,0.92); border: 3px solid #8a9295; font-size: 30px; color: #e3d9c3; } #f12-side span b { font-weight: 400; font-size: 50px; margin-left: 10px; }
-#f12-cta { left: 6%; right: 6%; top: 56%; text-align: center; background: rgba(14,13,12,0.94); border: 4px solid #d98f3f; padding: 16px; opacity: 0; }
+#f12-cta { left: 6%; right: 6%; top: 48%; text-align: center; background: rgba(14,13,12,0.94); border: 4px solid #d98f3f; padding: 16px; opacity: 0; }
 #f12-cta .big { font-family: 'Silkscreen', monospace; font-size: 38px; color: #d98f3f; line-height: 1.1; } #f12-cta .sm { font-family: 'VT323', monospace; font-size: 30px; color: #e3d9c3; margin-top: 6px; }
 #f12-cta .url { font-family: 'Silkscreen', monospace; font-size: 26px; color: #e3d9c3; margin-top: 10px; border-top: 2px solid #524a3f; padding-top: 10px; }
 `;
@@ -119,7 +119,7 @@ export async function startDay12Reel({ cam, life, map, soldiers, tex }) {
     const film = t < tt.dogs2 ? ['arrive', t, { breed: 'shepherd', flare: 2.4 }] : null;
     if (film) { dc.draw(film[0], film[1], film[2]); og.clearRect(0, 0, 135, 240); og.drawImage(dc.canvas, 0, 0); }
     show('#f12-cine', film ? 1 : 0);
-    paint({ ...f, black: Math.max(f.black, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) });
+    paint({ ...f, black: Math.max(f.black, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) }, 0);
     show('#f12-day', win(t, 0.2, tt.dogs - 0.1, 0.2));
     dogShots.forEach((d, i) => { const t0 = tt.dogs2 + i * dSpan; tagAt($(`#f12-d${i}`), { x: d.x + 11, y: d.y }, cam, win(t, t0 + 0.15, t0 + dSpan - 0.05, 0.1), 24); });
     if (gun) tagAt($('#f12-gun'), { x: gun.x, y: gun.y - 20 }, cam, win(t, GUNAT + 0.3, tt.fell - 0.05, 0.12), 0);
@@ -140,7 +140,7 @@ export async function startDay12Reel({ cam, life, map, soldiers, tex }) {
     if (logo && !bigEl.dataset.on) { bigEl.dataset.on = 1; bigEl.className = 'logo'; bigEl.innerHTML = '<span>MUD <i>&amp;</i> IRON</span><span>@mudandiron · mudandiron.app</span>'; }
     const s = sub(t);
     const subEl = $('#rd-sub');
-    if (s && !logo && t >= tt.dogs) { subEl.style.opacity = 1; subEl.style.top = '84%'; if (subEl.dataset.text !== s) { subEl.dataset.text = s; subEl.innerHTML = `<span>${s}</span>`; } } else subEl.style.opacity = 0;
+    if (s && !logo && t >= tt.dogs) { subEl.style.opacity = 1; subEl.style.top = 'auto'; subEl.style.bottom = '13%'; if (subEl.dataset.text !== s) { subEl.dataset.text = s; subEl.innerHTML = `<span>${s}</span>`; } } else subEl.style.opacity = 0;
   }
   window.__reel = { seconds: END, sfx: SFX, frame, ready: true };
 }
