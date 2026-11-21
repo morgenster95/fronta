@@ -80,6 +80,12 @@ export async function shareCard({ s, rec, theme, tex }) {
     p.fillRect(40, 214, 136, 6);
     p.drawImage(sprite, 0, 0, 32, 32, 44, 94, 128, 128);
   }
+  // Officers' Mess: zlatá hvězda nad hlavou (jako na mapě); v01py ji nemá, takže se mu neukáže
+  if (theme.support?.star && s.medals?.includes(theme.support.star.medal)) {
+    const cx = 108, cy = 84; p.fillStyle = PAL.ink;
+    const starPts = (r1, r2) => { p.beginPath(); for (let k = 0; k < 10; k++) { const r = k % 2 ? r2 : r1, a = -Math.PI / 2 + k * Math.PI / 5; p.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a)); } p.closePath(); };
+    starPts(9, 4); p.fill(); p.fillStyle = PAL.gold; starPts(7, 3); p.fill();
+  }
   // Trench Dog: pes sedí vedle vojáka (stejný sprite jako na mapě, ×4)
   if (rec?.dog) {
     try {
@@ -135,7 +141,7 @@ export async function shareCard({ s, rec, theme, tex }) {
   y += 78;
   if (rec?.dog) {
     const br = theme.dog?.breeds?.find((b) => b.id === rec.dog.breed)?.name || 'dog';
-    text(ctx, `& ${rec.dog.name.toUpperCase()}, ${br.toUpperCase()}`, W / 2, y - 8, 30, PAL.khaki);
+    text(ctx, `WITH ${rec.dog.name.toUpperCase()}, ${br.toUpperCase()}`, W / 2, y - 8, 30, PAL.khaki); // bez „&“ (v pixelovém písmu vypadá jako $)
     y += 44;
   }
 

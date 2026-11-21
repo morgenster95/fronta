@@ -34,5 +34,10 @@ for i, s in enumerate(lines.split("|")[:5]):
 # bez „&“ (v pixelovém písmu vypadá jako dolar) a bez „free to play“ (uživatel 21. 11.)
 text(X, 130, "MUD AND IRON", font(8, True), P["gold"])
 out = os.path.join(HERE, "promo", "patreon", f"post_{out_id}_1500x900.jpg")
-up(im, K).save(out, quality=95)
+# Patreon chce aspoň 1920×1080 (16:9) a ořezává jiné poměry: mřížka ×7 = 1750×1050, uprostřed tmavého plátna 1920×1080
+big = up(im, 7)
+canvas = Image.new("RGB", (1920, 1080), P["dark"])
+canvas.paste(big, ((1920 - big.width) // 2, (1080 - big.height) // 2))
+out = out.replace("_1500x900", "_1920x1080")
+canvas.save(out, quality=95)
 print(out)

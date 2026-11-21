@@ -10,7 +10,17 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from make_posts import P, font, text_c, sprite, up  # noqa: E402
 from day_art import planks, light, shade, lamp, sandbag_wall  # noqa: E402
 from make_support import ribbon, mug  # noqa: E402
-from make_patreon import star, save  # noqa: E402
+from make_patreon import star, OUT  # noqa: E402
+
+
+def save(img, name, k=6):
+    """Patreon: 1920×1080 (16:9), mřížka 300×180 ×6 = 1800×1080 uprostřed tmavého plátna"""
+    big = up(img, k).convert("RGB")
+    canvas = Image.new("RGB", (1920, 1080), P["dark"])
+    canvas.paste(big, ((1920 - big.width) // 2, (1080 - big.height) // 2))
+    out = os.path.join(OUT, name.replace("_1500x900", "_1920x1080"))
+    canvas.save(out, quality=95, subsampling=0)
+    print(out)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOGS = [("airedale", "AIREDALE"), ("shepherd", "SHEPHERD"), ("jackrussell", "TERRIER"), ("collie", "COLLIE"), ("dachshund", "DACHSHUND")]
@@ -67,7 +77,7 @@ def post_tiers():
         im.alpha_composite(dog(b), (X0 - 6 + i * 33, 124))
     d = ImageDraw.Draw(im)
     d.text((X0, 160), "PATREON.COM/CW/MUDANDIRON", font=font(8, True), fill=P["gold"])
-    save(im, "post_tiers_v2_1500x900.jpg", 5)
+    save(im, "post_tiers_v2_1500x900.jpg")
 
 
 def post_dogs():
@@ -94,7 +104,7 @@ def post_dogs():
     text_c(d, W // 2, 142, "ITS OWN NAME. ITS OWN STORIES IN YOUR DIARY.", font(8), P["pale"])
     text_c(d, W // 2, 153, "IF YOUR SOLDIER FALLS, THE DOG STAYS WITH THE FAMILY.", font(8), P["pale"])
     text_c(d, W // 2, 166, "FIELD POST $6 · OFFICERS' MESS $10", font(8, True), P["gold"])
-    save(im, "post_dogs_1500x900.jpg", 5)
+    save(im, "post_dogs_1500x900.jpg")
 
 
 if __name__ == "__main__":
