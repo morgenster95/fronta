@@ -472,5 +472,17 @@
     "cmd": "newsDrop",
     "h": "The First Thousand",
     "_note": "uživatel: oznámeno včera jinde, při 2 000 hráčích je to zbytečné (odznak zůstává)"
+  },
+  {
+    "id": "star-lewis_edwardss-20261121",
+    "cmd": "star",
+    "handle": "lewis_edwardss",
+    "_note": "Patreon Officers' Mess (2026-11-21): hvězda + stužka"
+  },
+  {
+    "id": "dog-lewis_edwardss-20261121",
+    "cmd": "dog",
+    "handle": "lewis_edwardss",
+    "_note": "Patreon Officers' Mess (2026-11-21): Trench Dog, plemeno a jméno losuje hra"
   }
 ]
