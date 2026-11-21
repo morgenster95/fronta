@@ -4,7 +4,7 @@
   python tools/pixellab.py anim <character_id> <název> <směr> '<json dalších parametrů>' [--max-cost N]
   python tools/pixellab.py wait
   python tools/pixellab.py pm <character_id> <název> <směr> <herní snímek .png> "<pohyb>" "<kdo to je>"   ← VÝCHOZÍ POSTUP (oprava 3)
-  python tools/pixellab.py img <název> <šířka> <výška> "<popis>" [--bg] [--style rekvizita.png]   jeden obrázek (Pro Flash, paleta Trench-24) do art/cine/<název>.png
+  python tools/pixellab.py img <název> <šířka> <výška> "<popis>" [--bg] [--style rekvizita.png] [--palette map]   jeden obrázek (Pro Flash, paleta Trench-24) do art/cine/<název>.png
       (pozadí filmových scén reelů; mimo web/public, web ho nestahuje). Cena podle delší strany: ≤96 px 5, ≤208 px 6, ≤256 px 9 generací.
       Pojistka: stejný název v ledgeru = nic se neodešle; jedno odeslání, čeká se na výsledek (get_image), žádné opakování.
 
@@ -125,7 +125,11 @@ if __name__ == "__main__":
             sys.exit(f"{name}: už v ledgeru (art/pixellab/ledger.jsonl), nic se neodesílá. Jiný název = vědomě nový obrázek.")
         TRENCH = ["#0e0d0c", "#1c1a17", "#2b2722", "#3d3730", "#524a3f", "#6b6152", "#857a68", "#a39782", "#c4b8a0", "#e3d9c3", "#8a9295", "#666d70",
                   "#8c8a5c", "#6f7148", "#52543a", "#3f4230", "#7e3b2a", "#5c2a22", "#a85a36", "#d98f3f", "#c9c26a", "#2a3138", "#141a2c", "#4b4560"]
-        args = {"description": desc, "width": w, "height": h, "no_background": "--bg" not in a, "palette": TRENCH, "palette_name": "Trench-24"}
+        # --palette map: zelené a modré odstíny pro mapu tažení (web/src/campaign.js, 21. 11.)
+        MAP = ["#0e0d0c", "#1d2a1f", "#2a3b2a", "#3a4f34", "#4f6640", "#6b7f4f", "#8a9a62", "#b0b98a", "#d8d8b0", "#1c2a3a", "#2a4258", "#3f6280",
+               "#6a8fa8", "#9cbccc", "#5a4a3a", "#7a6248", "#a08060", "#c4a882", "#e3d9c3", "#8a9295", "#5c5f62", "#7e3b2a", "#d98f3f", "#c9c26a"]
+        usemap = "--palette" in a and a[a.index("--palette") + 1] == "map"
+        args = {"description": desc, "width": w, "height": h, "no_background": "--bg" not in a, "palette": MAP if usemap else TRENCH, "palette_name": "Map-24" if usemap else "Trench-24"}
         if "--style" in a:  # stylový obrázek (např. schválená rekvizita ze hry), ať nový kus drží stejný vzhled
             with open(a[a.index("--style") + 1], "rb") as fh: args["style_image"] = {"base64": base64.b64encode(fh.read()).decode()}
         out = call("create_image_pro_flash", args)
