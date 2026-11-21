@@ -421,7 +421,7 @@ async function boot() {
   // Trench Dog: pes sedí vedle svého vojáka (raněný voják: pes leží); sprity props/dog_<plemeno>_<sit|lie>.png, náhled /?dogs=30 (jen dev)
   {
     const devDogs = import.meta.env.DEV ? Number(new URLSearchParams(location.search).get('dogs')) || 0 : 0;
-    const breeds = (theme.dog?.breeds || []).map((b) => b.id);
+    const breeds = (theme.dog?.breeds || []).map((b) => b.id).concat(theme.dog ? [] : ['airedale', 'shepherd', 'jackrussell', 'collie', 'dachshund']);
     const withDog = placed.filter((q, i) => !q.vacant && (q.dog || (devDogs && breeds.length && i % Math.max(1, Math.floor(placed.length / devDogs)) === 0)));
     const dogTex = {};
     await Promise.all(withDog.map((q) => `${q.dog || breeds[q.i % breeds.length]}_${q.wounded ? 'lie' : 'sit'}`).filter((k, i, a) => a.indexOf(k) === i)
@@ -755,7 +755,7 @@ async function boot() {
       // jemné „dýchání“: posun o 1 px
       for (const sp of c.children) {
         sp.animate?.(now);
-        visibleSoldiers.push(sp.soldier);
+        if (sp.soldier) visibleSoldiers.push(sp.soldier); // psi (Trench Dog) sedí ve stejném bloku, ale nejsou vojáci
       }
     }
 
