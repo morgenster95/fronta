@@ -1493,3 +1493,11 @@ test('Trench Dog: pes se jménem a plemenem, příběhy jen u vojáka se psem, n
   assert.equal(heir.dog?.name, r.dog.name, 'pes zůstává v rodu');
   assert.ok(revokeDog(s, 'dogman3') && !s.soldiers.find((x) => x.handle === 'dogman3').dog);
 });
+
+test('převzetí: odkaz ?claim=1 místo kódu se pozná (bot poradí), kód ENLIST má přednost', () => {
+  const theme = JSON.parse(fs.readFileSync(new URL('../themes/front-ww1/theme.json', import.meta.url)));
+  assert.deepEqual(parseComment('https://mudandiron.app/?s=abc&claim=1', theme), { type: 'claimLink' });
+  assert.deepEqual(parseComment('@mudandiron https://mudandiron.web.app/?s=abc&claim=1 proud to serve!', theme), { type: 'claimLink' });
+  assert.equal(parseComment('ENLIST-AB12 https://mudandiron.app/?s=abc&claim=1', theme).type, 'claim');
+  assert.notEqual(parseComment('HEGEMONY', theme)?.type, 'claimLink');
+});

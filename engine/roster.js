@@ -35,6 +35,8 @@ export function emptyState(theme) {
 }
 
 const CLAIM_RE = /\bENLIST-([A-Z0-9]{4})\b/i;
+// odkaz na převzetí místo kódu (21. 11.: ~25 hráčů z prohlížeče v Instagramu vložilo do komentáře zkopírovaný odkaz ?s=…&claim=1)
+const CLAIM_LINK_RE = /[?&]claim=1\b/i;
 
 // --- přání role v komentáři („CONCORD, I want to be a medic“, „MG please“) ---
 // Role se pozná podle id, jména nebo aliasu (theme.archetypes[].aliases). Delší výrazy mají přednost a „spotřebují“ text
@@ -100,6 +102,7 @@ export function parseComment(text, theme) {
   const t = (text || '').toUpperCase();
   const claim = t.match(CLAIM_RE);
   if (claim) return { type: 'claim', code: `ENLIST-${claim[1].toUpperCase()}` };
+  if (CLAIM_LINK_RE.test(text || '')) return { type: 'claimLink' };
   const hits = theme.factions
     .map((f, i) => ({ i, at: t.search(new RegExp(`\\b${f.keyword}\\b`)) }))
     .filter((h) => h.at >= 0)
@@ -147,6 +150,7 @@ export function applyComment(state, comment, theme, story, map) {
   const existing = findOwnSoldier(state, comment.userId, handle);
   if (existing === TAKEN) return null; // jméno patří vojákovi jiného účtu: nic nepřebírá, nenarukuje pod cizím jménem
   if (parsed?.type === 'claim') return { type: 'claim', handle: existing?.handle ?? handle, code: parsed.code, soldier: existing };
+  if (parsed?.type === 'claimLink') return { type: 'claimLink', handle: existing?.handle ?? handle, soldier: existing };
   // wiring party (engine/wiring.js): heslo WIRE pod otevřeným postem = přihláška dobrovolníka na noc
   if (wiringKeyword(state, theme, comment)) {
     if (!existing) return { type: 'wiring', handle, soldier: { handle }, reason: 'notEnlisted' };

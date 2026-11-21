@@ -384,6 +384,12 @@ async function main() {
             .replace('{url}', `${process.env.SITE_URL || ''}/?s=${encodeURIComponent(s.handle)}`);
           await igPost(`${USER}/messages`, { recipient: { comment_id: c.id }, message: { text } }).catch((e) => console.warn(e.message));
         }
+      } else if (res.type === 'claimLink') {
+        // místo kódu ENLIST-XXXX vložil odkaz ?claim=1 (prohlížeč v Instagramu zkopíruje odkaz pro otevření v Safari/Chrome)
+        console.log(`✗ claim @${res.handle}: odkaz místo kódu`);
+        if (process.env.IG_REPLY === '1' && !process.env.DRY_RUN) {
+          await replyOnce(c, `@${res.handle}, that's the link, not the code. Open it in Safari or Chrome, sign in with Google, tap Claim on your card, then comment the ENLIST code it shows (like ENLIST-AB12).`).catch((e) => console.warn(e.message));
+        }
       } else if (res.type === 'claim' && db && !res.soldier) {
         // kód od někoho, kdo ještě nenarukoval
         console.log(`✗ claim @${res.handle}: nenarukovaný`);

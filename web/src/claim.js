@@ -23,7 +23,7 @@ async function signIn(soldier, toast, param = 'claim') {
   // Google přihlášení v prohlížeči uvnitř Instagramu nefunguje (disallowed_useragent)
   if (IN_APP.test(navigator.userAgent)) {
     navigator.clipboard?.writeText(back).catch(() => {});
-    toast('Open this page in Safari or Chrome to sign in (tap ••• → Open in browser). Link copied.');
+    toast('Open this page in Safari or Chrome to sign in (tap ••• → Open in browser). Link copied: paste it in your browser, not in a comment.');
     return null;
   }
   const { initializeApp, getApps } = await import('firebase/app');
