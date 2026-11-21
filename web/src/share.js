@@ -80,6 +80,13 @@ export async function shareCard({ s, rec, theme, tex }) {
     p.fillRect(40, 214, 136, 6);
     p.drawImage(sprite, 0, 0, 32, 32, 44, 94, 128, 128);
   }
+  // Trench Dog: pes sedí vedle vojáka (stejný sprite jako na mapě, ×4)
+  if (rec?.dog) {
+    try {
+      const dog = await loadImg(`/assets/props/dog_${rec.dog.breed}_sit.png`);
+      p.drawImage(dog, 0, 0, 32, 32, 104, 94, 128, 128);
+    } catch {}
+  }
 
   // --- výsledné plátno ---
   const c = document.createElement('canvas');
@@ -126,6 +133,11 @@ export async function shareCard({ s, rec, theme, tex }) {
   let y = 1192 + nameLines.length * 76 + 6;
   text(ctx, `@${s.handle}`, W / 2, y, 56, PAL.gold, { font: 'VT323' });
   y += 78;
+  if (rec?.dog) {
+    const br = theme.dog?.breeds?.find((b) => b.id === rec.dog.breed)?.name || 'dog';
+    text(ctx, `& ${rec.dog.name.toUpperCase()}, ${br.toUpperCase()}`, W / 2, y - 8, 30, PAL.khaki);
+    y += 44;
+  }
 
   // frakce, jednotka, stanoviště
   text(ctx, f.name.toUpperCase(), W / 2, y, 44, fcol);
