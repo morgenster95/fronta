@@ -219,6 +219,10 @@ async function main() {
         let n = 0; for (const x of state.news || []) if (x.day >= state.day - 1 && typeof x.text === 'string' && x.text.includes(c.find)) { x.text = x.text.replaceAll(c.find, c.replace); n++; }
         console.log(`📰 oprava zprávy: ${n}×`);
       }
+      if (c.cmd === 'newsDrop') { // vyřazení ještě nevydané zprávy (uživatel: nemá jít do novin)
+        const before = (state.news || []).length; state.news = (state.news || []).filter((x) => !(x.h === c.h && x.day >= state.day - 1));
+        console.log(`📰 vyřazeno ${before - state.news.length}× „${c.h}“`);
+      }
       if (c.cmd === 'setLogTo') { // konec lepších zásob z kóty (interní, v novinách se nehlásí)
         const v = (state.victories || []).find((x) => x.id === c.id_victory);
         if (v && v.logTo != null) { v.logTo = c.to; console.log(`📦 zásoby ${v.id} do dne ${c.to}`); }
