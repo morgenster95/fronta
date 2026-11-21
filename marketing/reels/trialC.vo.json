@@ -1,0 +1,48 @@
+{
+ "seconds": 25.6,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.15,
+   2.66,
+   "I let two thousand strangers fight a war in my comments.",
+   "hook"
+  ],
+  [
+   3.06,
+   4.0,
+   "Every soldier is a real person. Hundreds have already died.",
+   "real"
+  ],
+  [
+   7.31,
+   3.69,
+   "They captured a cannon. Now it shells the enemy every day.",
+   "gun"
+  ],
+  [
+   11.25,
+   1.14,
+   "Then I gave them dogs.",
+   "dogs"
+  ],
+  [
+   12.64,
+   2.94,
+   "Real dogs, with names, beside real players.",
+   "dogs2"
+  ],
+  [
+   15.83,
+   2.56,
+   "Next, someone digs a mine under the enemy line.",
+   "mine"
+  ],
+  [
+   18.64,
+   3.5,
+   "Comment HEGEMONY or CONCORD. You're in within minutes.",
+   "cta"
+  ]
+ ]
+}
