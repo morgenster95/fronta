@@ -6,6 +6,7 @@ import { paperTexture, tornClip } from './paper.js';
 import { initValley } from './valley.js';
 import { initHouse } from './house.js';
 import { dayLabel, dayNo } from './day.js';
+import { renderCampaign } from './campaign.js';
 
 const $ = (id) => document.getElementById(id);
 const STATUS = ['On the line', 'Wounded', 'Missing in action', 'Prisoner of war', 'Fallen'];
@@ -129,6 +130,8 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     return `<li><span class="d">${dayLabel(e.day)} · ${esc(e.winner)}</span>${esc(e.question)}<br><span class="muted">${res}</span><br>${esc(e.text || '')}</li>`;
   }).join('') || '<li class="muted">The war has just begun. The first decision is yours.</li>';
   $('warroom-btn').onclick = () => show('warroom');
+  // mapa tažení: kdo drží které kóty, o co se bojuje teď (web/src/campaign.js)
+  $('map-btn').onclick = () => { renderCampaign($('campaign-body'), roster, theme, esc); show('campaign'); };
 
   // Deník fronty: ruční zápisy + kronika dne; @handle → karta vojáka
   const byHandle = new Map(soldiers.filter((s) => s.handle).map((s) => [s.handle, s]));

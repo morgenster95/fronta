@@ -423,3 +423,18 @@ body.reel #card { bottom: 18%; width: 86%; }
 .hosp-ptr:hover, .hosp-ptr:focus-visible { background: rgba(43, 39, 34, 0.95); outline: none; }
 body.reel:not(.show-nav) .hosp-ptr { display: none; }
 #card-letter.sent { opacity: 0.8; }
+
+/* mapa tažení (web/src/campaign.js) */
+#campaign.sheet { width: min(780px, 100%); max-height: 88vh; }
+.camp-wrap { position: relative; margin: 8px 0 12px; border: 2px solid #524a3f; }
+.camp-map { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.camp-lbl { position: absolute; transform: translateX(-50%); font-family: 'Silkscreen', monospace; font-size: clamp(9px, 1.9vw, 13px); color: #e3d9c3; background: rgba(14,13,12,0.78); padding: 1px 5px; white-space: nowrap; pointer-events: none; }
+.camp-lbl.now { color: #d98f3f; border: 1px solid #d98f3f; animation: campPulse 1.4s ease-in-out infinite; }
+.camp-lbl.fog { color: #857a68; }
+@keyframes campPulse { 50% { opacity: 0.55; } }
+.camp-list { list-style: none; padding: 0; margin: 0; }
+.camp-list li { padding: 8px 0; border-top: 1px solid #2b2722; line-height: 1.35; }
+.camp-list li.fog { opacity: 0.55; }
+.camp-list .dot { display: inline-block; width: 10px; height: 10px; margin-right: 8px; background: #524a3f; vertical-align: middle; }
+.camp-list .dot.now { background: #d98f3f; }
+.camp-list .hot { color: #d98f3f; font-weight: 600; }
