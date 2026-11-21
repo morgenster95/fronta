@@ -285,19 +285,19 @@ export function makeRaceScenes(tex, anims = {}) {
     g.fillStyle = P.ink; g.fillRect(px, 120, 3, 200); g.fillStyle = P.mud3; g.fillRect(px + 1, 120, 1, 200);
     g.fillStyle = P.gold; g.fillRect(px - 1, 117, 5, 4);
     flag(px + 3, 126, 62, 34, t, P.olive, P.olive3, (x, y, w, h, off2) => {
-      txt(g, '+100', x + 7, y + 13 + off2, 3, P.white, P.olive3);
+      txt(g, o.flag ?? '+100', x + 7, y + 13 + off2, 3, P.white, P.olive3);
       g.fillStyle = P.gold; for (let i = 0; i < 5; i++) { g.fillRect(x + 4, y + 4 + i * 5 + off2, 2, 3); g.fillRect(x + w - 6, y + 4 + i * 5 + off2, 2, 3); }
     });
     // počítadlo
-    const n = Math.round(100 * easeOut(clamp01((t - 0.4) / 4.2)));
+    const goal = o.n ?? 100, n = Math.round(goal * easeOut(clamp01((t - 0.4) / 4.2)));
     const bx = 104, by_ = 258;
     g.fillStyle = P.ink; g.fillRect(bx - 2, by_ - 2, 76, 50);
     g.fillStyle = P.sand; g.fillRect(bx - 1, by_ - 1, 74, 48);
     g.fillStyle = P.dark; g.fillRect(bx, by_, 72, 46);
-    const num = String(n).padStart(3, '0'), pulse = n >= 100 && Math.floor(t * 4) % 2 === 0;
+    const num = String(n).padStart(3, '0'), pulse = n >= goal && Math.floor(t * 4) % 2 === 0;
     txt(g, num, bx + 10, by_ + 5, 5, pulse ? P.yellow : P.white, P.ink);
     txt(g, 'NEW SOLDIERS', bx + 12, by_ + 35, 1, P.bone);
-    if (n >= 100) glow(g, bx + 36, by_ + 23, 50, P.gold, 0.45 + 0.2 * Math.sin(t * 8));
+    if (n >= goal) glow(g, bx + 36, by_ + 23, 50, P.gold, 0.45 + 0.2 * Math.sin(t * 8));
   };
 
   // ====================================================================================================
@@ -693,7 +693,7 @@ export function makeRaceScenes(tex, anims = {}) {
     const fade = clamp01((t - 1.0) / 0.8);
     if (fade > 0) {
       const lab = n == null ? 'XX FALLEN' : `${n} FALLEN`, lw = txtW(lab, 3), bx = Math.round((W - lw) / 2);
-      g.globalAlpha = fade; txt(g, lab, bx, 64, 3, P.white, P.ink); const sub = 'FIRST NIGHT OF THE BARRAGE', sw = txtW(sub, 1); txt(g, sub, Math.round((W - sw) / 2), 86, 1, P.pale, P.ink); g.globalAlpha = 1;
+      g.globalAlpha = fade; txt(g, lab, bx, 64, 3, P.white, P.ink); const sub = o.sub ?? 'FIRST NIGHT OF THE BARRAGE', sw = txtW(sub, 1); txt(g, sub, Math.round((W - sw) / 2), 86, 1, P.pale, P.ink); g.globalAlpha = 1;
     }
     g.setTransform(1, 0, 0, 1, 0, 0);
   };

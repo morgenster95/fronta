@@ -6,6 +6,9 @@
 import { CSS as BASE } from './reel-day1.js';
 import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, slam, clamp01, win, easeOut, tagAt } from './reel-kit.js';
 import { makeDogCine } from './cine-dogs.js';
+import { makeVertCine } from './cine-vert.js';
+import { makeRaceScenes } from './cinema-race.js';
+import { makePillboxScenes } from './cinema-pillbox.js';
 import script from '../../marketing/reels/front12.script.json';
 import dogData from '../../marketing/reels/dogs.data.json';
 
@@ -14,6 +17,7 @@ const D = { fell: [45, 81], hit: [125, 242], cover: [99, 71], race: [26, 31], jo
 const BREED = { airedale: 'AIREDALE', shepherd: 'GERMAN SHEPHERD', jackrussell: 'JACK RUSSELL', collie: 'BORDER COLLIE', dachshund: 'DACHSHUND' };
 
 const CSS = `${BASE}${FX_CSS}
+#f12-cine, #f12-cv, #f12-rc, #f12-pb { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; opacity: 0; }
 #f12-cine { inset: 0; width: 100%; height: 100%; image-rendering: pixelated; opacity: 0; }
 #f12-day { left: 0; right: 0; top: 14%; text-align: center; font-family: 'Silkscreen', monospace; font-size: 96px; white-space: nowrap; color: #e3d9c3; text-shadow: 7px 7px 0 #0e0d0c; opacity: 0; }
 #f12-day b { font-weight: 400; color: #d98f3f; }
@@ -26,7 +30,7 @@ const CSS = `${BASE}${FX_CSS}
 .f12-panel .row b { font-size: 36px; font-weight: 400; } .f12-panel .row b.r { color: #c8553d; }
 .f12-panel .bar { height: 16px; background: #1c1a17; border: 2px solid #524a3f; position: relative; margin-bottom: 6px; } .f12-panel .bar i { position: absolute; left: 0; top: 0; bottom: 0; }
 .f12-panel .note { font-family: 'VT323', monospace; font-size: 28px; color: #c9b99a; text-align: center; margin-top: 8px; }
-#f12-fell { top: 50%; border-color: #a33b2b; } #f12-race { top: 44%; }
+#f12-fell { top: 7%; border-color: #a33b2b; } #f12-race { top: 44%; }
 #f12-big { left: 0; right: 0; top: 26%; text-align: center; font-family: 'Silkscreen', monospace; color: #e3d9c3; text-shadow: 6px 6px 0 #0e0d0c; opacity: 0; }
 #f12-big .k { font-size: 30px; letter-spacing: 0.12em; color: #c9b99a; } #f12-big b { display: block; font-size: 120px; font-weight: 400; color: #c9c26a; line-height: 1; } #f12-big .p { font-size: 34px; color: #d98f3f; margin-top: 10px; }
 #f12-side { left: 0; right: 0; top: 58%; text-align: center; font-family: 'Silkscreen', monospace; opacity: 0; }
@@ -36,7 +40,7 @@ const CSS = `${BASE}${FX_CSS}
 #f12-cta .url { font-family: 'Silkscreen', monospace; font-size: 26px; color: #e3d9c3; margin-top: 10px; border-top: 2px solid #524a3f; padding-top: 10px; }
 `;
 
-export async function startDay12Reel({ cam, life, map, soldiers, tex }) {
+export async function startDay12Reel({ cam, life, map, soldiers, tex, anims }) {
   let vo = files['../../marketing/reels/front12.vo.json'];
   if (!vo) {
     let c = 0;
@@ -58,10 +62,10 @@ export async function startDay12Reel({ cam, life, map, soldiers, tex }) {
   const cRef = fC[Math.floor(fC.length / 2)] || soldiers[0];
   // kamera
   const K = [];
-  const dSpan = (tt.gun - tt.dogs2) / Math.max(1, dogShots.length);
+  const DOG0 = tt.dogs2 + 1.8, dSpan = (tt.gun - DOG0) / Math.max(1, dogShots.length);
   K.push([tt.dogs2, dogShots[0]?.x ?? cRef.x, (dogShots[0]?.y ?? cRef.y) - 16, 4.8, 'cut']);
-  dogShots.forEach((d, i) => { const t0 = tt.dogs2 + i * dSpan; K.push([t0, d.x - 6, d.y - 16, 4.8, 'cut'], [t0 + dSpan - 0.01, d.x + 6, d.y - 16, 5.2]); });
-  if (gun) K.push([tt.gun, gun.x - 30, gun.y - 10, 3.4, 'cut'], [tt.fell - 0.01, gun.x + 10, gun.y - 10, 3.6]);
+  dogShots.forEach((d, i) => { const t0 = DOG0 + i * dSpan; K.push([t0, d.x - 6, d.y - 16, 4.8, 'cut'], [t0 + dSpan - 0.01, d.x + 6, d.y - 16, 5.2]); });
+  if (gun) K.push([tt.gun2, gun.x - 30, gun.y - 10, 3.4, 'cut'], [tt.fell - 0.01, gun.x + 10, gun.y - 10, 3.6]);
   K.push([tt.fell, cRef.x - 200, cRef.y - 30, 1.8, 'cut'], [tt.wiz - 0.01, cRef.x + 200, cRef.y - 30, 1.9]);
   if (wiz) K.push([tt.wiz, wiz.x, wiz.y - 16, 4.6, 'cut'], [tt.bonds - 0.01, wiz.x + 8, wiz.y - 16, 5.0]);
   if (lfer) K.push([tt.bonds, lfer.x, lfer.y - 18, 4.6, 'cut'], [tt.race - 0.01, lfer.x + 8, lfer.y - 18, 5.0]);
@@ -74,7 +78,7 @@ export async function startDay12Reel({ cam, life, map, soldiers, tex }) {
   const camAt = (t) => (t < tt.dogs2 ? [cRef.x, mid, 1] : camK(t));
   const sub = subtitles(vo);
   const fx = transitions([[tt.dogs2, 'whip'], [tt.gun, 'flash'], [tt.fell, 'black', 0.4], [tt.wiz, 'whip'], [tt.bonds, 'whip'], [tt.race, 'black', 0.4], [tt.joined, 'flash'], [tt.armyH, 'whip'], [tt.armyC, 'whip'], [tt.cta, 'black', 0.4]]);
-  const GUNAT = tt.gun + 0.6;
+  const GUNAT = tt.gun2 + 0.3;
   const SFX = [[tt.day, 'drum', 0], [GUNAT, 'shell', 1], [tt.fell, 'drum', 0], [tt.joined, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]];
 
   document.body.classList.add('reel');
@@ -106,6 +110,8 @@ export async function startDay12Reel({ cam, life, map, soldiers, tex }) {
   const $ = (s) => root.querySelector(s);
   const show = (sel, o) => { const el = $(sel); if (el) el.style.opacity = o; };
   const dc = await makeDogCine(tex);
+  const cv = makeVertCine(tex, anims), rc = makeRaceScenes(tex, anims), pb = makePillboxScenes(tex);
+  for (const [c, id] of [[cv, 'f12-cv'], [rc, 'f12-rc'], [pb, 'f12-pb']]) { c.canvas.id = id; root.insertBefore(c.canvas, $('#f12-cine').nextSibling); }
   const out = $('#f12-cine'), og = out.getContext('2d');
   og.imageSmoothingEnabled = false;
   let fired = false;
@@ -116,20 +122,32 @@ export async function startDay12Reel({ cam, life, map, soldiers, tex }) {
     cam.set(x, y, z * (1 + 0.05 * f.punch));
     for (const q of soldiers) if (q.sprite && q.vacant && q.sprite.alpha < 1) q.sprite.alpha = 1;
     if (!fired && t >= GUNAT && gunFx) { gunFx.fire(); fired = true; }
-    const film = t < tt.dogs2 ? ['arrive', t, { breed: 'shepherd', flare: 2.4 }] : null;
-    if (film) { dc.draw(film[0], film[1], film[2]); og.clearRect(0, 0, 135, 240); og.drawImage(dc.canvas, 0, 0); }
-    show('#f12-cine', film ? 1 : 0);
+    // filmové záběry: příchod psů, pět psů na valu, baterie v noci, hroby, lazaret, štola s minou, posily
+    const LINE = tt.dogs2 + 1.8;
+    const film = t < tt.dogs2 ? ['dog', 'arrive', t, { breed: 'shepherd', flare: 2.4 }]
+      : t < LINE ? ['dog', 'lineup', t - tt.dogs2 + 1, {}]
+      : t >= tt.gun && t < tt.gun2 ? ['pb', 'guns', t - tt.gun + 0.25, {}]
+      : t >= tt.fell && t < tt.why ? ['rc', 'graves', t - tt.fell + 1, { side: 1, n: D.fell[0] + D.fell[1], sub: 'ONE DAY ON THE FRONT' }]
+      : t >= tt.why && t < tt.wiz ? ['cv', 'ward', t - tt.why + 1, {}]
+      : t >= tt.race2 && t < tt.joined ? ['cv', 'mine', t - tt.race2 + 0.5, {}]
+      : t >= tt.joined && t < tt.army ? ['rc', 'march', t - tt.joined + 1, { side: 1, n: D.joined[0] + D.joined[1], flag: '+' + (D.joined[0] + D.joined[1]) }] : null;
+    if (film?.[0] === 'dog') { dc.draw(film[1], film[2], film[3]); og.clearRect(0, 0, 135, 240); og.drawImage(dc.canvas, 0, 0); }
+    if (film?.[0] === 'cv') cv.draw(film[1], film[2], film[3]);
+    if (film?.[0] === 'rc') rc.draw(film[1], film[2], film[3]);
+    if (film?.[0] === 'pb') pb.draw(film[1], film[2]);
+    show('#f12-cine', film?.[0] === 'dog' ? 1 : 0); show('#f12-cv', film?.[0] === 'cv' ? 1 : 0); show('#f12-rc', film?.[0] === 'rc' ? 1 : 0); show('#f12-pb', film?.[0] === 'pb' ? 1 : 0);
     paint({ ...f, black: Math.max(f.black, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) }, 0);
     show('#f12-day', win(t, 0.2, tt.dogs - 0.1, 0.2));
-    dogShots.forEach((d, i) => { const t0 = tt.dogs2 + i * dSpan; tagAt($(`#f12-d${i}`), { x: d.x + 11, y: d.y }, cam, win(t, t0 + 0.15, t0 + dSpan - 0.05, 0.1), 24); });
-    if (gun) tagAt($('#f12-gun'), { x: gun.x, y: gun.y - 20 }, cam, win(t, GUNAT + 0.3, tt.fell - 0.05, 0.12), 0);
-    slam($('#f12-fell'), t, tt.fell + 0.2, tt.wiz - 0.05, 1.3, -2);
+    dogShots.forEach((d, i) => { const t0 = DOG0 + i * dSpan; tagAt($(`#f12-d${i}`), { x: d.x + 11, y: d.y }, cam, win(t, t0 + 0.15, t0 + dSpan - 0.05, 0.1), 24); });
+    if (gun) tagAt($('#f12-gun'), { x: gun.x, y: gun.y - 20 }, cam, win(t, GUNAT + 0.2, tt.fell - 0.05, 0.12), 0);
+    slam($('#f12-fell'), t, tt.why + 0.2, tt.wiz - 0.05, 1.3, -2);
     if (wiz) tagAt($('#f12-wiz'), { x: wiz.x, y: wiz.y - 30 }, cam, win(t, tt.wiz + 0.2, tt.bonds - 0.05, 0.12), 0);
     if (lfer) tagAt($('#f12-lfer'), { x: lfer.x, y: lfer.y - 30 }, cam, win(t, tt.bonds + 0.2, tt.race - 0.05, 0.12), 0);
-    slam($('#f12-race'), t, tt.race + 0.2, tt.joined - 0.05, 1.3, -2);
-    const bigOn = t >= tt.joined && t < tt.armyH;
+    slam($('#f12-race'), t, tt.race + 0.2, tt.race2 - 0.05, 1.3, -2);
+    const bigOn = t >= tt.army && t < tt.armyH, pre = false;
+    $('#f12-big .k').textContent = pre ? 'CAME UP YESTERDAY' : 'ON THE FRONT NOW'; $('#f12-big .p').style.opacity = pre ? 0 : 1;
     show('#f12-big', bigOn ? 1 : 0);
-    $('#f12-big b').textContent = Math.round((D.army[0] + D.army[1]) * easeOut(clamp01((t - tt.army) / 1.2))).toLocaleString('en-US');
+    $('#f12-big b').textContent = pre ? '+' + (D.joined[0] + D.joined[1]) : Math.round((D.army[0] + D.army[1]) * easeOut(clamp01((t - tt.army) / 1.2))).toLocaleString('en-US');
     const side = t >= tt.armyH && t < tt.cta ? (t < tt.armyC ? 0 : 1) : -1;
     show('#f12-side', side >= 0 ? 1 : 0);
     if (side >= 0) $('#f12-side span').innerHTML = `${side ? 'CONCORD' : 'HEGEMONY'}<b>${D.army[side].toLocaleString('en-US')}</b>`;
@@ -140,7 +158,7 @@ export async function startDay12Reel({ cam, life, map, soldiers, tex }) {
     if (logo && !bigEl.dataset.on) { bigEl.dataset.on = 1; bigEl.className = 'logo'; bigEl.innerHTML = '<span>MUD <i>&amp;</i> IRON</span><span>@mudandiron · mudandiron.app</span>'; }
     const s = sub(t);
     const subEl = $('#rd-sub');
-    if (s && !logo && t >= tt.dogs) { subEl.style.opacity = 1; subEl.style.top = 'auto'; subEl.style.bottom = '13%'; if (subEl.dataset.text !== s) { subEl.dataset.text = s; subEl.innerHTML = `<span>${s}</span>`; } } else subEl.style.opacity = 0;
+    if (s && !logo && t >= tt.dogs) { subEl.style.opacity = 1; const subTop = film && (film[1] === 'guns' || film[1] === 'march'); subEl.style.top = subTop ? '9%' : 'auto'; subEl.style.bottom = subTop ? 'auto' : '13%'; if (subEl.dataset.text !== s) { subEl.dataset.text = s; subEl.innerHTML = `<span>${s}</span>`; } } else subEl.style.opacity = 0;
   }
   window.__reel = { seconds: END, sfx: SFX, frame, ready: true };
 }

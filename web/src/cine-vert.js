@@ -129,6 +129,55 @@ export function makeVertCine(tex = {}, anims = {}) {
       g.fillStyle = 'rgba(20,24,48,0.12)'; g.fillRect(0, 0, W, H);
     },
   };
+  // mina (21. 11. 2026, Day reel Day 12): řez zemí v noci. Nahoře zákop nepřítele s hlídkou, která nic netuší,
+  // vlevo šachta se žebříkem, dole vyztužená štola: dva ženisté kopou u čelby, třetí se plazí s pytlem hlíny zpátky,
+  // u čelby přibývají bedny s trhavinou, z ostění padá hlína a lucerna se houpe.
+  const M = {
+    dig: A('concord', 'work', 'east', WARM), crawl: A('concord', 'crawl', 'west', WARM),
+    sentry: A('hegemony', 'walk', 'east', COLD), sentryW: A('hegemony', 'walk', 'west', COLD),
+  };
+  scenes.mine = (t) => {
+    const SURF = 52, T0 = 146, T1 = 192, FACE = 116;
+    for (let y = 0; y < SURF - 10; y++) for (let x = 0; x < W; x++) { const SKY = [PAL.navy, '#1d2238', '#262a44', PAL.dusk]; const u = (y / (SURF - 10)) * (SKY.length - 1) + (by(x, y) - 0.5); px(SKY[Math.max(0, Math.min(SKY.length - 1, Math.round(u)))], x, y); }
+    // zem: vrstvy hlíny s kameny
+    for (let y = SURF - 10; y < H; y++) for (let x = 0; x < W; x++) {
+      const d = (y - SURF) / (H - SURF), v = by(x, y);
+      px(d < 0.25 ? (v < 0.3 ? PAL.mud2 : PAL.mud1) : d < 0.6 ? (v < 0.18 ? PAL.mud2 : PAL.mud1) : (v < 0.25 ? PAL.mud0 : PAL.mud1), x, y);
+    }
+    for (const [x, y, w] of [[30, 80, 5], [92, 96, 4], [60, 120, 6], [14, 210, 5], [100, 220, 4], [74, 206, 3], [120, 70, 4]]) { px(PAL.mud3, x, y, w, 3); px(PAL.sand, x + 1, y, w - 2, 1); px(PAL.ink, x, y + 3, w, 1); }
+    // zákop nepřítele nahoře: pytle a hlídka chodí sem a tam
+    sandbags(40, W, SURF - 14, 2);
+    px(PAL.mud0, 40, SURF - 4, W - 40, 6);
+    const sp = (t * 9) % 140, sx = sp < 70 ? 58 + sp : 128 - (sp - 70);
+    put(at(sp < 70 ? M.sentry : M.sentryW, Math.floor(t * 8)), sx, SURF - 6);
+    // šachta se žebříkem
+    px(PAL.ink, 6, SURF - 10, 20, T1 - SURF + 10); px(PAL.dark, 8, SURF - 10, 16, T1 - SURF + 10);
+    for (let y = SURF - 8; y < T1; y += 7) px(PAL.mud3, 10, y, 12, 1);
+    px(PAL.mud3, 10, SURF - 10, 1, T1 - SURF + 10); px(PAL.mud3, 21, SURF - 10, 1, T1 - SURF + 10);
+    // štola s výztuží
+    px(PAL.ink, 24, T0 - 1, FACE - 24 + 2, T1 - T0 + 2); px(PAL.dark, 24, T0, FACE - 24, T1 - T0);
+    for (let y = T0; y < T1; y++) for (let x = 24; x < FACE; x++) if (by(x, y) < 0.1) px(PAL.mud0, x, y);
+    px(PAL.mud0, 24, T1 - 4, FACE - 24, 4);
+    for (let x = 30; x < FACE - 6; x += 24) { px(PAL.mud3, x, T0, 3, T1 - T0); px(PAL.mud0, x + 3, T0, 1, T1 - T0); }
+    px(PAL.mud3, 24, T0, FACE - 24, 3); px(PAL.sand, 24, T0, FACE - 24, 1);
+    // čelba, kam se kope: drobí se
+    for (let y = T0; y < T1; y++) px(by(FACE, y) < 0.5 ? PAL.mud2 : PAL.mud1, FACE, y, 2, 1);
+    // lucerna se houpe
+    const lx = 74 + Math.sin(t * 1.6) * 2;
+    px(PAL.ink, Math.round(lx), T0 + 3, 1, 6); px(PAL.gold, Math.round(lx) - 1, T0 + 9, 3, 4); px(PAL.white, Math.round(lx), T0 + 10, 1, 2);
+    // bedny s trhavinou u čelby přibývají
+    const crates = Math.min(4, 1 + Math.floor(t / 1.2));
+    for (let i = 0; i < crates; i++) { const cx = 92 - (i % 2) * 9, cy = T1 - 4 - 7 - Math.floor(i / 2) * 7; px(PAL.ink, cx - 1, cy - 1, 10, 8); px(PAL.rust, cx, cy, 8, 6); px('#a3533a', cx, cy, 8, 1); px(PAL.ink, cx + 3, cy + 2, 2, 2); }
+    // ženisté kopou, třetí odnáší hlínu
+    put(at(M.dig, Math.floor(t * 8)), FACE - 8, T1 - 2);
+    put(at(M.dig, Math.floor(t * 8) + 3), FACE - 26, T1 - 2);
+    const cr = (t * 11) % 80; put(at(M.crawl, Math.floor(t * 9)), 100 - cr, T1 - 1);
+    // padající hlína z ostění při úderech
+    for (let k = 0; k < 6; k++) { const p = ((t * 1.7 + k * 0.37) % 1), x = FACE - 4 - ((k * 13) % 30); px(PAL.mud3, x, T0 + 3 + Math.round(p * (T1 - T0 - 8)), 1, 1); }
+    glow(lx, T0 + 11, 46, 0.42);
+    glow(FACE - 10, T1 - 12, 24, 0.16);
+    g.fillStyle = 'rgba(20,24,48,0.10)'; g.fillRect(0, 0, W, H);
+  };
   return {
     canvas,
     draw(name, t, o = {}) {
