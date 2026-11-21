@@ -14,6 +14,7 @@ export async function initMines({ world, anchor, roster, map, theme, tex, openX0
   const crater = await loadTexture(`/assets/props/crater_huge.png${V}`).catch(() => null);
   const layer = new Container();
   world.addChildAt(layer, world.getChildIndex(anchor) + 1);
+  const lineY = (f, line) => { const ys = map.slots[f].filter((sl) => sl.line === line).map((sl) => sl.y); return ys.length ? ys.reduce((a, b) => a + b, 0) / ys.length : null; };
   const frontY = (f) => { const ys = map.slots[f].filter((sl) => sl.line === 'front').map((sl) => sl.y); return ys.length ? ys.reduce((a, b) => a + b, 0) / ys.length : map.front[f] * T; };
   const items = [];
   for (const m of mines) {
@@ -29,8 +30,9 @@ export async function initMines({ world, anchor, roster, map, theme, tex, openX0
       items.push({ m, box, fx: null, bits: [] });
       continue;
     }
-    // vstup do štoly: v první linii vítěze, směrem k nepříteli
-    const x = Math.round(openX0 + (openX1 - openX0) * (f === 0 ? 0.45 : 0.55)), y = Math.round(frontY(f) + toEnemy * 10);
+    // vstup do štoly: za první linií vítěze (mezi první a podpůrnou linií), odtud vede tunel pod zemí nikoho
+    const sup = lineY(f, 'support');
+    const x = Math.round(openX0 + (openX1 - openX0) * (f === 0 ? 0.45 : 0.55)), y = Math.round(sup != null ? (frontY(f) + sup) / 2 : frontY(f) - toEnemy * 40);
     const box = new Container(); box.x = x; box.y = y; layer.addChild(box);
     const g = new Graphics();
     // vytěžená hlína v pytlích (hromada roste s časem kopání)

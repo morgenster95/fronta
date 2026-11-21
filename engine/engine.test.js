@@ -1461,11 +1461,11 @@ test('mina z kóty: den kopání, pak výbuch v nepřátelské první linii (neb
   const s = emptyState(theme);
   for (let i = 0; i < 160; i++) applyComment(s, { id: `m${i}`, userId: `mu${i}`, username: `miner${i}`, text: i % 2 ? 'CONCORD sapper' : 'HEGEMONY' }, theme, story, map);
   const day = s.day;
-  // 15:00 UTC = 22 h do novin → vybuchne v příštích; 05:00 UTC = 8 h → až v dalších
-  const m = grantMine(s, theme, 1, 'quarry', 'the Bone Quarry', day, Date.parse('2026-11-21T15:00:00Z'));
-  assert.equal(m.at, day + 1);
+  const m = grantMine(s, theme, 1, 'quarry', 'the Bone Quarry', day);
+  assert.equal(m.at, day + 2); // jeden den kopání, druhý den výbuch
   assert.ok(m.diggers.length > 0 && m.diggers.length <= 6);
-  assert.equal(grantMine(JSON.parse(JSON.stringify(s)), theme, 1, 'q2', 'x', day, Date.parse('2026-11-21T05:00:00Z')).at, day + 2);
+  dailyTick(s, theme, story);
+  assert.equal(s.mines[0].status, 'digging');
   dailyTick(s, theme, story);
   assert.ok(['blown', 'collapsed'].includes(m.status) || ['blown', 'collapsed'].includes(s.mines[0].status));
   const mm = s.mines[0];

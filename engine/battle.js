@@ -182,7 +182,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   for (const g of gunFire) g.res = { hit: 0, killed: 0 };
   // mina z kóty (reward 'mine', engine/mine.js): po dni kopání vybuchne pod nejhustším úsekem nepřátelské první linie, nebo ji nepřítel zavalí
   const mineFire = mineBlasts(state, theme, day, X, able);
-  const mineOn = (s) => mineFire.find((m) => !m.collapsed && m.target === s.faction && m.ids.has(s.id));
+  const mineOn = (s) => mineFire.find((m) => m.ids && m.target === s.faction && m.ids.has(s.id));
   const coverOf = (s) => {
     const side = state.battle.sides[s.faction];
     const wire = side.wire[s.sector] ?? (side.wire[s.sector] = cfg.wire.start);
@@ -463,6 +463,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const fill = (t) => (t || '').replaceAll('{name}', m.name).replaceAll('{us}', short(theme, m.faction)).replaceAll('{them}', short(theme, 1 - m.faction))
       .replaceAll('{diggers}', m.diggers.map((h) => '@' + h).join(', ') || 'the sappers').replaceAll('{listeners}', String(m.collapsed?.listeners ?? 0))
       .replaceAll('{from}', mb.secs?.[0] || '').replaceAll('{to}', mb.secs?.at(-1) || '').replaceAll('{hit}', String(mb.res?.hit || 0)).replaceAll('{killed}', String(mb.res?.killed || 0));
+    if (mb.digging) { out.news.push({ day, kind: 'mine', h: fill(T.diggingH), text: fill(T.digging) }); continue; }
     if (mb.collapsed) { out.news.push({ day, kind: 'mine', h: fill(T.collapsedH), text: fill(T.collapsed) }); continue; }
     m.blown = { day, target: mb.target, secs: mb.secs, x0: mb.x0, x1: mb.x1, hit: mb.res.hit, killed: mb.res.killed };
     stats[m.faction].mine = m.blown;
