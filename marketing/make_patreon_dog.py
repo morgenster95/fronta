@@ -62,8 +62,10 @@ def post_tiers():
         d.text((X0 + 28, y + 4), price, font=font(8, True), fill=P["gold"])
         d.text((X0 + 54, y + 4), name, font=font(8, True), fill=P["white"])
         d.text((X0 + 28, y + 14), what, font=font(8), fill=P["pale"])
-    d.text((X0, 134), "FREE GAME. NO ADS.", font=font(8), fill=P["pale"])
-    d.text((X0, 144), "NO PAY-TO-WIN.", font=font(8), fill=P["pale"])
+    # všech pět plemen psů v řadě (místo textu o hře zdarma)
+    for i, (b, _) in enumerate(DOGS):
+        im.alpha_composite(dog(b), (X0 - 6 + i * 33, 124))
+    d = ImageDraw.Draw(im)
     d.text((X0, 160), "PATREON.COM/CW/MUDANDIRON", font=font(8, True), fill=P["gold"])
     save(im, "post_tiers_v2_1500x900.jpg", 5)
 
