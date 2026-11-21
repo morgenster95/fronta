@@ -375,5 +375,53 @@
     "newsHead": "A medal for the Jro family",
     "newsText": "On Day 3, Lucien \"Shadow\" Jro was the hundredth man of the Concord, and Verdel Ridge fell to them. The title never reached him. Lucien and Cyril Jro have both fallen since. Today {name} (@{handle}) carries it for the family: Hero of Verdel Ridge.",
     "_note": "pokyn uživatele 21. 11.: hrdina první kóty titul nedostal (Verdel Ridge ho ještě nedávala), dodán rodu Jro"
+  },
+  {
+    "id": "dog-zidane_mcnamara-20261121",
+    "cmd": "dog",
+    "handle": "zidane_mcnamara",
+    "_note": "Trench Dog, Patreon Officers' Mess (pokyn uživatele 21. 11.)"
+  },
+  {
+    "id": "dog-flying_wizzerd-20261121",
+    "cmd": "dog",
+    "handle": "flying_wizzerd",
+    "_note": "Trench Dog, Patreon Officers' Mess (pokyn uživatele 21. 11.)"
+  },
+  {
+    "id": "dog-thatdudesicarius-20261121",
+    "cmd": "dog",
+    "handle": "thatdudesicarius",
+    "_note": "Trench Dog, Patreon Officers' Mess (pokyn uživatele 21. 11.)"
+  },
+  {
+    "id": "dog-rakan_1027-20261121",
+    "cmd": "dog",
+    "handle": "rakan_1027",
+    "_note": "Trench Dog, Patreon Officers' Mess (pokyn uživatele 21. 11.)"
+  },
+  {
+    "id": "dog-theimperialracoon-20261121",
+    "cmd": "dog",
+    "handle": "theimperialracoon",
+    "_note": "Trench Dog, Patreon Officers' Mess (pokyn uživatele 21. 11.)"
+  },
+  {
+    "id": "dog-v01py-20261121",
+    "cmd": "dog",
+    "handle": "v01py",
+    "_note": "Trench Dog, Patreon Officers' Mess (bez hvězdy, pes ano) (pokyn uživatele 21. 11.)"
+  },
+  {
+    "id": "dog-sebastiano_maccario-20261121",
+    "cmd": "dog",
+    "handle": "sebastiano_maccario",
+    "_note": "Trench Dog, Patreon Field Post (pokyn uživatele 21. 11.)"
+  },
+  {
+    "id": "dog-scottjseale-20261121",
+    "cmd": "dog",
+    "handle": "scottjseale",
+    "_note": "Trench Dog, Patreon Field Post (pokyn uživatele 21. 11.)"
   }
 ]

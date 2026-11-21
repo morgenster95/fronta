@@ -2990,5 +2990,9 @@
     "{dog} the {breed} was waiting at the end of the trench. It sniffed {name} for a long time, then lay down at {his} feet. It stays with the family.",
     "Nobody had the heart to send {dog} away. The {breed} now follows {name}, the same way it followed {prevName}.",
     "{dog} did not eat for two days after {prevName} fell. On the third day it walked up to {name} and sat down. That was that."
+  ],
+  "dogRename": [
+    "The squad voted, and the dog will not answer to {oldDog} anymore. From today the {breed} is called {dog}. It wagged at the new name straight away.",
+    "{name} decided the dog needed a proper name. {oldDog} is now {dog}. The dog did not seem to mind, as long as dinner still comes."
   ]
 }

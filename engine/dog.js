@@ -23,6 +23,16 @@ export function grantDog(state, theme, story, handle, { breed = null, name = nul
   return { handle: s.handle, name: s.name, dog: s.dog };
 }
 
+// přejmenování psa (patron si vybral jméno): zápis do deníku, staré zápisy zůstávají
+export function renameDog(state, theme, story, handle, name) {
+  const s = state.soldiers.find((x) => x.handle === norm(handle));
+  const nm = String(name || '').trim().slice(0, 24);
+  if (!s || !s.dog || !nm || s.dog.name === nm) return null;
+  const old = s.dog.name; s.dog.name = nm;
+  if (s.status !== 'fallen' && story.dogRename?.length) addEntry(s, state.day, eventEntry('dogRename', s, state.day, theme, story, { dog: nm, oldDog: old, breed: breedName(theme, s.dog.breed) }));
+  return { handle: s.handle, old, name: nm };
+}
+
 export function revokeDog(state, handle) {
   const s = state.soldiers.find((x) => x.handle === norm(handle));
   if (!s || !s.dog) return null;
