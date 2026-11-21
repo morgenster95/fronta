@@ -350,7 +350,7 @@ test('příspěvek s triggerem vyjde při dobytí kóty ve variantě vítěze a 
     variants: [{ files: ['h.jpg'], caption: 'H @{hero} {win}-{lose} next {next}' }, { files: ['c.jpg'], caption: 'C @{hero} {win}-{lose} next {next}' }],
     vote: { question: 'q', perFaction: true, options: [{ kw: 'FORTIFY', label: 'f' }, { kw: 'HOSPITAL', label: 'h' }] } }] };
   assert.equal(fireTriggers(q, s, theme).length, 0);
-  const need = theme.race.need;
+  const need = theme.race.objectives[0].need ?? theme.race.need; // první kóta (Verdel Ridge) měla 100
   for (let i = 0; i < need; i++) applyComment(s, { id: `k${i}`, userId: `k${i}`, username: `k${i}`, text: 'CONCORD' }, theme, story, map);
   for (let i = 0; i < 3; i++) applyComment(s, { id: `h${i}`, userId: `h${i}`, username: `h${i}`, text: 'HEGEMONY' }, theme, story, map);
   assert.equal(s.victories.length, 1);
