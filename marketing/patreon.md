@@ -70,15 +70,14 @@ Reply to this message with your Instagram handle. Within a day your soldier gets
 Image: `tier_officers_mess.jpg`
 
 **Description**
-A star over your soldier, and the dog of your choice.
+A star over your soldier.
 ⭐ A gold star hangs over your soldier on the front map, so you can always find them, even zoomed all the way out
-🐕 Pick your dog: choose the breed (Airedale, German shepherd, Jack Russell, border collie, dachshund) and give it a name
-🎗️ Everything in Field Post and War Bonds
+🐕 🎗️ Everything in Field Post and War Bonds: your trench dog, the ribbon and the Gazette thanks
 Looks and stories only. The star and the dog never make your soldier harder to hit.
 
 **Welcome note**
 Welcome to the Officers' Mess. Pull up a crate, and mind the dog.
-Reply to this message with your Instagram handle, the breed you want and your dog's name. Within a day your soldier gets the War Bonds ribbon, a gold star over their head, and your dog.
+Reply to this message with your Instagram handle. Within a day your soldier gets the War Bonds ribbon, a gold star over their head, and a trench dog. The front picks the breed and the name.
 
 ---
 

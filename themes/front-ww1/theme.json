@@ -1109,7 +1109,7 @@
     "downHead": "Plane down"
   },
   "dog": {
-    "storyChance": 0.5,
+    "storyChance": 0.12,
     "breeds": [
       {
         "id": "airedale",
@@ -1132,6 +1132,6 @@
         "name": "dachshund"
       }
     ],
-    "_": "Trench Dog (21. 11., uživatel): pes pro nejvyšší úroveň Patreonu; příkazy {cmd:'dog', handle, breed?, name?} a {cmd:'undog', handle}; engine/dog.js"
+    "_": "Trench Dog (21. 11.): pes pro Field Post a Officers' Mess; jméno i plemeno losuje hra (200 jmen, uživatel: žádné ruční vybírání); psí příběh v deníku jen občas (12 % dní ≈ jednou za týden); příkazy dog/undog/renameDog; engine/dog.js"
   }
 }

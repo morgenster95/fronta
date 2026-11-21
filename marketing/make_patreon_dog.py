@@ -48,7 +48,7 @@ def post_tiers():
     d.text((X0, 20), "ON PATREON", font=font(8, True), fill=P["gold"])
     rows = [("$4", "WAR BONDS", "RIBBON FOR YOUR SOLDIER"),
             ("$6", "FIELD POST", "+ A TRENCH DOG"),
-            ("$10", "OFFICERS' MESS", "+ STAR, PICK YOUR DOG")]
+            ("$10", "OFFICERS' MESS", "+ STAR OVER YOUR SOLDIER")]
     for i, (price, name, what) in enumerate(rows):
         y = 36 + i * 31
         d.rectangle((X0, y, W - 8, y + 26), fill=P["mud0"], outline=P["gold"] if i else P["mud2"])
