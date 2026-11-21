@@ -1,10 +1,9 @@
 // Mapa tažení (21. 11. 2026, uživatel: „mapa, která ukáže, kdo co vyhrál, co kdo obsadil a o co se aktuálně bojuje“).
-// Kreslená pixelová mapa jako stará vojenská mapa (mřížka 480×260, jen zelené a modré odstíny: výškové pásma, vrstevnice, lesy, řeka), ikony kót z PixelLabu (props/map_<id>.png).
+// Kreslená pixelová mapa jako stará vojenská mapa (mřížka 480×260, jen zelené a modré odstíny: výškové pásma, vrstevnice, lesy, řeka), jednoduché mapové značky kót kreslené v kódu.
 // Nahoře území Hegemonie (modravý nádech), dole Concordu (žlutozelený), mezi nimi fronta (zákopy, drát).
 // Kóty z theme.race.objectives leží podél fronty: dobytá kóta je na území vítěze a fronta se kolem ní prohne k poraženému,
 // o kterou se bojuje teď, stojí na frontě a bliká, budoucí jsou v mlze s otazníkem. Pod mapou seznam: kdo drží, od kdy, hrdina, odměna, stav děla/miny.
 import { dayLabel } from './day.js';
-import { loadImage } from './assets.js';
 
 const W = 480, H = 260, MID = 130;
 const PAL = { ink: '#0e0d0c', dark: '#1c1a17', mud0: '#2b2722', mud1: '#3d3730', mud2: '#524a3f', mud3: '#6b6152', sand: '#857a68', bone: '#a39782', pale: '#c4b8a0', white: '#e3d9c3', gold: '#d98f3f', rust: '#7e3b2a', steel: '#666d70', grey: '#8a9295', water: '#2a3138', olive: '#5c5a35', olive2: '#8a8a52', yellow: '#c9c26a', hegT: '#4a4f52', conT: '#4a4a30' };
@@ -58,24 +57,37 @@ export function renderCampaign(root, roster, theme, esc) {
     if (f === 0) { px('#666d70', x + 1, y - 16, 12, 7); px('#7e3b2a', x + 1, y - 14, 12, 2); }
     else { px('#6f7148', x + 1, y - 16, 12, 7); px('#c9c26a', x + 6, y - 14, 2, 2); }
   };
-  // ikony kót z PixelLabu (props/map_<id>.png, 48×48); bez obrázku kreslená náhrada
-  const drawIcons = (imgs) => objs.forEach((o, i) => {
-    const x = xs[i], y = oy[i], im = imgs[o.id];
-    if (im) {
-      g.save(); if (fog(i)) g.filter = 'grayscale(1) brightness(0.65)';
-      g.drawImage(im, x - 24, y - 26); g.restore();
-    } else { g.fillStyle = fog(i) ? '#3a4f34' : '#c4a882'; g.beginPath(); g.ellipse(x, y, 12, 7, 0, 0, Math.PI * 2); g.fill(); }
-    if (own[i] != null) flag(own[i], x + 14, y - 10);
-    if (i === curIdx) { g.strokeStyle = '#d98f3f'; g.lineWidth = 2; g.strokeRect(x - 27, y - 29, 54, 54); }
+  // jednoduché mapové značky kót (kreslené v kódu, ~22 px, pár barev a tmavý obrys, ať sedí k mapě; 21. 11.: obrázky z PixelLabu byly moc detailní)
+  const O = '#0e0d0c';
+  const blob = (x, y, rx, ry, c) => { g.fillStyle = O; g.beginPath(); g.ellipse(x, y, rx + 1, ry + 1, 0, 0, Math.PI * 2); g.fill(); g.fillStyle = c; g.beginPath(); g.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); g.fill(); };
+  const box = (x, y, w, h, c, hi) => { px(O, x - 1, y - 1, w + 2, h + 2); px(c, x, y, w, h); if (hi) px(hi, x, y, w, 1); };
+  const roof = (x, y, w, c) => { for (let k = 0; k <= w / 2; k++) { px(O, x + k - 1, y - k - 1, w - 2 * k + 2, 1); px(c, x + k, y - k, w - 2 * k, 1); } };
+  const tree = (x, y, c = '#3a4f34') => { px(O, x, y, 1, 4); blob(x, y - 2, 3, 3, c); px('#6b7f4f', x - 1, y - 4, 2, 1); };
+  const SYM = {
+    ridge(x, y) { for (const [dx, h, c] of [[-6, 9, '#5c5f62'], [4, 12, '#8a9295']]) { for (let k = 0; k <= h; k++) { px(O, x + dx - k - 1, y - h + k, 2 * k + 3, 1); px(c, x + dx - k, y - h + k, 2 * k + 1, 1); } px('#e3d9c3', x + dx, y - h + 1, 1, 2); } px(O, x - 17, y + 1, 32, 1); },
+    hill304(x, y) { blob(x, y, 12, 6, '#8a9a62'); px('#b0b98a', x - 6, y - 4, 8, 1); px(O, x + 1, y - 16, 1, 12); px(O, x - 2, y - 13, 3, 1); px(O, x + 2, y - 11, 3, 1); },
+    canal(x, y) { box(x - 13, y - 3, 26, 6, '#2a4258'); px('#6a8fa8', x - 10, y - 2, 6, 1); px('#6a8fa8', x + 3, y + 1, 6, 1); box(x - 2, y - 6, 4, 12, '#7a6248', '#c4a882'); },
+    mill(x, y) { box(x - 7, y - 5, 12, 10, '#c4a882', '#e3d9c3'); roof(x - 8, y - 6, 14, '#7e3b2a'); px(O, x - 2, y, 2, 5); g.fillStyle = O; g.beginPath(); g.arc(x + 9, y + 1, 5, 0, Math.PI * 2); g.fill(); g.fillStyle = '#7a6248'; g.beginPath(); g.arc(x + 9, y + 1, 4, 0, Math.PI * 2); g.fill(); px(O, x + 9, y - 3, 1, 8); px(O, x + 5, y + 1, 8, 1); px('#6a8fa8', x + 12, y + 5, 4, 2); },
+    quarry(x, y) { blob(x, y, 12, 7, '#e3d9c3'); blob(x, y + 1, 8, 4, '#c4a882'); blob(x + 1, y + 2, 3, 2, O); px('#8a9295', x - 9, y - 3, 3, 2); px('#8a9295', x + 7, y - 4, 2, 2); },
+    orchard(x, y) { tree(x - 8, y + 2); tree(x, y - 2); tree(x + 8, y + 3); tree(x + 1, y + 5, '#4f6640'); },
+    chalkpits(x, y) { for (const [dx, dy] of [[-7, 0], [5, -3], [3, 5]]) { blob(x + dx, y + dy, 5, 3, '#e3d9c3'); px('#c4a882', x + dx - 2, y + dy, 4, 1); } },
+    calvary(x, y) { box(x - 9, y - 3, 11, 8, '#c4a882', '#e3d9c3'); roof(x - 10, y - 4, 13, '#7e3b2a'); px(O, x + 8, y - 9, 2, 14); px(O, x + 5, y - 6, 8, 2); px('#7a6248', x + 8, y - 8, 1, 12); },
+    brickworks(x, y) { box(x - 9, y - 2, 14, 8, '#7e3b2a', '#a08060'); box(x + 6, y - 14, 4, 20, '#7e3b2a', '#a08060'); px('#5c5f62', x + 6, y - 18, 4, 3); },
+    fort(x, y) { box(x - 10, y - 4, 20, 9, '#8a9295', '#b0b98a'); box(x - 12, y - 9, 6, 14, '#5c5f62', '#8a9295'); box(x + 6, y - 9, 6, 14, '#5c5f62', '#8a9295'); for (const dx of [-12, -8, 6, 10]) px(O, x + dx, y - 11, 2, 2); },
+    church(x, y) { box(x - 8, y - 3, 13, 9, '#c4a882', '#e3d9c3'); roof(x - 9, y - 4, 15, '#5c5f62'); box(x + 5, y - 12, 5, 18, '#c4a882', '#e3d9c3'); px(O, x + 7, y - 18, 1, 5); px(O, x + 5, y - 16, 5, 1); },
+    station(x, y) { box(x - 10, y - 3, 13, 7, '#c4a882', '#e3d9c3'); roof(x - 11, y - 4, 15, '#2a4258'); box(x + 6, y - 11, 6, 7, '#5c5f62'); px(O, x + 7, y - 4, 1, 8); px(O, x + 10, y - 4, 1, 8); for (let k = -13; k < 14; k += 3) px('#7a6248', x + k, y + 6, 2, 3); px(O, x - 13, y + 6, 27, 1); px(O, x - 13, y + 8, 27, 1); },
+  };
+  const DIM = '#2a3b2a';
+  objs.forEach((o, i) => {
+    const x = xs[i], y = oy[i];
+    g.fillStyle = 'rgba(14,13,12,0.25)'; g.beginPath(); g.ellipse(x + 2, y + 6, 14, 4, 0, 0, Math.PI * 2); g.fill(); // stín
+    if (fog(i)) { blob(x, y, 12, 7, DIM); px('#4f6640', x - 1, y - 3, 3, 5); px('#4f6640', x - 1, y + 3, 3, 1); } // neznámá kóta: jen otazník
+    else (SYM[o.id] || SYM.quarry)(x, y);
+    if (own[i] != null) flag(own[i], x + 15, y - 6);
+    if (i === curIdx) { g.strokeStyle = '#d98f3f'; g.lineWidth = 2; g.strokeRect(x - 20, y - 21, 40, 34); }
   });
-  for (const gun of roster.guns || []) { const i = objs.findIndex((o) => o.id === gun.id); if (i < 0) continue; const x = xs[i] - 30, y = oy[i] + 10; px('#0e0d0c', x - 5, y, 11, 3); px(gun.destroyed ? '#7e3b2a' : '#5c5f62', x - 2, y - 3, 9, 3); }
+  for (const gun of roster.guns || []) { const i = objs.findIndex((o) => o.id === gun.id); if (i < 0) continue; const x = xs[i] - 24, y = oy[i] + 8; px(O, x - 5, y, 11, 3); px(gun.destroyed ? '#7e3b2a' : '#5c5f62', x - 2, y - 3, 9, 3); }
   for (const m of roster.mines || []) { if (m.status !== 'blown' || !m.blown) continue; const i = objs.findIndex((o) => o.id === m.id); const x = xs[Math.max(0, i)] + 30; const y = Math.round(lineY(x) + (m.faction === 0 ? 16 : -16)); g.fillStyle = '#1d2a1f'; g.beginPath(); g.ellipse(x, y, 9, 5, 0, 0, Math.PI * 2); g.fill(); g.strokeStyle = '#8a9a62'; g.stroke(); }
-  drawIcons({});
-  const imgs = {};
-  let left = objs.length;
-  for (const o of objs) {
-    loadImage(`/assets/props/map_${o.id}.png`).then((im) => { imgs[o.id] = im; }).catch(() => {}).finally(() => { if (--left === 0) drawIcons(imgs); });
-  }
 
   // DOM: popisky kót nad mapou (ostré písmo, % pozice) a seznam pod mapou
   const wrap = document.createElement('div'); wrap.className = 'camp-wrap';
@@ -84,7 +96,7 @@ export function renderCampaign(root, roster, theme, esc) {
     const t = document.createElement('span');
     t.className = 'camp-lbl' + (i === curIdx ? ' now' : own[i] == null && i > curIdx ? ' fog' : '');
     t.textContent = own[i] == null && i > curIdx ? '???' : o.name.replace(/^the /i, '');
-    t.style.left = `${(xs[i] / W) * 100}%`; t.style.top = `${((oy[i] + (i % 2 ? 27 : -44)) / H) * 100}%`; // střídavě nad a pod ikonou, ať se sousední popisky nepřekrývají
+    t.style.left = `${(xs[i] / W) * 100}%`; t.style.top = `${((oy[i] + (i % 2 ? 16 : -34)) / H) * 100}%`; // střídavě nad a pod ikonou, ať se sousední popisky nepřekrývají
     wrap.appendChild(t);
   });
   const fac = (f) => theme.factions[f].name.replace('The ', '');
