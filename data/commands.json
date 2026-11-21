@@ -484,5 +484,17 @@
     "cmd": "dog",
     "handle": "lewis_edwardss",
     "_note": "Patreon Officers' Mess (2026-11-21): Trench Dog, plemeno a jméno losuje hra"
+  },
+  {
+    "id": "star-viti_w02-20261121",
+    "cmd": "star",
+    "handle": "viti_w02",
+    "_note": "Patreon Officers' Mess (2026-11-21): hvězda + stužka"
+  },
+  {
+    "id": "dog-viti_w02-20261121",
+    "cmd": "dog",
+    "handle": "viti_w02",
+    "_note": "Patreon Officers' Mess (2026-11-21): Trench Dog, plemeno a jméno losuje hra"
   }
 ]
