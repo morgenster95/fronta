@@ -1481,7 +1481,8 @@ test('Trench Dog: pes se jménem a plemenem, příběhy jen u vojáka se psem, n
   assert.equal(grantDog(s, theme, story, 'dogman3'), null, 'druhého psa nedostane');
   const owner = s.soldiers.find((x) => x.handle === 'dogman3');
   assert.match(owner.record.at(-1)[1], new RegExp(r.dog.name));
-  for (let d = 0; d < 6; d++) dailyTick(s, theme, story);
+  const often = { ...theme, dog: { ...theme.dog, storyChance: 1 } }; // v testu každý den, ať je co kontrolovat
+  for (let d = 0; d < 6; d++) dailyTick(s, often, story);
   const dogLines = (x) => x.record.filter((e) => e[1].includes(r.dog.name)).length;
   assert.ok(dogLines(owner.status === 'fallen' ? owner : s.soldiers.find((x) => x.handle === 'dogman3')) >= 2, 'pes má v deníku příběhy');
   assert.ok(s.soldiers.filter((x) => x.handle !== 'dogman3').every((x) => !x.record.some((e) => e[1].includes(r.dog.name))), 'ostatní vojáci příběhy psa nemají');
