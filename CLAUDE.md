@@ -152,6 +152,7 @@ silné bombardování se smrtí přímým zásahem, spojař proti granátům) je
   nová návštěva stáhne z Firebase jen ~0,2 MB. **Při přidávání dalších velkých souborů do `web/public/` počítej s limitem** (podrobnosti `docs/STATUS.md`, „Známá slabá místa“).
 - **Nic nepublikuj na Instagram bez výslovného souhlasu uživatele** (reel, story, post). Tokeny nikdy nezadávej ani nevypisuj.
 - **Statické posty vždy 1080×1350 (4:5)**, víc místa a pro IG nejlepší: kreslí se v mřížce 216×270 a zvětší ×5 (`marketing/make_posts.py` W, H, K; `make_day.py`, `make_victory.py`).
+- **Na IG nejvýš 5 hashtagů v popisku** (pravidlo uživatele 21. 11.: Instagram víc nedovolí).
 - **V popiscích na IG hráče neoznačovat** (žádné @jméno; hromadné označování může IG vyhodnotit jako spam). Platí i pro hrdinu kóty: v popisku je jeho jméno
   bez zavináče. **Výjimka (uživatel 17. 11.):** autora díla, které ve videu použijeme (např. plakáty), v popisku jednou označíme („🎨 Posters by @handle“), ať o tom ví. Označení a jména hráčů patří do hry (web, Gazette) a do videa.
 - **Denní reel i jeho popisek vždy uvádí, kolik hráčů je teď na frontě** (celkem, pak přejezd kamery po první linii Hegemonie a Concordu s počtem každé strany; `tools/day-reel.mjs` věty `army`, `armyH`, `armyC`, `data.army`).
