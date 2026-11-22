@@ -1,0 +1,20 @@
+{
+ "seconds": 60,
+ "auto": true,
+ "_": "PROVIZORNÍ, doplní se po novinách",
+ "drums": ["day", "fell", "wire", "joined", "cta"],
+ "lines": [
+  [0.3, "Day thirteen.", "day"],
+  [2.5, "Snow fell on the front last night. By dawn the wire was white.", "snow"],
+  [8.0, "Casualties will be filled in after the Gazette.", "fell"],
+  [12.0, "Why will be filled in.", "why"],
+  [17.0, "The race for the Bone Quarry goes on.", "race"],
+  [22.0, "The Hegemony wire is torn in twenty-eight places.", "wire"],
+  [27.0, "Tonight the wiring parties go out.", "wire2"],
+  [31.0, "New soldiers came up the line yesterday.", "joined"],
+  [35.0, "Soldiers now hold the front.", "army"],
+  [38.0, "Hegemony.", "armyH"],
+  [40.0, "Concord.", "armyC"],
+  [42.0, "Comment WIRE and your soldier crawls out tonight to mend the wire.", "cta"]
+ ]
+}

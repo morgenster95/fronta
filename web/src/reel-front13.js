@@ -1,0 +1,146 @@
+// Day reel Day 13 (22. 11. 2026, noviny 22. 11. 13:00 UTC; /?reel=front13&vacant=700, jen vývojový server), na výšku:
+// první sníh na mapě (zima, web/src/winter.js) → ztráty a proč → příběh dne → patroni → závod o Bone Quarry
+// → potrhaný drát Hegemonie (filmová scéna: plazení se světlicí, zatloukání kůlu) → počty hráčů s přejezdem po linii → výzva WIRE.
+// Jednotný titulek dne (dayTitle z reel-kit, pravidlo 21. 11.). Čísla: marketing/reels/front13.data.json, hlas: front13.script.json.
+import { CSS as BASE } from './reel-day1.js';
+import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, slam, clamp01, win, easeOut, tagAt, dayTitle } from './reel-kit.js';
+import { makeWireScenes } from './cinema-wire.js';
+import { makeRaceScenes } from './cinema-race.js';
+import { makeVertCine } from './cine-vert.js';
+import script from '../../marketing/reels/front13.script.json';
+import D from '../../marketing/reels/front13.data.json';
+
+const files = import.meta.glob('../../marketing/reels/front13.vo.json', { eager: true, import: 'default' });
+
+const CSS = `${BASE}${FX_CSS}
+#f13-wire, #f13-rc, #f13-cv { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; opacity: 0; }
+.f13-tag { position: absolute; transform: translate(-50%, -100%); font-family: 'Silkscreen', monospace; font-size: 24px; padding: 6px 12px; background: rgba(14,13,12,0.92); border: 3px solid #d98f3f; white-space: nowrap; color: #e3d9c3; opacity: 0; text-align: center; }
+.f13-tag small { display: block; font-family: 'VT323', monospace; font-size: 26px; color: #c9b99a; }
+.f13-panel { position: absolute; left: 7%; right: 7%; background: rgba(14,13,12,0.93); border: 3px solid #524a3f; padding: 14px 16px; opacity: 0; }
+.f13-panel .t { font-family: 'Silkscreen', monospace; font-size: 20px; color: #d98f3f; text-align: center; letter-spacing: 0.08em; margin-bottom: 8px; }
+.f13-panel .row { display: flex; justify-content: space-between; align-items: baseline; font-family: 'Silkscreen', monospace; font-size: 22px; margin: 4px 0; color: #e3d9c3; }
+.f13-panel .row b { font-size: 36px; font-weight: 400; } .f13-panel .row b.r { color: #c8553d; }
+.f13-panel .bar { height: 16px; background: #1c1a17; border: 2px solid #524a3f; position: relative; margin-bottom: 6px; } .f13-panel .bar i { position: absolute; left: 0; top: 0; bottom: 0; }
+.f13-panel .note { font-family: 'VT323', monospace; font-size: 28px; color: #c9b99a; text-align: center; margin-top: 8px; }
+#f13-fell { top: 7%; border-color: #a33b2b; } #f13-race { top: 44%; } #f13-wirep { top: 8%; border-color: #8a9295; }
+#f13-big { position: absolute; left: 0; right: 0; top: 26%; text-align: center; font-family: 'Silkscreen', monospace; color: #e3d9c3; text-shadow: 6px 6px 0 #0e0d0c; opacity: 0; }
+#f13-big .k { font-size: 30px; letter-spacing: 0.12em; color: #c9b99a; } #f13-big b { display: block; font-size: 120px; font-weight: 400; color: #c9c26a; line-height: 1; } #f13-big .p { font-size: 34px; color: #d98f3f; margin-top: 10px; }
+#f13-side { position: absolute; left: 0; right: 0; top: 58%; text-align: center; font-family: 'Silkscreen', monospace; opacity: 0; }
+#f13-side span { display: inline-block; padding: 10px 18px; background: rgba(14,13,12,0.92); border: 3px solid #8a9295; font-size: 30px; color: #e3d9c3; } #f13-side span b { font-weight: 400; font-size: 50px; margin-left: 10px; }
+#f13-cta { position: absolute; left: 6%; right: 6%; top: 46%; text-align: center; background: rgba(14,13,12,0.94); border: 4px solid #d98f3f; padding: 16px; opacity: 0; }
+#f13-cta .big { font-family: 'Silkscreen', monospace; font-size: 44px; color: #d98f3f; line-height: 1.1; } #f13-cta .sm { font-family: 'VT323', monospace; font-size: 30px; color: #e3d9c3; margin-top: 6px; }
+#f13-cta .url { font-family: 'Silkscreen', monospace; font-size: 24px; color: #e3d9c3; margin-top: 10px; border-top: 2px solid #524a3f; padding-top: 10px; }
+`;
+
+export async function startDay13Reel({ cam, map, soldiers, tex, anims }) {
+  let vo = files['../../marketing/reels/front13.vo.json'];
+  if (!vo) {
+    let c = 0;
+    vo = { lines: script.lines.map(([at, text, id]) => { const s = Math.max(at, c), d = text.length / 15 + 0.2; c = s + d + 0.25; return [s, d, text, id]; }) };
+    vo.seconds = c + 2.4;
+  }
+  const C = cues(vo);
+  const at = C.at, END = vo.seconds;
+  const T = map.tile;
+  const tt = Object.fromEntries(script.lines.map((l) => [l[2], at(l[2])]));
+  const has = (id) => tt[id] != null;
+  const by = (h) => soldiers.find((s) => s.handle === h && s.slot);
+  const mid = ((map.front[0] + map.front[1]) / 2) * T;
+  const front = (f) => soldiers.filter((s) => s.faction === f && s.slot?.line === 'front' && !s.vacant).sort((a, b) => a.x - b.x);
+  const fH = front(0), fC = front(1);
+  const hRef = fH[Math.floor(fH.length * 0.45)] || soldiers[0];
+  const cRef = fC[Math.floor(fC.length / 2)] || soldiers[0];
+  const story = D.story ? by(D.story.handle) : null;
+  const pats = (D.patrons || []).map((p) => ({ ...p, s: by(p.handle) })).filter((p) => p.s);
+  // kamera
+  const K = [];
+  K.push([0, hRef.x - 120, mid, 1.0, 'cut'], [tt.snow - 0.01, hRef.x - 60, mid, 1.05]); // sněžení nad frontou zdálky
+  K.push([tt.snow, hRef.x - 80, hRef.y + 40, 2.2, 'cut'], [tt.fell - 0.01, hRef.x + 80, hRef.y + 60, 2.4]); // sníh v zemi nikoho
+  if (story && has('story')) K.push([tt.story, story.x, story.y - 16, 4.6, 'cut'], [tt.bonds - 0.01, story.x + 8, story.y - 16, 5.0]);
+  const pSpan = has('bonds') ? (tt.race - tt.bonds) / Math.max(1, pats.length) : 0;
+  pats.forEach((p, i) => { const t0 = tt.bonds + i * pSpan; K.push([t0, p.s.x - 6, p.s.y - 16, 4.8, 'cut'], [t0 + pSpan - 0.01, p.s.x + 6, p.s.y - 16, 5.2]); });
+  K.push([tt.race, cRef.x, mid, 1.2, 'cut'], [tt.wire - 0.01, cRef.x + 300, mid, 1.25]);
+  K.push([tt.joined, cRef.x, mid, 0.9, 'cut'], [tt.armyH - 0.01, cRef.x + 200, mid, 0.85]);
+  if (fH.length) K.push([tt.armyH, fH[0].x, fH[0].y - 20, 1.6, 'cut'], [tt.armyC - 0.01, fH.at(-1).x, fH.at(-1).y - 20, 1.6]);
+  if (fC.length) K.push([tt.armyC, fC[0].x, fC[0].y - 20, 1.6, 'cut'], [tt.cta - 0.01, fC.at(-1).x, fC.at(-1).y - 20, 1.6]);
+  K.push([tt.cta, hRef.x, hRef.y + 60, 2.0, 'cut'], [END, hRef.x + 60, hRef.y + 70, 2.1]);
+  const camAt = camPath(K);
+  const sub = subtitles(vo);
+  const fx = transitions([[tt.snow, 'whip'], [tt.fell, 'black', 0.4], ...(has('story') ? [[tt.story, 'whip']] : []), ...(has('bonds') ? [[tt.bonds, 'whip']] : []), [tt.race, 'black', 0.4], [tt.wire, 'flash'], [tt.joined, 'flash'], [tt.armyH, 'whip'], [tt.armyC, 'whip'], [tt.cta, 'black', 0.4]]);
+  const SFX = [[tt.day, 'drum', 0], [tt.fell, 'drum', 0], [tt.wire, 'drum', 0], [tt.joined, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]];
+
+  document.body.classList.add('reel');
+  const style = document.createElement('style');
+  style.textContent = CSS;
+  document.head.appendChild(style);
+  const root = document.createElement('div');
+  root.id = 'rd';
+  root.innerHTML = `
+    <div id="f13-fell" class="f13-panel"><div class="t">DAY ${D.label} · CASUALTIES</div><div class="row"><span>HEGEMONY</span><b class="r">${D.fell[0]} FELL</b></div><div class="row"><span>CONCORD</span><b class="r">${D.fell[1]} FELL</b></div><div class="note">${D.why || ''}</div></div>
+    ${story ? `<div id="f13-story" class="f13-tag">${D.story.name.toUpperCase()}<small>${D.story.note}</small></div>` : ''}
+    ${pats.map((p, i) => `<div id="f13-p${i}" class="f13-tag">★ ${p.name.toUpperCase()}<small>${p.note} · @${p.handle}</small></div>`).join('')}
+    <div id="f13-race" class="f13-panel"><div class="t">THE RACE FOR THE BONE QUARRY</div>
+      <div class="row"><span>${D.race[1] >= D.race[0] ? 'CONCORD' : 'HEGEMONY'}</span><b>${Math.max(...D.race)}</b></div><div class="bar"><i style="width:${Math.max(...D.race) / 3}%;background:${D.race[1] >= D.race[0] ? '#8a8a52' : '#8f8a82'}"></i></div>
+      <div class="row"><span>${D.race[1] >= D.race[0] ? 'HEGEMONY' : 'CONCORD'}</span><b>${Math.min(...D.race)}</b></div><div class="bar"><i style="width:${Math.min(...D.race) / 3}%;background:${D.race[1] >= D.race[0] ? '#8f8a82' : '#8a8a52'}"></i></div>
+      <div class="note">first to 300 new soldiers digs a mine under the enemy line</div></div>
+    <div id="f13-wirep" class="f13-panel"><div class="t">THE WIRE</div>
+      <div class="row"><span>HEGEMONY</span><b class="r">${D.wire[0]}%</b></div><div class="bar"><i style="width:${D.wire[0]}%;background:#8f8a82"></i></div>
+      <div class="row"><span>CONCORD</span><b>${D.wire[1]}%</b></div><div class="bar"><i style="width:${D.wire[1]}%;background:#8a8a52"></i></div>
+      <div class="note">${D.wireNote}</div></div>
+    <div id="f13-big"><div class="k">ON THE FRONT NOW</div><b>0</b><div class="p">+${D.joined[0] + D.joined[1]} yesterday</div></div>
+    <div id="f13-side"><span></span></div>
+    <div id="f13-cta"><div class="big">COMMENT<br>WIRE</div><div class="sm">your soldier crawls out tonight<br>and mends the wire in their sector</div><div class="url">new? comment HEGEMONY or CONCORD · mudandiron.app</div></div>
+    <div id="rd-big"></div>
+    <div id="rd-sub"></div>
+  `;
+  document.body.appendChild(root);
+  const paint = fxLayers(root);
+  const day = dayTitle(root);
+  const $ = (s) => root.querySelector(s);
+  const show = (sel, o) => { const el = $(sel); if (el) el.style.opacity = o; };
+  const wire = makeWireScenes(tex, anims), rc = makeRaceScenes(tex, anims), cv = makeVertCine(tex, anims);
+  for (const [c, id] of [[wire, 'f13-wire'], [rc, 'f13-rc'], [cv, 'f13-cv']]) { c.canvas.id = id; root.prepend(c.canvas); }
+
+  function frame(t) {
+    const f = fx(t);
+    const [x, y, z] = camAt(t);
+    cam.set(x, y, z * (1 + 0.05 * f.punch));
+    for (const q of soldiers) if (q.sprite && q.vacant && q.sprite.alpha < 1) q.sprite.alpha = 1; // žádní duchové
+    // filmové záběry: hroby (ztráty), lazaret (proč), drát v noci (plazení se světlicí, kůl), posily
+    const film = t >= tt.fell && t < tt.why ? ['rc', 'graves', t - tt.fell + 1, { side: D.fell[1] >= D.fell[0] ? 1 : 0, n: D.fell[0] + D.fell[1], sub: `DAY ${D.label}` }]
+      : t >= tt.why && t < (has('story') ? tt.story : has('bonds') ? tt.bonds : tt.race) ? ['cv', 'ward', t - tt.why + 1, {}]
+      : t >= tt.wire && t < tt.wire2 ? ['wire', 'nml', t - tt.wire + 0.3, { flareAt: 1.4 }]
+      : t >= tt.wire2 && t < tt.joined ? ['wire', 'stake', t - tt.wire2 + 0.3, {}]
+      : t >= tt.joined && t < tt.army ? ['rc', 'march', t - tt.joined + 1, { side: 1, n: D.joined[0] + D.joined[1], flag: '+' + (D.joined[0] + D.joined[1]) }] : null;
+    if (film?.[0] === 'wire') wire.draw(film[1], film[2], film[3]);
+    if (film?.[0] === 'rc') rc.draw(film[1], film[2], film[3]);
+    if (film?.[0] === 'cv') cv.draw(film[1], film[2], film[3]);
+    show('#f13-wire', film?.[0] === 'wire' ? 1 : 0); show('#f13-rc', film?.[0] === 'rc' ? 1 : 0); show('#f13-cv', film?.[0] === 'cv' ? 1 : 0);
+    paint({ ...f, black: Math.max(f.black, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) }, 0);
+    day(t, { n: D.label, sub: 'THE FIRST SNOW', from: 0.2, to: tt.snow - 0.1, subAt: 1.1 });
+    slam($('#f13-fell'), t, tt.why + 0.2, has('story') ? tt.story - 0.05 : tt.race - 0.05, 1.3, -2);
+    if (story) tagAt($('#f13-story'), { x: story.x, y: story.y - 30 }, cam, win(t, tt.story + 0.2, tt.bonds - 0.05, 0.12), 0);
+    pats.forEach((p, i) => { const t0 = tt.bonds + i * pSpan; tagAt($(`#f13-p${i}`), { x: p.s.x, y: p.s.y - 30 }, cam, win(t, t0 + 0.15, t0 + pSpan - 0.05, 0.1), 0); });
+    slam($('#f13-race'), t, tt.race + 0.2, tt.wire - 0.05, 1.3, -2);
+    slam($('#f13-wirep'), t, tt.wire + 0.2, tt.wire2 - 0.05, 1.3, -2);
+    show('#f13-big', t >= tt.army && t < tt.armyH ? 1 : 0);
+    $('#f13-big b').textContent = Math.round((D.army[0] + D.army[1]) * easeOut(clamp01((t - tt.army) / 1.2))).toLocaleString('en-US');
+    const side = t >= tt.armyH && t < tt.cta ? (t < tt.armyC ? 0 : 1) : -1;
+    show('#f13-side', side >= 0 ? 1 : 0);
+    if (side >= 0) $('#f13-side span').innerHTML = `${side ? 'CONCORD' : 'HEGEMONY'}<b>${D.army[side].toLocaleString('en-US')}</b>`;
+    slam($('#f13-cta'), t, tt.cta + 0.2, END - 1.3, 1.25, -2);
+    const logo = t >= END - 1.3;
+    const bigEl = $('#rd-big');
+    bigEl.style.opacity = logo ? Math.min(1, (t - END + 1.3) / 0.3) : 0;
+    if (logo && !bigEl.dataset.on) { bigEl.dataset.on = 1; bigEl.className = 'logo'; bigEl.innerHTML = '<span>MUD <i>&amp;</i> IRON</span><span>@mudandiron · mudandiron.app</span>'; }
+    const s = sub(t);
+    const subEl = $('#rd-sub');
+    if (s && !logo && t >= tt.snow) {
+      subEl.style.opacity = 1;
+      const top = film && (film[1] === 'march' || film[1] === 'nml');
+      subEl.style.top = top ? '9%' : 'auto'; subEl.style.bottom = top ? 'auto' : '13%';
+      if (subEl.dataset.text !== s) { subEl.dataset.text = s; subEl.innerHTML = `<span>${s}</span>`; }
+    } else subEl.style.opacity = 0;
+  }
+  window.__reel = { seconds: END, sfx: SFX, frame, ready: true };
+}
