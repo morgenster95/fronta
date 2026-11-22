@@ -61,7 +61,7 @@ export async function initConvoy({ world, anchor, map, openX0, openX1, V = '' })
         if (!seen) continue;
         r.sp.x = Math.round(r.x);
         r.sp.y = y + 4 + (Math.floor(now / (r.horse ? 180 : 120)) % 2); // houpání po rozbité cestě
-        if (!r.horse && Math.random() < dt / 160) smoke.push({ x: r.sp.x - r.dir * 26, y: r.sp.y - 8, life: 900 });
+        if (!r.horse && Math.random() < dt / 160) smoke.push({ x: r.sp.x - r.dir * 28, y: r.sp.y - 6, life: 900 }); // výfuk vzadu u země
       }
       puffs.clear();
       for (let i = smoke.length - 1; i >= 0; i--) {
