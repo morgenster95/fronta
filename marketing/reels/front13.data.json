@@ -1,13 +1,19 @@
 {
-  "_": "Day reel Day 13 – PROVIZORNÍ čísla, doplní se z novin 22. 11. 13:00 UTC",
+  "_": "Day reel Day 13 – noviny 22. 11. 13:00 UTC (state.day 14); nováčci 21. 11. 00:00–22. 11. 00:00 UTC z gitu",
   "label": 13,
-  "fell": [0, 0],
-  "why": "",
-  "story": null,
-  "patrons": [],
-  "race": [41, 40],
-  "wire": [58, 69],
-  "wireNote": "the Hegemony wire is torn in 28 places",
-  "joined": [0, 0],
-  "army": [948, 1110]
+  "fell": [39, 49],
+  "why": "Concord medics reached 76% · Hegemony 100%",
+  "story": { "handle": "blopa_4_you", "name": "Jakub You ✝", "note": "killed on watch at R-F10 · @blopa_4_you" },
+  "patrons": [
+    { "handle": "countdooku04", "name": "Tobias Countdooku", "note": "Officers' Mess" },
+    { "handle": "hawkenram", "name": "Pavel Hawkenram", "note": "Officers' Mess" },
+    { "handle": "lewis_edwardss", "name": "Albin Edwardss", "note": "Officers' Mess" },
+    { "handle": "viti_w02", "name": "Leopold \"Owl\" Viti", "note": "Officers' Mess" },
+    { "handle": "rmr7015", "name": "Dietrich Rmr", "note": "Field Post" }
+  ],
+  "race": [59, 61],
+  "wire": [60, 70],
+  "wireNote": "Hegemony: 27 sections torn apart",
+  "joined": [49, 49],
+  "army": [966, 1131]
 }

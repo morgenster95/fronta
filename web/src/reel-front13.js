@@ -61,8 +61,10 @@ export async function startDay13Reel({ cam, map, soldiers, tex, anims }) {
   pats.forEach((p, i) => { const t0 = tt.bonds + i * pSpan; K.push([t0, p.s.x - 6, p.s.y - 16, 4.8, 'cut'], [t0 + pSpan - 0.01, p.s.x + 6, p.s.y - 16, 5.2]); });
   K.push([tt.race, cRef.x, mid, 1.2, 'cut'], [tt.wire - 0.01, cRef.x + 300, mid, 1.25]);
   K.push([tt.joined, cRef.x, mid, 0.9, 'cut'], [tt.armyH - 0.01, cRef.x + 200, mid, 0.85]);
-  if (fH.length) K.push([tt.armyH, fH[0].x, fH[0].y - 20, 1.6, 'cut'], [tt.armyC - 0.01, fH.at(-1).x, fH.at(-1).y - 20, 1.6]);
-  if (fC.length) K.push([tt.armyC, fC[0].x, fC[0].y - 20, 1.6, 'cut'], [tt.cta - 0.01, fC.at(-1).x, fC.at(-1).y - 20, 1.6]);
+  // přejezd po linii, ale ne až na kraj otevřené fronty (tam je okraj mapy)
+  const pan = (l) => [l[Math.floor(l.length * 0.08)] || l[0], l[Math.floor(l.length * 0.92)] || l.at(-1)];
+  if (fH.length) { const [a, b] = pan(fH); K.push([tt.armyH, a.x, a.y - 20, 1.6, 'cut'], [tt.armyC - 0.01, b.x, b.y - 20, 1.6]); }
+  if (fC.length) { const [a, b] = pan(fC); K.push([tt.armyC, a.x, a.y - 20, 1.6, 'cut'], [tt.cta - 0.01, b.x, b.y - 20, 1.6]); }
   K.push([tt.cta, hRef.x, hRef.y + 60, 2.0, 'cut'], [END, hRef.x + 60, hRef.y + 70, 2.1]);
   const camAt = camPath(K);
   const sub = subtitles(vo);

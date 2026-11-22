@@ -1,72 +1,21 @@
 {
  "seconds": 60,
  "auto": true,
- "_": "PROVIZORNÍ, doplní se po novinách",
- "drums": [
-  "day",
-  [],
-  "cta"
- ],
+ "drums": ["day", [], "cta"],
  "lines": [
-  [
-   0.3,
-   "Day thirteen.",
-   "day"
-  ],
-  [
-   2.5,
-   "Snow fell on the front last night. By dawn the wire was white.",
-   "snow"
-  ],
-  [
-   8.0,
-   "Casualties will be filled in after the Gazette.",
-   "fell"
-  ],
-  [
-   12.0,
-   "Why will be filled in.",
-   "why"
-  ],
-  [
-   17.0,
-   "The race for the Bone Quarry goes on.",
-   "race"
-  ],
-  [
-   22.0,
-   "The Hegemony wire is torn in twenty-eight places.",
-   "wire"
-  ],
-  [
-   27.0,
-   "Tonight the wiring parties go out.",
-   "wire2"
-  ],
-  [
-   31.0,
-   "New soldiers came up the line yesterday.",
-   "joined"
-  ],
-  [
-   35.0,
-   "Soldiers now hold the front.",
-   "army"
-  ],
-  [
-   38.0,
-   "Hegemony.",
-   "armyH"
-  ],
-  [
-   40.0,
-   "Concord.",
-   "armyC"
-  ],
-  [
-   42.0,
-   "Comment WIRE and your soldier crawls out tonight to mend the wire.",
-   "cta"
-  ]
+  [0.3, "Day thirteen.", "day"],
+  [2.6, "The first snow fell on the front last night. By dawn the wire was white.", "snow"],
+  [0, "Eighty-eight fell today. Thirty-nine Hegemony, forty-nine Concord.", "fell"],
+  [0, "The Grey Mill gun hit eleven Concord men. With forty-six wounded on stretchers, Concord medics reached only three in four.", "why"],
+  [0, "Jakub You was killed on watch. His rifle was still on the parapet, aimed at the spot the shot came from.", "story"],
+  [0, "Five soldiers bought War Bonds today. The front stands in their debt.", "bonds"],
+  [0, "The race for the Bone Quarry is close. Concord sixty-one, Hegemony fifty-nine.", "race"],
+  [0, "Before winter, the wire must be mended. The Hegemony wire is torn in twenty-seven places.", "wire"],
+  [0, "Tonight the wiring parties go out.", "wire2"],
+  [0, "Ninety-eight new soldiers came up the line yesterday.", "joined"],
+  [0, "Two thousand and ninety-seven now hold the front.", "army"],
+  [0, "Nine hundred and sixty-six Hegemony.", "armyH"],
+  [0, "One thousand one hundred and thirty-one Concord.", "armyC"],
+  [0, "Comment WIRE and your soldier crawls out tonight. New here? Comment HEGEMONY or CONCORD.", "cta"]
  ]
 }
