@@ -1231,6 +1231,28 @@
       "caption": "",
       "publishAt": "2026-11-22T13:30:00Z",
       "_note": "Story k reel-wire2 (video 54 s, pod 60 s)."
+    },
+    {
+      "id": "howto-role",
+      "type": "carousel",
+      "files": [
+        "howto_role_1.jpg",
+        "howto_role_2.jpg",
+        "howto_role_3.jpg"
+      ],
+      "publishAt": "2026-11-23T09:00:00Z",
+      "caption": "HOW TO CHANGE YOUR ROLE 🎖\n\nYou asked, so here it is. Swipe →\n\n1. Open mudandiron.app (link in bio) and find your @name\n2. Tap THIS IS ME: CLAIM and sign in with Google\n3. Comment your code (ENLIST-XXXX) under any of our posts\n4. Your soldier is yours. Tap REQUEST A TRANSFER and pick a new role\n\nThe first transfer comes through in minutes. After that, one every 7 days. If your soldier falls, the heir starts in the new role.\n\nSave this post for later.\n\n#pixelart #indiegame",
+      "_note": "Návod claim + převelení (karusel 3×), schváleno uživatelem 22. 11., vydat 23. 11. 9:00 UTC."
+    },
+    {
+      "id": "story-howto-role",
+      "type": "story",
+      "files": [
+        "story_howto-role.jpg"
+      ],
+      "caption": "",
+      "publishAt": "2026-11-23T09:10:00Z",
+      "_note": "Story k položce howto-role (pravidlo: ke každé novince i story). "
     }
   ]
 }
