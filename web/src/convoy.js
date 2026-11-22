@@ -2,12 +2,19 @@
 // rozježděná cesta a po ní občas projede nákladní auto strany (PixelLab: props/truck_heg|truck_con) nebo povoz s koněm (cart_horse).
 // Po každé cestě jezdí pořád několik vozidel tam i zpět (jedno zhruba na 700 px fronty), kreslí se jen to, co je v záběru.
 // Pohyb v kódu: houpání o 1 px, kouř z výfuku (auto), kroky koně (povoz). Náhled: zoom na zálohy kterékoli strany.
-import { Container, Graphics, Sprite } from 'pixi.js';
+import { Container, Graphics, Rectangle, Sprite, Texture } from 'pixi.js';
 import { loadTexture } from './assets.js';
 
 export async function initConvoy({ world, anchor, map, openX0, openX1, V = '' }) {
   const load = (n) => loadTexture(`/assets/props/${n}.png${V}`).catch(() => null);
-  const [truckH, truckC, cart] = await Promise.all(['truck_heg', 'truck_con', 'cart_horse'].map(load));
+  // animace z PixelLabu (22. 11.): pás 9 snímků vedle sebe, točí se kola, kůň kráčí; bez pásu statický obrázek
+  const sheet = async (n) => {
+    const t = await load(`${n}_anim`);
+    if (!t) { const one = await load(n); return one ? [one] : null; }
+    const k = 9, w = t.width / k;
+    return Array.from({ length: k }, (_, i) => new Texture({ source: t.source, frame: new Rectangle(i * w, 0, w, t.height) }));
+  };
+  const [truckH, truckC, cart] = await Promise.all(['truck_heg', 'truck_con', 'cart_horse'].map(sheet));
   if (!truckH || !truckC) return { update() {} };
   const layer = new Container();
   world.addChildAt(layer, world.getChildIndex(anchor) + 1);
@@ -41,17 +48,19 @@ export async function initConvoy({ world, anchor, map, openX0, openX1, V = '' })
     const n = Math.max(4, Math.round(span / 700));
     for (let i = 0; i < n; i++) {
       const horse = cart && i % 3 === 2;
-      const sp = new Sprite(horse ? cart : f === 0 ? truckH : truckC);
+      const frames = horse ? cart : f === 0 ? truckH : truckC;
+      const sp = new Sprite(frames[0]);
       const dir = (i + f) % 2 ? 1 : -1; // obrázky míří doprava
       sp.anchor.set(0.5, 1);
       sp.scale.x = dir;
       layer.addChild(sp);
-      fleet.push({ sp, f, dir, horse, v: horse ? 0.014 : 0.028, x: openX0 + ((i + 0.5 + f * 0.3) / n) * span });
+      fleet.push({ sp, f, dir, horse, frames, ph: i * 3, v: horse ? 0.014 : 0.028, x: openX0 + ((i + 0.5 + f * 0.3) / n) * span });
     }
   }
   layer.addChild(puffs);
   return {
     roadY,
+    fleet,
     update(now, dt, view) {
       dt = Math.min(dt, 100);
       for (const r of fleet) {
@@ -61,7 +70,8 @@ export async function initConvoy({ world, anchor, map, openX0, openX1, V = '' })
         r.sp.visible = seen;
         if (!seen) continue;
         r.sp.x = Math.round(r.x);
-        r.sp.y = y + 4 + (Math.floor(now / (r.horse ? 180 : 120)) % 2); // houpání po rozbité cestě
+        r.sp.texture = r.frames[(Math.floor(now / (r.horse ? 120 : 90)) + r.ph) % r.frames.length]; // kola, kopyta
+        r.sp.y = y + 4;
         if (!r.horse && Math.random() < dt / 160) smoke.push({ x: r.sp.x - r.dir * 28, y: r.sp.y - 6, life: 900 }); // výfuk vzadu u země
       }
       puffs.clear();
