@@ -1133,5 +1133,27 @@
       }
     ],
     "_": "Trench Dog (21. 11.): pes pro Field Post a Officers' Mess; jméno i plemeno losuje hra (200 jmen, uživatel: žádné ruční vybírání); psí příběh v deníku jen občas (12 % dní ≈ jednou za týden); příkazy dog/undog/renameDog; engine/dog.js"
+  },
+  "winter": {
+    "_": "22. 11. 2026 (uživatel): týden 1 sněží + poprašek, týden 2 víc sněhu, týden 3 plná zima; points = [den od start, pokrytí 0..1], mezi body plynule (web/src/winter.js)",
+    "start": "2026-11-22",
+    "points": [
+      [
+        0,
+        0.15
+      ],
+      [
+        7,
+        0.35
+      ],
+      [
+        14,
+        0.6
+      ],
+      [
+        21,
+        0.85
+      ]
+    ]
   }
 }

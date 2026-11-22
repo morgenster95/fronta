@@ -3,6 +3,7 @@ import { Application, Container, Graphics, Rectangle, Sprite, Texture, TextureSo
 import { generateFront, openRange, DIRS, T, connectSite } from '../../engine/mapgen.js';
 import { Camera } from './camera.js';
 import { paintChunk, paintOverview, CHUNK } from './terrain.js';
+import { winterAt, winterFall } from './winter.js';
 import { initUI } from './ui.js';
 import { createLife } from './life.js';
 import { createSound } from './sound.js';
@@ -184,6 +185,7 @@ async function boot() {
     }),
   );
   const loadImg = (path) => loadImage(path).catch(() => null);
+  const winter = (() => { const q = new URLSearchParams(location.search).get('snow'); return q != null ? { snow: +q, on: +q > 0 } : winterAt(theme, roster.day); })(); // zima: pokrytí sněhem podle dne hry
   const propImages = Object.fromEntries(await Promise.all(['tree', 'grave', 'crater_s', 'crater_m', 'crater_water', 'crater_huge'].map(async (k) => [k, await loadImg(`/assets/props/${k}.png${V}`)])));
   const keyFor = (s) => {
     const k = `${theme.factions[s.faction].sprite}_${s.archetype?.id}`;
@@ -192,7 +194,7 @@ async function boot() {
 
   const world = new Container();
   app.stage.addChild(world);
-  const overview = new Sprite(Texture.from(paintOverview(map)));
+  const overview = new Sprite(Texture.from(paintOverview(map, winter.snow)));
   overview.scale.set(map.tile);
   world.addChild(overview);
   const terrainLayer = new Container();
@@ -319,7 +321,7 @@ async function boot() {
     const H = buildHospitals(sites);
     // ke každé nemocnici vede spojovací zákop od vchodu k nejbližšímu zákopu (skutečné dlaždice: později se po něm bude chodit)
     for (const site of H.sites) connectSite(map, site.faction, site.x, site.y + site.entrance * (hospitalSize(site.beds.length).H / 2), site.entrance);
-    overview.texture = Texture.from(paintOverview(map));
+    overview.texture = Texture.from(paintOverview(map, winter.snow));
     world.addChildAt(H.base, world.getChildIndex(terrainLayer) + 1);
     world.addChildAt(H.roofs, world.getChildIndex(overLayer) + 1);
     // lůžka a nosítka podle dat z denního tahu (battlePublic)
@@ -364,6 +366,7 @@ async function boot() {
   const volunteers = placeVolunteers({ soldiers, roster, map, theme, openX0, openX1 });
   const wireFx = await initWire({ world, anchor: terrainLayer, roster, map, anims, theme, openX0, openX1, V, volunteers });
   if (wireFx) propImages.noWire = true;
+  propImages.snow = winter.snow;
   const obsFx = await initObservation({ world, anchor: terrainLayer, over: overLayer, roster, map, theme, tex, openX0, openX1, V }); // pozorovatelna na kótě (odměna)
   if (import.meta.env.DEV && new URLSearchParams(location.search).get('reel') === 'front11') roster.guns = [{ id: 'teaser', faction: 0, cond: 1, destroyed: false, last: null }]; // Day reel 11: ukázka odměny za Grey Mill
   const mineFx = await initMines({ world, anchor: terrainLayer, roster, map, theme, tex, openX0, openX1, V }); // mina z kóty (odměna Bone Quarry, web/src/mine.js)
@@ -635,9 +638,13 @@ async function boot() {
   const flash = new Graphics();
   fx.addChild(flash);
   // počasí dne z denního tahu (bez údaje = déšť jako dřív)
-  const wx = new URLSearchParams(location.search).get('wx') || roster.weather;
+  // zima (web/src/winter.js): místo deště sněží, bouře = vánice
+  const wxQ = new URLSearchParams(location.search).get('wx');
+  const wx = wxQ || (winter.on ? winterFall(roster.weather) || 'clear' : roster.weather);
   const raining = !wx || wx === 'rain' || wx === 'storm';
-  const tint = { fog: [0xa39782, 0.13], frost: [0xc4d6e4, 0.07], clear: [0xffe6b0, 0.03] }[wx];
+  const snowing = wx === 'snow' || wx === 'blizzard';
+  const tint = { fog: [0xa39782, 0.13], frost: [0xc4d6e4, 0.07], clear: [0xffe6b0, 0.03], snow: [0xd6e2ec, 0.08], blizzard: [0xdfe8ef, 0.2] }[wx];
+  const flakes = Array.from({ length: wx === 'blizzard' ? 700 : 300 }, () => ({ x: Math.random(), y: Math.random(), v: 0.4 + Math.random() * 0.8, p: Math.random() * 6.28, s: Math.random() < 0.3 ? 4 : 3 }));
   fog.alpha = wx === 'clear' || wx === 'frost' ? 0.5 : 1;
   const drops = Array.from({ length: wx === 'storm' ? 260 : 160 }, () => ({ x: Math.random(), y: Math.random(), v: 0.6 + Math.random() * 0.6 }));
   let flashT = 0, nextFlash = 3000;
@@ -808,6 +815,14 @@ async function boot() {
       rain.moveTo(d.x * W, d.y * H).lineTo(d.x * W - 3, d.y * H + 12 * d.v);
     }
     if (raining) rain.stroke({ color: 0xa39782, alpha: 0.25, width: 1 });
+    if (snowing) for (const f of flakes) {
+      const bl = wx === 'blizzard';
+      f.y += (bl ? 0.006 : 0.0022) * f.v;
+      f.x += (bl ? -0.004 : Math.sin(now * 0.001 + f.p) * 0.0006) * f.v;
+      if (f.y > 1) { f.y = 0; f.x = Math.random() * 1.1; }
+      if (f.x < -0.05) f.x = 1.05;
+      rain.rect(Math.round(f.x * W), Math.round(f.y * H), f.s, f.s).fill({ color: 0xf4f7f8, alpha: 0.7 + 0.3 * f.v / 1.2 });
+    }
     // vzdálené záblesky
     flash.clear();
     nextFlash -= app.ticker.deltaMS;

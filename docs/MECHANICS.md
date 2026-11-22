@@ -540,3 +540,10 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 - **Příkazy** (`data/commands.json`): `{cmd:'dog', handle, breed?, name?}` a `{cmd:'undog', handle}` (`engine/dog.js`). Plemeno náhodně z 5 (`theme.dog.breeds`: airedale, shepherd, jackrussell, collie, dachshund), jméno náhodně ze `story.dogNames` (bez duplicit), obojí jde zadat.
 - **Deník:** při příchodu zápis `dogArrive`; pak jen občas, s šancí 12 % za den ≈ jednou za týden (`theme.dog.storyChance`, uživatel: nemusí být často) příběh psa `dog` (zdravý voják) nebo `dogWard` (raněný), připojí se k dennímu zápisu. **Jen vojáci se psem** (uživatel). Nástupce psa zdědí se zápisem `dogHeir`.
 - **Web:** pes sedí vedle vojáka na mapě (raněný voják → pes leží), sprity `props/dog_<plemeno>_<sit|lie>.png` z PixelLabu (10 generací); na kartě řádek „🐕 jméno, plemeno, trench dog of the House of …“ s obrázkem. Dev náhled `/?dogs=30`.
+
+## 2026-11-22 Zima na mapě (NASAZENO)
+- Pokyn uživatele: 1. týden (od 22. 11.) sněží a padá poprašek, 2. týden víc sněhu, 3. týden plná zima.
+- `theme.winter` = `start` + `points` [den od začátku, pokrytí 0..1]: 0 → 0,15; 7 → 0,35; 14 → 0,6; 21 → 0,85 (mezi body plynule, datum dne = warStart + state.day; `web/src/winter.js`).
+- Vzhled: `terrain.js` přebarví povrch země, pytle (jen horní hrana) a rekvizity sněhovými tóny (paleta 24–26), dno zákopů zůstává bláto, louže zamrznou; přehledová mapa taky. Šum je předpočítaný (+25 % času kreslení bloku).
+- Srážky: v zimě místo deště sněží (vločky), bouře = vánice, jasno = bez sněžení (`winterFall`). Náhled: `?snow=0..1&wx=snow|blizzard`.
+- Zatím jen vzhled, boj ani texty počasí se nemění (návrh do budoucna: mráz zhorší ztráty bez lůžek, zimní texty počasí).

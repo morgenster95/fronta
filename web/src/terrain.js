@@ -8,7 +8,11 @@ export const PAL = [
   '0e0d0c', '1c1a17', '2b2722', '3d3730', '524a3f', '6b6152', '857a68', 'a39782', 'c4b8a0', 'e3d9c3',
   '3a3b2c', '545639', '6f7148', '8c8a5c', '4a4f52', '666d70', '8a9295', '2a3138', '5c2a22', '7e3b2a',
   'a85a36', '9fa640', 'c9c26a', 'd98f3f',
+  // zima (22. 11. 2026): studené sněhové tóny 24–26
+  'eef1f2', 'c9d3d9', '9aa7b1',
 ].map((h) => [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]);
+
+
 
 export const CHUNK = 64; // dlaždic
 
@@ -137,8 +141,65 @@ export function paintChunk(map, cx, cy, images = {}) {
     else if (p.type === 'tree') drawTree(ctx, px, py, p.x * 31 + p.y);
     else if (p.type === 'debris') drawDebris(ctx, px, py, p.x + p.y * 17);
   }
+  const SNOW = images.snow || 0; // zima: 0..1 (web/src/winter.js)
+  if (SNOW > 0) { snowPass(ctx, w, h, ox, oy, g, S, false, SNOW); snowPass(octx, w, h, ox, oy, g, S, true, SNOW); }
   return { base: canvas, over: overCanvas };
 }
+
+const BAY4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+const BY = (x, y) => (BAY4[((y & 3) << 2) | (x & 3)] + 0.5) / 16;
+// ---------- Zima: sníh (přebarví povrch země, pytle a rekvizity; dno zákopu zůstává bláto) ----------
+// šum sněhu spočítaný jednou (dlaždice 512×512 px, opakuje se po 32 dlaždicích mapy): rychlé kreslení i na mobilu
+const SN = 512;
+let snowN = null, snowD = null;
+function snowNoise() {
+  if (snowN) return;
+  snowN = new Float32Array(SN * SN); snowD = new Float32Array(SN * SN);
+  for (let y = 0; y < SN; y++) for (let x = 0; x < SN; x++) {
+    snowN[y * SN + x] = vnoise(x / 6, y / 5, 31) * 0.5 + vnoise(x / 22, y / 22, 32) * 0.35 + BY(x, y) * 0.15;
+    snowD[y * SN + x] = vnoise(x / 10, y / 7, 34) + (BY(x, y) - 0.5) * 0.12;
+  }
+}
+function snowPass(c2, w, h, ox, oy, g, S, over, SNOW) {
+  snowNoise();
+  const im = c2.getImageData(0, 0, w, h), d = im.data;
+  // ušlapáno u zákopů: kolik sousedních dlaždic je zákop (jednou na dlaždici)
+  const tw = Math.ceil(w / S), near = new Uint8Array(tw * Math.ceil(h / S));
+  for (let ty = 0; ty < h / S; ty++) for (let tx = 0; tx < tw; tx++) {
+    const gx = Math.floor(ox / S) + tx, gy = Math.floor(oy / S) + ty;
+    let k = 0;
+    for (const [dx, dy] of [[0, -1], [0, 1], [0, -2], [0, 2], [-1, 0], [1, 0]]) { const u = g(gx + dx, gy + dy); if (u === T.TRENCH || u === T.DUGOUT) k++; }
+    near[ty * tw + tx] = k;
+  }
+  const P = (i) => PAL[i];
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = (y * w + x) * 4;
+    if (d[i + 3] === 0) continue;
+    const wx = ox + x, wy = oy + y, t = g(Math.floor(wx / S), Math.floor(wy / S));
+    const inTr = t === T.TRENCH || t === T.DUGOUT;
+    const lum = (d[i] * 0.3 + d[i + 1] * 0.59 + d[i + 2] * 0.11) / 255;
+    // voda zamrzne
+    if (!inTr && d[i + 2] > d[i] + 8 && lum < 0.45 && SNOW > 0.45) { const q = P(hash2(wx, wy, 41) < 0.2 ? 24 : 25); d[i] = q[0]; d[i + 1] = q[1]; d[i + 2] = q[2]; continue; }
+    if (inTr && !over) { // v zákopu jen poprašek na horní hraně stěny
+      if (SNOW > 0.5 && lum > 0.42 && hash2(wx, wy, 43) < SNOW * 0.5) { const q = P(25); d[i] = q[0]; d[i + 1] = q[1]; d[i + 2] = q[2]; }
+      continue;
+    }
+    const nml = t === T.NML || t === T.WIRE || t === T.CRATER;
+    const bag = t === T.PARAPET;
+    const si = (wy & (SN - 1)) * SN + (wx & (SN - 1));
+    const n = snowN[si];
+    let cover = (0.15 + SNOW * 0.8) * (nml ? 0.85 : 1.05) - near[Math.floor(y / S) * tw + Math.floor(x / S)] * 0.03; // ušlapáno u zákopů, rozryto v zemi nikoho
+    if (bag) { if (lum < 0.66 || SNOW < 0.25) continue; cover = 1; }
+    if (n > cover) continue;
+    // pod sněhem zůstává tvar terénu: světlá místa bílá, stíny modrošedé
+    const drift = snowD[si]; // závěje: plynulé světlé a stínované plochy
+    const ci = lum < 0.16 ? 26 : drift > 0.52 ? 24 : 25;
+    const q = P(cover - n < 0.035 ? 26 : ci);
+    d[i] = q[0]; d[i + 1] = q[1]; d[i + 2] = q[2];
+  }
+  c2.putImageData(im, 0, 0);
+}
+
 
 const WALL = 14; // výška viditelné vzdálené stěny (px)
 const LIP_FROM = 7; // od kterého řádku spodní dlaždice zákopu začíná bližší okraj
@@ -281,7 +342,7 @@ function drawDebris(ctx, px, py, seed) {
 }
 
 // Přehledová textura: 1 px na dlaždici (pro velké oddálení)
-export function paintOverview(map) {
+export function paintOverview(map, snow = 0) {
   const canvas = document.createElement('canvas');
   canvas.width = map.W;
   canvas.height = map.H;
@@ -289,7 +350,12 @@ export function paintOverview(map) {
   const img = ctx.createImageData(map.W, map.H);
   const col = { [T.MUD]: 3, [T.NML]: 2, [T.TRENCH]: 0, [T.PARAPET]: 6, [T.CRATER]: 1, [T.WATER]: 17, [T.WIRE]: 1, [T.DUGOUT]: 0 };
   for (let i = 0; i < map.grid.length; i++) {
-    const p = PAL[col[map.grid[i]] ?? 3];
+    const t = map.grid[i];
+    let p = PAL[col[t] ?? 3];
+    if (snow > 0 && t !== T.TRENCH && t !== T.DUGOUT) { // zima: zem prosvítá podle pokrytí sněhem
+      const x = i % map.W, y = (i / map.W) | 0, nml = t === T.NML || t === T.WIRE || t === T.CRATER;
+      if (vnoise(x / 7, y / 5, 35) * 0.8 + vnoise(x / 2, y / 2, 37) * 0.2 < snow * (nml ? 0.85 : 1.1)) p = PAL[vnoise(x / 9, y / 6, 36) > 0.5 ? 24 : 25];
+    }
     img.data[i * 4] = p[0]; img.data[i * 4 + 1] = p[1]; img.data[i * 4 + 2] = p[2]; img.data[i * 4 + 3] = 255;
   }
   ctx.putImageData(img, 0, 0);
