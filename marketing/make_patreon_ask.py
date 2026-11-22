@@ -1,64 +1,65 @@
 """Patreon post „You decide what comes next“ (22. 11. 2026): patroni navrhují v komentářích další odměnu.
-1920×1080 (mřížka 300×180 ×6, make_patreon_dog.save). Vlevo otázka a výzva, vpravo voják se psem a velký otazník (obecně, bez konkrétních nápadů; uživatel 22. 11.).
+Jen ilustrace bez textu (uživatel 22. 11.): kryt za noci, u stolu s mapou a prázdnými lístky stojí voják Hegemonie a Concordu,
+nad nimi lampa, u stolu pes, na bedně dopisy, nad stolem zlatá hvězda patronů.
+1920×1080 (mřížka 300×180 ×6, make_patreon_dog.save).
 Použití: python marketing/make_patreon_ask.py → marketing/promo/patreon/post_ask_1920x1080.jpg
 """
 import os
 import sys
-from PIL import Image, ImageDraw
+from PIL import ImageDraw
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from make_posts import P, font, sprite  # noqa: E402
+from make_posts import P, sprite, up  # noqa: E402
 from make_patreon_dog import save, dog  # noqa: E402
 from make_patreon import star  # noqa: E402
+from day_art import planks, light, shade, lamp, sandbag_wall, paper  # noqa: E402
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 W, H = 300, 180
 
 
-def flag(d, x, y, col, band):
-    d.rectangle((x, y, x, y + 26), fill=P["ink"])
-    d.rectangle((x + 1, y, x + 17, y + 11), fill=col)
-    d.rectangle((x + 1, y + 4, x + 17, y + 6), fill=band)
-    d.rectangle((x + 1, y + 11, x + 17, y + 11), fill=P["ink"])
-
-
-def chevrons(d, cx, top, n):
-    d.rectangle((cx - 6, top - 1, cx + 6, top + n * 3 + 2), fill=P["ink"])
-    for i in range(n):
-        y = top + i * 3
-        d.line([(cx - 4, y), (cx, y + 2), (cx + 4, y)], fill=(240, 196, 96))
-        d.line([(cx - 4, y + 1), (cx, y + 3), (cx + 4, y + 1)], fill=P["gold"])
-
-
 def main():
+    from PIL import Image
     im = Image.new("RGBA", (W, H), P["dark"] + (255,))
+    planks(im, (0, 0, W, 120), seed=31, vertical=True)          # stěna krytu
+    sandbag_wall(im, (0, 0, W, 14), seed=8)                     # strop z pytlů
+    planks(im, (0, 120, W, H), seed=17, vertical=False)         # podlaha
     d = ImageDraw.Draw(im)
-    # jemná zrnitost pozadí
-    for y in range(0, H, 3):
-        for x in range((y // 3) % 2 * 2, W, 5):
-            d.point((x, y), fill=P["ink"])
-    d.text((14, 16), "PATRONS ONLY", font=font(8), fill=P["gold"])
-    d.text((14, 34), "YOU DECIDE", font=font(14, True), fill=P["white"])
-    d.text((14, 54), "WHAT COMES", font=font(14, True), fill=P["white"])
-    d.text((14, 74), "NEXT", font=font(14, True), fill=P["gold"])
-    d.text((14, 104), "WHAT SHOULD WE ADD", font=font(8), fill=P["pale"])
-    d.text((14, 116), "FOR PATRONS NEXT?", font=font(8), fill=P["pale"])
-    d.rectangle((14, 136, 146, 156), fill=P["rust"], outline=P["gold"])
-    d.text((22, 142), "COMMENT YOUR IDEA", font=font(8, True), fill=P["white"])
-    d.text((14, 164), "MUD AND IRON", font=font(8, True), fill=P["gold"])
-    # vpravo: voják se psem u zákopu a velký otazník nad ním (obecná výzva, bez konkrétních nápadů)
-    d.rectangle((168, 24, 286, 156), fill=P["mud0"], outline=P["mud3"])
-    for x in range(170, 276, 12):  # val z pytlů dole (uvnitř rámu)
-        d.rectangle((x, 140, x + 10, 146), fill=P["sand"], outline=P["ink"])
-    for x in range(176, 270, 12):
-        d.rectangle((x, 147, x + 10, 153), fill=P["bone"], outline=P["ink"])
-    heg = sprite("hegemony_south.png")
-    im.alpha_composite(heg, (200, 110))
-    dg = dog("shepherd")
-    im.alpha_composite(dg, (228, 141 - dg.height))
-    tw = d.textlength("?", font=font(40, True))
-    d.text((227 - tw / 2, 34), "?", font=font(40, True), fill=P["gold"])
-    star(d, 285, 14, 5)
+    d.line((0, 120, W, 120), fill=P["ink"])
+    for x in (40, 260):                                         # nosné trámy
+        d.rectangle((x, 14, x + 6, 120), fill=P["mud1"], outline=P["ink"])
+    # bedna s dopisy vpravo, sud vlevo
+    d.rectangle((222, 128, 252, 150), fill=P["mud2"], outline=P["ink"])
+    d.line((222, 139, 252, 139), fill=P["ink"])
+    for k, (x, y) in enumerate(((226, 122), (236, 119), (230, 116))):
+        d.rectangle((x, y, x + 12, y + 7), fill=P["white"], outline=P["sand"])
+        d.line((x, y, x + 6, y + 4), fill=P["sand"]); d.line((x + 12, y, x + 6, y + 4), fill=P["sand"])
+    d.rectangle((52, 124, 72, 150), fill=P["mud1"], outline=P["ink"])
+    for y in (130, 143):
+        d.line((52, y, 72, y), fill=P["steel"])
+    # vojáci obou stran u stolu (2×), lampa nad stolem
+    lamp(im, 150, 46, top=14)
+    im.alpha_composite(up(sprite("hegemony_officer_south.png"), 2), (76, 56))
+    im.alpha_composite(up(sprite("concord_west.png"), 2), (160, 56))
+    d = ImageDraw.Draw(im)
+    # stůl s mapou a lístky (nápady patronů); kreslí se PŘED vojáky, ať jim zakryje nohy
+    d.rectangle((92, 108, 208, 113), fill=P["mud3"], outline=P["ink"])       # deska
+    d.rectangle((96, 113, 204, 132), fill=P["mud1"], outline=P["ink"])       # čelo stolu
+    for x in range(100, 204, 12):
+        d.line((x, 114, x, 131), fill=P["mud0"])
+    d.rectangle((98, 132, 103, 146), fill=P["mud1"], outline=P["ink"])
+    d.rectangle((197, 132, 202, 146), fill=P["mud1"], outline=P["ink"])
+    d.rectangle((118, 104, 160, 109), fill=P["sand"], outline=P["mud2"])     # mapa
+    d.line((122, 107, 134, 105), fill=P["mud2"]); d.line((134, 105, 148, 107), fill=P["mud2"])
+    d.point((140, 106), fill=P["rust"]); d.point((128, 106), fill=P["rust"])
+    for x, y in ((166, 105), (174, 106), (182, 104)):                        # prázdné lístky
+        d.rectangle((x, y, x + 5, y + 3), fill=P["white"], outline=P["sand"])
+    d.rectangle((104, 103, 108, 108), fill=P["steel"], outline=P["ink"])     # hrnek
+    light(im, 150, 90, 110, strength=1.2, steps=3)
+    shade(im, (0, 0, W, H), strength=0.4)
+    im.alpha_composite(up(dog("shepherd"), 2), (116, 116))      # pes až po světle (bez přebarvení)
+    im.alpha_composite(dog("jackrussell"), (190, 126))
+    d = ImageDraw.Draw(im)
+    star(d, 150, 72, 6)                                         # hvězda patronů nad stolem
     save(im, "post_ask_1500x900.jpg")
 
 
