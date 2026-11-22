@@ -545,5 +545,11 @@
     "cmd": "dog",
     "handle": "countdooku04",
     "_note": "Patreon Officers' Mess (2026-11-22): Trench Dog, plemeno a jméno losuje hra"
+  },
+  {
+    "id": "claim-kq.erenn-2026-11-22",
+    "cmd": "claim",
+    "handle": "kq.erenn",
+    "code": "ENLIST-X25H"
   }
 ]

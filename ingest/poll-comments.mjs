@@ -145,6 +145,7 @@ async function main() {
     state.commandsDone ??= [];
     for (const c of cmds) {
       if (state.commandsDone.includes(c.id)) continue;
+      if (c.cmd === 'claim') continue; // ruční převzetí potřebuje Firestore, provede se níž
       try { // chyba jednoho příkazu nesmí potichu zastavit ostatní (22. 11.)
       if (c.cmd === 'switchFaction') {
         const r = switchFaction(state, theme, map, c.handle, c.faction);
@@ -246,6 +247,31 @@ async function main() {
   } catch (e) { if (e.code !== 'ENOENT') console.warn(`⚠ data/commands.json: ${e.message}`); }
   const db = await firestore();
   let enlisted = 0, claimed = 0;
+  // ruční převzetí (22. 11.): hráč poslal kód mnohokrát, ale Instagram jeho komentáře skryl (API je nevrátí).
+  // { id, cmd: 'claim', handle, code }: stejné ověření jako komentář (kód v claims patří tomuto handle a čeká), pak voják převzatý.
+  if (db && !process.env.DRY_RUN) try {
+    const cmds = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'commands.json'), 'utf8'));
+    for (const c of cmds.filter((c) => c.cmd === 'claim' && !state.commandsDone.includes(c.id))) {
+      try {
+        const handle = String(c.handle || '').toLowerCase().replace(/^@/, '');
+        const s = state.soldiers.find((x) => x.handle === handle);
+        const q = await db.collection('claims').where('code', '==', String(c.code || '').toUpperCase()).limit(1).get();
+        const doc = q.docs[0];
+        const valid = doc && doc.get('handle') === handle && ['pending', 'done'].includes(doc.get('status'));
+        if (!s) console.log(`✗ ruční claim @${handle}: voják nenalezen`);
+        else if (s.claimed) console.log(`✓ ruční claim @${handle}: už převzatý`);
+        else if (!valid) console.log(`✗ ruční claim @${handle}: kód ${c.code} neplatný (${doc ? `patří @${doc.get('handle')}, ${doc.get('status')}` : 'nenalezen'})`);
+        else {
+          s.claimed = true;
+          s.ownerUid = doc.get('uid');
+          if (doc.get('status') !== 'done') await doc.ref.update({ status: 'done', verifiedAt: new Date() });
+          claimed++;
+          console.log(`✓ ruční claim @${handle}: ${s.name}`);
+        }
+      } catch (e) { console.warn(`⚠ ruční claim ${c.id} selhal: ${e.message}`); continue; } // chyba Firestore: zkusí se příště
+      state.commandsDone.push(c.id);
+    }
+  } catch (e) { if (e.code !== 'ENOENT') console.warn(`⚠ ruční claim: ${e.message}`); }
 
   try {
     const prof = await ig(USER, { fields: 'followers_count,username' });
