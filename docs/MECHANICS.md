@@ -552,3 +552,6 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 - PixelLab (postup „oprava 3“, 1 generace/směr): `smoke`, `eat`, `warmhands`, `stamp`, `wave` pro puškaře Hegemonie (jih) i Concordu (sever), 10 generací.
 - `web/src/life.js` `fidget`: každé 1,2–3 s až 3 viditelní vojáci (bez akce, raněný ne, ne u drátu) zahrají 2–3 opakování; v zimě hlavně zahřívání rukou a podupávání, jinak kouření a jídlo. Jen postavy, které animaci mají (puškaři).
 - Atlas spritů rozšířen na 2048 px (výška 2152; při 1024 by měl 4260 a přes limit textury 4096 na části telefonů).
+
+## 2026-11-22 Zásobovací linie (NASAZENO, jen vzhled)
+- `web/src/convoy.js`: za zálohami každé strany rozježděná cesta (koleje), po ní projede nákladní auto strany (PixelLab `props/truck_heg|truck_con`) nebo povoz s koněm (`cart_horse`, 30 %), jen když je cesta v záběru; další vyjede za 6–16 s. Houpání, kouř z výfuku. Bez vlivu na boj.

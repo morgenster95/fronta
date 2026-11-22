@@ -4,6 +4,7 @@ import { generateFront, openRange, DIRS, T, connectSite } from '../../engine/map
 import { Camera } from './camera.js';
 import { paintChunk, paintOverview, CHUNK } from './terrain.js';
 import { winterAt, winterFall } from './winter.js';
+import { initConvoy } from './convoy.js';
 import { initUI } from './ui.js';
 import { createLife } from './life.js';
 import { createSound } from './sound.js';
@@ -370,6 +371,7 @@ async function boot() {
   const obsFx = await initObservation({ world, anchor: terrainLayer, over: overLayer, roster, map, theme, tex, openX0, openX1, V }); // pozorovatelna na kótě (odměna)
   if (import.meta.env.DEV && new URLSearchParams(location.search).get('reel') === 'front11') roster.guns = [{ id: 'teaser', faction: 0, cond: 1, destroyed: false, last: null }]; // Day reel 11: ukázka odměny za Grey Mill
   const mineFx = await initMines({ world, anchor: terrainLayer, roster, map, theme, tex, openX0, openX1, V }); // mina z kóty (odměna Bone Quarry, web/src/mine.js)
+  const convoy = await initConvoy({ world, anchor: terrainLayer, map, openX0, openX1, V }); // zásobovací auta a povozy za zálohami (web/src/convoy.js)
   const gunFx = await initGuns({ world, anchor: terrainLayer, roster, map, theme, tex, life: { debug: { shell: (...a) => life.debug.shell(...a) } }, openX0, openX1, V }); // těžké dělo (odměna Grey Mill, web/src/guns.js)
 
   const placed = soldiers.filter((s) => s.slot && s.status !== 4 && s.status !== 2 && s.status !== 3);
@@ -713,7 +715,7 @@ async function boot() {
   const hospNav = hospitalNav({ world, cam, sites: hospitals?.sites, theme, soldiers, hidden: !!reelParam && reelParam !== 'news' });
 
   // --- smyčka ---
-  if (import.meta.env.DEV) window.__front = { planeFx, obsFx, gunFx, mineFx, life, cam, soldiers, tex, anims, hospitals, orderFx, open: (s) => ui.openSoldier(s) }; // ladění v konzoli
+  if (import.meta.env.DEV) window.__front = { convoy, planeFx, obsFx, gunFx, mineFx, life, cam, soldiers, tex, anims, hospitals, orderFx, open: (s) => ui.openSoldier(s) }; // ladění v konzoli
   const visibleSoldiers = [];
   // ?slow=N zpomalí animace a efekty N× (jen pro kontrolu výstřelů na snímcích obrazovky)
   const slow = Math.max(1, Number(new URLSearchParams(location.search).get('slow')) || 1);
@@ -770,6 +772,7 @@ async function boot() {
     orderFx.update(now, view);
     planeFx.update(now, view, sfx);
     gunFx?.update(now, app.ticker.deltaMS, view);
+    convoy.update(now, app.ticker.deltaMS, view);
     mineFx?.update(now, app.ticker.deltaMS);
     wireFx?.update(now);
     const sh = life.update(now, reelTime != null ? app.ticker.deltaMS : app.ticker.deltaMS / slow, view, visibleSoldiers, showSprites);
