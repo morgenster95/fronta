@@ -1,5 +1,5 @@
 """Patreon post „You decide what comes next“ (22. 11. 2026): patroni navrhují v komentářích další odměnu.
-1920×1080 (mřížka 300×180 ×6, make_patreon_dog.save). Vlevo otázka a výzva, vpravo čtyři okénka s nápady (bílý plášť, vlastní prapor, krokve, ???).
+1920×1080 (mřížka 300×180 ×6, make_patreon_dog.save). Vlevo otázka a výzva, vpravo voják se psem a velký otazník (obecně, bez konkrétních nápadů; uživatel 22. 11.).
 Použití: python marketing/make_patreon_ask.py → marketing/promo/patreon/post_ask_1920x1080.jpg
 """
 import os
@@ -41,32 +41,23 @@ def main():
     d.text((14, 34), "YOU DECIDE", font=font(14, True), fill=P["white"])
     d.text((14, 54), "WHAT COMES", font=font(14, True), fill=P["white"])
     d.text((14, 74), "NEXT", font=font(14, True), fill=P["gold"])
-    d.text((14, 104), "A NEW REWARD FOR", font=font(8), fill=P["pale"])
-    d.text((14, 116), "SUPPORTERS. YOU PICK IT.", font=font(8), fill=P["pale"])
+    d.text((14, 104), "WHAT SHOULD WE ADD", font=font(8), fill=P["pale"])
+    d.text((14, 116), "FOR PATRONS NEXT?", font=font(8), fill=P["pale"])
     d.rectangle((14, 136, 146, 156), fill=P["rust"], outline=P["gold"])
     d.text((22, 142), "COMMENT YOUR IDEA", font=font(8, True), fill=P["white"])
     d.text((14, 164), "MUD AND IRON", font=font(8, True), fill=P["gold"])
-    # čtyři okénka s nápady
-    boxes = [(162, 22), (230, 22), (162, 98), (230, 98)]
-    for (bx, by) in boxes:
-        d.rectangle((bx, by, bx + 66, by + 70), fill=P["mud0"], outline=P["mud3"])
+    # vpravo: voják se psem u zákopu a velký otazník nad ním (obecná výzva, bez konkrétních nápadů)
+    d.rectangle((168, 24, 286, 156), fill=P["mud0"], outline=P["mud3"])
+    for x in range(170, 276, 12):  # val z pytlů dole (uvnitř rámu)
+        d.rectangle((x, 140, x + 10, 146), fill=P["sand"], outline=P["ink"])
+    for x in range(176, 270, 12):
+        d.rectangle((x, 147, x + 10, 153), fill=P["bone"], outline=P["ink"])
     heg = sprite("hegemony_south.png")
-    white = Image.open(os.path.join(ROOT, "art", "cine", "mock_heg_white.png")).convert("RGBA")
-    con = sprite("concord_north.png")
-    # 1 zimní plášť
-    im.alpha_composite(white, (162 + 17, 22 + 14))
-    # 2 vlastní prapor
-    im.alpha_composite(heg, (230 + 22, 22 + 14))
-    flag(d, 230 + 14, 22 + 10, P["steel"], P["rust"])
-    # 3 krokve / povýšení
-    im.alpha_composite(con, (162 + 17, 98 + 14))
-    chevrons(d, 162 + 33, 98 + 6, 3)
-    # 4 vlastní nápad
-    tw = d.textlength("?", font=font(24, True))
-    d.text((230 + 33 - tw / 2, 98 + 12), "?", font=font(24, True), fill=P["gold"])
-    for (bx, by), lab in zip(boxes, ["COAT?", "FLAG?", "STRIPES?", "YOUR IDEA"]):
-        tw = d.textlength(lab, font=font(8))
-        d.text((bx + 33 - tw / 2, by + 58), lab, font=font(8), fill=P["white"])
+    im.alpha_composite(heg, (200, 110))
+    dg = dog("shepherd")
+    im.alpha_composite(dg, (228, 141 - dg.height))
+    tw = d.textlength("?", font=font(40, True))
+    d.text((227 - tw / 2, 34), "?", font=font(40, True), fill=P["gold"])
     star(d, 285, 14, 5)
     save(im, "post_ask_1500x900.jpg")
 
