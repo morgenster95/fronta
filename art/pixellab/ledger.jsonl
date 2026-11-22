@@ -186,3 +186,6 @@
 {"kind": "objanim", "name": "truck_heg", "object": "9735a321-7c91-47a1-af6c-f0ca6c677c01", "at": "2026-11-22T11:03:59Z", "desc": "an army truck driving to the right, the spoked wheels turn round, the body bounces slightly on a rough road"}
 {"kind": "objanim", "name": "truck_con", "object": "e6d2a0a1-e622-41a8-9503-c7578fd34cc5", "at": "2026-11-22T11:04:01Z", "desc": "an army truck driving to the right, the spoked wheels turn round, the body bounces slightly on a rough road"}
 {"kind": "objanim", "name": "cart_horse", "object": "3150c904-b231-4753-8bf4-813fbac33fd8", "at": "2026-11-22T11:04:02Z", "desc": "a horse walking to the right pulling a wagon, the horse legs and hooves step in a natural walk cycle, the wagon wheels t"}
+{"kind": "objanim", "name": "truck_heg_pad", "object": "4d27c3e2-99a7-4dbc-a8b8-2732fb7751d8", "at": "2026-11-22T11:06:47Z"}
+{"kind": "objanim", "name": "truck_con_pad", "object": "c5ee21bb-8a8a-4320-af25-78fabbf20b9d", "at": "2026-11-22T11:06:48Z"}
+{"kind": "objanim", "name": "cart_horse_pad", "object": "bf33c331-9dce-464a-8b34-eee7de6baea0", "at": "2026-11-22T11:06:49Z"}
