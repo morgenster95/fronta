@@ -1,6 +1,6 @@
 // Zásobovací linie (22. 11. 2026, pokyn uživatele: pohyblivé vozidlo v zásobovací linii): za zálohami každé strany vede
 // rozježděná cesta a po ní občas projede nákladní auto strany (PixelLab: props/truck_heg|truck_con) nebo povoz s koněm (cart_horse).
-// Jen tam, kam se hráč dívá: když je cesta v záběru a nic nejede, za 6–16 s vyjede nové vozidlo z kraje záběru a přejede ho.
+// Po každé cestě jezdí pořád několik vozidel tam i zpět (jedno zhruba na 700 px fronty), kreslí se jen to, co je v záběru.
 // Pohyb v kódu: houpání o 1 px, kouř z výfuku (auto), kroky koně (povoz). Náhled: zoom na zálohy kterékoli strany.
 import { Container, Graphics, Sprite } from 'pixi.js';
 import { loadTexture } from './assets.js';
@@ -11,10 +11,13 @@ export async function initConvoy({ world, anchor, map, openX0, openX1, V = '' })
   if (!truckH || !truckC) return { update() {} };
   const layer = new Container();
   world.addChildAt(layer, world.getChildIndex(anchor) + 1);
-  // cesta: kousek za nejzadnějšími stanovišti každé strany
+  // cesta mezi podpůrnou linií a zálohami (tam, kde je vidět i dělo), ať ji hráč při prohlížení fronty opravdu uvidí
+  const ext = (f, line) => { const ys = map.slots[f].filter((sl) => sl.line === line).map((sl) => sl.y); return ys.length ? [Math.min(...ys), Math.max(...ys)] : null; };
   const roadY = [0, 1].map((f) => {
-    const ys = map.slots[f].map((s) => s.y);
-    return f === 0 ? Math.max(40, Math.min(...ys) - 110) : Math.min(map.H * map.tile - 40, Math.max(...ys) + 110);
+    const sup = ext(f, 'support'), res = ext(f, 'reserve');
+    if (sup && res) return Math.round(f === 0 ? (res[1] + sup[0]) / 2 : (sup[1] + res[0]) / 2) + (f === 0 ? -14 : 14);
+    const ys = map.slots[f].map((sl) => sl.y);
+    return f === 0 ? Math.min(...ys) - 60 : Math.max(...ys) + 60;
   });
   const ruts = new Graphics();
   for (const y of roadY) {
@@ -29,30 +32,36 @@ export async function initConvoy({ world, anchor, map, openX0, openX1, V = '' })
   }
   layer.addChild(ruts);
   const puffs = new Graphics();
-  const runs = [null, null], wait = [3000, 5000], smoke = [];
-  function spawn(f, view) {
-    const horse = cart && Math.random() < 0.3;
-    const sp = new Sprite(horse ? cart : f === 0 ? truckH : truckC);
-    const dir = Math.random() < 0.5 ? 1 : -1; // obrázky míří doprava
-    sp.anchor.set(0.5, 1);
-    sp.scale.x = dir;
-    sp.y = roadY[f] + 4;
-    sp.x = dir > 0 ? view.x0 - 50 : view.x1 + 50;
-    layer.addChild(sp);
-    runs[f] = { sp, dir, horse, v: horse ? 0.016 : 0.03, t0: performance.now() };
+  // kolona: po každé cestě jezdí pořád několik vozidel rozmístěných po celé otevřené frontě (jedno zhruba na 700 px), tam i zpět
+  const smoke = [];
+  const fleet = [];
+  const span = openX1 - openX0;
+  for (const f of [0, 1]) {
+    const n = Math.max(4, Math.round(span / 700));
+    for (let i = 0; i < n; i++) {
+      const horse = cart && i % 3 === 2;
+      const sp = new Sprite(horse ? cart : f === 0 ? truckH : truckC);
+      const dir = (i + f) % 2 ? 1 : -1; // obrázky míří doprava
+      sp.anchor.set(0.5, 1);
+      sp.scale.x = dir;
+      layer.addChild(sp);
+      fleet.push({ sp, f, dir, horse, v: horse ? 0.014 : 0.028, x: openX0 + ((i + 0.5 + f * 0.3) / n) * span });
+    }
   }
   layer.addChild(puffs);
   return {
     roadY,
     update(now, dt, view) {
-      for (const f of [0, 1]) {
-        const y = roadY[f], seen = y > view.y0 - 20 && y < view.y1 + 40;
-        const r = runs[f];
-        if (!r) { if (seen) { wait[f] -= dt; if (wait[f] < 0) { spawn(f, view); wait[f] = 6000 + Math.random() * 10000; } } continue; }
-        r.sp.x += r.dir * r.v * dt;
+      dt = Math.min(dt, 100);
+      for (const r of fleet) {
+        r.x += r.dir * r.v * dt;
+        if (r.x > openX1 + 60) r.x = openX0 - 60; else if (r.x < openX0 - 60) r.x = openX1 + 60;
+        const y = roadY[r.f], seen = r.x > view.x0 - 80 && r.x < view.x1 + 80 && y > view.y0 - 60 && y < view.y1 + 60;
+        r.sp.visible = seen;
+        if (!seen) continue;
+        r.sp.x = Math.round(r.x);
         r.sp.y = y + 4 + (Math.floor(now / (r.horse ? 180 : 120)) % 2); // houpání po rozbité cestě
         if (!r.horse && Math.random() < dt / 160) smoke.push({ x: r.sp.x - r.dir * 26, y: r.sp.y - 8, life: 900 });
-        if (r.sp.x < view.x0 - 120 || r.sp.x > view.x1 + 120 || !seen) { r.sp.destroy(); runs[f] = null; }
       }
       puffs.clear();
       for (let i = smoke.length - 1; i >= 0; i--) {

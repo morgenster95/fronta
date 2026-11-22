@@ -554,4 +554,4 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 - Atlas spritů rozšířen na 2048 px (výška 2152; při 1024 by měl 4260 a přes limit textury 4096 na části telefonů).
 
 ## 2026-11-22 Zásobovací linie (NASAZENO, jen vzhled)
-- `web/src/convoy.js`: za zálohami každé strany rozježděná cesta (koleje), po ní projede nákladní auto strany (PixelLab `props/truck_heg|truck_con`) nebo povoz s koněm (`cart_horse`, 30 %), jen když je cesta v záběru; další vyjede za 6–16 s. Houpání, kouř z výfuku. Bez vlivu na boj.
+- `web/src/convoy.js`: cesta (koleje) mezi podpůrnou linií a zálohami každé strany, po ní pořád jezdí kolona (asi 1 vozidlo na 700 px fronty, tam i zpět): nákladní auto strany (PixelLab `props/truck_heg|truck_con`) nebo povoz s koněm (`cart_horse`). Houpání, kouř z výfuku. Bez vlivu na boj. (Původně jen za zálohami a občas: uživatel auto neviděl.)
