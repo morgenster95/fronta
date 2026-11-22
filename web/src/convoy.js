@@ -11,11 +11,12 @@ export async function initConvoy({ world, anchor, map, openX0, openX1, V = '' })
   if (!truckH || !truckC) return { update() {} };
   const layer = new Container();
   world.addChildAt(layer, world.getChildIndex(anchor) + 1);
-  // cesta mezi podpůrnou linií a zálohami (tam, kde je vidět i dělo), ať ji hráč při prohlížení fronty opravdu uvidí
+  // cesta mezi zálohami a podpůrnou linií, ať ji hráč při prohlížení fronty opravdu uvidí (22. 11.: mimo dělo a nemocnice)
   const ext = (f, line) => { const ys = map.slots[f].filter((sl) => sl.line === line).map((sl) => sl.y); return ys.length ? [Math.min(...ys), Math.max(...ys)] : null; };
   const roadY = [0, 1].map((f) => {
     const sup = ext(f, 'support'), res = ext(f, 'reserve');
-    if (sup && res) return Math.round(f === 0 ? (res[1] + sup[0]) / 2 : (sup[1] + res[0]) / 2) + (f === 0 ? -14 : 14);
+    // těsně za zálohami (ne uprostřed: tam stojí těžké dělo, web/src/guns.js); nemocnice jsou za zálohami úplně vzadu
+    if (sup && res) return f === 0 ? res[1] + 52 : res[0] - 36;
     const ys = map.slots[f].map((sl) => sl.y);
     return f === 0 ? Math.min(...ys) - 60 : Math.max(...ys) + 60;
   });
