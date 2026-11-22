@@ -499,7 +499,7 @@ async function boot() {
     }
     paint();
   }
-  const life = createLife({ world, actorLayer, theme, anims, tex, map, dirs: DIRS, fx: fxSheets, aims, breath, sfx });
+  const life = createLife({ world, actorLayer, theme, anims, tex, map, dirs: DIRS, fx: fxSheets, aims, breath, sfx, winter: winter.on });
   for (const s of placed) life.setupSprite(s, s.sprite);
 
   // kulometná hnízda: kulometčík v přední linii se přikrčí za kulomet na trojnožce (objekt z PixelLabu, šikmo k nepříteli)

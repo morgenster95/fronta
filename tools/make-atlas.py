@@ -11,7 +11,7 @@ from PIL import Image
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIR = os.path.join(ROOT, "web", "public", "assets", "soldiers")
-WIDTH = 1024  # šířka atlasu; řádky se plní zleva doprava (police)
+WIDTH = 2048  # šířka atlasu; řádky se plní zleva doprava (police). 22. 11.: 1024 by dalo výšku > 4096 (limit textury na části telefonů)
 
 
 def file_hash(path):

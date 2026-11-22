@@ -47,7 +47,7 @@ function setTex(sp, t) {
   sp.anchor.set(0.5, (30 + off) / t.height);
 }
 
-export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx = {}, aims = {}, breath = {}, sfx = null }) {
+export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx = {}, aims = {}, breath = {}, sfx = null, winter = false }) {
   const layer = new Container(); // efekty nad terénem i vojáky
   world.addChild(layer);
   const particles = [];
@@ -102,9 +102,28 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
         setTex(sp, tex[key][dir]);
       }
       if (s.wounded) return;
+      // drobná činnost v zákopu (22. 11.): kouří, jí z konzervy, v zimě si zahřívá ruce a podupává; 2–3 opakování a zpět
+      if (s.fidget) {
+        const f = s.fidget, k = Math.floor((now - f.t0) / 150);
+        if (k < f.frames.length * f.loops) { setTex(sp, f.frames[k % f.frames.length]); return; }
+        s.fidget = null;
+        setTex(sp, rest);
+      }
       // dýchání: ramena o 1 px dolů a zpět, nohy stojí, barvy beze změny
       if (inhale) setTex(sp, (now + phase) % cycle < cycle * 0.45 ? inhale : rest);
     };
+  }
+
+  // --- drobné činnosti (nové animace z PixelLabu, jen tam, kde je postava má: puškaři obou stran) ---
+  const FIDGETS = winter ? ['warmhands', 'stamp', 'warmhands', 'smoke', 'eat'] : ['smoke', 'eat', 'smoke', 'wave'];
+  function fidget(candidates, now) {
+    const pool = candidates.filter((s) => !s.action && !s.fidget && !s.wounded && !s.onWire && !s.nest && s.slot);
+    for (let n = 0; n < 3 && pool.length; n++) {
+      const s = pool.splice(Math.floor(Math.random() * pool.length), 1)[0];
+      const name = FIDGETS[Math.floor(Math.random() * FIDGETS.length)];
+      const frames = anims[s.texKey]?.[name]?.[dirs[s.slot.d]];
+      if (frames?.length) s.fidget = { t0: now, frames, loops: name === 'wave' ? 2 : 3 };
+    }
   }
 
   // --- výstřely ---
@@ -275,6 +294,8 @@ export function createLife({ world, actorLayer, theme, anims, tex, map, dirs, fx
     t.shell -= dt;
     t.flare -= dt;
     if (quiet) { t.shot = Math.max(t.shot, 400); t.distant = Math.max(t.distant, 400); t.shell = Math.max(t.shell, 400); t.flare = Math.max(t.flare, 400); } // reel řídí palbu sám (Front News)
+    t.fidget = (t.fidget ?? 1500) - dt;
+    if (showSprites && !quiet && t.fidget < 0) { t.fidget = rnd(1200, 3000); fidget(visibleSoldiers, now); }
     if (showSprites && t.shot < 0) {
       t.shot = rnd(...RATE.shot);
       // střílí hlavně přední linie čelem k nepříteli

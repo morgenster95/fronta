@@ -540,6 +540,71 @@
      "concord@lying-wounded_north_3.png",
      "concord@lying-wounded_north_4.png"
     ]
+   },
+   "smoke": {
+    "north": [
+     "concord@smoke_north_0.png",
+     "concord@smoke_north_1.png",
+     "concord@smoke_north_2.png",
+     "concord@smoke_north_3.png",
+     "concord@smoke_north_4.png",
+     "concord@smoke_north_5.png",
+     "concord@smoke_north_6.png",
+     "concord@smoke_north_7.png",
+     "concord@smoke_north_8.png"
+    ]
+   },
+   "warmhands": {
+    "north": [
+     "concord@warmhands_north_0.png",
+     "concord@warmhands_north_1.png",
+     "concord@warmhands_north_2.png",
+     "concord@warmhands_north_3.png",
+     "concord@warmhands_north_4.png",
+     "concord@warmhands_north_5.png",
+     "concord@warmhands_north_6.png",
+     "concord@warmhands_north_7.png",
+     "concord@warmhands_north_8.png"
+    ]
+   },
+   "eat": {
+    "north": [
+     "concord@eat_north_0.png",
+     "concord@eat_north_1.png",
+     "concord@eat_north_2.png",
+     "concord@eat_north_3.png",
+     "concord@eat_north_4.png",
+     "concord@eat_north_5.png",
+     "concord@eat_north_6.png",
+     "concord@eat_north_7.png",
+     "concord@eat_north_8.png"
+    ]
+   },
+   "stamp": {
+    "north": [
+     "concord@stamp_north_0.png",
+     "concord@stamp_north_1.png",
+     "concord@stamp_north_2.png",
+     "concord@stamp_north_3.png",
+     "concord@stamp_north_4.png",
+     "concord@stamp_north_5.png",
+     "concord@stamp_north_6.png",
+     "concord@stamp_north_7.png",
+     "concord@stamp_north_8.png"
+    ]
+   },
+   "wave": {
+    "north": [
+     "concord@wave_north_0.png",
+     "concord@wave_north_1.png",
+     "concord@wave_north_2.png",
+     "concord@wave_north_3.png",
+     "concord@wave_north_4.png",
+     "concord@wave_north_5.png",
+     "concord@wave_north_6.png",
+     "concord@wave_north_7.png",
+     "concord@wave_north_8.png"
+    ]
    }
   }
  },
@@ -1083,6 +1148,71 @@
      "hegemony@lying-wounded_north_2.png",
      "hegemony@lying-wounded_north_3.png",
      "hegemony@lying-wounded_north_4.png"
+    ]
+   },
+   "smoke": {
+    "south": [
+     "hegemony@smoke_south_0.png",
+     "hegemony@smoke_south_1.png",
+     "hegemony@smoke_south_2.png",
+     "hegemony@smoke_south_3.png",
+     "hegemony@smoke_south_4.png",
+     "hegemony@smoke_south_5.png",
+     "hegemony@smoke_south_6.png",
+     "hegemony@smoke_south_7.png",
+     "hegemony@smoke_south_8.png"
+    ]
+   },
+   "warmhands": {
+    "south": [
+     "hegemony@warmhands_south_0.png",
+     "hegemony@warmhands_south_1.png",
+     "hegemony@warmhands_south_2.png",
+     "hegemony@warmhands_south_3.png",
+     "hegemony@warmhands_south_4.png",
+     "hegemony@warmhands_south_5.png",
+     "hegemony@warmhands_south_6.png",
+     "hegemony@warmhands_south_7.png",
+     "hegemony@warmhands_south_8.png"
+    ]
+   },
+   "eat": {
+    "south": [
+     "hegemony@eat_south_0.png",
+     "hegemony@eat_south_1.png",
+     "hegemony@eat_south_2.png",
+     "hegemony@eat_south_3.png",
+     "hegemony@eat_south_4.png",
+     "hegemony@eat_south_5.png",
+     "hegemony@eat_south_6.png",
+     "hegemony@eat_south_7.png",
+     "hegemony@eat_south_8.png"
+    ]
+   },
+   "stamp": {
+    "south": [
+     "hegemony@stamp_south_0.png",
+     "hegemony@stamp_south_1.png",
+     "hegemony@stamp_south_2.png",
+     "hegemony@stamp_south_3.png",
+     "hegemony@stamp_south_4.png",
+     "hegemony@stamp_south_5.png",
+     "hegemony@stamp_south_6.png",
+     "hegemony@stamp_south_7.png",
+     "hegemony@stamp_south_8.png"
+    ]
+   },
+   "wave": {
+    "south": [
+     "hegemony@wave_south_0.png",
+     "hegemony@wave_south_1.png",
+     "hegemony@wave_south_2.png",
+     "hegemony@wave_south_3.png",
+     "hegemony@wave_south_4.png",
+     "hegemony@wave_south_5.png",
+     "hegemony@wave_south_6.png",
+     "hegemony@wave_south_7.png",
+     "hegemony@wave_south_8.png"
     ]
    }
   }

@@ -547,3 +547,8 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 - Vzhled: `terrain.js` přebarví povrch země, pytle (jen horní hrana) a rekvizity sněhovými tóny (paleta 24–26), dno zákopů zůstává bláto, louže zamrznou; přehledová mapa taky. Šum je předpočítaný (+25 % času kreslení bloku).
 - Srážky: v zimě místo deště sněží (vločky), bouře = vánice, jasno = bez sněžení (`winterFall`). Náhled: `?snow=0..1&wx=snow|blizzard`.
 - Zatím jen vzhled, boj ani texty počasí se nemění (návrh do budoucna: mráz zhorší ztráty bez lůžek, zimní texty počasí).
+
+## 2026-11-22 Život v zákopu: nové animace (NASAZENO)
+- PixelLab (postup „oprava 3“, 1 generace/směr): `smoke`, `eat`, `warmhands`, `stamp`, `wave` pro puškaře Hegemonie (jih) i Concordu (sever), 10 generací.
+- `web/src/life.js` `fidget`: každé 1,2–3 s až 3 viditelní vojáci (bez akce, raněný ne, ne u drátu) zahrají 2–3 opakování; v zimě hlavně zahřívání rukou a podupávání, jinak kouření a jídlo. Jen postavy, které animaci mají (puškaři).
+- Atlas spritů rozšířen na 2048 px (výška 2152; při 1024 by měl 4260 a přes limit textury 4096 na části telefonů).
