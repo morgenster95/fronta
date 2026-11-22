@@ -1,16 +1,61 @@
 {
  "seconds": 45,
  "auto": true,
- "drums": ["state", "cta"],
+ "drums": [
+  "state",
+  [
+   [
+    "hook",
+    "flare"
+   ]
+  ],
+  "cta"
+ ],
  "lines": [
-  [0.6, "Winter is coming to the front. Before the snow buries it, the wire must be mended.", "hook"],
-  [0, "At night, men crawl out with coils of wire and iron posts. They work in the dark, without a sound.", "stake"],
-  [0, "When a flare goes up, they drop flat and wait for the dark.", "flare"],
-  [0, "The Hegemony wire is torn in twenty-eight places. Only fifty-eight percent still stands.", "state"],
-  [0, "The Concord wire holds better, sixty-nine percent. But half of it is already sagging.", "con"],
-  [0, "Wire stops a raid before it reaches the trench. Without it, every man on the fire step is easier to hit.", "why"],
-  [0, "It is hard and dangerous work. A man on the wire is not on watch, and the enemy rifles never sleep.", "risk"],
-  [0, "Comment WIRE under this reel. Your soldier crawls out tonight and mends the wire in their own sector. Both sides can go.", "cta"],
-  [0, "Mud and Iron. Every follower is a soldier.", "cta2"]
+  [
+   0.6,
+   "Winter is coming to the front. Before the snow buries it, the wire must be mended.",
+   "hook"
+  ],
+  [
+   0,
+   "At night, men crawl out with coils of wire and iron posts. They work in the dark, without a sound.",
+   "stake"
+  ],
+  [
+   0,
+   "When a flare goes up, they drop flat and wait for the dark.",
+   "flare"
+  ],
+  [
+   0,
+   "The Hegemony wire is torn in twenty-eight places. Only fifty-eight percent still stands.",
+   "state"
+  ],
+  [
+   0,
+   "The Concord wire holds better, sixty-nine percent. But half of it is already sagging.",
+   "con"
+  ],
+  [
+   0,
+   "Wire stops a raid before it reaches the trench. Without it, every man on the fire step is easier to hit.",
+   "why"
+  ],
+  [
+   0,
+   "It is hard and dangerous work. A man on the wire is not on watch, and the enemy rifles never sleep.",
+   "risk"
+  ],
+  [
+   0,
+   "Comment WIRE under this reel. Your soldier crawls out tonight and mends the wire in their own sector. Both sides can go.",
+   "cta"
+  ],
+  [
+   0,
+   "Mud and Iron. Every follower is a soldier.",
+   "cta2"
+  ]
  ]
 }
