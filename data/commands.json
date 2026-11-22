@@ -533,5 +533,17 @@
     "cmd": "news",
     "h": "First snow on the front",
     "text": "Snow began to fall over no man's land in the night. By dawn the wire was white and the craters had a thin crust of ice. The old hands say this is only the start: more snow next week, and real winter after that. Keep your feet dry and your rifle oiled. The cold kills too."
+  },
+  {
+    "id": "star-countdooku04-20261122",
+    "cmd": "star",
+    "handle": "countdooku04",
+    "_note": "Patreon Officers' Mess (2026-11-22): hvězda + stužka"
+  },
+  {
+    "id": "dog-countdooku04-20261122",
+    "cmd": "dog",
+    "handle": "countdooku04",
+    "_note": "Patreon Officers' Mess (2026-11-22): Trench Dog, plemeno a jméno losuje hra"
   }
 ]
