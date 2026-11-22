@@ -477,6 +477,9 @@ async function boot() {
     breath[key] = {};
     for (const [d, t] of Object.entries(byDir)) breath[key][d] = breathFrame(t);
   }
+  // výška spodní lišty (na úzkém telefonu se zalomí): zoom a zvuk stojí vždy nad ní (style.css --bar-h)
+  const bar = document.getElementById('bar');
+  if (bar) { const setBarH = () => document.documentElement.style.setProperty('--bar-h', `${bar.offsetHeight}px`); setBarH(); new ResizeObserver(setBarH).observe(bar); }
   // zvuky (ne při nahrávání reelů – ty mají vlastní zvukovou stopu)
   const recording = import.meta.env.DEV && new URLSearchParams(location.search).has('reel');
   const sfx = recording ? null : createSound();

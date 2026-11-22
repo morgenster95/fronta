@@ -127,7 +127,7 @@ button.primary { background: var(--blood); border-color: #a85a36; }
 @media (max-width: 420px) {
   html, body { font-size: 20px; }
   h1 { font-size: 18px; }
-  #zoom { top: auto; bottom: 90px; transform: none; }
+  #zoom { top: auto; bottom: calc(var(--bar-h, 90px) + 10px); transform: none; } /* nad spodní lištou, ať je vidět i zvuk (22. 11.: lišta se zalomí do 3 řádků) */
 }
 
 #dispatch {
