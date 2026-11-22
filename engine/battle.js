@@ -62,13 +62,6 @@ export function build(state, theme, f, id) {
   return `The ${short(theme, f)} ${def.done || `built: ${def.name}`}`;
 }
 
-export function canBuild(state, theme, f, id) {
-  const def = B(theme)?.buildings?.[id];
-  if (!def) return false;
-  const side = ensureBattle(state, theme).sides[f];
-  return !(def.requires && !count(side, def.requires)) && !(def.max && count(side, id) >= def.max);
-}
-
 // --- zkušenosti ---
 export function levelOf(theme, s) {
   const L = B(theme).xp.levels;

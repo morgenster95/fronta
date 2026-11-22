@@ -10,7 +10,6 @@ const rgb = (c) => `rgb(${c[0]},${c[1]},${c[2]})`;
 const off = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
 const clamp01 = (x) => Math.min(1, Math.max(0, x));
 
-export const SCENES = ['flare', 'church', 'aidpost', 'letter', 'dawnwire', 'grim', 'canal'];
 export const pickScene = (day, list, k = 0) => list[(day * 7 + k * 3) % list.length];
 
 // dithered svislý přechod (barvy palety, žádné plynulé přechody)

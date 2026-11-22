@@ -16,7 +16,6 @@ export const T = {
 };
 
 export const DIRS = ['south', 'south-east', 'east', 'north-east', 'north', 'north-west', 'west', 'south-west'];
-export const LINES = ['front', 'support', 'comm', 'reserve'];
 
 export const DEFAULTS = {
   seed: 'front-ww1',

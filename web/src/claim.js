@@ -95,7 +95,6 @@ export async function myAccount() {
     return undefined;
   }
 }
-export const myHandle = async () => (await myAccount())?.handle;
 
 // Jen přihlášení (bez převzetí): true = přihlášen; v PWA na iPhonu odejde na redirect a vrátí se na kartu
 export async function signInHere(soldier, toast) {

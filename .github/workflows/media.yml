@@ -15,7 +15,7 @@ concurrency: { group: pages, cancel-in-progress: false }
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: { name: github-pages, url: '${{ steps.d.outputs.page_url }}' }
+    environment: { name: github-pages, url: '${{ steps.d.outputs.page_url || steps.d2.outputs.page_url }}' }
     steps:
       - uses: actions/checkout@v4
       - name: Sestavit web Pages
@@ -34,4 +34,10 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with: { path: site }
       - id: d
+        uses: actions/deploy-pages@v4
+        continue-on-error: true # GitHub občas hlásí „Fetching artifact metadata failed“ (21. 11. 3× za sebou), druhý pokus po minutě obvykle projde
+      - if: steps.d.outcome == 'failure'
+        run: sleep 60
+      - id: d2
+        if: steps.d.outcome == 'failure'
         uses: actions/deploy-pages@v4

@@ -178,8 +178,20 @@ async function main() {
       if (args[0] === '--due') { console.log(`… ${item.id}: soubor ještě není na GitHub Pages, zkusí se v dalším kole`); continue; }
       throw new Error(`${item.id}: soubor není na ${MEDIA} (je v marketing/promo a proběhl workflow media?)`);
     }
+    if ((item.fails || 0) >= 6) { console.log(`✖ ${item.id}: po 6 neúspěšných pokusech se nezkouší (oprav položku a smaž fails/lastError): ${item.lastError}`); continue; }
     console.log(`→ ${item.id} (${item.type}) …`);
-    item.published = await publish(item);
+    // chyba jedné položky (např. video do story delší než 60 s) nesmí zablokovat zbytek fronty; zapíše se do položky (22. 11.)
+    try {
+      item.published = await publish(item);
+    } catch (e) {
+      item.fails = (item.fails || 0) + 1;
+      item.lastError = `${new Date().toISOString()} ${String(e.message || e).slice(0, 300)}`;
+      fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));
+      console.error(`✖ ${item.id}: ${item.lastError} (pokus ${item.fails}/6)`);
+      process.exitCode = 1;
+      continue;
+    }
+    delete item.fails; delete item.lastError;
     if (process.env.PUBLISHED_LOG) fs.appendFileSync(process.env.PUBLISHED_LOG, `${JSON.stringify({ id: item.id, published: item.published })}\n`);
     console.log(`✓ ${item.id}: ${item.published.permalink}`);
     fs.writeFileSync(QUEUE, JSON.stringify(q, null, 2));

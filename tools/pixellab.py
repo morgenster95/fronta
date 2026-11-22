@@ -133,6 +133,8 @@ if __name__ == "__main__":
         if "--style" in a:  # stylový obrázek (např. schválená rekvizita ze hry), ať nový kus drží stejný vzhled
             with open(a[a.index("--style") + 1], "rb") as fh: args["style_image"] = {"base64": base64.b64encode(fh.read()).decode()}
         out = call("create_image_pro_flash", args)
+        if "validation error" in out and not re.search(r"\b[0-9a-f]{8}-[0-9a-f-]{27}\b", out):
+            sys.exit("odmítnuto při kontrole (nic se neodeslalo ani nezaplatilo): " + out[:400])
         job = (re.search(r"job[_ ]id[\"': ]+([\w-]+)", out) or re.search(r"\b([0-9a-f]{8}-[0-9a-f-]{27})\b", out))
         with open(LEDGER, "a") as f:
             f.write(json.dumps({"kind": "img", "name": name, "w": w, "h": h, "job": job and job.group(1), "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "desc": desc[:200]}) + "\n")

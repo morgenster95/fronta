@@ -145,6 +145,7 @@ async function main() {
     state.commandsDone ??= [];
     for (const c of cmds) {
       if (state.commandsDone.includes(c.id)) continue;
+      try { // chyba jednoho příkazu nesmí potichu zastavit ostatní (22. 11.)
       if (c.cmd === 'switchFaction') {
         const r = switchFaction(state, theme, map, c.handle, c.faction);
         console.log(r ? `⇄ @${r.handle}: ${r.from} → ${r.to}, ${r.unit}, ${r.sector}` : `⇄ příkaz ${c.id}: nic se nezměnilo`);
@@ -239,9 +240,10 @@ async function main() {
         const r = revokeStar(state, theme, c.handle);
         console.log(r ? `★ hvězda odebrána: @${r.handle}` : `★ příkaz ${c.id}: nic k odebrání`);
       }
+      } catch (e) { console.warn(`⚠ příkaz ${c.id} selhal: ${e.message}`); }
       state.commandsDone.push(c.id);
     }
-  } catch { /* žádné příkazy */ }
+  } catch (e) { if (e.code !== 'ENOENT') console.warn(`⚠ data/commands.json: ${e.message}`); }
   const db = await firestore();
   let enlisted = 0, claimed = 0;
 
