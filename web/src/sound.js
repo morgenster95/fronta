@@ -159,7 +159,7 @@ export function createSound() {
   // tichý podkres: vítr/déšť podle počasí dne
   function startAmbience() {
     if (ambience || !ctx) return;
-    const rainy = !weather || weather === 'rain' || weather === 'storm';
+    const rainy = !weather || weather === 'rain' || weather === 'storm'; // v zimě main.js posílá 'snow'/'blizzard' → vítr (lowpass)
     const f = ctx.createBiquadFilter();
     f.type = rainy ? 'highpass' : 'lowpass';
     f.frequency.value = rainy ? 2500 : 500;
@@ -206,7 +206,100 @@ export function createSound() {
     p.o.frequency.setTargetAtTime((74 + id * 9) * (dir > 0 ? 1.03 : 1), t, 0.5); // jemný dopplerův posun podle směru
     if (p.pan) p.pan.pan.setTargetAtTime(pl.pan, t, 0.2);
   }
-  function mutePlanes() { for (const p of Object.values(planes)) p.g.gain.value = 0; }
+  function mutePlanes() { for (const p of Object.values(planes)) p.g.gain.value = 0; for (const l of Object.values(loops)) l.g.gain.value = 0; }
+
+  // --- prostorové smyčky (22. 11.): motor auta, povoz, hlahol vojáků; každá se volá každý snímek s polohou, neaktualizovaná ztichne ---
+  const loops = {};
+  function loopNode(id, make) {
+    let l = loops[id];
+    if (!l) {
+      const g = ctx.createGain(); g.gain.value = 0;
+      const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 4000;
+      const pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+      f.connect(g); if (pan) g.connect(pan).connect(master); else g.connect(master);
+      l = loops[id] = { g, f, pan, seen: 0, ...make(f) };
+    }
+    return l;
+  }
+  function placeLoop(l, x, y, peak, bright = 4000) {
+    const pl = place(x, y), t = ctx.currentTime;
+    // blízko (přiblížená kamera) plně, oddálená fronta skoro nic
+    l.g.gain.setTargetAtTime(Math.max(0, pl.gain * (1 - pl.far) * peak), t, 0.25);
+    l.f.frequency.setTargetAtTime(Math.max(300, bright - pl.far * (bright - 400)), t, 0.25);
+    if (l.pan) l.pan.pan.setTargetAtTime(pl.pan, t, 0.15);
+    l.seen = t;
+    return pl;
+  }
+  // nákladní auto: hluboký motor (pila ~48 Hz s chvěním) + hrčení po rozbité cestě
+  function truck(id, x, y, dir) {
+    if (!on || !ctx) return;
+    const l = loopNode(`truck${id}`, (f) => {
+      const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = 44 + (id % 5) * 3;
+      const lfo = ctx.createOscillator(); lfo.frequency.value = 9 + (id % 3); const lg = ctx.createGain(); lg.gain.value = 4; lfo.connect(lg).connect(o.frequency);
+      const og = ctx.createGain(); og.gain.value = 0.7; o.connect(og).connect(f);
+      const n = ctx.createBufferSource(); n.buffer = noise; n.loop = true;
+      const nf = ctx.createBiquadFilter(); nf.type = 'bandpass'; nf.frequency.value = 180; nf.Q.value = 0.7;
+      const ng = ctx.createGain(); ng.gain.value = 0.5; n.connect(nf).connect(ng).connect(f);
+      o.start(); lfo.start(); n.start(Math.random());
+      return { o };
+    });
+    placeLoop(l, x, y, 0.16, 900);
+    l.o.frequency.setTargetAtTime((44 + (id % 5) * 3) * (dir > 0 ? 1.02 : 0.98), ctx.currentTime, 0.4);
+  }
+  // povoz: klapot kopyt (krátké suché ťuknutí, rytmus chůze) + vrzání kol
+  function cart(id, x, y) {
+    if (!on || !ctx) return;
+    const l = loopNode(`cart${id}`, (f) => {
+      const n = ctx.createBufferSource(); n.buffer = noise; n.loop = true;
+      const nf = ctx.createBiquadFilter(); nf.type = 'bandpass'; nf.frequency.value = 900; nf.Q.value = 6;
+      const ng = ctx.createGain(); ng.gain.value = 0.06; n.connect(nf).connect(ng).connect(f); n.start(Math.random());
+      return { next: 0, step: 0 };
+    });
+    const pl = placeLoop(l, x, y, 0.5, 5000);
+    const t = ctx.currentTime;
+    if (t >= l.next && pl.gain * (1 - pl.far) > 0.05 && voice(0.1)) {
+      // čtyřtakt chůze: klap-klap … klap-klap
+      l.step = (l.step + 1) % 4; l.next = t + (l.step % 2 ? 0.16 : 0.34);
+      const o = out(x, y, 0.5 * (1 - pl.far));
+      const bf = ctx.createBiquadFilter(); bf.type = 'bandpass'; bf.frequency.value = 1500 + Math.random() * 500; bf.Q.value = 3;
+      const g = ctx.createGain(); env(g.gain, t, 0.9, 0.002, 0.05);
+      noiseSrc(t, 0.07).connect(bf).connect(g).connect(o.node);
+    }
+  }
+  // hlahol vojáků v zákopu: šum přes dva „hlasové“ formanty, hlasitost skáče v rytmu slabik; jen při přiblížení
+  function murmur(x, y, crowd) {
+    if (!on || !ctx) return;
+    const l = loopNode('murmur', (f) => {
+      const n = ctx.createBufferSource(); n.buffer = noise; n.loop = true;
+      const f1 = ctx.createBiquadFilter(); f1.type = 'bandpass'; f1.frequency.value = 520; f1.Q.value = 2.2;
+      const f2 = ctx.createBiquadFilter(); f2.type = 'bandpass'; f2.frequency.value = 1350; f2.Q.value = 3;
+      const sy = ctx.createGain(); sy.gain.value = 0.5;
+      // slabiky: dvě pomalé vlny přes hlasitost (nepravidelný rytmus řeči)
+      for (const [fq, a] of [[3.7, 0.35], [5.9, 0.25], [1.3, 0.2]]) { const o = ctx.createOscillator(); o.frequency.value = fq; const og = ctx.createGain(); og.gain.value = a; o.connect(og).connect(sy.gain); o.start(); }
+      n.connect(f1).connect(sy); n.connect(f2).connect(sy); sy.connect(f); n.start(Math.random());
+      return { f1, f2 };
+    });
+    l.f1.frequency.setTargetAtTime(480 + Math.random() * 120, ctx.currentTime, 0.6); // hlasy se mění
+    placeLoop(l, x, y, Math.min(0.22, 0.03 + crowd * 0.012), 2400);
+  }
+  // těžké dělo: hluboký výstřel s dlouhým duněním a ozvěnou
+  function cannon(x, y) {
+    if (!on || !ctx || !voice(3)) return;
+    const t = ctx.currentTime, o = out(x, y, 1.4);
+    const th = ctx.createOscillator(); th.type = 'sine'; th.frequency.setValueAtTime(70, t); th.frequency.exponentialRampToValueAtTime(28, t + 0.9);
+    const tg = ctx.createGain(); env(tg.gain, t, 1.0, 0.004, 1.1); th.connect(tg).connect(o.node); th.start(t); th.stop(t + 1.3);
+    const cf = ctx.createBiquadFilter(); cf.type = 'lowpass'; cf.frequency.value = 2200 - o.far * 1500;
+    const cg = ctx.createGain(); env(cg.gain, t, 0.9, 0.002, 0.35); noiseSrc(t, 0.5).connect(cf).connect(cg).connect(o.node);
+    const rf = ctx.createBiquadFilter(); rf.type = 'lowpass'; rf.frequency.value = 320;
+    const rg = ctx.createGain(); rg.gain.setValueAtTime(0.0001, t + 0.15); rg.gain.exponentialRampToValueAtTime(0.35, t + 0.4); rg.gain.exponentialRampToValueAtTime(0.0001, t + 2.8);
+    noiseSrc(t + 0.15, 2.7).connect(rf).connect(rg).connect(o.node);
+  }
+  // co se tento snímek neozvalo (auto mimo záběr), ztichne
+  function tickLoops() {
+    if (!ctx) return;
+    const t = ctx.currentTime;
+    for (const l of Object.values(loops)) if (t - l.seen > 0.25) l.g.gain.setTargetAtTime(0, t, 0.2);
+  }
 
   function setOn(v) {
     on = v;
@@ -226,7 +319,7 @@ export function createSound() {
   try { wanted = localStorage.getItem(KEY) === '1'; } catch {}
 
   return {
-    rifle, boom, flare, plane,
+    rifle, boom, flare, plane, truck, cart, murmur, cannon, tickLoops,
     setView: (v) => (view = v),
     setWeather: (w) => (weather = w),
     get on() { return on; },

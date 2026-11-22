@@ -58,7 +58,8 @@ export async function initConvoy({ world, anchor, map, openX0, openX1, V = '' })
     }
   }
   layer.addChild(puffs);
-  return {
+  const api = {
+    sfx: null,
     roadY,
     fleet,
     update(now, dt, view) {
@@ -72,6 +73,7 @@ export async function initConvoy({ world, anchor, map, openX0, openX1, V = '' })
         r.sp.x = Math.round(r.x);
         r.sp.texture = r.frames[(Math.floor(now / (r.horse ? 120 : 90)) + r.ph) % r.frames.length]; // kola, kopyta
         r.sp.y = y + 4;
+        if (api.sfx) { const id = fleet.indexOf(r); if (r.horse) api.sfx.cart(id, r.x, y); else api.sfx.truck(id, r.x, y, r.dir); } // zvuk jen ve viditelném záběru
         if (!r.horse && Math.random() < dt / 160) smoke.push({ x: r.sp.x - r.dir * 28, y: r.sp.y - 6, life: 900 }); // výfuk vzadu u země
       }
       puffs.clear();
@@ -83,4 +85,5 @@ export async function initConvoy({ world, anchor, map, openX0, openX1, V = '' })
       }
     },
   };
+  return api;
 }

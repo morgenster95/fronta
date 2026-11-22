@@ -484,7 +484,9 @@ async function boot() {
   const recording = import.meta.env.DEV && new URLSearchParams(location.search).has('reel');
   const sfx = recording ? null : createSound();
   if (sfx) {
-    sfx.setWeather(new URLSearchParams(location.search).get('wx') || roster.weather);
+    sfx.setWeather(new URLSearchParams(location.search).get('wx') || (winter.on ? winterFall(roster.weather) || 'clear' : roster.weather)); // v zimě vítr místo deště
+    if (gunFx) gunFx.sfx = sfx;
+    convoy.sfx = sfx;
     const btn = document.getElementById('sound');
     const paint = () => {
       btn.textContent = sfx.on ? '🔊' : '🔇';
@@ -776,6 +778,14 @@ async function boot() {
     planeFx.update(now, view, sfx);
     gunFx?.update(now, app.ticker.deltaMS, view);
     convoy.update(now, app.ticker.deltaMS, view);
+    if (sfx) {
+      sfx.tickLoops();
+      // hlahol vojáků: jen při přiblížení, střed viditelných vojáků, hlasitost podle počtu
+      if (showSprites && visibleSoldiers.length > 2) {
+        let sx = 0, sy = 0; for (const q of visibleSoldiers) { sx += q.x; sy += q.y; }
+        sfx.murmur(sx / visibleSoldiers.length, sy / visibleSoldiers.length, visibleSoldiers.length);
+      }
+    }
     mineFx?.update(now, app.ticker.deltaMS);
     wireFx?.update(now);
     const sh = life.update(now, reelTime != null ? app.ticker.deltaMS : app.ticker.deltaMS / slow, view, visibleSoldiers, showSprites);

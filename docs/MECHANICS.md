@@ -555,3 +555,8 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 
 ## 2026-11-22 Zásobovací linie (NASAZENO, jen vzhled)
 - `web/src/convoy.js`: cesta (koleje) těsně za zálohami směrem k frontě (mimo těžké dělo uprostřed mezi liniemi i mimo nemocnice vzadu), po ní pořád jezdí kolona (asi 1 vozidlo na 700 px fronty, tam i zpět): nákladní auto strany (PixelLab `props/truck_heg|truck_con`) nebo povoz s koněm (`cart_horse`). Houpání, kouř z výfuku. Bez vlivu na boj. (Původně jen za zálohami a občas: uživatel auto neviděl.)
+
+## 2026-11-22 Prostorové zvuky (NASAZENO, jen web)
+- `web/src/sound.js` (syntéza Web Audio, žádné nahrávky): nové smyčky podle polohy a přiblížení (`place`: stereo podle polohy na obrazovce, oddálení = tišší a tlumenější):
+  motor nákladního auta (`truck`), povoz – klapot kopyt ve čtyřtaktu a vrzání (`cart`), hlahol vojáků v zákopu jen při přiblížení (`murmur`, hlasitost podle počtu vojáků v záběru),
+  výstřel těžkého děla s dlouhým duněním (`cannon`, `web/src/guns.js`). Smyčka, která se ve snímku neozve (vozidlo mimo záběr), ztichne (`tickLoops`). V zimě podkres = vítr místo deště.

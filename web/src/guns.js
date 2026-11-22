@@ -54,6 +54,7 @@ export async function initGuns({ world, anchor, roster, map, theme, tex, life, o
         if (it.next <= 0) {
           it.next = (g.cond >= 0.6 ? 7000 : 14000) + Math.random() * 6000;
           it.flash = 120; it.recoil = 160;
+          api.sfx?.cannon?.(it.x + it.muzzle[0], it.y + it.muzzle[1]); // výstřel slyšet podle polohy (22. 11.)
           for (let k = 0; k < 5; k++) it.puffs.push({ x: it.muzzle[0] + (Math.random() - 0.5) * 6, y: it.muzzle[1] + (Math.random() - 0.5) * 4, r: 2 + Math.random() * 2, a: 0.7, vy: -0.01 - Math.random() * 0.01 });
           // dopad v cílovém úseku nepřítele až po letové době; jen místně, nic neletí přes frontu
           const L = g.last, e = 1 - it.f;
@@ -75,5 +76,6 @@ export async function initGuns({ world, anchor, roster, map, theme, tex, life, o
     }
   }
   // fire(): výstřel hned (natáčení reelů)
-  return { update, fire() { for (const it of items) it.next = 0; }, guns: items.map((it) => ({ x: it.x, y: it.y, faction: it.f })) };
+  const api = { update, sfx: null, fire() { for (const it of items) it.next = 0; }, guns: items.map((it) => ({ x: it.x, y: it.y, faction: it.f })) };
+  return api;
 }
