@@ -189,3 +189,5 @@
 {"kind": "objanim", "name": "truck_heg_pad", "object": "4d27c3e2-99a7-4dbc-a8b8-2732fb7751d8", "at": "2026-11-22T11:06:47Z"}
 {"kind": "objanim", "name": "truck_con_pad", "object": "c5ee21bb-8a8a-4320-af25-78fabbf20b9d", "at": "2026-11-22T11:06:48Z"}
 {"kind": "objanim", "name": "cart_horse_pad", "object": "bf33c331-9dce-464a-8b34-eee7de6baea0", "at": "2026-11-22T11:06:49Z"}
+{"kind": "img", "name": "cart_horse_side2", "w": 80, "h": 48, "job": "b38f7782-d013-41b7-bd06-042824deb443", "at": "2026-11-22T11:09:16Z", "desc": "WW1 horse-drawn army supply wagon in pure side profile facing right: one brown draft horse harnessed IN FRONT of the wagon between two long wooden shafts, the shafts run from the front of the wagon al"}
+{"kind": "objanim", "name": "cart_horse2_pad", "object": "c3d013a9-a369-4777-8020-d12f4259473f", "at": "2026-11-22T11:09:52Z"}
