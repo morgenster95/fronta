@@ -1,0 +1,60 @@
+{
+ "seconds": 54.1,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.6,
+   4.8,
+   "Winter is coming to the front. Before the snow buries it, the wire must be mended.",
+   "hook"
+  ],
+  [
+   5.65,
+   6.41,
+   "At night, men crawl out with coils of wire and iron posts. They work in the dark, without a sound.",
+   "stake"
+  ],
+  [
+   12.31,
+   2.9,
+   "When a flare goes up, they drop flat and wait for the dark.",
+   "flare"
+  ],
+  [
+   15.46,
+   5.61,
+   "The Hegemony wire is torn in twenty-eight places. Only fifty-eight percent still stands.",
+   "state"
+  ],
+  [
+   21.32,
+   5.28,
+   "The Concord wire holds better, sixty-nine percent. But half of it is already sagging.",
+   "con"
+  ],
+  [
+   26.85,
+   6.21,
+   "Wire stops a raid before it reaches the trench. Without it, every man on the fire step is easier to hit.",
+   "why"
+  ],
+  [
+   33.31,
+   6.32,
+   "It is hard and dangerous work. A man on the wire is not on watch, and the enemy rifles never sleep.",
+   "risk"
+  ],
+  [
+   39.88,
+   7.56,
+   "Comment WIRE under this reel. Your soldier crawls out tonight and mends the wire in their own sector. Both sides can go.",
+   "cta"
+  ],
+  [
+   47.69,
+   3.01,
+   "Mud and Iron. Every follower is a soldier.",
+   "cta2"
+  ]
+ ]
+}
