@@ -164,3 +164,11 @@
 {"kind": "img", "name": "trench_concept_fortified", "w": 192, "h": 256, "job": "7742abd3-9198-4cda-ba13-4b98aae27c8b", "at": "2026-11-22T10:30:53Z", "desc": "top-down three-quarter view pixel art game map, WW1 western front, a front-line trench running left to right across the middle, no man's land with craters and barbed wire below it, soldiers 30 pixels "}
 {"time": "2026-11-22T10:31:32Z", "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4", "name": "smoke", "direction": "south", "group": "a87d4e2a-a095-493a-b068-da2fcd37cb60", "cost": 1, "error": null}
 {"time": "2026-11-22T10:31:40Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "smoke", "direction": "north", "group": "4fb342a5-c4d6-4777-b5f0-dd650a7ebb2d", "cost": 1, "error": null}
+{"time": "2026-11-22T10:31:48Z", "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4", "name": "warmhands", "direction": "south", "group": "049ed917-4ef4-4478-b268-748526c4e1d9", "cost": 1, "error": null}
+{"time": "2026-11-22T10:31:56Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "warmhands", "direction": "north", "group": "59f32916-455c-4eca-8f6a-1aa6b066dbd9", "cost": 1, "error": null}
+{"time": "2026-11-22T10:32:04Z", "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4", "name": "eat", "direction": "south", "group": "cffe2cdb-bb5d-45d7-9865-d4123bb2b8f7", "cost": 1, "error": null}
+{"time": "2026-11-22T10:32:12Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "eat", "direction": "north", "group": "8e3b131a-edbe-45c2-a02e-6336abf6f3de", "cost": 1, "error": null}
+{"time": "2026-11-22T10:32:20Z", "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4", "name": "stamp", "direction": "south", "group": "afa6b3df-fb92-4762-b41e-63fcd925bb54", "cost": 1, "error": null}
+{"time": "2026-11-22T10:32:28Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "stamp", "direction": "north", "group": "c876c833-f71d-4c8c-9916-0509e9cdfb46", "cost": 1, "error": null}
+{"time": "2026-11-22T10:32:36Z", "character": "2ee9db43-cb50-4e01-b3d3-1d34ea29cdf4", "name": "wave", "direction": "south", "group": "ababd340-c468-4476-9a43-9be1d6d09bb7", "cost": 1, "error": null}
+{"time": "2026-11-22T10:32:44Z", "character": "950a1f6d-d64b-488b-a833-e5571cc9bb26", "name": "wave", "direction": "north", "group": "ad26cdc2-81aa-46a2-a84f-1aa4209eba88", "cost": 1, "error": null}
