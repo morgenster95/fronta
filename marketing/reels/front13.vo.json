@@ -1,0 +1,90 @@
+{
+ "seconds": 63.5,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.3,
+   0.8,
+   "Day thirteen.",
+   "day"
+  ],
+  [
+   2.6,
+   4.3,
+   "The first snow fell on the front last night. By dawn the wire was white.",
+   "snow"
+  ],
+  [
+   7.15,
+   4.62,
+   "Eighty-eight fell today. Thirty-nine Hegemony, forty-nine Concord.",
+   "fell"
+  ],
+  [
+   12.02,
+   7.3,
+   "The Grey Mill gun hit eleven Concord men. With forty-six wounded on stretchers, Concord medics reached only three in four.",
+   "why"
+  ],
+  [
+   19.57,
+   5.86,
+   "Jakub You was killed on watch. His rifle was still on the parapet, aimed at the spot the shot came from.",
+   "story"
+  ],
+  [
+   25.68,
+   4.26,
+   "Five soldiers bought War Bonds today. The front stands in their debt.",
+   "bonds"
+  ],
+  [
+   30.19,
+   5.12,
+   "The race for the Bone Quarry is close. Concord sixty-one, Hegemony fifty-nine.",
+   "race"
+  ],
+  [
+   35.56,
+   5.81,
+   "Before winter, the wire must be mended. The Hegemony wire is torn in twenty-seven places.",
+   "wire"
+  ],
+  [
+   41.62,
+   1.85,
+   "Tonight the wiring parties go out.",
+   "wire2"
+  ],
+  [
+   43.72,
+   2.47,
+   "Ninety-eight new soldiers came up the line yesterday.",
+   "joined"
+  ],
+  [
+   46.44,
+   2.24,
+   "Two thousand and ninety-seven now hold the front.",
+   "army"
+  ],
+  [
+   48.93,
+   1.81,
+   "Nine hundred and sixty-six Hegemony.",
+   "armyH"
+  ],
+  [
+   50.99,
+   2.47,
+   "One thousand one hundred and thirty-one Concord.",
+   "armyC"
+  ],
+  [
+   53.71,
+   6.38,
+   "Comment WIRE and your soldier crawls out tonight. New here? Comment HEGEMONY or CONCORD.",
+   "cta"
+  ]
+ ]
+}
