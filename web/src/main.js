@@ -648,8 +648,8 @@ async function boot() {
   const wx = wxQ || (winter.on ? winterFall(roster.weather) || 'clear' : roster.weather);
   const raining = !wx || wx === 'rain' || wx === 'storm';
   const snowing = wx === 'snow' || wx === 'blizzard';
-  const tint = { fog: [0xa39782, 0.13], frost: [0xc4d6e4, 0.07], clear: [0xffe6b0, 0.03], snow: [0xd6e2ec, 0.08], blizzard: [0xdfe8ef, 0.2] }[wx];
-  const flakes = Array.from({ length: wx === 'blizzard' ? 700 : 300 }, () => ({ x: Math.random(), y: Math.random(), v: 0.4 + Math.random() * 0.8, p: Math.random() * 6.28, s: Math.random() < 0.3 ? 4 : 3 }));
+  const tint = { fog: [0xa39782, 0.13], frost: [0xc4d6e4, 0.07], clear: [0xffe6b0, 0.03], snow: [0xd6e2ec, 0.04], blizzard: [0xdfe8ef, 0.14] }[wx];
+  const flakes = Array.from({ length: wx === 'blizzard' ? 380 : 130 }, () => ({ x: Math.random(), y: Math.random(), v: 0.4 + Math.random() * 0.8, p: Math.random() * 6.28, s: Math.random() < 0.2 ? 3 : 2 }));
   fog.alpha = wx === 'clear' || wx === 'frost' ? 0.5 : 1;
   const drops = Array.from({ length: wx === 'storm' ? 260 : 160 }, () => ({ x: Math.random(), y: Math.random(), v: 0.6 + Math.random() * 0.6 }));
   let flashT = 0, nextFlash = 3000;
@@ -827,7 +827,7 @@ async function boot() {
       f.x += (bl ? -0.004 : Math.sin(now * 0.001 + f.p) * 0.0006) * f.v;
       if (f.y > 1) { f.y = 0; f.x = Math.random() * 1.1; }
       if (f.x < -0.05) f.x = 1.05;
-      rain.rect(Math.round(f.x * W), Math.round(f.y * H), f.s, f.s).fill({ color: 0xf4f7f8, alpha: 0.7 + 0.3 * f.v / 1.2 });
+      rain.rect(Math.round(f.x * W), Math.round(f.y * H), f.s, f.s).fill({ color: 0xf4f7f8, alpha: (bl ? 0.45 : 0.28) + 0.22 * f.v / 1.2 }); // jemně a průhledně, ať neruší (22. 11.)
     }
     // vzdálené záblesky
     flash.clear();
