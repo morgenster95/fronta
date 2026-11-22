@@ -1,66 +1,153 @@
 """Patreon post „You decide what comes next“ (22. 11. 2026): patroni navrhují v komentářích další odměnu.
-Jen ilustrace bez textu (uživatel 22. 11.): kryt za noci, u stolu s mapou a prázdnými lístky stojí voják Hegemonie a Concordu,
-nad nimi lampa, u stolu pes, na bedně dopisy, nad stolem zlatá hvězda patronů.
-1920×1080 (mřížka 300×180 ×6, make_patreon_dog.save).
-Použití: python marketing/make_patreon_ask.py → marketing/promo/patreon/post_ask_1920x1080.jpg
+Obrázek je jen filmová ilustrace války bez textu (uživatel 22. 11.), v měřítku herních spritů (1 px scény = 1 px spritu):
+obloha a obzor z herní malby (props/mood.png), světlice, země nikoho s drátem a krátery, první sníh;
+v popředí val z pytlů (vzor ze hry) a za ním vojáci Hegemonie ze hry, na valu sedí pes (sprite ze hry, stejné měřítko).
+Mřížka 192×108 ×10 = 1920×1080. Použití: python marketing/make_patreon_ask.py → marketing/promo/patreon/post_ask_1920x1080.jpg
 """
+import math
 import os
 import sys
-from PIL import ImageDraw
+
+from PIL import Image, ImageDraw
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from make_posts import P, sprite, up  # noqa: E402
-from make_patreon_dog import save, dog  # noqa: E402
-from make_patreon import star  # noqa: E402
-from day_art import planks, light, shade, lamp, sandbag_wall, paper  # noqa: E402
+from make_posts import ROOT  # noqa: E402
+from victory_scene import PAL, PROPS, h2, fbm, dither, sandbag, spr, fire_frame  # noqa: E402
 
-W, H = 300, 180
+W, H = 192, 108
+OUT = os.path.join(ROOT, "marketing", "promo", "patreon", "post_ask_1920x1080.jpg")
+HZ = 50          # obzor (spodek výřezu malby)
+PAR = 92         # horní hrana valu (pod ní necelé 3 řady pytlů)
+
+
+def backdrop(im):
+    mood = Image.open(os.path.join(PROPS, "mood.png")).convert("RGBA")
+    im.alpha_composite(mood.crop((32, 0, 32 + W, 52)), (0, -2))
+
+
+def no_mans_land(im):
+    px = im.load()
+    for y in range(HZ, PAR):
+        k = (y - HZ) / (PAR - HZ)
+        for x in range(W):
+            v = fbm(x / (22 - 10 * k), y / (7 - 3 * k), 71)
+            c0, c1 = (PAL[1], PAL[2]) if v < 0.45 else (PAL[2], PAL[3])
+            dither(px, x, y, c0, c1, (v - (0 if v < 0.45 else 0.45)) / 0.55 if v >= 0.45 else v / 0.45)
+            s = fbm(x / 14, y / 5, 72)                     # první sníh: jen tenké světlé poprašky
+            if s > 0.72 and h2(x, y, 73) < 0.55:
+                px[x, y] = (PAL[7] if s > 0.78 else PAL[6]) + (255,)
+    d = ImageDraw.Draw(im)
+    for cx, cy, r in ((26, 60, 8), (150, 56, 6), (112, 64, 7)):   # krátery
+        for y in range(cy - r // 2, cy + r // 2 + 1):
+            for x in range(cx - r, cx + r + 1):
+                dd = math.hypot((x - cx) / r, (y - cy) / (r / 2))
+                if dd <= 1 and 0 <= x < W:
+                    px[x, y] = (PAL[17] if dd < 0.5 else PAL[1] if y > cy else PAL[5]) + (255,)
+    # drát z boku: kůly s křížem a tři prověšené prameny s ostny
+    def fence(y0, x0, x1, step, hgt, col):
+        posts = list(range(x0, x1 + 1, step))
+        for x in posts:
+            d.line((x, y0 - hgt, x, y0), fill=col)
+            d.point((x - 1, y0 - hgt + 1), fill=col); d.point((x + 1, y0 - hgt + 2), fill=col)
+        for k in range(3):
+            yy = y0 - hgt + 1 + k * (hgt // 3)
+            for x in range(x0, x1):
+                q = ((x - x0) % step) / step
+                y = yy + round(math.sin(q * math.pi) * (1 + k * 0.5))
+                if not 0 <= x < W:
+                    continue
+                if h2(x, k, 31) > 0.12:
+                    px[x, y] = col + (255,)
+                if x % 4 == 0:
+                    px[x, y - 1] = col + (255,)
+    fence(64, -4, W + 4, 17, 8, PAL[1])
+
+
+def flare(im):
+    """světlice nad zemí nikoho: bílý bod, záře a nasvícení"""
+    fx, fy = 140, 12
+    px = im.load()
+    for y in range(0, PAR):
+        for x in range(W):
+            dd = math.hypot(x - fx, (y - fy) * 1.2)
+            t = max(0.0, 1 - dd / 80) ** 1.6 * 0.55
+            if t > 0:
+                r, g, b, a = px[x, y]
+                px[x, y] = (min(255, int(r + (230 - r) * t)), min(255, int(g + (220 - g) * t)), min(255, int(b + (170 - b) * t)), 255)
+    d = ImageDraw.Draw(im)
+    d.line((fx, fy - 9, fx - 2, fy - 2), fill=PAL[6])     # kouřová stopa
+    d.rectangle((fx - 1, fy - 1, fx + 1, fy + 1), fill=(255, 250, 220))
+    for dx, dy in ((0, -2), (0, 2), (-2, 0), (2, 0)):
+        d.point((fx + dx, fy + dy), fill=PAL[23])
+
+
+def parapet(im):
+    px = im.load()
+    for y in range(PAR, H):
+        for x in range(W):
+            i = sandbag(x, y - PAR)
+            if i > 2 and y - PAR > 9:
+                i -= 2
+            c = PAL[i]
+            if (y - PAR) % 5 == 0 and i >= 7 and h2(x, y, 9) < 0.7:  # sníh na pytlích
+                c = PAL[9]
+            px[x, y] = c + (255,)
+    ImageDraw.Draw(im).line((0, PAR - 1, W, PAR - 1), fill=PAL[0])
+
+
+def soldiers(im):
+    # za valem; val kryje nohy (pata spritu ~ řádek 30 → PAR+7)
+    row = PAR - 19
+    dog = Image.open(os.path.join(PROPS, "dog_shepherd_sit.png")).convert("RGBA")
+    smoke = sorted(f for f in os.listdir(os.path.join(ROOT, "web/public/assets/soldiers")) if f.startswith("hegemony@smoke_south_"))
+    cast = [  # (sprite, střed x, kolik px postavy je nad valem) – zarovnané podle skutečného obrysu spritu
+        (spr("aim_hegemony_south.png"), 10, 16),
+        (fire_frame("hegemony@fire_south"), 40, 21),
+        (spr("hegemony_officer_south.png"), 72, 22),
+        (dog, 96, 18),                                     # pes ZA valem (uživatel 22. 11.): nad pytle hlava a hruď
+        (spr(smoke[3]), 124, 20),
+        (fire_frame("hegemony_machinegunner@fire_south"), 158, 21),
+        (spr("aim_hegemony_south.png"), 186, 16),
+    ]
+    lay = Image.new("RGBA", (W, H))
+    for img, cx, up_ in cast:
+        l, t, r, b = img.getbbox()
+        lay.alpha_composite(img, (round(cx - (l + r) / 2), PAR - up_ - t))
+    lay = lay.crop((0, 0, W, PAR))                         # nic pod horní hranou valu
+    im.alpha_composite(lay, (0, 0))
+
+
+def snowfall(im):
+    px = im.load()
+    for k in range(90):
+        x, y = int(h2(k, 1, 81) * W), int(h2(k, 2, 82) * H)
+        a = 0.35 + 0.35 * h2(k, 3, 83)
+        r, g, b, _ = px[x, y]
+        px[x, y] = (int(r + (235 - r) * a), int(g + (232 - g) * a), int(b + (225 - b) * a), 255)
+
+
+def vignette(im):
+    px = im.load()
+    for y in range(H):
+        for x in range(W):
+            dd = math.hypot((x - W / 2) / (W / 2), (y - H / 2) / (H / 2))
+            t = max(0, dd - 0.75) * 0.9
+            if t > 0:
+                r, g, b, a = px[x, y]
+                px[x, y] = (int(r * (1 - t)), int(g * (1 - t)), int(b * (1 - t)), 255)
 
 
 def main():
-    from PIL import Image
-    im = Image.new("RGBA", (W, H), P["dark"] + (255,))
-    planks(im, (0, 0, W, 120), seed=31, vertical=True)          # stěna krytu
-    sandbag_wall(im, (0, 0, W, 14), seed=8)                     # strop z pytlů
-    planks(im, (0, 120, W, H), seed=17, vertical=False)         # podlaha
-    d = ImageDraw.Draw(im)
-    d.line((0, 120, W, 120), fill=P["ink"])
-    for x in (40, 260):                                         # nosné trámy
-        d.rectangle((x, 14, x + 6, 120), fill=P["mud1"], outline=P["ink"])
-    # bedna s dopisy vpravo, sud vlevo
-    d.rectangle((222, 128, 252, 150), fill=P["mud2"], outline=P["ink"])
-    d.line((222, 139, 252, 139), fill=P["ink"])
-    for k, (x, y) in enumerate(((226, 122), (236, 119), (230, 116))):
-        d.rectangle((x, y, x + 12, y + 7), fill=P["white"], outline=P["sand"])
-        d.line((x, y, x + 6, y + 4), fill=P["sand"]); d.line((x + 12, y, x + 6, y + 4), fill=P["sand"])
-    d.rectangle((52, 124, 72, 150), fill=P["mud1"], outline=P["ink"])
-    for y in (130, 143):
-        d.line((52, y, 72, y), fill=P["steel"])
-    # vojáci obou stran u stolu (2×), lampa nad stolem
-    lamp(im, 150, 46, top=14)
-    im.alpha_composite(up(sprite("hegemony_officer_south.png"), 2), (76, 56))
-    im.alpha_composite(up(sprite("concord_west.png"), 2), (160, 56))
-    d = ImageDraw.Draw(im)
-    # stůl s mapou a lístky (nápady patronů); kreslí se PŘED vojáky, ať jim zakryje nohy
-    d.rectangle((92, 108, 208, 113), fill=P["mud3"], outline=P["ink"])       # deska
-    d.rectangle((96, 113, 204, 132), fill=P["mud1"], outline=P["ink"])       # čelo stolu
-    for x in range(100, 204, 12):
-        d.line((x, 114, x, 131), fill=P["mud0"])
-    d.rectangle((98, 132, 103, 146), fill=P["mud1"], outline=P["ink"])
-    d.rectangle((197, 132, 202, 146), fill=P["mud1"], outline=P["ink"])
-    d.rectangle((118, 104, 160, 109), fill=P["sand"], outline=P["mud2"])     # mapa
-    d.line((122, 107, 134, 105), fill=P["mud2"]); d.line((134, 105, 148, 107), fill=P["mud2"])
-    d.point((140, 106), fill=P["rust"]); d.point((128, 106), fill=P["rust"])
-    for x, y in ((166, 105), (174, 106), (182, 104)):                        # prázdné lístky
-        d.rectangle((x, y, x + 5, y + 3), fill=P["white"], outline=P["sand"])
-    d.rectangle((104, 103, 108, 108), fill=P["steel"], outline=P["ink"])     # hrnek
-    light(im, 150, 90, 110, strength=1.2, steps=3)
-    shade(im, (0, 0, W, H), strength=0.4)
-    im.alpha_composite(up(dog("shepherd"), 2), (116, 116))      # pes až po světle (bez přebarvení)
-    im.alpha_composite(dog("jackrussell"), (190, 126))
-    d = ImageDraw.Draw(im)
-    star(d, 150, 72, 6)                                         # hvězda patronů nad stolem
-    save(im, "post_ask_1500x900.jpg")
+    im = Image.new("RGBA", (W, H), PAL[1] + (255,))
+    backdrop(im)
+    no_mans_land(im)
+    flare(im)
+    parapet(im)
+    soldiers(im)
+    snowfall(im)
+    vignette(im)
+    im.convert("RGB").resize((W * 10, H * 10), Image.NEAREST).save(OUT, quality=95, subsampling=0)
+    print(OUT)
 
 
 if __name__ == "__main__":
