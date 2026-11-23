@@ -350,6 +350,14 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   const fireLog = [];
   const shotsOf = (s) => ctx.shotsOf?.(s) ?? Math.max(1, R.shots || 1); // výstřelů za den (roles.shots; lepší logistika vítěze kóty víc)
   const rounds = Math.max(1, ...shooters.map(shotsOf)); // každý cíl dál nejvýš jeden zásah za den
+  // přeplnění role (23. 11., NÁVRH): roles.<role>.ideal = podíl role ve straně, nad kterým každý další střílí méně
+  // (odstřelovačů na jednu stranu nemůže být neomezeně: o stejná místa a cíle se dělí). účinnost = (ideal / podíl)^crowdPow, nejvýš 1
+  const crowd = theme.factions.map((_, f) => {
+    const alive = state.soldiers.filter((x) => x.faction === f && x.status !== 'fallen');
+    const out = {};
+    for (const [r, c] of Object.entries(R)) if (c?.ideal) { const sh = alive.filter((x) => x.archetype === r).length / Math.max(1, alive.length); out[r] = sh > c.ideal ? Math.pow(c.ideal / sh, R.crowdPow ?? 1) : 1; }
+    return out;
+  });
   for (let round = 0; round < rounds; round++) for (const s of (round ? shooters.filter(able) : shooters).filter((x) => shotsOf(x) > round)) { // v dalším kole střílí jen ti, kdo zůstali zdraví po předchozím (obě strany naráz)
     const f = s.faction, e = 1 - f;
     const fire = role(cfg, s, 'fire');
@@ -367,7 +375,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const foes = R.saturation ? near(targetsOf[e], X(s), range).length : 0;
     const sat = R.saturation ? Math.min(1, (R.saturation * foes) / Math.max(1, mates.length)) : 1;
     // pozorovatelna (15. 11., uživatel): pozorovatel hlásí, kde stojí nepřátelské kulomety, takže střelce strany s pozorovatelnou nepotlačí
-    const p = fire * (SL[s.line] ?? 1) * mult(theme, s) * (1 + lead) * (ctx.unsuppressed?.(s) ? 1 : 1 - suppress) * sat * (ctx.fireOf?.(s) ?? 1);
+    const p = fire * (SL[s.line] ?? 1) * mult(theme, s) * (1 + lead) * (ctx.unsuppressed?.(s) ? 1 : 1 - suppress) * sat * (crowd[f][s.archetype] ?? 1) * (ctx.fireOf?.(s) ?? 1);
     stats[f].shots++;
     const rand = round ? rngFor(s.id, `fire${round}`, day) : rngFor(s.id, 'fire', day);
     if (rand() >= p) continue;

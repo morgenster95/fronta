@@ -560,3 +560,12 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 - `web/src/sound.js` (syntéza Web Audio, žádné nahrávky): nové smyčky podle polohy a přiblížení (`place`: stereo podle polohy na obrazovce, oddálení = tišší a tlumenější):
   motor nákladního auta (`truck`), povoz – klapot kopyt ve čtyřtaktu a vrzání (`cart`), hlahol vojáků v zákopu jen při přiblížení (`murmur`, hlasitost podle počtu vojáků v záběru),
   výstřel těžkého děla s dlouhým duněním (`cannon`, `web/src/guns.js`). Smyčka, která se ve snímku neozve (vozidlo mimo záběr), ztichne (`tickLoops`). V zimě podkres = vítr místo deště.
+
+## 2026-11-23 · Smysl každé role: silnější puškař a přeplnění rolí (NÁVRH, čeká na souhlas)
+**Proč:** uživatel: „umírá málo hráčů a vyplatí se jen odstřelovač“. Měření (vlastní simulace, 6 běhů × 3 dny, stav 23. 11.): zabitých na 100 vojáků role za den: puškař ~3,5, kulometčík ~6,7, odstřelovač ~14 (4× víc než puškař). Padlí ~53 H : 46 C denně.
+**Návrh (varianta F):**
+- Puškař: šance 0,25 → 0,45; zásahy 40 % lehce / 40 % těžce / 20 % kriticky (`roles.rifleman.severity` light 0,6, heavy 0,2).
+- Těžký zásah zabije na místě 0,7 → 0,4 (`roles.killHeavy`): víc lidí přežije těžce raněných, rozhodují nosítka, lůžka a medici.
+- Přeplnění rolí (`roles.<role>.ideal`, engine hotový, bez hodnot v theme nic nedělá): nad ideálním podílem ve straně střílí každý další méně, účinnost = ideal / podíl. Odstřelovač 10 %, kulometčík 14 % (+ šance 0,38 → 0,45).
+**Výsledek simulace F:** zabitých na 100 vojáků role za den: puškař ~7,5, kulometčík ~6, odstřelovač ~7,5–9,7 (role vyrovnané). Padlí ~78 H : 59 C denně (H má málo puškařů a nad ideálem odstřelovače 14 % i kulometčíky 14 %, proto víc ztrát; vyrovná se volbou nováčků a převelením).
+Nástroj: scratchpad `rolesim.mjs` (zabití podle role střelce); oficiálně `node tools/sim-edition.mjs --set …`.
