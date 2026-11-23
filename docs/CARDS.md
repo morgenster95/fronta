@@ -30,12 +30,12 @@ Zvažovaná alternativa „smůla se počítá“ (5 % + 1 % za každou akci bez
 - **Dědí se** jako medaile: kartičky patří rodu; padlý voják je předá nástupci. Duplikát = „×2“.
 - Kód: engine `engine/cards.js` (los po vyhodnocení drátu/raidu/pilota, seed dne), téma `theme.cards` (šance, strop, seznam kartiček a vzácnost), stav `s.cards = [id…]`, roster pole `cards`.
 
-## Kde se zobrazí (NÁVRH)
-- **Karta vojáka:** řádek **KEEPSAKES** s malými kartičkami (1×), klik = velká kartička (×4) s rubem „passed down from …“.
-- **Noviny:** řádek v rubrice drátu / raidu: „Found on the wire: a sweetheart card (SUNDAY). Edmund Mcnamara kept it dry.“ (jména jako u ostatních příběhů).
-- **Deník vojáka:** jedna věta při nálezu („In a dead man's coat on the wire, {name} found a sweetheart card. {name} put it in the helmet.“).
-- **Album rodu:** sbírka rodu (zděděné kartičky s počtem generací).
-- **Legendární nález:** zmínka v Day reelu / story („A LEGENDARY CARD WAS FOUND TONIGHT“).
-- Volitelně později: přehled „Sweetheart cards found: 12 · WINGS still missing“ v panelu fronty.
+## Kde se zobrazí (NÁVRH 23. 11. večer, inventář = sbírka RODU, protože se kartičky dědí)
+1. **Okamžik nálezu:** přihlášený hráč při příští návštěvě dostane jednou vyskakovací okno: kartička rubem nahoru, ťuknutí ji otočí (dívka, jméno, vzácnost, „Found on the wire, Day 15“); jen jednou (localStorage).
+   Na mapě 24 h malá blikající ikonka kartičky nad nálezcem (jako hvězda patronů). Noviny: řádek v rubrice drátu/raidu. Deník: jedna věta.
+2. **Karta vojáka:** řádek KEEPSAKES pod údaji (jen když nějakou má), malé kartičky; ťuknutí = zvětšení ×4 s otočením, na rubu „Found by … on the wire, Day N · passed down N times“.
+3. **Inventář = album rodu (tlačítko House), nová záložka Cards:** mřížka všech 8 míst sady, nalezené barevně s „×2“, chybějící jako zamčené siluety „???“ (jako v Patreon grafice), nahoře „3 / 8 collected“.
+4. Později volitelně: přehled fronty „Cards found this week: 41 · WINGS found: 2“.
+Pořadí stavby: engine + noviny/deník → karta vojáka → záložka Cards → vyskakovací okno a ikonka na mapě; nejdřív ukázka (snímky z webu).
 
 Sada 1 (#01–#08, `docs/mockups/cards/edit3/`, karta 54×87, vnitřek 44×62): HELLO, DREAMER (vzácná), SUNDAY, CALL ME, GOGGLES (vzácná), SEASIDE, WINGS (legendární), MY PAL. Grafika z PixelLabu (archy B–E), ruční úpravy uživatele, oči opravené.
