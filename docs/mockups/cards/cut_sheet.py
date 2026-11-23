@@ -7,7 +7,8 @@ R = '/home/user/fronta/'; OUT = R + 'docs/mockups/cards/'
 PAL = ['#' + l.strip() for l in open(R + 'art/palette/trench24.hex') if l.strip()]
 C = lambda i: tuple(int(PAL[i][j:j + 2], 16) for j in (1, 3, 5)) + (255,)
 FONT = ImageFont.truetype(R + 'marketing/fonts/Silkscreen-Regular.ttf', 8)
-AW, AH = 40, 56                     # vnitřek obrazu
+AW, AH = 40, 56                     # vnitřek obrazu (arch A 192×128); --inner 44x62 pro arch B 208×140 (uživatel 23. 11.: větší plátno kvůli očím)
+if '--inner' in sys.argv: AW, AH = map(int, sys.argv[sys.argv.index('--inner') + 1].split('x'))
 W, H = AW + 10, AH + 25             # karta 50 × 81
 RAR = {'common': (7, 6, 4, 5, 1), 'rare': (9, 16, 15, 14, 2), 'legendary': (22, 23, 20, 18, 3)}
 NAMES = {1: ('HELLO', 'common'), 2: ('ENCORE', 'rare'), 3: ('SUNDAY', 'common'), 4: ('LETTER', 'common'),
