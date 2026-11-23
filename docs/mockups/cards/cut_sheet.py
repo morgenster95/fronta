@@ -56,6 +56,26 @@ def fix_skin(im, need=5, rounds=8, protect=()):
                 if n >= need: px[x, y] = rgb(SKIN_FIX[c])
     return out
 
+# Předloha ve vyšším rozlišení (uživatel 23. 11.: čistší arch ~8× větší, bez pravidelné pixelové mřížky) → vnitřek 40 × 56:
+# zmenšení průměrem (BOX), převod na paletu karet (Trench 24 + pleť vojáků) a obrysy: pixel je obrys, když je v jeho bloku
+# aspoň LINE_T podíl tenkých tmavých čar (tmavší než 75 a o LINE_D tmavší než okolí); tmavé plochy (vlasy, šaty) obrysem nejsou.
+LINE_T, LINE_D = 0.22, 45   # 0.15 dávalo moc černé kolem očí, 0.28 rozmazané tváře
+def from_reference(inner):
+    from PIL import ImageFilter
+    pal = [l.split('\t')[1].strip() for l in open(R + 'docs/mockups/cards/edit/cards_palette.gpl') if '\t#' in l]
+    PP = [tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)) for h in pal]
+    q = lambda c: min(PP, key=lambda p: (p[0] - c[0]) ** 2 * 0.3 + (p[1] - c[1]) ** 2 * 0.59 + (p[2] - c[2]) ** 2 * 0.11)
+    inner = inner.convert('RGB'); w, h = inner.size; small = inner.resize((AW, AH), Image.BOX)
+    g = inner.convert('L'); m = g.filter(ImageFilter.BoxBlur(6)); gp, mp = g.load(), m.load()
+    out = Image.new('RGBA', (AW, AH))
+    for y in range(AH):
+        for x in range(AW):
+            x0, x1, y0, y1 = int(x * w / AW), int((x + 1) * w / AW), int(y * h / AH), int((y + 1) * h / AH)
+            n = sum(1 for yy in range(y0, y1) for xx in range(x0, x1))
+            line = sum(1 for yy in range(y0, y1) for xx in range(x0, x1) if gp[xx, yy] < 75 and gp[xx, yy] < mp[xx, yy] - LINE_D)
+            out.putpixel((x, y), (C(1)[:3] if line / n >= LINE_T else q(small.getpixel((x, y)))) + (255,))
+    return out
+
 def tiny(im, x, y, s, col):
     for ch in s:
         g = DIG[ch]
@@ -104,14 +124,19 @@ if __name__ == '__main__':
     raw = '--raw' in sys.argv   # bez úpravy barev (pro srovnání)
     edited = '--edited' in sys.argv   # arch ručně dobarvený (Aseprite): žádné automatické úpravy barev, jen rozstříhat a zarámovat
     sheet = Image.open(R + src if not src.startswith('/') else src).convert('RGBA')
-    if not raw and not edited: sheet = recolor(sheet)   # pleť a barvy mimo paletu; oprava skvrn na pleti až po kartičkách (chráněné oblasti)
+    if not raw and not edited and '--ref' not in sys.argv: sheet = recolor(sheet)   # pleť a barvy mimo paletu; oprava skvrn na pleti až po kartičkách (chráněné oblasti)
     cs = cells(sheet); assert len(cs) == 8, f'čekám 8 kartiček, našel jsem {len(cs)}: {cs}'
     cards = []
+    big = '--ref' in sys.argv   # předloha ve vyšším rozlišení (např. 1536 × 1024)
     for k, (x0, y0, x1, y1) in enumerate(cs):
         cx, cy = (x0 + x1) // 2, (y0 + y1) // 2                 # střed buňky → společný výřez 40 × 56 (bez tenkého rámečku z archu)
-        art = sheet.crop((cx - AW // 2, cy - AH // 2, cx - AW // 2 + AW, cy - AH // 2 + AH))
+        if big:
+            pad = max(4, (x1 - x0) // 35)                       # bez tmavého rámečku buňky
+            art = recolor(from_reference(sheet.crop((x0 + pad, y0 + pad, x1 - pad, y1 - pad))))
+        else:
+            art = sheet.crop((cx - AW // 2, cy - AH // 2, cx - AW // 2 + AW, cy - AH // 2 + AH))
         no = first + k; title, rar = NAMES.get(no, (f'NO {no}', 'common'))
-        if not raw and not edited and '--nofix' not in sys.argv: art = fix_skin(art, protect=PROTECT.get(no, ()))
+        if not raw and not edited and not big and '--nofix' not in sys.argv: art = fix_skin(art, protect=PROTECT.get(no, ()))
         if sepia: art = recolor(art, sepia)
         c = card(art, no, title, rar)
         if not raw and not sepia: c.save(OUT + f'card_{no:02d}.png')
@@ -120,5 +145,5 @@ if __name__ == '__main__':
     out = Image.new('RGB', (4 * (W * K + G) + G, 2 * (H * K + G) + G), (28, 26, 23))
     for k, c in enumerate(cards):
         b = c.resize((W * K, H * K), Image.NEAREST); out.paste(b, (G + (k % 4) * (W * K + G), G + (k // 4) * (H * K + G)), b)
-    tag = '_raw' if raw else (f'_sepia{int(sepia*100)}' if sepia else '')
+    tag = '_ref' if big else '_raw' if raw else (f'_sepia{int(sepia*100)}' if sepia else '')
     out.save(OUT + f'sheet_cards_{first:02d}{tag}.png'); print('ok', len(cards), 'karet', W, 'x', H, tag)
