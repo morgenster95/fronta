@@ -1,0 +1,102 @@
+{
+ "seconds": 63.6,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.3,
+   0.8,
+   "Day fourteen.",
+   "day"
+  ],
+  [
+   2.6,
+   3.21,
+   "Last night three hundred and twenty-eight men crawled out to mend the wire.",
+   "wire"
+  ],
+  [
+   6.06,
+   2.32,
+   "One hundred and thirty-five were caught in the flares.",
+   "wire2"
+  ],
+  [
+   8.63,
+   2.07,
+   "By morning, one hundred and eight had fallen.",
+   "fell"
+  ],
+  [
+   10.95,
+   2.23,
+   "The Hegemony medics reached only two in three.",
+   "why"
+  ],
+  [
+   13.43,
+   4.62,
+   "The deadliest rifle on the front: Gideon Cubes. Five enemies down.",
+   "hero"
+  ],
+  [
+   18.3,
+   3.79,
+   "A raider nearly killed him. Today he is back at his post.",
+   "hero2"
+  ],
+  [
+   22.34,
+   7.71,
+   "Medic Hugo Magnusmadsen has patched up twenty-eight men. Yesterday a bullet hit his belt buckle. Today he was back.",
+   "medic"
+  ],
+  [
+   30.3,
+   8.02,
+   "Cyril Catatfire bought War Bonds, then went out on the wire. He did not come back. His dog Jasper waits for his heir.",
+   "bonds"
+  ],
+  [
+   38.57,
+   3.3,
+   "Wendel Gonzo joined the Field Post. Thank you.",
+   "bonds2"
+  ],
+  [
+   42.12,
+   3.15,
+   "Bone Quarry: Hegemony ninety-one, Concord eighty-eight.",
+   "race"
+  ],
+  [
+   45.52,
+   2.51,
+   "Fifty-two new soldiers came up the line yesterday.",
+   "joined"
+  ],
+  [
+   48.28,
+   2.79,
+   "Two thousand one hundred and fifty-nine now hold the front.",
+   "army"
+  ],
+  [
+   51.32,
+   1.12,
+   "One thousand Hegemony.",
+   "armyH"
+  ],
+  [
+   52.69,
+   2.46,
+   "One thousand one hundred and fifty-nine Concord.",
+   "armyC"
+  ],
+  [
+   55.4,
+   4.78,
+   "Pick a side. Comment HEGEMONY or CONCORD, and your soldier joins the line.",
+   "cta"
+  ]
+ ]
+}
