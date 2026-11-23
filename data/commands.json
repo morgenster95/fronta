@@ -597,6 +597,12 @@
     "_note": "Patreon Officers' Mess (2026-11-23): Trench Dog, plemeno a jméno losuje hra"
   },
   {
+    "id": "support-ewalters120-20261123",
+    "cmd": "support",
+    "handle": "ewalters120",
+    "_note": "Patreon Field Post (2026-11-23): stužka"
+  },
+  {
     "id": "dog-ewalters120-20261123",
     "cmd": "dog",
     "handle": "ewalters120",
