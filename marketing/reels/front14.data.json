@@ -1,0 +1,48 @@
+{
+  "_": "Day reel Day 14 – noviny 23. 11. 13:00 UTC (state.day 15); nováčci 22. 11. 00:00–23. 11. 00:00 UTC z gitu",
+  "label": 14,
+  "fell": [
+    46,
+    62
+  ],
+  "why": "Hegemony: 62 wounded on stretchers · medics reached 66%",
+  "wire": {
+    "men": 328,
+    "yards": 5334,
+    "hit": 135
+  },
+  "hero": {
+    "handle": "sugar_cubes745",
+    "name": "Gideon \"Mud\" Cubes",
+    "note": "5 kills · @sugar_cubes745"
+  },
+  "medic": {
+    "handle": "magnusmadsen37",
+    "name": "Hugo \"Ash\" Magnusmadsen",
+    "note": "28 men patched · @magnusmadsen37"
+  },
+  "patrons": [
+    {
+      "handle": "catatfire",
+      "name": "Cyril Catatfire ✝",
+      "note": "Officers' Mess"
+    },
+    {
+      "handle": "undead_gonzo66",
+      "name": "Wendel \"Whistle\" Gonzo",
+      "note": "Field Post"
+    }
+  ],
+  "race": [
+    91,
+    88
+  ],
+  "joined": [
+    25,
+    27
+  ],
+  "army": [
+    1000,
+    1159
+  ]
+}
