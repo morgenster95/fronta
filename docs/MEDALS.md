@@ -20,33 +20,39 @@ Texty pro hru a noviny jsou anglicky (jednoduchá angličtina, pravidla textů v
 
 ## Sada (12 druhů × 2 strany = 24 medailí)
 
+**Týdenní vyhodnocení (uživatel 23. 11.: denně je to moc).** Soutěžní medaile se rozdávají JEN jednou týdně, v nedělních novinách 13:00 UTC
+(„Sunday parade“: týden = noviny pondělí až neděle). Jeden vyznamenaný za stranu a medaili. Událostní medaile (drát, raid, děla) jdou nejlepšímu
+ze všech takových událostí v týdnu; když v týdnu žádná nebyla, medaile se neudělí.
+
 | id | Hegemonie | Concord | Kdo ji dostane (jeden hráč za stranu, pokud není řečeno jinak) |
 |---|---|---|---|
-| `valour` | Iron Wreath | Valley Cross | **každé noviny:** nejvíc zásahů nepřítele za den |
-| `marksman` | Star of the Steady Hand | Gallantry Star | **každé noviny:** nejlepší odstřelovač / kulometčík dne (jiný hráč než `valour`) |
-| `mercy` | Field Cross | Lamp of Mercy | **každé noviny:** medik, který ošetřil nejvíc raněných |
-| `wound` | Wound Clasp | Wound Stripe | **každý**, kdo přežije těžké nebo kritické zranění (ne jen jeden) |
-| `wire` | Wire Clasp | Picket Medal | **wiring party:** kdo opravil nejvíc yardů drátu a vrátil se |
-| `raid` | Night Dagger | Raider's Star | **noční raid:** nejvíc zásahů a vrátil se živý |
-| `gun` | Gunner's Badge | Shell Medal | **souboj děl v komentářích:** nejpilnější obsluha (nejvíc granátů) |
-| `sky` | Iron Wings | Concord Wings | **pilot:** po prvním letu; sestřelení nepřítele = druhá medaile |
-| `hill` | Order of the Height | Cross of the Ridge | **dobytí kóty:** hrdina vítězné strany (jen vítěz) |
+| `valour` | Iron Wreath | Valley Cross | **týdně:** nejvíc zásahů nepřítele za týden |
+| `marksman` | Star of the Steady Hand | Gallantry Star | **týdně:** nejlepší odstřelovač / kulometčík týdne (jiný hráč než `valour`) |
+| `mercy` | Field Cross | Lamp of Mercy | **týdně:** medik, který za týden ošetřil nejvíc raněných |
+| `wire` | Wire Clasp | Picket Medal | **týdně:** nejvíc yardů drátu ze všech wiring party v týdnu (a vrátil se) |
+| `raid` | Night Dagger | Raider's Star | **týdně:** nejvíc zásahů ze všech raidů v týdnu (a vrátil se živý) |
+| `gun` | Gunner's Badge | Shell Medal | **týdně:** nejvíc granátů v soubojích děl v týdnu |
+| `sky` | Iron Wings | Concord Wings | **týdně:** pilot, který v týdnu létal (sestřelení nepřítele má přednost) |
+| `hill` | Order of the Height | Cross of the Ridge | **při dobytí kóty:** hrdina vítězné strany (vzácné, zůstává hned) |
+| `wound` | Wound Clasp | Wound Stripe | **automaticky:** každý, kdo přežije těžké nebo kritické zranění; tiše (karta + deník), v neděli jen počet |
 | `service` | Long Service Bar | Seven Winters Medal | **automaticky:** 7, 14 a 30 dní naživu na frontě (spona za každý stupeň) |
 | `winter` | Frost Ribbon | Snow Medal | **automaticky:** přežil první sníh (22. 11.) a plnou zimu (13. 12.) |
 | `truce` | Silent Night Medal | Silent Night Medal | **vánoční příměří:** kdo se přihlásí a potká nepřítele v zemi nikoho (stejná pro obě strany) |
 
 Pravidla:
-- Jedna medaile každého druhu za stranu a událost; při shodě rozhodne los (seed dne, jako jinde v enginu).
+- Soutěžní medaile: jedna za stranu a týden; při shodě rozhodne los (seed dne, jako jinde v enginu).
+- Automatické (wound, service, winter) se připíšou hned, ale bez slávy: jen karta a věta v deníku. Neděle je jen shrne číslem („27 men received the Wound Clasp this week“).
+- Týdenní součty: engine si v pondělí uloží výchozí stav počítadel (`kills`, `treated`, drát, raid, granáty) do `state.medalWeek`; v neděli rozdíl = výkon týdne.
 - Stejný voják ji může dostat znovu: na kartě „×2“, „×3“ (na stuze přibude spona, kreslená v kódu).
 - Padlý voják medaile neztrácí; nástupce je vidí v albu rodu (jako dnes `medals` a `houseBadges`).
 - Stávající odznaky (`first-wave`, `wire-party`, `raider`, War Bonds) zůstanou, nové medaile je nenahrazují.
 
 ## Texty (citace v novinách a zápis do deníku)
 
-Noviny, rubrika **“Decorated today”** (jen jméno, bez @, jako ostatní čísla od 19. 11.? → rozhodnout; patroni @ mají):
-- valour: `Iron Wreath to {name}, {hits} enemy hits in one night.` / `Valley Cross to {name}, {hits} enemy hits in one night.`
+Noviny (neděle), rubrika **“Sunday parade: decorated this week”** (jen jméno, bez @, jako ostatní čísla od 19. 11.? → rozhodnout; patroni @ mají):
+- valour: `Iron Wreath to {name}, {hits} enemy hits this week.` / `Valley Cross to {name}, {hits} enemy hits this week.`
 - marksman: `Star of the Steady Hand to {name}, {role}, {hits} hits from sector {sector}.` / `Gallantry Star to …`
-- mercy: `Field Cross to {name}, who treated {n} wounded before dawn.` / `Lamp of Mercy to {name}, who …`
+- mercy: `Field Cross to {name}, who treated {n} wounded this week.` / `Lamp of Mercy to {name}, who …`
 - wire: `Wire Clasp to {name}, {yards} yards of wire mended under fire.` / `Picket Medal to …`
 - raid: `Night Dagger to {name}, back from the raid with {hits} hits.` / `Raider's Star to …`
 - gun: `Gunner's Badge to {name}, who loaded {n} shells for the guns.` / `Shell Medal to …`
@@ -60,12 +66,12 @@ Deník vojáka (jedna věta, přidá se k dennímu zápisu, nic se nepřepisuje)
 
 ## Kde je vidět
 - **Karta vojáka:** řádek MEDALS, ikony 15 × 23 px ve skutečné velikosti (ukázka `medals_in_use.png`).
-- **Noviny:** rubrika „Decorated today“ s malou ikonou ×2.
-- **Day reel / story:** „Medal of the day“ (záběr na vojáka s reflektorem + medaile ×8 přes celou obrazovku).
+- **Noviny:** v neděli rubrika „Sunday parade“ s malou ikonou ×2.
+- **Nedělní Day reel / story:** „Medals of the week“ (záběr na vojáka s reflektorem + medaile ×8 přes celou obrazovku).
 - **Mapa:** nic (32 px voják je na medaili moc malý); možná jen jemná stužka u jména jako War Bonds.
 
 ## Co je potřeba postavit (odhad)
 1. `engine/medals.js`: výběr vítězů z dat, která už existují (`kills`/zásahy dne, `treated`, wiring yards, raid hits, shells, pilot, kóta, dny naživu, zima). Volá se v denním tahu po boji. Test v `engine.test.js`.
 2. `theme.medals` (názvy, texty, obrázek) v `themes/front-ww1/theme.json` (engine zůstává obecný).
 3. Web: ikony v atlasu/`assets/medals/`, řádek na kartě, rubrika v novinách.
-4. Simulace 30 dní: kolik medailí rozdáme, aby jich nebylo moc (cíl: ~6 denně + události, wound podle počtu přeživších těžkých zranění).
+4. Simulace 30 dní: kolik medailí rozdáme, aby jich nebylo moc (cíl: v neděli ~14 vyznamenaných = 7 druhů × 2 strany; automatické tiše).

@@ -572,4 +572,4 @@ Nástroj: scratchpad `rolesim.mjs` (zabití podle role střelce); oficiálně `n
 
 ## 2026-11-23 · Medaile: plná sada 24 kusů, denní a událostní vyznamenání (NÁVRH, čeká na souhlas)
 **Proč:** přání patronů (Caleb: medaile dne v novinách a na IG) + uživatel: odměňovat i nejlepšího z wiring party, raidu apod. Detail, lore, texty a pravidla: `docs/MEDALS.md`, grafika `docs/mockups/medals/`.
-**Návrh:** 12 druhů × 2 strany (Hegemonie železo/stříbro „Iron Register“, Concord bronz/mosaz z nábojnic). Denně za stranu: nejvíc zásahů, nejlepší střelec, nejlepší medik. Události: wiring party, raid, souboj děl, pilot, kóta, vánoční příměří. Automaticky: přežité těžké zranění, 7/14/30 dní, zima.
+**Návrh:** 12 druhů × 2 strany (Hegemonie železo/stříbro „Iron Register“, Concord bronz/mosaz z nábojnic). **Jednou týdně** (uživatel 23. 11.: denně je to moc) v nedělních novinách „Sunday parade“: za stranu nejvíc zásahů, nejlepší střelec, nejlepší medik, nejlepší z wiring party, z raidů, ze souboje děl, pilot (týdenní součty). Hned jen hrdina kóty a vánoční příměří. Automaticky a tiše (karta + deník): přežité těžké zranění, 7/14/30 dní, zima.
