@@ -573,3 +573,12 @@ Nástroj: scratchpad `rolesim.mjs` (zabití podle role střelce); oficiálně `n
 ## 2026-11-23 · Medaile: plná sada 24 kusů, denní a událostní vyznamenání (NÁVRH, čeká na souhlas)
 **Proč:** přání patronů (Caleb: medaile dne v novinách a na IG) + uživatel: odměňovat i nejlepšího z wiring party, raidu apod. Detail, lore, texty a pravidla: `docs/MEDALS.md`, grafika `docs/mockups/medals/`.
 **Návrh:** 12 druhů × 2 strany (Hegemonie železo/stříbro „Iron Register“, Concord bronz/mosaz z nábojnic). **Jednou týdně** (uživatel 23. 11.: denně je to moc) v nedělních novinách „Sunday parade“: za stranu nejvíc zásahů, nejlepší střelec, nejlepší medik, nejlepší z wiring party, z raidů, ze souboje děl, pilot (týdenní součty). Hned jen hrdina kóty a vánoční příměří. Automaticky a tiše (karta + deník): přežité těžké zranění, 7/14/30 dní, zima.
+
+## 2026-11-23 · Sběratelské kartičky z wiring party a raidu (NÁVRH, čeká na souhlas)
+**Proč:** uživatel: malá šance najít při výpravách sběratelský předmět, který se dědí z vojáka na vojáka (pin-up kartičky ve stylu malby na letadlech).
+**Návrh:** nález ~1,5 % (wiring party) / ~2 % (raid) za vojáka, který se vrátí živý; 24 kartiček, vzácnost 60/30/10 %; dědí nástupce jako medaile. Detail a grafika `docs/CARDS.md`, `docs/mockups/cards/`.
+
+## 2026-11-23 · Úkryty na frontě + oblast světa v účtu (NÁVRH, dev náhled `?shelters=1`)
+**Proč:** uživatel: místo přeskupování podle zemí ukázat původ hráčů v úkrytech, kde spí. Země omezit na velké celky.
+**Návrh:** `web/src/shelters.js`: kryt (přední linie), plechový oblouk (podpůrná), stan (zálohy), ~1 úkryt na 28 vojáků, mimo obvaziště; vchod odvrácený od nepřítele (Concord vidíme vchody, Hegemonii zezadu).
+Klik = panel se jménem úkrytu, počtem, 7 oblastmi světa (praporky) a jmény. Oblast si hráč vybere v účtu (`profiles/{uid}.region`), smyčka přenese k vojákovi. Snímky `docs/mockups/shelters/`.
