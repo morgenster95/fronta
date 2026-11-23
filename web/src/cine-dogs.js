@@ -39,7 +39,7 @@ export async function makeDogCine(tex = {}) {
   const NIGHT = 'rgba(30,36,72,0.28)', WARM = 'rgba(120,70,20,0.14)', DUSK = 'rgba(90,50,60,0.18)';
   const D = {};
   for (const b of BREEDS) { D[b] = { night: tinted(raw[b], NIGHT), warm: tinted(raw[b], WARM), dusk: tinted(raw[b], DUSK), lie: tinted(raw[`${b}_lie`], WARM) }; D[b].duskL = flip(D[b].dusk); }
-  const SOL = { hegS: fromTex(tex.hegemony?.south, NIGHT), conS: fromTex(tex.concord?.south, DUSK), conW: fromTex(tex.concord?.west, DUSK) };
+  const SOL = { hegS: fromTex(tex.hegemony?.south, NIGHT), conS: fromTex(tex.concord?.south, DUSK), conW: fromTex(tex.concord?.west, DUSK), hegW: fromTex(tex.hegemony?.west, DUSK) };
   const px = (c, x, y, w = 1, h = 1) => { g.fillStyle = c; g.fillRect(x, y, w, h); };
   const glow = (x, y, r, a, rgb = '255,205,130') => { const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgba(${rgb},${a})`); gr.addColorStop(1, `rgba(${rgb},0)`); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); };
   const dog = (img, x, feet, k = 1) => { if (img) g.drawImage(img, Math.round(x - 16 * k), Math.round(feet - 32 * k), 32 * k, 32 * k); };
@@ -107,7 +107,7 @@ export async function makeDogCine(tex = {}) {
       g.fillStyle = PAL.mud2; g.beginPath(); g.ellipse(45, 176, 16, 3, 0, 0, Math.PI * 2); g.fill(); // hrob
       const came = t > (o.next ?? 99);
       dog(came ? D[o.breed || 'collie'].dusk : D[o.breed || 'collie'].duskL, 72, 177, 1.5);
-      if (came) man(SOL.conW, 110, 177, 1.5);
+      if (came) man(SOL[o.man || 'conW'] || SOL.conW, 110, 177, 1.5); // o.man: kdo přijde (nástupce strany psa)
     },
   };
   return { canvas, draw(name, t, o = {}) { g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = 1; g.clearRect(0, 0, W, H); scenes[name]?.(Math.max(0, t), o); } };

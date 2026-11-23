@@ -21,13 +21,6 @@
     "name": "Hugo \"Ash\" Magnusmadsen",
     "note": "28 men patched · @magnusmadsen37"
   },
-  "patrons": [
-    {
-      "handle": "catatfire",
-      "name": "Cyril Catatfire ✝",
-      "note": "Officers' Mess"
-    }
-  ],
   "race": [
     91,
     88
@@ -43,5 +36,11 @@
   "fieldpost": {
     "handle": "undead_gonzo66",
     "name": "Wendel \"Whistle\" Gonzo"
+  },
+  "patron": {
+    "handle": "catatfire",
+    "name": "Cyril Catatfire",
+    "heir": "Clement \"Bones\" Catatfire",
+    "breed": "airedale"
   }
 }

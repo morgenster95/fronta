@@ -209,6 +209,7 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
   return {
     shelters: [...layer.children, ...pbTop.children],
     pillboxes: pbs, // { s, fl, f, ruin, front } (reel „pillbox“ jeden rozstřílí)
+    flash: pbs.length ? flash : null, // záblesky kulometů z bunkrů (reel je skryje u představovaného vojáka)
     docs,
     update(now, view) {
       // kulomet v bunkru střílí dávkami: každé ~3 s dávka 6 záblesků z průzoru (u bunkru zezadu je záblesk vidět nad střechou)

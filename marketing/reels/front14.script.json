@@ -1,91 +1,24 @@
 {
  "seconds": 60,
  "auto": true,
- "drums": [
-  "day",
-  [],
-  "cta"
- ],
+ "drums": ["day", [], "cta"],
  "lines": [
-  [
-   0.3,
-   "Day fourteen.",
-   "day"
-  ],
-  [
-   2.6,
-   "Last night three hundred and twenty-eight men crawled out to mend the wire.",
-   "wire"
-  ],
-  [
-   0,
-   "One hundred and thirty-five were caught in the flares.",
-   "wire2"
-  ],
-  [
-   0,
-   "By morning, one hundred and eight had fallen.",
-   "fell"
-  ],
-  [
-   0,
-   "The Hegemony medics reached only two in three.",
-   "why"
-  ],
-  [
-   0,
-   "The deadliest rifle on the front: Gideon Cubes. Five enemies down.",
-   "hero"
-  ],
-  [
-   0,
-   "A raider nearly killed him. Today he is back at his post.",
-   "hero2"
-  ],
-  [
-   0,
-   "Medic Hugo Magnusmadsen has patched up twenty-eight men. Yesterday a bullet hit his belt buckle. Today he was back.",
-   "medic"
-  ],
-  [
-   0,
-   "Cyril Catatfire bought War Bonds, then went out on the wire. He did not come back. His dog Jasper waits for his heir.",
-   "bonds"
-  ],
-  [
-   0,
-   "Wendel Gonzo joined the Field Post. Thank you.",
-   "bonds2"
-  ],
-  [
-   0,
-   "Bone Quarry: Hegemony ninety-one, Concord eighty-eight.",
-   "race"
-  ],
-  [
-   0,
-   "Fifty-two new soldiers came up the line yesterday.",
-   "joined"
-  ],
-  [
-   0,
-   "Two thousand one hundred and fifty-nine now hold the front.",
-   "army"
-  ],
-  [
-   0,
-   "One thousand Hegemony.",
-   "armyH"
-  ],
-  [
-   0,
-   "One thousand one hundred and fifty-nine Concord.",
-   "armyC"
-  ],
-  [
-   0,
-   "Pick a side. Comment HEGEMONY or CONCORD, and your soldier joins the line.",
-   "cta"
-  ]
+  [0.3, "Day fourteen.", "day"],
+  [2.6, "Last night three hundred and twenty-eight men crawled out to mend the wire.", "wire"],
+  [0, "When the flares went up, one hundred and thirty-five were hit.", "wire2"],
+  [0, "By morning, one hundred and eight had fallen.", "fell"],
+  [0, "The Hegemony medics reached only two in three.", "why"],
+  [0, "Three nights ago, a Concord raider jumped into the trench of Gideon Cubes.", "raid"],
+  [0, "Cubes fought him off. Today his rifle is the deadliest on the front. Five enemies down.", "hero"],
+  [0, "Medic Hugo Magnusmadsen has patched up twenty-eight men. Yesterday a bullet hit his belt buckle. Today he was back.", "medic"],
+  [0, "Cyril Catatfire bought War Bonds, then went out on the wire. He did not come back.", "bonds"],
+  [0, "His dog Jasper waited at the grave. Then the heir came up the line.", "jasper"],
+  [0, "Wendel Gonzo joined the Field Post. Thank you.", "bonds2"],
+  [0, "Bone Quarry: Hegemony ninety-one, Concord eighty-eight.", "race"],
+  [0, "Fifty-two new soldiers came up the line yesterday.", "joined"],
+  [0, "Two thousand one hundred and fifty-nine now hold the front.", "army"],
+  [0, "One thousand Hegemony.", "armyH"],
+  [0, "One thousand one hundred and fifty-nine Concord.", "armyC"],
+  [0, "Pick a side. Comment HEGEMONY or CONCORD, and your soldier joins the line.", "cta"]
  ]
 }
