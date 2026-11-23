@@ -1,0 +1,16 @@
+{
+  "_": "Evidence filmových scén (pravidlo uživatele 23. 11.: NOVÉ, NIC NEPOUŽÍVÁME VÍCKRÁT). Každá kreslená scéna a každý obraz pozadí smí být v reelu jen jednou. Před výrobou zkontroluj, že scéna tu není; po schválení videa ji sem zapiš. Záběry přímo ve hře (mapa, počty, přejezdy po linii, panely) se nepočítají.",
+  "used": {
+    "cinema.js": ["nightshell", "flare", "church", "aidpost", "letter", "grim", "canal", "dawnwire"],
+    "cinema-race.js": ["march", "guns", "shelter", "ribbon", "counter", "graves", "heir", "lineage"],
+    "cinema-stories.js": ["song", "chess", "initials"],
+    "cinema-pillbox.js": ["hq", "guns", "boom"],
+    "cinema-day8.js": ["tea", "rifle"],
+    "cinema-wire.js": ["flarewire", "factory", "tree", "nml", "stake"],
+    "cinema-pilot.js": ["field", "archie"],
+    "cine-vert.js": ["ward", "trench"],
+    "cine-dogs.js": ["arrive", "breed", "lineup", "diary", "family"],
+    "cine-trench.js": ["duelA", "duelB", "mg", "sick", "runner", "battery", "ward", "order", "picket", "trenchwounded", "crater", "shelled", "wire"],
+    "art/cine (pozadí)": ["cine_tea", "cine_rifle", "cine_raid_trench", "cine_raid_flare", "props/mood.png"]
+  }
+}
