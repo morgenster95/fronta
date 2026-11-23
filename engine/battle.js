@@ -243,7 +243,6 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     }
     if (vol.length) {
       const nm = (f) => short(theme, f);
-      const who = (h) => `${h.name} (@${h.handle})${h.sev === 'light' ? '' : h.sev === 'heavy' ? ', badly' : ', gravely'}`;
       const parts = theme.factions.map((_, f) => (res[f].n ? `${res[f].n} ${nm(f)} soldier${res[f].n > 1 ? 's' : ''} put up ${res[f].yards} yards of wire` : null)).filter(Boolean);
       const hit = theme.factions.flatMap((_, f) => res[f].hit);
       const home = theme.factions.map((_, f) => f).filter((f) => !res[f].n);
@@ -251,7 +250,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         day, kind: 'wiring', h: 'Wiring parties in no man\'s land',
         text: `Last night ${parts.join(', and ')}.` +
           (home.length === 1 ? ` The ${nm(home[0])} stayed in the trench and kept every rifle on the parapet.` : '') +
-          (hit.length ? ` Caught in the flares: ${hit.map(who).join(', ')}.` : ' Everyone came back.'),
+          (hit.length ? ` Caught in the flares: ${theme.factions.map((_, f) => res[f].hit.length ? `${res[f].hit.length} ${nm(f)} (${res[f].hit.filter((h) => h.sev !== 'light').length} badly)` : null).filter(Boolean).join(', ')}.` : ' Everyone came back.'), // noviny jen čísla (uživatel 19. 11. a 23. 11.), jména zůstávají v denících
         wiring: res,
       });
     }
