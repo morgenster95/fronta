@@ -149,7 +149,7 @@ export async function startDay14Reel({ cam, map, soldiers, tex, anims }) {
       : t >= tt.why && t < tt.raid ? ['art', 'aid', t - tt.why]
       : t >= tt.raid && t < tt.hero ? ['art', 'raid', t - tt.raid, { fall: 2.4 }]
       : t >= tt.bonds && t < GH ? ['art', 'graves', t - tt.bonds, { breed: D.patron.breed, heir: tt.jasper - tt.bonds + 0.6 }]
-      : t >= tt.joined && t < tt.army ? ['art', 'road', t - tt.joined + 2] : null;
+      : t >= tt.joined && t < tt.army ? ['art', 'road', t - tt.joined + 1.5] : null;
     if (film) d14.draw(film[1], film[2], film[3]);
     show('#f14-art', film ? 1 : 0);
     paint({ ...f, black: Math.max(f.black, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) }, 0);
