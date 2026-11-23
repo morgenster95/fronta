@@ -551,5 +551,17 @@
     "cmd": "claim",
     "handle": "kq.erenn",
     "code": "ENLIST-X25H"
+  },
+  {
+    "id": "star-catatfire-20261123",
+    "cmd": "star",
+    "handle": "catatfire",
+    "_note": "Patreon Officers' Mess (2026-11-23): hvězda + stužka"
+  },
+  {
+    "id": "dog-catatfire-20261123",
+    "cmd": "dog",
+    "handle": "catatfire",
+    "_note": "Patreon Officers' Mess (2026-11-23): Trench Dog, plemeno a jméno losuje hra"
   }
 ]
