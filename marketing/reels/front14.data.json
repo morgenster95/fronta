@@ -26,11 +26,6 @@
       "handle": "catatfire",
       "name": "Cyril Catatfire ✝",
       "note": "Officers' Mess"
-    },
-    {
-      "handle": "undead_gonzo66",
-      "name": "Wendel \"Whistle\" Gonzo",
-      "note": "Field Post"
     }
   ],
   "race": [
@@ -44,5 +39,9 @@
   "army": [
     1000,
     1159
-  ]
+  ],
+  "fieldpost": {
+    "handle": "undead_gonzo66",
+    "name": "Wendel \"Whistle\" Gonzo"
+  }
 }

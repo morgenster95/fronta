@@ -861,6 +861,7 @@ async function boot() {
         reelTime = ms;
         app.ticker.update(ms);
         Ticker.shared.update(ms);
+        window.__reelPost?.(ms / 1000); // reel může po aktualizaci světa ještě něco skrýt (např. kdo zakrývá představovaného vojáka)
         app.render();
       },
     });
