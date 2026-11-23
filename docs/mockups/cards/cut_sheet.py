@@ -60,20 +60,62 @@ def fix_skin(im, need=5, rounds=8, protect=()):
 # zmenšení průměrem (BOX), převod na paletu karet (Trench 24 + pleť vojáků) a obrysy: pixel je obrys, když je v jeho bloku
 # aspoň LINE_T podíl tenkých tmavých čar (tmavší než 75 a o LINE_D tmavší než okolí); tmavé plochy (vlasy, šaty) obrysem nejsou.
 LINE_T, LINE_D = 0.22, 45   # 0.15 dávalo moc černé kolem očí, 0.28 rozmazané tváře
-def from_reference(inner):
+def from_reference(inner, skin_t=0.5):
     from PIL import ImageFilter
     pal = [l.split('\t')[1].strip() for l in open(R + 'docs/mockups/cards/edit/cards_palette.gpl') if '\t#' in l]
     PP = [tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)) for h in pal]
     q = lambda c: min(PP, key=lambda p: (p[0] - c[0]) ** 2 * 0.3 + (p[1] - c[1]) ** 2 * 0.59 + (p[2] - c[2]) ** 2 * 0.11)
+    skin = {(0xd9, 0x8f, 0x3f), (0xdb, 0x9b, 0x71), (0xc8, 0x86, 0x5f), (0xad, 0x6d, 0x4f), (0xa8, 0x5a, 0x36)}
     inner = inner.convert('RGB'); w, h = inner.size; small = inner.resize((AW, AH), Image.BOX)
     g = inner.convert('L'); m = g.filter(ImageFilter.BoxBlur(6)); gp, mp = g.load(), m.load()
-    out = Image.new('RGBA', (AW, AH))
+    base, frac, mn = {}, {}, {}
     for y in range(AH):
         for x in range(AW):
             x0, x1, y0, y1 = int(x * w / AW), int((x + 1) * w / AW), int(y * h / AH), int((y + 1) * h / AH)
-            n = sum(1 for yy in range(y0, y1) for xx in range(x0, x1))
-            line = sum(1 for yy in range(y0, y1) for xx in range(x0, x1) if gp[xx, yy] < 75 and gp[xx, yy] < mp[xx, yy] - LINE_D)
-            out.putpixel((x, y), (C(1)[:3] if line / n >= LINE_T else q(small.getpixel((x, y)))) + (255,))
+            vals = [(gp[xx, yy], mp[xx, yy]) for yy in range(y0, y1) for xx in range(x0, x1)]
+            frac[x, y] = sum(1 for v, mm in vals if v < 75 and v < mm - LINE_D) / len(vals)
+            mn[x, y] = min(v for v, _ in vals); base[x, y] = q(small.getpixel((x, y)))
+    out = Image.new('RGBA', (AW, AH)); ink = C(1)[:3]
+    for y in range(AH):
+        for x in range(AW):
+            c = base[x, y]
+            if c in skin:   # v obličeji a na kůži: tmavý pixel jen u výrazné čáry, nebo zornice (nejtmavší bod okolí)
+                nb = [mn[a, b] for a in range(x - 1, x + 2) for b in range(y - 1, y + 2) if 0 <= a < AW and 0 <= b < AH and base[a, b] in skin]
+                pupil = mn[x, y] < 50 and mn[x, y] <= min(nb)
+                dark = frac[x, y] >= skin_t or pupil
+            else:
+                dark = frac[x, y] >= LINE_T
+            out.putpixel((x, y), (ink if dark else c) + (255,))
+    return out
+
+# Oči (uživatel 23. 11.: „problém jsou oči“): po zmenšení z předlohy jsou oči tmavé fleky 2×2–3×3. Shluk obrysové barvy, který je
+# skoro celý obklopený pletí (= oko / obočí v obličeji), se zmenší na zornici: 1 tmavý pixel (u vyššího shluku 1×2) ve středu,
+# zbytek shluku dostane stín pleti. Obrysy tváře a vlasů se nemění (sousedí s vlasy, oblečením nebo pozadím).
+SKINS = {'#db9b71', '#c8865f', '#ad6d4f', '#e3d9c3', '#a85a36'}
+def fix_eyes(im, min_skin=0.7):
+    out = im.copy(); px = out.load(); w, h = out.size
+    hexc = lambda p: '#%02x%02x%02x' % p[:3]
+    ink = '#1c1a17'; shade = (0xad, 0x6d, 0x4f, 255); dark = C(1)
+    seen = set()
+    for y in range(h):
+        for x in range(w):
+            if (x, y) in seen or hexc(px[x, y]) != ink: continue
+            stack, cl = [(x, y)], []
+            seen.add((x, y))
+            while stack:
+                a, b = stack.pop(); cl.append((a, b))
+                for da, db in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    n = (a + da, b + db)
+                    if 0 <= n[0] < w and 0 <= n[1] < h and n not in seen and hexc(px[n]) == ink: seen.add(n); stack.append(n)
+            if len(cl) < 2 or len(cl) > 8: continue
+            ring = {(a + da, b + db) for a, b in cl for da in (-1, 0, 1) for db in (-1, 0, 1)} - set(cl)
+            ring = [r for r in ring if 0 <= r[0] < w and 0 <= r[1] < h]
+            if not ring or sum(hexc(px[r]) in SKINS for r in ring) / len(ring) < min_skin: continue
+            xs, ys = [a for a, _ in cl], [b for _, b in cl]
+            cx, cy = round(sum(xs) / len(xs)), round(sum(ys) / len(ys))
+            keep = {(cx, cy)} | ({(cx, cy + 1)} if max(ys) - min(ys) >= 2 and (cx, cy + 1) in cl else set())
+            for q in cl: px[q] = dark if q in keep else shade
+            for q in keep: px[q] = dark
     return out
 
 def tiny(im, x, y, s, col):
