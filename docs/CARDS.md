@@ -11,16 +11,21 @@ Styl: vkusné pin-up obrázky jako malby na letadlech / pohlednice dívek kolem 
 ## Mechanika (NÁVRH 23. 11., dokončit 24. 11.)
 Data: wiring party Day 6 = 67 lidí, Day 15 = 328 (všichni se vrátili); raid Day 11 = 188 (vrátilo se 169). Akcí se účastní stovky → šance malá + strop.
 
-| Akce | Šance na vojáka, který se vrátí živý | Strop | Teď (odhad) |
+**Aktualizace (uživatel 23. 11. večer: „jednou za 3–4 měsíce je málo, na 10.–12. akci by měl mít šanci“):**
+
+| Akce | Šance na vojáka, který se vrátí živý | Strop (jen pojistka) | Teď (odhad) |
 |---|---|---|---|
-| Wiring party (WIRE) | **1,5 %** | nejvýš **4 kartičky na stranu** za noc | 328 lidí → ~5 kartiček |
-| Noční raid (RAID) | **2 %** (riskantnější) | nejvýš **4 na stranu** | 169 → ~3–4 |
-| Pilot (let) | **3 %** za den letu (jen 1 pilot na stranu) | 1 | ~1× za měsíc |
-| Další akce s přihláškou (nové) | 1,5 % | 4 na stranu | |
+| Wiring party (WIRE) | **8 %** | **25 kartiček na stranu** za noc | 328 lidí → ~26 |
+| Noční raid (RAID) | **10 %** (riskantnější) | 25 na stranu | 169 → ~17 |
+| Pilot (let) | **10 %** za den letu | 1 | ~1× za 10 dní |
+| Další akce s přihláškou (nové) | 8 % | 25 na stranu | |
+
+Šance na aspoň 1 kartičku za n akcí = 1 − (1 − p)^n: při 8 % do 10. akce 57 %, do 12. akce 63 %, průměrně první kartička na 12.–13. akci.
+Zvažovaná alternativa „smůla se počítá“ (5 % + 1 % za každou akci bez nálezu, po nálezu zpět na 5 %): na 10. akci 14 %; spravedlivější, ale hůř se vysvětluje. Zatím NE.
 
 - Kdo padne nebo zůstane těžce raněný na drátu, nic nenajde. Hlasování, granáty z komentářů ani dopisy kartičky nedávají (účastníků je moc a nic neriskují).
 - **Vzácnost:** běžná 70 %, vzácná 25 %, legendární 5 % (ze sady #01–#08: 5 běžných, 2 vzácné, 1 legendární; v rámci vzácnosti rovnoměrně).
-- Jeden voják: šance ~1 % na akci → při účasti každý druhý den ~1 kartička za 3–4 měsíce. Většina hráčů žádnou mít nebude, proto mají hodnotu.
+- Hodnota sbírky drží vzácnost (legendární 5 %), ne počet kartiček: aktivní hráč kartičku najde, legendární WINGS jen málokdo.
 - **Dědí se** jako medaile: kartičky patří rodu; padlý voják je předá nástupci. Duplikát = „×2“.
 - Kód: engine `engine/cards.js` (los po vyhodnocení drátu/raidu/pilota, seed dne), téma `theme.cards` (šance, strop, seznam kartiček a vzácnost), stav `s.cards = [id…]`, roster pole `cards`.
 
