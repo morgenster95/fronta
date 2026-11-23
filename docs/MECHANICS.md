@@ -569,3 +569,7 @@ Teď: roli si hráč volí **jen při náboru** (heslo strany a role v jednom ko
 - Přeplnění rolí (`roles.<role>.ideal`, engine hotový, bez hodnot v theme nic nedělá): nad ideálním podílem ve straně střílí každý další méně, účinnost = ideal / podíl. Odstřelovač 10 %, kulometčík 14 % (+ šance 0,38 → 0,45).
 **Výsledek simulace F:** zabitých na 100 vojáků role za den: puškař ~7,5, kulometčík ~6, odstřelovač ~7,5–9,7 (role vyrovnané). Padlí ~78 H : 59 C denně (H má málo puškařů a nad ideálem odstřelovače 14 % i kulometčíky 14 %, proto víc ztrát; vyrovná se volbou nováčků a převelením).
 Nástroj: scratchpad `rolesim.mjs` (zabití podle role střelce); oficiálně `node tools/sim-edition.mjs --set …`.
+
+## 2026-11-23 · Medaile: plná sada 24 kusů, denní a událostní vyznamenání (NÁVRH, čeká na souhlas)
+**Proč:** přání patronů (Caleb: medaile dne v novinách a na IG) + uživatel: odměňovat i nejlepšího z wiring party, raidu apod. Detail, lore, texty a pravidla: `docs/MEDALS.md`, grafika `docs/mockups/medals/`.
+**Návrh:** 12 druhů × 2 strany (Hegemonie železo/stříbro „Iron Register“, Concord bronz/mosaz z nábojnic). Denně za stranu: nejvíc zásahů, nejlepší střelec, nejlepší medik. Události: wiring party, raid, souboj děl, pilot, kóta, vánoční příměří. Automaticky: přežité těžké zranění, 7/14/30 dní, zima.
