@@ -583,5 +583,17 @@
     "cmd": "dog",
     "handle": "undead_gonzo66",
     "_note": "Patreon Field Post (2026-11-23): Trench Dog, plemeno a jméno losuje hra"
+  },
+  {
+    "id": "star-dale.coop-20261123",
+    "cmd": "star",
+    "handle": "dale.coop",
+    "_note": "Patreon Officers' Mess (2026-11-23): hvězda + stužka"
+  },
+  {
+    "id": "dog-dale.coop-20261123",
+    "cmd": "dog",
+    "handle": "dale.coop",
+    "_note": "Patreon Officers' Mess (2026-11-23): Trench Dog, plemeno a jméno losuje hra"
   }
 ]
