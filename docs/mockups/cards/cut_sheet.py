@@ -17,6 +17,24 @@ DIG = {'#': ['.#.#.', '#####', '.#.#.', '#####', '.#.#.'], '0': ['###', '#.#', '
        '5': ['###', '#..', '###', '..#', '###'], '6': ['###', '#..', '###', '#.#', '###'], '7': ['###', '..#', '.#.', '.#.', '.#.'],
        '8': ['###', '#.#', '###', '#.#', '###'], '9': ['###', '#.#', '###', '..#', '###']}
 
+# Barvy (uživatel 23. 11.: doladit): pleť jako u vojáků ve hře (tlumená broskvová řada ze spritů), barvy mimo Trench 24 na nejbližší z palety.
+# A2 (zvoleno): jen nejsvětlejší okrová → světlá pleť vojáků; tmavší rezavé zůstávají, ať vlasy nezesvětlí (varianta A měnila i je, colors_A_vs_A2.png)
+SKIN = {'#d98f3f': '#db9b71'}
+FIX = {'#52543a': '#545639', '#3f4230': '#3a3b2c', '#4b4560': '#4a4f52', '#141a2c': '#2a3138'}
+def recolor(im, sepia=0.0):
+    """přemapuje barvy podle SKIN a FIX; sepia > 0 = stará tiskovina (každá barva se přiblíží k #857a68)"""
+    hexc = lambda p: '#%02x%02x%02x' % p[:3]
+    rgb = lambda h: tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
+    out = im.copy(); px = out.load()
+    for y in range(out.height):
+        for x in range(out.width):
+            p = px[x, y]
+            if p[3] == 0: continue
+            h = hexc(p); h = SKIN.get(h, FIX.get(h, h)); c = rgb(h)
+            if sepia: c = tuple(round(a + (b - a) * sepia) for a, b in zip(c, (133, 122, 104)))
+            px[x, y] = c + (255,)
+    return out
+
 def tiny(im, x, y, s, col):
     for ch in s:
         g = DIG[ch]
@@ -61,16 +79,22 @@ def card(art, no, title, rar):
 
 if __name__ == '__main__':
     src, first = sys.argv[1], int(sys.argv[2]) if len(sys.argv) > 2 else 1
+    sepia = float(sys.argv[sys.argv.index('--sepia') + 1]) if '--sepia' in sys.argv else 0.0
+    raw = '--raw' in sys.argv   # bez úpravy barev (pro srovnání)
     sheet = Image.open(R + src if not src.startswith('/') else src).convert('RGBA')
+    if not raw: sheet = recolor(sheet, sepia)
     cs = cells(sheet); assert len(cs) == 8, f'čekám 8 kartiček, našel jsem {len(cs)}: {cs}'
     cards = []
     for k, (x0, y0, x1, y1) in enumerate(cs):
         cx, cy = (x0 + x1) // 2, (y0 + y1) // 2                 # střed buňky → společný výřez 40 × 56 (bez tenkého rámečku z archu)
         art = sheet.crop((cx - AW // 2, cy - AH // 2, cx - AW // 2 + AW, cy - AH // 2 + AH))
         no = first + k; title, rar = NAMES.get(no, (f'NO {no}', 'common'))
-        c = card(art, no, title, rar); c.save(OUT + f'card_{no:02d}.png'); cards.append(c)
+        c = card(art, no, title, rar)
+        if not raw and not sepia: c.save(OUT + f'card_{no:02d}.png')
+        cards.append(c)
     K, G = 5, 16
     out = Image.new('RGB', (4 * (W * K + G) + G, 2 * (H * K + G) + G), (28, 26, 23))
     for k, c in enumerate(cards):
         b = c.resize((W * K, H * K), Image.NEAREST); out.paste(b, (G + (k % 4) * (W * K + G), G + (k // 4) * (H * K + G)), b)
-    out.save(OUT + f'sheet_cards_{first:02d}.png'); print('ok', len(cards), 'karet', W, 'x', H)
+    tag = '_raw' if raw else (f'_sepia{int(sepia*100)}' if sepia else '')
+    out.save(OUT + f'sheet_cards_{first:02d}{tag}.png'); print('ok', len(cards), 'karet', W, 'x', H, tag)
