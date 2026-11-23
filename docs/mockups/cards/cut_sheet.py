@@ -102,15 +102,16 @@ if __name__ == '__main__':
     src, first = sys.argv[1], int(sys.argv[2]) if len(sys.argv) > 2 else 1
     sepia = float(sys.argv[sys.argv.index('--sepia') + 1]) if '--sepia' in sys.argv else 0.0
     raw = '--raw' in sys.argv   # bez úpravy barev (pro srovnání)
+    edited = '--edited' in sys.argv   # arch ručně dobarvený (Aseprite): žádné automatické úpravy barev, jen rozstříhat a zarámovat
     sheet = Image.open(R + src if not src.startswith('/') else src).convert('RGBA')
-    if not raw: sheet = recolor(sheet)   # pleť a barvy mimo paletu; oprava skvrn na pleti až po kartičkách (chráněné oblasti)
+    if not raw and not edited: sheet = recolor(sheet)   # pleť a barvy mimo paletu; oprava skvrn na pleti až po kartičkách (chráněné oblasti)
     cs = cells(sheet); assert len(cs) == 8, f'čekám 8 kartiček, našel jsem {len(cs)}: {cs}'
     cards = []
     for k, (x0, y0, x1, y1) in enumerate(cs):
         cx, cy = (x0 + x1) // 2, (y0 + y1) // 2                 # střed buňky → společný výřez 40 × 56 (bez tenkého rámečku z archu)
         art = sheet.crop((cx - AW // 2, cy - AH // 2, cx - AW // 2 + AW, cy - AH // 2 + AH))
         no = first + k; title, rar = NAMES.get(no, (f'NO {no}', 'common'))
-        if not raw and '--nofix' not in sys.argv: art = fix_skin(art, protect=PROTECT.get(no, ()))
+        if not raw and not edited and '--nofix' not in sys.argv: art = fix_skin(art, protect=PROTECT.get(no, ()))
         if sepia: art = recolor(art, sepia)
         c = card(art, no, title, rar)
         if not raw and not sepia: c.save(OUT + f'card_{no:02d}.png')
