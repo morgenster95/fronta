@@ -356,6 +356,9 @@ async function boot() {
   const orderFx = initOrderFx({ world, anchor: terrainLayer, roster, map, tex, anims, hospitals, theme, openX0, openX1 });
   // letadla pilotů nad frontou (web/src/planes.js; dev náhled /?planes=0,1)
   const planeFx = initPlanes({ world, map, roster, openX0, openX1 });
+  // NÁVRH úkrytů (jen dev náhled /?shelters=1, web/src/shelters.js)
+  let shelterFx = null;
+  if (import.meta.env.DEV && new URLSearchParams(location.search).has('shelters')) import('./shelters.js').then((m) => { shelterFx = m.initShelters({ world, anchor: terrainLayer, map, soldiers, theme, openX0, openX1, openCard: (s) => ui.openSoldier(s), hospitals }); window.__shelters = shelterFx; });
   // drát podle stavu úseků a wiring party (web/src/wire.js); když se rekvizity načtou, terén už drát nekreslí čarami
   // wiring party: přihlášení dobrovolníci jdou ze zákopu k drátu svého úseku (před vytvořením spritů, ať je karta i výběr najdou tam)
   // reel o noci wiring party (/?reel=nightN): skuteční dobrovolníci té noci z marketing/reels/nightN.volunteers.json (po tahu už ve stavu nejsou)
