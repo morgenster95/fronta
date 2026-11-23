@@ -576,7 +576,7 @@ Nástroj: scratchpad `rolesim.mjs` (zabití podle role střelce); oficiálně `n
 
 ## 2026-11-23 · Sběratelské kartičky z wiring party a raidu (NÁVRH, čeká na souhlas)
 **Proč:** uživatel: malá šance najít při výpravách sběratelský předmět, který se dědí z vojáka na vojáka (pin-up kartičky ve stylu malby na letadlech).
-**Návrh (aktualizace 23. 11. večer, uživatel: 1,5 % je málo):** nález **8 %** wiring party / **10 %** raid / **10 %** pilot za den letu (na 10.–12. akci má ~60 % dobrovolníků aspoň jednu), jen kdo se vrátí živý, strop 25 kartiček na stranu a akci jen jako pojistka; vzácnost 70/25/5 %; dědí nástupce jako medaile. Zobrazení: karta vojáka (KEEPSAKES), noviny, deník, album rodu. Dokončit 24. 11. Detail a grafika `docs/CARDS.md`, `docs/mockups/cards/`.
+**Návrh (aktualizace 23. 11. večer, uživatel: 1,5 % je málo):** nález **8 %** wiring party / **10 %** raid / **10 %** pilot za den letu (na 10.–12. akci má ~60 % dobrovolníků aspoň jednu), jen kdo se vrátí živý, bez stropu (26 kartiček za noc na ~2 000 hráčů není moc; strop by s růstem hry šanci tiše snižoval); vzácnost 70/25/5 %; dědí nástupce jako medaile. Zobrazení: karta vojáka (KEEPSAKES), noviny, deník, album rodu. Dokončit 24. 11. Detail a grafika `docs/CARDS.md`, `docs/mockups/cards/`.
 
 ## 2026-11-23 · Úkryty na frontě + oblast světa v účtu (NÁVRH, dev náhled `?shelters=1`)
 **Proč:** uživatel: místo přeskupování podle zemí ukázat původ hráčů v úkrytech, kde spí. Země omezit na velké celky.

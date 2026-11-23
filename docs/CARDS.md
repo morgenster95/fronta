@@ -13,13 +13,14 @@ Data: wiring party Day 6 = 67 lidí, Day 15 = 328 (všichni se vrátili); raid D
 
 **Aktualizace (uživatel 23. 11. večer: „jednou za 3–4 měsíce je málo, na 10.–12. akci by měl mít šanci“):**
 
-| Akce | Šance na vojáka, který se vrátí živý | Strop (jen pojistka) | Teď (odhad) |
+| Akce | Šance na vojáka, který se vrátí živý | Strop | Teď (odhad) |
 |---|---|---|---|
-| Wiring party (WIRE) | **8 %** | **25 kartiček na stranu** za noc | 328 lidí → ~26 |
-| Noční raid (RAID) | **10 %** (riskantnější) | 25 na stranu | 169 → ~17 |
+| Wiring party (WIRE) | **8 %** | **žádný** (uživatel 23. 11.: 26 kartiček na ~2 000 hráčů není moc) | 328 lidí → ~26 |
+| Noční raid (RAID) | **10 %** (riskantnější) | žádný | 169 → ~17 |
 | Pilot (let) | **10 %** za den letu | 1 | ~1× za 10 dní |
-| Další akce s přihláškou (nové) | 8 % | 25 na stranu | |
+| Další akce s přihláškou (nové) | 8 % | žádný | |
 
+Bez stropu zůstane šance férová i při růstu hry (strop 25 by začal brzdit od ~310 dobrovolníků na stranu). Odhad: ~40 kartiček týdně (~2 % hráčů), ~170 za měsíc (~každý 13. hráč, skoro jen aktivní), legendárních ~8 za měsíc.
 Šance na aspoň 1 kartičku za n akcí = 1 − (1 − p)^n: při 8 % do 10. akce 57 %, do 12. akce 63 %, průměrně první kartička na 12.–13. akci.
 Zvažovaná alternativa „smůla se počítá“ (5 % + 1 % za každou akci bez nálezu, po nálezu zpět na 5 %): na 10. akci 14 %; spravedlivější, ale hůř se vysvětluje. Zatím NE.
 
