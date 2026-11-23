@@ -1,17 +1,12 @@
 // Day reel Day 14 (23. 11. 2026, noviny 23. 11. 13:00 UTC; /?reel=front14&vacant=700, jen vývojový server), na výšku.
-// Uživatel 23. 11.: Day reely se moc opakovaly (hroby, lazaret, plazení, pochod) → tady skoro jen scény, které v Day 12–13 nebyly:
-// světlice nad zákopem (cinema.js flare) → voják u drátu pod světlicí (cinema-wire flarewire) → úsvit nad drátem (dawnwire, ztráty)
-// → obvaziště při lucerně (aidpost, proč) → SOUBOJ NA MAPĚ: raider Concordu vpadne k Gideonu Cubesovi a ten ho odrazí (fight-fx)
-// → Cubes na mapě (nejlepší puškař) → medik Magnusmadsen na mapě → Catatfire: hrob s helmou, pes čeká, přijde nástupce (cine-dogs family)
-// → nástupce se psem na mapě → Gonzo: dopis při svíčce (Field Post) → Bone Quarry → nováčci a počty → výzva.
-// Představovaný voják je vždy celý vidět (reflektor přes window.__reelPost, pravidlo 23. 11.). Jednotný titulek dne (dayTitle).
+// Uživatel 23. 11.: „NOVÉ, NIC NEPOUŽÍVÁME VÍCKRÁT“ → všechny filmové scény jsou nové obrazy z PixelLabu bez postav a v nich naše sprity
+// (web/src/cinema-d14.js): země nikoho pod světlicí (drátaři) → ztráty nad frontou → podzemní obvaziště (proč) → souboj lopatkami
+// v zasněženém zákopu (raid na Gideona Cubese) → Cubes a medik Magnusmadsen na mapě → hřbitov s helmami, pes čeká, přijde nástupce
+// → nástupce se psem na mapě → karta Gonza (Field Post) → Bone Quarry → nováčci na zásobovací cestě → počty → výzva.
+// Představovaný voják je vždy celý vidět (reflektor přes window.__reelPost). Jednotný titulek dne (dayTitle).
 import { CSS as BASE } from './reel-day1.js';
 import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, slam, clamp01, win, easeOut, tagAt, dayTitle } from './reel-kit.js';
-import { makeWireScenes } from './cinema-wire.js';
-import { makeScenes } from './cinema.js';
-import { makeDogCine } from './cine-dogs.js';
-import { makeFight } from './fight-fx.js';
-import { makeArtScenes } from './cinema-art.js';
+import { makeDay14Scenes } from './cinema-d14.js'; // nové obrazy (pravidlo 23. 11.: žádná scéna dvakrát, marketing/reels/scenes-used.json)
 import script from '../../marketing/reels/front14.script.json';
 import D from '../../marketing/reels/front14.data.json';
 
@@ -29,7 +24,7 @@ const CSS = `${BASE}${FX_CSS}
 .f14-panel .row b { font-size: 36px; font-weight: 400; } .f14-panel .row b.r { color: #c8553d; }
 .f14-panel .bar { height: 16px; background: #1c1a17; border: 2px solid #524a3f; position: relative; margin-bottom: 6px; } .f14-panel .bar i { position: absolute; left: 0; top: 0; bottom: 0; }
 .f14-panel .note { font-family: 'VT323', monospace; font-size: 28px; color: #c9b99a; text-align: center; margin-top: 8px; }
-#f14-fell { top: 7%; border-color: #a33b2b; } #f14-race { top: 44%; } #f14-wirep { top: 8%; border-color: #8a9295; }
+#f14-fell { top: 7%; border-color: #a33b2b; } #f14-race { top: 44%; } #f14-wirep { top: 40%; border-color: #8a9295; }
 #f14-card { position: absolute; left: 8%; right: 8%; top: 9%; text-align: center; background: rgba(14,13,12,0.94); border: 3px solid #d98f3f; padding: 12px; opacity: 0; font-family: 'Silkscreen', monospace; color: #e3d9c3; font-size: 26px; }
 #f14-card small { display: block; font-family: 'VT323', monospace; font-size: 28px; color: #c9b99a; }
 #f14-big { position: absolute; left: 0; right: 0; top: 26%; text-align: center; font-family: 'Silkscreen', monospace; color: #e3d9c3; text-shadow: 6px 6px 0 #0e0d0c; opacity: 0; }
@@ -62,13 +57,12 @@ export async function startDay14Reel({ cam, map, soldiers, tex, anims }) {
   const posOf = (q) => (q?.sprite ? { x: q.sprite.x, y: q.sprite.y } : q); // skutečná poloha (medici ve hře chodí za raněnými)
 
   // souboj na mapě: raider Concordu vpadne k Cubesovi, Cubes ho odrazí (vyhraje obránce)
-  const fight = await makeFight({ anims, soldiers });
-  if (hero) fight.scene({ at: tt.raid + 1.6, defender: hero, side: 1, win: 'defender', end: tt.hero });
 
   // kamera (záběry na mapě; ostatní části jsou kreslené scény přes celý obraz)
   const K = [];
   K.push([0, hRef.x - 120, mid, 1.0, 'cut'], [tt.wire - 0.01, hRef.x - 60, mid, 1.05]); // sníh nad frontou zdálky
-  if (hero) K.push([tt.raid, hero.x - 6, hero.y - 18, 7.0, 'cut'], [tt.hero - 0.01, hero.x - 2, hero.y - 18, 7.6]);
+  K.push([tt.fell, hRef.x - 200, mid, 1.3, 'cut'], [tt.why - 0.01, hRef.x + 100, mid, 1.35]); // ztráty: pohled přes celou frontu
+  K.push([tt.bonds2, cRef.x - 400, mid, 1.1, 'cut'], [tt.race - 0.01, cRef.x - 250, mid, 1.15]);
   K.push([tt.race, cRef.x, mid, 1.2, 'cut'], [tt.joined - 0.01, cRef.x + 300, mid, 1.25]);
   K.push([tt.joined, hRef.x + 400, mid, 0.9, 'cut'], [tt.armyH - 0.01, hRef.x + 650, mid, 0.85]);
   const pan = (l) => [l[Math.floor(l.length * 0.08)] || l[0], l[Math.floor(l.length * 0.92)] || l.at(-1)];
@@ -77,11 +71,11 @@ export async function startDay14Reel({ cam, map, soldiers, tex, anims }) {
   K.push([tt.cta, hRef.x, hRef.y + 60, 2.0, 'cut'], [END, hRef.x + 60, hRef.y + 70, 2.1]);
   const camAt = camPath(K);
   // reflektor: kdo je v kterém čase představovaný (kamera ho drží, okolí se skryje)
-  const HS = tt.hero + 2.6, MS = tt.medic + 3.2; // kreslený obraz, pak voják na mapě
-  const spots = [[tt.raid, tt.hero, hero, 7.2], [HS, tt.medic, hero, 4.8], [MS, tt.bonds, medic, 4.8], [tt.jasper + 2.2, tt.bonds2, heir, 5.2]].filter((x) => x[2]);
+  const HS = tt.hero, MS = tt.medic, GH = tt.jasper + 2.2; // obraz hřbitova do GH, pak nástupce na mapě
+  const spots = [[HS, tt.medic, hero, 4.8], [MS, tt.bonds, medic, 4.8], [GH, tt.bonds2, heir, 5.2]].filter((x) => x[2]);
   const spotAt = (t) => spots.find(([a, b]) => t >= a && t < b);
   const sub = subtitles(vo);
-  const fx = transitions([[tt.wire, 'black', 0.4], [tt.wire2, 'flash'], [tt.fell, 'black', 0.4], [tt.why, 'whip'], [tt.raid, 'black', 0.3], [tt.hero, 'flash'], [HS, 'whip'], [tt.medic, 'whip'], [MS, 'whip'], [tt.jasper, 'whip'], [tt.bonds, 'black', 0.4], [tt.jasper + 2.2, 'whip'], [tt.bonds2, 'whip'], [tt.race, 'black', 0.4], [tt.joined, 'flash'], [tt.armyH, 'whip'], [tt.armyC, 'whip'], [tt.cta, 'black', 0.4]].sort((a, b) => a[0] - b[0]));
+  const fx = transitions([[tt.wire, 'black', 0.4], [tt.wire2, 'flash'], [tt.fell, 'black', 0.4], [tt.why, 'whip'], [tt.raid, 'black', 0.3], [tt.raid + 2.35, 'flash'], [tt.hero, 'whip'], [tt.medic, 'whip'], [tt.bonds, 'black', 0.4], [GH, 'whip'], [tt.bonds2, 'whip'], [tt.race, 'black', 0.4], [tt.joined, 'flash'], [tt.armyH, 'whip'], [tt.armyC, 'whip'], [tt.cta, 'black', 0.4]].sort((a, b) => a[0] - b[0]));
   const SFX = [[tt.day, 'drum', 0], [tt.fell, 'drum', 0], [tt.raid + 1.4, 'drum', 0], [tt.hero, 'drum', 0], [tt.joined, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]];
 
   document.body.classList.add('reel');
@@ -113,8 +107,8 @@ export async function startDay14Reel({ cam, map, soldiers, tex, anims }) {
   const day = dayTitle(root);
   const $ = (s) => root.querySelector(s);
   const show = (sel, o) => { const el = $(sel); if (el) el.style.opacity = o; };
-  const wire = makeWireScenes(tex, anims), cine = makeScenes(tex, anims), dogs = await makeDogCine(tex), art = await makeArtScenes(tex, anims);
-  for (const [c, id] of [[wire, 'f14-wire'], [cine, 'f14-cine'], [dogs, 'f14-dog'], [art, 'f14-art']]) { c.canvas.id = id; root.prepend(c.canvas); }
+  const d14 = await makeDay14Scenes(tex, anims);
+  for (const [c, id] of [[d14, 'f14-art']]) { c.canvas.id = id; root.prepend(c.canvas); }
   const cards = [
     [tt.bonds, tt.jasper + 2.2, `★ ${D.patron.name.toUpperCase()} ✝<small>Officers' Mess · @${D.patron.handle}</small>`],
     [tt.bonds2, tt.race, `★ ${D.fieldpost.name.toUpperCase()}<small>joined the Field Post · @${D.fieldpost.handle}</small>`],
@@ -145,29 +139,21 @@ export async function startDay14Reel({ cam, map, soldiers, tex, anims }) {
     const f = fx(t);
     let [x, y, z] = camAt(t);
     const S = spotAt(t);
-    if (S && !(t >= tt.raid && t < tt.hero)) { const p = posOf(S[2]); x = p.x; y = p.y - 16; z = S[3]; } // drží představovaného vojáka
+    if (S) { const p = posOf(S[2]); x = p.x; y = p.y - 16; z = S[3]; } // drží představovaného vojáka
     cam.set(x, y, z * (1 + 0.05 * f.punch));
     for (const q of soldiers) if (q.sprite && q.vacant && q.sprite.alpha < 1) q.sprite.alpha = 1; // žádní duchové
-    fight.update(t);
     // kreslené scény přes celý obraz
-    const film = t >= tt.wire && t < tt.wire2 ? ['cine', 'flare', t - tt.wire + 0.4]
-      : t >= tt.wire2 && t < tt.fell ? ['wire', 'flarewire', t - tt.wire2 + 0.2, {}]
-      : t >= tt.fell && t < tt.why ? ['cine', 'dawnwire', t - tt.fell + 0.5]
-      : t >= tt.why && t < tt.raid ? ['cine', 'aidpost', t - tt.why + 0.5]
-      : t >= tt.hero && t < HS ? ['art', 'lantern', t - tt.hero, { side: 0, raider: 1 }]
-      : t >= tt.medic && t < MS ? ['art', 'medic', t - tt.medic, { side: 0 }]
-      : t >= tt.bonds && t < tt.jasper ? ['art', 'vigil', t - tt.bonds, { breed: D.patron.breed }]
-      : t >= tt.jasper && t < tt.jasper + 2.2 ? ['dog', 'family', t - tt.jasper + 0.8, { breed: D.patron.breed, man: 'hegW', next: 1.4 }]
-      : t >= tt.bonds2 && t < tt.race ? ['cine', 'letter', t - tt.bonds2 + 0.5] : null;
-    if (film?.[0] === 'wire') wire.draw(film[1], film[2], film[3]);
-    if (film?.[0] === 'cine') cine.draw(film[1], film[2]);
-    if (film?.[0] === 'dog') dogs.draw(film[1], film[2], film[3]);
-    if (film?.[0] === 'art') art.draw(film[1], film[2], film[3]);
-    show('#f14-wire', film?.[0] === 'wire' ? 1 : 0); show('#f14-cine', film?.[0] === 'cine' ? 1 : 0); show('#f14-dog', film?.[0] === 'dog' ? 1 : 0); show('#f14-art', film?.[0] === 'art' ? 1 : 0);
+    const film = t >= tt.wire && t < tt.fell ? ['art', 'wirenight', t - tt.wire + 0.4]
+      : t >= tt.why && t < tt.raid ? ['art', 'aid', t - tt.why]
+      : t >= tt.raid && t < tt.hero ? ['art', 'raid', t - tt.raid, { fall: 2.4 }]
+      : t >= tt.bonds && t < GH ? ['art', 'graves', t - tt.bonds, { breed: D.patron.breed, heir: tt.jasper - tt.bonds + 0.6 }]
+      : t >= tt.joined && t < tt.army ? ['art', 'road', t - tt.joined + 2] : null;
+    if (film) d14.draw(film[1], film[2], film[3]);
+    show('#f14-art', film ? 1 : 0);
     paint({ ...f, black: Math.max(f.black, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) }, 0);
     day(t, { n: D.label, sub: 'THE WIRE WAS MENDED', from: 0.2, to: tt.wire - 0.1, subAt: 1.1 });
     slam($('#f14-wirep'), t, tt.wire2 + 0.3, tt.fell - 0.05, 1.3, -2);
-    slam($('#f14-fell'), t, tt.fell + 0.6, tt.raid - 0.05, 1.3, -2);
+    slam($('#f14-fell'), t, tt.fell + 0.6, tt.why - 0.05, 1.3, -2);
     if (hero) tagAt($('#f14-hero'), { x: posOf(hero).x, y: posOf(hero).y - 30 }, cam, win(t, HS + 0.2, tt.medic - 0.05, 0.12), 0);
     if (medic) tagAt($('#f14-medic'), { x: posOf(medic).x, y: posOf(medic).y - 30 }, cam, win(t, MS + 0.2, tt.bonds - 0.05, 0.12), 0);
     if (heir) tagAt($('#f14-heir'), { x: posOf(heir).x, y: posOf(heir).y - 30 }, cam, win(t, tt.jasper + 2.4, tt.bonds2 - 0.05, 0.12), 0);
@@ -176,8 +162,8 @@ export async function startDay14Reel({ cam, map, soldiers, tex, anims }) {
     cEl.style.opacity = card ? 1 : 0;
     if (card && cEl.dataset.k !== String(card[0])) { cEl.dataset.k = String(card[0]); cEl.innerHTML = card[2]; }
     slam($('#f14-race'), t, tt.race + 0.2, tt.joined - 0.05, 1.3, -2);
-    show('#f14-big', t >= tt.joined && t < tt.armyH ? 1 : 0);
-    $('#f14-big b').textContent = Math.round((D.army[0] + D.army[1]) * easeOut(clamp01((t - tt.joined) / 1.6))).toLocaleString('en-US');
+    show('#f14-big', t >= tt.army && t < tt.armyH ? 1 : 0);
+    $('#f14-big b').textContent = Math.round((D.army[0] + D.army[1]) * easeOut(clamp01((t - tt.army) / 1.2))).toLocaleString('en-US');
     const side = t >= tt.armyH && t < tt.cta ? (t < tt.armyC ? 0 : 1) : -1;
     show('#f14-side', side >= 0 ? 1 : 0);
     if (side >= 0) $('#f14-side span').innerHTML = `${side ? 'CONCORD' : 'HEGEMONY'}<b>${D.army[side].toLocaleString('en-US')}</b>`;
@@ -190,8 +176,8 @@ export async function startDay14Reel({ cam, map, soldiers, tex, anims }) {
     const subEl = $('#rd-sub');
     if (s && !logo && t >= tt.wire) {
       subEl.style.opacity = 1;
-      const up = film?.[0] === 'art' && film[1] !== 'vigil'; // v kresbách s vojáky dole jdou titulky nahoru, ať postavy nezakryjí
-      subEl.style.top = up ? '7%' : 'auto'; subEl.style.bottom = up ? 'auto' : '11%';
+      const top = film ? (film[1] === 'graves' ? '24%' : '7%') : null; // v obrazech jsou postavy dole → titulky nahoru (u hřbitova pod kartu)
+      subEl.style.top = top || 'auto'; subEl.style.bottom = top ? 'auto' : '11%';
       if (subEl.dataset.text !== s) { subEl.dataset.text = s; subEl.innerHTML = `<span>${s}</span>`; }
     } else subEl.style.opacity = 0;
   }
