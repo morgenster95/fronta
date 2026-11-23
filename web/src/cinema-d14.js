@@ -54,6 +54,9 @@ export async function makeDay14Scenes(tex = {}, anims = {}) {
     walkW: A('hegemony', 'walk', 'west', DUSK), standW: sprite(tex.hegemony?.west, DUSK),
     march: A('hegemony', 'walk', 'north', DAWN), marchC: A('concord', 'walk', 'north', DAWN),
   };
+  // vozidla ze hry (pás 9 snímků, čistě z profilu, animovaná kola a kopyta): na scéně s cestou přejíždějí v dálce
+  const strip = async (n) => tinted(await loadImage(`/assets/props/${n}_anim.png`).catch(() => null), DAWN);
+  const VEH = [{ img: await strip('truck_heg'), n: 9, v: 22, y: 176, o: 30 }, { img: await strip('cart_horse'), n: 9, v: 13, y: 182, o: 170, slow: true }];
   const dog = tinted(await loadImage('/assets/props/dog_airedale_sit.png').catch(() => null), DUSK);
   const dogs = {};
   for (const b of ['airedale', 'shepherd', 'jackrussell', 'collie', 'dachshund']) dogs[b] = tinted(await loadImage(`/assets/props/dog_${b}_sit.png`).catch(() => null), DUSK);
@@ -104,6 +107,13 @@ export async function makeDay14Scenes(tex = {}, anims = {}) {
     },
     road(t) {
       plate(IM.road);
+      // náklaďák a povoz s koněm přejíždějí cestu za zástupem (velikost jako ve hře), kola a kopyta se točí
+      for (const v of VEH) {
+        if (!v.img) continue;
+        const fw = v.img.width / v.n, fh = v.img.height, fr = Math.floor(t * (v.slow ? 8 : 11)) % v.n;
+        const x = ((t * v.v + v.o) % 300) - 70, w = fw, h = fh; // plná velikost spritu ze hry
+        g.drawImage(v.img, fr * fw, 0, fw, fh, Math.round(x), v.y - h, w, h);
+      }
       // zástup nováčků jde po cestě k frontě (zády k nám), střídají se strany
       for (let i = 0; i < 5; i++) {
         const q = ((t * 0.09 + i * 0.2) % 1), y = 252 - q * 70, x = 98 + q * 22 - (i % 2) * 8;

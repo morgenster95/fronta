@@ -140,6 +140,8 @@ export async function startDay14Reel({ cam, map, soldiers, tex, anims }) {
     let [x, y, z] = camAt(t);
     const S = spotAt(t);
     if (S) { const p = posOf(S[2]); x = p.x; y = p.y - 16; z = S[3]; } // drží představovaného vojáka
+    const truck = t >= tt.army && t < tt.armyH ? window.__front?.convoy?.fleet?.find((r) => !r.horse) : null;
+    if (truck) { x = truck.x; y = window.__front.convoy.roadY[truck.f] - 52; z = 2.8; } // kolona na zásobovací cestě (poloha z logiky kolony, sprite mimo záběr se nepřepočítává)
     cam.set(x, y, z * (1 + 0.05 * f.punch));
     for (const q of soldiers) if (q.sprite && q.vacant && q.sprite.alpha < 1) q.sprite.alpha = 1; // žádní duchové
     // kreslené scény přes celý obraz
