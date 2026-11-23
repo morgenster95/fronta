@@ -11,13 +11,15 @@ import { makeWireScenes } from './cinema-wire.js';
 import { makeScenes } from './cinema.js';
 import { makeDogCine } from './cine-dogs.js';
 import { makeFight } from './fight-fx.js';
+import { makeArtScenes } from './cinema-art.js';
 import script from '../../marketing/reels/front14.script.json';
 import D from '../../marketing/reels/front14.data.json';
 
 const files = import.meta.glob('../../marketing/reels/front14.vo.json', { eager: true, import: 'default' });
 
 const CSS = `${BASE}${FX_CSS}
-#f14-wire, #f14-cine, #f14-dog { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; opacity: 0; }
+#f14-art { object-fit: cover; }
+#f14-wire, #f14-cine, #f14-dog, #f14-art { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; opacity: 0; }
 .f14-tag { position: absolute; transform: translate(-50%, -100%); font-family: 'Silkscreen', monospace; font-size: 24px; padding: 6px 12px; background: rgba(14,13,12,0.92); border: 3px solid #d98f3f; white-space: nowrap; color: #e3d9c3; opacity: 0; text-align: center; }
 .f14-tag small { display: block; font-family: 'VT323', monospace; font-size: 26px; color: #c9b99a; }
 .f14-tag.hero { border-color: #c8553d; } .f14-tag.med { border-color: #e3d9c3; }
@@ -75,10 +77,11 @@ export async function startDay14Reel({ cam, map, soldiers, tex, anims }) {
   K.push([tt.cta, hRef.x, hRef.y + 60, 2.0, 'cut'], [END, hRef.x + 60, hRef.y + 70, 2.1]);
   const camAt = camPath(K);
   // reflektor: kdo je v kterém čase představovaný (kamera ho drží, okolí se skryje)
-  const spots = [[tt.raid, tt.hero, hero, 7.2], [tt.hero, tt.medic, hero, 4.8], [tt.medic, tt.bonds, medic, 4.8], [tt.jasper + 2.2, tt.bonds2, heir, 5.2]].filter((x) => x[2]);
+  const HS = tt.hero + 2.6, MS = tt.medic + 3.2; // kreslený obraz, pak voják na mapě
+  const spots = [[tt.raid, tt.hero, hero, 7.2], [HS, tt.medic, hero, 4.8], [MS, tt.bonds, medic, 4.8], [tt.jasper + 2.2, tt.bonds2, heir, 5.2]].filter((x) => x[2]);
   const spotAt = (t) => spots.find(([a, b]) => t >= a && t < b);
   const sub = subtitles(vo);
-  const fx = transitions([[tt.wire, 'black', 0.4], [tt.wire2, 'flash'], [tt.fell, 'black', 0.4], [tt.why, 'whip'], [tt.raid, 'black', 0.3], [tt.hero, 'flash'], [tt.medic, 'whip'], [tt.bonds, 'black', 0.4], [tt.jasper + 2.2, 'whip'], [tt.bonds2, 'whip'], [tt.race, 'black', 0.4], [tt.joined, 'flash'], [tt.armyH, 'whip'], [tt.armyC, 'whip'], [tt.cta, 'black', 0.4]]);
+  const fx = transitions([[tt.wire, 'black', 0.4], [tt.wire2, 'flash'], [tt.fell, 'black', 0.4], [tt.why, 'whip'], [tt.raid, 'black', 0.3], [tt.hero, 'flash'], [HS, 'whip'], [tt.medic, 'whip'], [MS, 'whip'], [tt.jasper, 'whip'], [tt.bonds, 'black', 0.4], [tt.jasper + 2.2, 'whip'], [tt.bonds2, 'whip'], [tt.race, 'black', 0.4], [tt.joined, 'flash'], [tt.armyH, 'whip'], [tt.armyC, 'whip'], [tt.cta, 'black', 0.4]].sort((a, b) => a[0] - b[0]));
   const SFX = [[tt.day, 'drum', 0], [tt.fell, 'drum', 0], [tt.raid + 1.4, 'drum', 0], [tt.hero, 'drum', 0], [tt.joined, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]];
 
   document.body.classList.add('reel');
@@ -110,8 +113,8 @@ export async function startDay14Reel({ cam, map, soldiers, tex, anims }) {
   const day = dayTitle(root);
   const $ = (s) => root.querySelector(s);
   const show = (sel, o) => { const el = $(sel); if (el) el.style.opacity = o; };
-  const wire = makeWireScenes(tex, anims), cine = makeScenes(tex, anims), dogs = await makeDogCine(tex);
-  for (const [c, id] of [[wire, 'f14-wire'], [cine, 'f14-cine'], [dogs, 'f14-dog']]) { c.canvas.id = id; root.prepend(c.canvas); }
+  const wire = makeWireScenes(tex, anims), cine = makeScenes(tex, anims), dogs = await makeDogCine(tex), art = await makeArtScenes(tex, anims);
+  for (const [c, id] of [[wire, 'f14-wire'], [cine, 'f14-cine'], [dogs, 'f14-dog'], [art, 'f14-art']]) { c.canvas.id = id; root.prepend(c.canvas); }
   const cards = [
     [tt.bonds, tt.jasper + 2.2, `★ ${D.patron.name.toUpperCase()} ✝<small>Officers' Mess · @${D.patron.handle}</small>`],
     [tt.bonds2, tt.race, `★ ${D.fieldpost.name.toUpperCase()}<small>joined the Field Post · @${D.fieldpost.handle}</small>`],
@@ -151,18 +154,22 @@ export async function startDay14Reel({ cam, map, soldiers, tex, anims }) {
       : t >= tt.wire2 && t < tt.fell ? ['wire', 'flarewire', t - tt.wire2 + 0.2, {}]
       : t >= tt.fell && t < tt.why ? ['cine', 'dawnwire', t - tt.fell + 0.5]
       : t >= tt.why && t < tt.raid ? ['cine', 'aidpost', t - tt.why + 0.5]
-      : t >= tt.bonds && t < tt.jasper + 2.2 ? ['dog', 'family', t - tt.bonds, { breed: D.patron.breed, man: 'hegW', next: tt.jasper + 1.2 - tt.bonds }]
+      : t >= tt.hero && t < HS ? ['art', 'lantern', t - tt.hero, { side: 0, raider: 1 }]
+      : t >= tt.medic && t < MS ? ['art', 'medic', t - tt.medic, { side: 0 }]
+      : t >= tt.bonds && t < tt.jasper ? ['art', 'vigil', t - tt.bonds, { breed: D.patron.breed }]
+      : t >= tt.jasper && t < tt.jasper + 2.2 ? ['dog', 'family', t - tt.jasper + 0.8, { breed: D.patron.breed, man: 'hegW', next: 1.4 }]
       : t >= tt.bonds2 && t < tt.race ? ['cine', 'letter', t - tt.bonds2 + 0.5] : null;
     if (film?.[0] === 'wire') wire.draw(film[1], film[2], film[3]);
     if (film?.[0] === 'cine') cine.draw(film[1], film[2]);
     if (film?.[0] === 'dog') dogs.draw(film[1], film[2], film[3]);
-    show('#f14-wire', film?.[0] === 'wire' ? 1 : 0); show('#f14-cine', film?.[0] === 'cine' ? 1 : 0); show('#f14-dog', film?.[0] === 'dog' ? 1 : 0);
+    if (film?.[0] === 'art') art.draw(film[1], film[2], film[3]);
+    show('#f14-wire', film?.[0] === 'wire' ? 1 : 0); show('#f14-cine', film?.[0] === 'cine' ? 1 : 0); show('#f14-dog', film?.[0] === 'dog' ? 1 : 0); show('#f14-art', film?.[0] === 'art' ? 1 : 0);
     paint({ ...f, black: Math.max(f.black, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) }, 0);
     day(t, { n: D.label, sub: 'THE WIRE WAS MENDED', from: 0.2, to: tt.wire - 0.1, subAt: 1.1 });
     slam($('#f14-wirep'), t, tt.wire2 + 0.3, tt.fell - 0.05, 1.3, -2);
     slam($('#f14-fell'), t, tt.fell + 0.6, tt.raid - 0.05, 1.3, -2);
-    if (hero) tagAt($('#f14-hero'), { x: posOf(hero).x, y: posOf(hero).y - 30 }, cam, win(t, tt.hero + 0.2, tt.medic - 0.05, 0.12), 0);
-    if (medic) tagAt($('#f14-medic'), { x: posOf(medic).x, y: posOf(medic).y - 30 }, cam, win(t, tt.medic + 0.2, tt.bonds - 0.05, 0.12), 0);
+    if (hero) tagAt($('#f14-hero'), { x: posOf(hero).x, y: posOf(hero).y - 30 }, cam, win(t, HS + 0.2, tt.medic - 0.05, 0.12), 0);
+    if (medic) tagAt($('#f14-medic'), { x: posOf(medic).x, y: posOf(medic).y - 30 }, cam, win(t, MS + 0.2, tt.bonds - 0.05, 0.12), 0);
     if (heir) tagAt($('#f14-heir'), { x: posOf(heir).x, y: posOf(heir).y - 30 }, cam, win(t, tt.jasper + 2.4, tt.bonds2 - 0.05, 0.12), 0);
     const card = cards.find(([a, b]) => t >= a + 0.2 && t < b - 0.05);
     const cEl = $('#f14-card');
@@ -183,7 +190,8 @@ export async function startDay14Reel({ cam, map, soldiers, tex, anims }) {
     const subEl = $('#rd-sub');
     if (s && !logo && t >= tt.wire) {
       subEl.style.opacity = 1;
-      subEl.style.top = 'auto'; subEl.style.bottom = '11%'; // vždy dole: panely a karty jsou nahoře
+      const up = film?.[0] === 'art' && film[1] !== 'vigil'; // v kresbách s vojáky dole jdou titulky nahoru, ať postavy nezakryjí
+      subEl.style.top = up ? '7%' : 'auto'; subEl.style.bottom = up ? 'auto' : '11%';
       if (subEl.dataset.text !== s) { subEl.dataset.text = s; subEl.innerHTML = `<span>${s}</span>`; }
     } else subEl.style.opacity = 0;
   }
