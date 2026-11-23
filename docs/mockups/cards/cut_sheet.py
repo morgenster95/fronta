@@ -35,6 +35,27 @@ def recolor(im, sepia=0.0):
             px[x, y] = c + (255,)
     return out
 
+# Pleť: PixelLab míchal do obličejů a paží šedobéžové barvy (#c4b8a0, #a39782, #857a68) → skvrny. Pixel z těchto barev se přebarví na tón
+# pleti podle světlosti, jen když je uvnitř pleti (v okně 5 × 5 je dost broskvových pixelů); halenky, límce, papír a pes zůstanou.
+SKIN_SEED = {'#db9b71', '#a85a36'}
+SKIN_FIX = {'#c4b8a0': '#db9b71', '#a39782': '#c8865f', '#857a68': '#ad6d4f'}
+# chráněné oblasti (číslo kartičky → obdélníky x0, y0, x1, y1 ve vnitřku 40 × 56), kam oprava pleti nesmí (pes, kožešina)
+PROTECT = {2: [(24, 36, 40, 56)], 4: [(0, 24, 15, 44)], 8: [(1, 24, 22, 48)]}
+def fix_skin(im, need=5, rounds=8, protect=()):
+    out = im.copy(); px = out.load(); w, h = out.size
+    guard = lambda x, y: any(a <= x < c and b <= y < d for a, b, c, d in protect)
+    hexc = lambda p: '#%02x%02x%02x' % p[:3]
+    rgb = lambda hh: tuple(int(hh[i:i + 2], 16) for i in (1, 3, 5)) + (255,)
+    for _ in range(rounds):
+        cur = [[hexc(px[x, y]) for x in range(w)] for y in range(h)]
+        for y in range(h):
+            for x in range(w):
+                c = cur[y][x]
+                if c not in SKIN_FIX or guard(x, y): continue
+                n = sum(1 for j in range(max(0, y - 2), min(h, y + 3)) for i in range(max(0, x - 2), min(w, x + 3)) if cur[j][i] in SKIN_SEED or cur[j][i] in SKIN_FIX.values())
+                if n >= need: px[x, y] = rgb(SKIN_FIX[c])
+    return out
+
 def tiny(im, x, y, s, col):
     for ch in s:
         g = DIG[ch]
@@ -82,13 +103,15 @@ if __name__ == '__main__':
     sepia = float(sys.argv[sys.argv.index('--sepia') + 1]) if '--sepia' in sys.argv else 0.0
     raw = '--raw' in sys.argv   # bez úpravy barev (pro srovnání)
     sheet = Image.open(R + src if not src.startswith('/') else src).convert('RGBA')
-    if not raw: sheet = recolor(sheet, sepia)
+    if not raw: sheet = recolor(sheet)   # pleť a barvy mimo paletu; oprava skvrn na pleti až po kartičkách (chráněné oblasti)
     cs = cells(sheet); assert len(cs) == 8, f'čekám 8 kartiček, našel jsem {len(cs)}: {cs}'
     cards = []
     for k, (x0, y0, x1, y1) in enumerate(cs):
         cx, cy = (x0 + x1) // 2, (y0 + y1) // 2                 # střed buňky → společný výřez 40 × 56 (bez tenkého rámečku z archu)
         art = sheet.crop((cx - AW // 2, cy - AH // 2, cx - AW // 2 + AW, cy - AH // 2 + AH))
         no = first + k; title, rar = NAMES.get(no, (f'NO {no}', 'common'))
+        if not raw and '--nofix' not in sys.argv: art = fix_skin(art, protect=PROTECT.get(no, ()))
+        if sepia: art = recolor(art, sepia)
         c = card(art, no, title, rar)
         if not raw and not sepia: c.save(OUT + f'card_{no:02d}.png')
         cards.append(c)
