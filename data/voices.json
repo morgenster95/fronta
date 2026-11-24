@@ -271,7 +271,7 @@
     "kw": null,
     "text": "Hegemony should establish an in-depth defense system to disperse the troops and actively counter-attack the spent Concord forces that reach our lines. Even if they take ground, fresh troops will always be ready to route them.",
     "at": "2026-11-11T22:45:38+0000",
-    "likes": 18,
+    "likes": 19,
     "reply": false
    },
    {
@@ -841,6 +841,16 @@
     "kw": null,
     "text": "Total assault, FOR GOD, THE KING AND CONCORD RAAAAAAAAAH",
     "at": "2026-11-23T01:21:09+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18082320569408856",
+    "handle": "kade_kernal",
+    "faction": 0,
+    "kw": null,
+    "text": "Nightly Hegemony artillery barrages to exhaust the Concord forces over several days by refusing them sleep and thinning their numbers. After 3 days of nightly barrages, Hegemony initiates an attack at dawn preceded by a walking barrage.",
+    "at": "2026-11-24T03:23:15+0000",
     "likes": 0,
     "reply": false
    }
