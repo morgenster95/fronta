@@ -1,4 +1,5 @@
 // Day reel Day 15 (24. 11. 2026, noviny 24. 11. 13:00 UTC; /?reel=front15&vacant=700, jen vývojový server), na výšku. Vzor reel-front14.js.
+// Pořadí (uživatel 24. 11.): DAY 15 → nejdřív výzva k raidu s filmovými scénami → pak shrnutí dne → na konci znovu COMMENT RAID.
 // Bouře nad obvazištěm (cinema-d15 storm) → ztráty na mapě → odstřelovač Karel Pavla a patron Matthias Coop se psem Crumbem (reflektor)
 // → War Bonds → Bone Quarry → nováčci a počty → VÝZVA K NOČNÍMU RAIDU: dopisy do helmy (letters) → přes val a drát (over) → nález v blátě
 // (find) → zakryté kartičky rubem nahoru (jen náznak, líc se neukazuje; oznámí se, až ji někdo najde) → COMMENT RAID.
@@ -61,23 +62,24 @@ export async function startDay15Reel({ cam, map, soldiers, tex, anims }) {
   const posOf = (q) => (q?.sprite ? { x: q.sprite.x, y: q.sprite.y } : q);
 
   const K = [];
-  K.push([0, hRef.x - 120, mid, 1.0, 'cut'], [tt.storm - 0.01, hRef.x - 60, mid, 1.05]);
+  K.push([0, hRef.x - 120, mid, 1.0, 'cut'], [tt.raid - 0.01, hRef.x - 60, mid, 1.05]);
   K.push([tt.fell, hRef.x - 250, mid, 1.3, 'cut'], [tt.hero - 0.01, hRef.x + 150, mid, 1.4]); // ztráty: přes celou frontu
   K.push([tt.bonds, cRef.x - 300, mid, 1.1, 'cut'], [tt.race - 0.01, cRef.x - 150, mid, 1.15]);
   K.push([tt.race, cRef.x + 200, mid, 1.2, 'cut'], [tt.joined - 0.01, cRef.x + 450, mid, 1.25]);
   K.push([tt.joined, hRef.x - 500, mid, 0.9, 'cut'], [tt.armyH - 0.01, hRef.x - 250, mid, 0.85]);
   const pan = (l) => [l[Math.floor(l.length * 0.08)] || l[0], l[Math.floor(l.length * 0.92)] || l.at(-1)];
   if (fH.length) { const [a, b] = pan(fH); K.push([tt.armyH, a.x, a.y + 32, 1.6, 'cut'], [tt.armyC - 0.01, b.x, b.y + 32, 1.6]); }
-  if (fC.length) { const [a, b] = pan(fC); K.push([tt.armyC, a.x, a.y + 32, 1.6, 'cut'], [tt.raid - 0.01, b.x, b.y + 32, 1.6]); }
-  K.push([tt.raid, hRef.x, mid, 1.2, 'cut'], [END, hRef.x + 60, mid, 1.25]);
+  if (fC.length) { const [a, b] = pan(fC); K.push([tt.armyC, a.x, a.y + 32, 1.6, 'cut'], [tt.cta2 - 0.01, b.x, b.y + 32, 1.6]); }
+  K.push([tt.raid, hRef.x, mid, 1.2, 'cut'], [tt.storm - 0.01, hRef.x + 60, mid, 1.25]);
+  K.push([tt.cta2, hRef.x, mid, 1.2, 'cut'], [END, hRef.x + 60, mid, 1.25]);
   const camAt = camPath(K);
   const spots = [[tt.hero, tt.coop, hero, 4.8], [tt.coop, tt.bonds, coop, 5.0]].filter((x) => x[2]);
   const spotAt = (t) => spots.find(([a, b]) => t >= a && t < b);
   const sub = subtitles(vo);
   const PICK = 2.6; // v obraze „find“ raider zvedne kartičku
-  const fx = transitions([[tt.storm, 'black', 0.4], [tt.fell, 'flash'], [tt.hero, 'whip'], [tt.coop, 'whip'], [tt.bonds, 'black', 0.3], [tt.race, 'black', 0.4], [tt.joined, 'flash'], [tt.armyH, 'whip'], [tt.armyC, 'whip'],
+  const fx = transitions([[tt.storm, 'black', 0.6], [tt.fell, 'flash'], [tt.hero, 'whip'], [tt.coop, 'whip'], [tt.bonds, 'black', 0.3], [tt.race, 'black', 0.4], [tt.joined, 'flash'], [tt.armyH, 'whip'], [tt.armyC, 'whip'], [tt.cta2, 'black', 0.4],
     [tt.raid, 'black', 0.7], [tt.over, 'flash'], [tt.find, 'black', 0.5], [tt.find + PICK, 'flash'], [tt.cta, 'whip']].sort((a, b) => a[0] - b[0]));
-  const SFX = [[tt.day, 'drum', 0], [tt.fell, 'drum', 0], [tt.hero, 'drum', 0], [tt.joined, 'drum', 0], [tt.raid, 'drum', 0], [tt.over, 'drum', 0], [tt.find + PICK, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]];
+  const SFX = [[tt.day, 'drum', 0], [tt.fell, 'drum', 0], [tt.hero, 'drum', 0], [tt.joined, 'drum', 0], [tt.raid, 'drum', 0], [tt.over, 'drum', 0], [tt.find + PICK, 'drum', 0], [tt.cta, 'drum', 0], [tt.cta2, 'drum', 0], [END - 1.3, 'end', 0]];
 
   document.body.classList.add('reel');
   const style = document.createElement('style');
@@ -147,11 +149,11 @@ export async function startDay15Reel({ cam, map, soldiers, tex, anims }) {
     const film = t >= tt.storm && t < tt.fell ? ['storm', t - tt.storm + 0.5]
       : t >= tt.raid && t < tt.over ? ['letters', t - tt.raid + 0.3]
       : t >= tt.over && t < tt.find ? ['over', t - tt.over]
-      : t >= tt.find ? ['find', t - tt.find, { pick: PICK }] : null;
+      : t >= tt.find && t < tt.storm ? ['find', t - tt.find, { pick: PICK }] : null;
     if (film) d15.draw(film[0], film[1], film[2]);
     show('#f15-art', film ? 1 : 0);
     paint({ ...f, black: Math.max(f.black, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) }, 0);
-    day(t, { n: D.label, sub: 'THE STORM', from: 0.2, to: tt.storm - 0.1, subAt: 1.1 });
+    day(t, { n: D.label, sub: 'TONIGHT: THE RAID', from: 0.2, to: tt.raid - 0.1, subAt: 1.1 });
     slam($('#f15-fell'), t, tt.fell + 0.5, tt.hero - 0.05, 1.3, -2);
     if (hero) tagAt($('#f15-hero'), { x: posOf(hero).x, y: posOf(hero).y - 30 }, cam, win(t, tt.hero + 0.2, tt.coop - 0.05, 0.12), 0);
     if (coop) tagAt($('#f15-coop'), { x: posOf(coop).x, y: posOf(coop).y - 30 }, cam, win(t, tt.coop + 0.2, tt.bonds - 0.05, 0.12), 0);
@@ -159,26 +161,27 @@ export async function startDay15Reel({ cam, map, soldiers, tex, anims }) {
     slam($('#f15-race'), t, tt.race + 0.2, tt.joined - 0.05, 1.3, -2);
     show('#f15-big', t >= tt.army && t < tt.armyH ? 1 : 0);
     $('#f15-big b').textContent = Math.round((D.army[0] + D.army[1]) * easeOut(clamp01((t - tt.army) / 1.2))).toLocaleString('en-US');
-    const side = t >= tt.armyH && t < tt.raid ? (t < tt.armyC ? 0 : 1) : -1;
+    const side = t >= tt.armyH && t < tt.cta2 ? (t < tt.armyC ? 0 : 1) : -1;
     show('#f15-side', side >= 0 ? 1 : 0);
     if (side >= 0) $('#f15-side span').innerHTML = `${side ? 'CONCORD' : 'HEGEMONY'}<b>${D.army[side].toLocaleString('en-US')}</b>`;
     // zakryté kartičky: po zvednutí v blátě se obraz ztmaví a vyjedou tři karty rubem nahoru; prostřední se zkusí otočit a spadne zpět
     const cIn = tt.find + PICK + 0.4;
-    const cv = t >= cIn ? clamp01((t - cIn) / 0.5) : 0, fin = t > END - 1.3 ? clamp01(1 - (t - END + 1.3) / 0.3) : 1;
+    const inRaid = t >= cIn && t < tt.storm, inEnd = t >= tt.cta2 + 0.1; // kartičky: konec raidové části a závěrečná výzva
+    const cv = inRaid ? clamp01((t - cIn) / 0.5) * clamp01((tt.storm - t) / 0.3) : inEnd ? clamp01((t - tt.cta2 - 0.1) / 0.4) : 0, fin = t > END - 1.3 ? clamp01(1 - (t - END + 1.3) / 0.3) : 1;
     show('#f15-dim', 0.55 * cv * fin);
     show('#f15-cards', cv * fin);
-    const cta = t >= tt.cta;
+    const cta = (t >= tt.cta && t < tt.storm) || inEnd;
     const sc = cta ? 0.6 : 0.8, lift = cta ? -40 : -30;
     $('#f15-cards').style.transform = `translateY(${lift}px) scale(${sc})`;
     cardEls.forEach((el, i) => {
-      const k = i - 1, rise = easeOut(clamp01((t - cIn - i * 0.15) / 0.5));
+      const k = i - 1, rise = easeOut(clamp01((t - (inEnd ? tt.cta2 + 0.1 : cIn) - i * 0.15) / 0.5));
       const u = (t - cIn) % 3.2, tease = i === 1 && u > 1.6 && u < 2.4 ? Math.sin(((u - 1.6) / 0.8) * Math.PI) : 0; // náznak otočení, líc nikdy
       el.style.transform = `translate(${-108 + k * 150}px, ${(1 - rise) * 500 + Math.abs(k) * 26}px) rotate(${k * 11}deg) scaleX(${1 - 0.8 * tease}) translateY(${-tease * 18}px)`;
       el.style.zIndex = i === 1 ? 2 : 1;
     });
     $('#f15-cards .q').style.opacity = cta ? 0 : 1;
     show('#f15-lore', cta ? 0 : win(t, tt.secret + 0.1, tt.cta - 0.05, 0.2));
-    slam($('#f15-cta'), t, tt.cta + 0.2, END - 1.3, 1.25, -2);
+    slam($('#f15-cta'), t, t >= tt.cta2 ? tt.cta2 + 0.3 : tt.cta + 0.2, t >= tt.cta2 ? END - 1.3 : tt.storm - 0.1, 1.25, -2);
     const logo = t >= END - 1.3;
     const bigEl = $('#rd-big');
     bigEl.style.opacity = logo ? Math.min(1, (t - END + 1.3) / 0.3) : 0;
@@ -186,7 +189,7 @@ export async function startDay15Reel({ cam, map, soldiers, tex, anims }) {
     // titulky jen v bezpečném pásu: v obrazech a u karet nahoře od 17 %, na mapě dole s okrajem 22 % (lišta IG)
     const s = sub(t);
     const subEl = $('#rd-sub');
-    if (s && !logo && t >= tt.storm) {
+    if (s && !logo && t >= tt.raid) {
       subEl.style.opacity = 1;
       const topBand = film || cv > 0;
       subEl.style.top = topBand ? '17%' : 'auto'; subEl.style.bottom = topBand ? 'auto' : '22%';

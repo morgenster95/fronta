@@ -1,10 +1,10 @@
 {
- "seconds": 80,
+ "seconds": 90,
  "auto": true,
  "drums": [
   "day",
   [],
-  "cta"
+  "cta2"
  ],
  "lines": [
   [
@@ -14,7 +14,32 @@
   ],
   [
    2.6,
-   "A storm hit the front in the night. It tore the canvas off the aid post.",
+   "Tonight, the raiders go out. They black their faces, and leave their letters behind.",
+   "raid"
+  ],
+  [
+   0,
+   "Over the top. Through the wire. Into the enemy trench. Many will not come back.",
+   "over"
+  ],
+  [
+   0,
+   "But those who do may bring something back. Something small, hidden in the enemy mud.",
+   "find"
+  ],
+  [
+   0,
+   "Not every raider finds one. Nobody knows what it is. Not yet.",
+   "secret"
+  ],
+  [
+   0,
+   "Comment RAID, and your soldier goes with them. Only the living bring it home.",
+   "cta"
+  ],
+  [
+   0,
+   "Last night, a storm hit the front. It tore the canvas off the aid post.",
    "storm"
   ],
   [
@@ -74,28 +99,8 @@
   ],
   [
    0,
-   "Tonight, the raiders go out. They black their faces, and leave their letters behind.",
-   "raid"
-  ],
-  [
-   0,
-   "Over the top. Through the wire. Into the enemy trench. Many will not come back.",
-   "over"
-  ],
-  [
-   0,
-   "But those who do may bring something back. Something small, hidden in the enemy mud.",
-   "find"
-  ],
-  [
-   0,
-   "Not every raider finds one. Nobody knows what it is. Not yet.",
-   "secret"
-  ],
-  [
-   0,
-   "Comment RAID, and your soldier goes with them. Only the living bring it home.",
-   "cta"
+   "The raiders leave tonight. Comment RAID.",
+   "cta2"
   ]
  ]
 }
