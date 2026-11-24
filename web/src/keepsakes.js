@@ -5,7 +5,7 @@ import { BASE } from './assets.js';
 import { dayLabel } from './day.js';
 
 const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const HOW = { wire: 'on the wire', raid: 'on a night raid', pilot: 'after a flight' };
+const HOW = { wire: 'on the wire', raid: 'on a night raid', pilot: 'after a flight', letter: 'in a letter from home' };
 
 // nejvyšší úroveň podpory (jen jedna medaile): hvězda → Officers' Mess, stužka + pes → Field Post, stužka → War Bonds
 export function supporterMedal(theme, medals = [], dog = null, handle = '') {

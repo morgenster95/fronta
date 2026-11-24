@@ -46,3 +46,6 @@ Zvažovaná alternativa „smůla se počítá“ (5 % + 1 % za každou akci bez
 Pořadí stavby: engine + noviny/deník → karta vojáka → záložka Cards → vyskakovací okno a ikonka na mapě; nejdřív ukázka (snímky z webu).
 
 Sada 1 (#01–#08, `docs/mockups/cards/edit3/`, karta 54×87, vnitřek 44×62): HELLO, DREAMER (vzácná), SUNDAY, CALL ME, GOGGLES (vzácná), SEASIDE, WINGS (legendární), MY PAL. Grafika z PixelLabu (archy B–E), ruční úpravy uživatele, oči opravené.
+
+## Kartička v dopise (24. 11., NASAZENO)
+Uživatel: „miniaturní šance na kartičku v dopise“. Kdo pošle vojákovi dopis na webu, v příštím tahu má zápis o dopisu a šanci **0,5 %**, že v dopise je kartička (`theme.cards.chance.letter`); z dopisu nejvýš **1 kartička na vojáka** (`cap.letter`), ať zůstane hlavní cestou drát a raid. Při ~250 dopisech denně ~1 kartička denně. Zápis `theme.cards.entry.letter`, na kartě „Found … in a letter from home“. Věty o dopisu: 36 (`theme.letters.lines`), střídají se po dnech.

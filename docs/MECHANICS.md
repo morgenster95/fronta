@@ -603,3 +603,7 @@ Hodnoty: puškař 3 výstřely, kulomet 2 (potlačení dál), `killHeavy` 0,4, p
 Simulace (8 × 3 dny): padlí H 110 : C 84 za den (dřív 53 : 48), raněných ~250 : 228, pokrytí mediky 44 % / 63 %, bez péče umírá 36 : 19. Zabití na 100 vojáků role za den: puškař ~10,5, kulomet ~8, odstřelovač ~9,5. Samí odstřelovači: vlastní padlí 139 (místo 110), nepřítel 64 (místo 84) → nevyplatí se. Samí puškaři: 143 a 82.
 Náhled vydání 24. 11. (`preview-tick`): H 94 padlých / 254 zasažených, C 70 / 242, medici 55 % / 75 %.
 Ladění: šance a výstřely v `battle.roles`, jedno číslo; zpět na dřívější stav = smazat `rifleman.shots`, `machinegunner.shots`, vrátit `rifleman.severity` 0,3/0,12 a `killHeavy` 0,7.
+
+## 2026-11-24 večer: dopis z domova (NASAZENO)
+- Věty o dopisu: 36 různých (`theme.letters.lines`), střídají se po dnech (`(order + day) % n`). Dřív 3 věty a výběr jen podle pořadí narukování → denní odesílatel měl každý den stejnou větu (edheadl; jeho zápisy dny 12–16 přepsány příkazem fixEntry na pokyn uživatele).
+- Kartička v dopise: 0,5 % na dopis, max. 1 z dopisů na vojáka (`docs/CARDS.md`).

@@ -1093,10 +1093,12 @@
     "chance": {
       "wire": 0.08,
       "raid": 0.1,
-      "pilot": 0.1
+      "pilot": 0.1,
+      "letter": 0.005
     },
     "cap": {
-      "pilot": 1
+      "pilot": 1,
+      "letter": 1
     },
     "rarity": {
       "common": 0.7,
@@ -1154,13 +1156,15 @@
     "entry": {
       "wire": "Out on the wire, {name}'s hand closed on something flat in the mud: a sweetheart card, '{card}' ({rarity}). {name} dried it inside a helmet and kept it.",
       "raid": "Back from the raid, {name} found a sweetheart card in a coat pocket that was not there before: '{card}' ({rarity}). Nobody asked where it came from.",
-      "pilot": "After the flight, {name} found a sweetheart card tucked behind the compass: '{card}' ({rarity}). The mechanic swore he never saw it."
+      "pilot": "After the flight, {name} found a sweetheart card tucked behind the compass: '{card}' ({rarity}). The mechanic swore he never saw it.",
+      "letter": "Inside the letter for {name} there was something extra, slipped between the pages: a sweetheart card, '{card}' ({rarity}). {name} looked at it for a long time."
     },
     "news": {
       "one": "One sweetheart card was picked up in the mud.",
       "many": "{n} sweetheart cards were picked up in the mud."
     },
-    "lore": "Sweetheart cards were printed in the capital and sold for a penny. Men kept them in their helmets. They turn up in the mud after wiring parties, raids and flights. Nobody throws one away: when a man falls, his cards stay with his family."
+    "lore": "Sweetheart cards were printed in the capital and sold for a penny. Men kept them in their helmets. They turn up in the mud after wiring parties, raids and flights. Nobody throws one away: when a man falls, his cards stay with his family.",
+    "_letter": "24. 11. (uživatel: miniaturní šance na kartičku v dopise): 0,5 % na dopis, z dopisu nejvýš 1 kartička na vojáka (cap.letter)."
   },
   "inheritMedals": [
     "war-bonds",
@@ -1296,7 +1300,31 @@
       "The letter for {n} was mostly about the weather at home. {n} read that part twice too.",
       "A letter reached {n} in the rain. The ink ran a little, but every word that mattered was still there.",
       "{n} kept the new letter in a breast pocket all day, and touched the pocket now and then to check it was there.",
-      "There was a letter for {n}. Someone at home had drawn a small picture in the corner. {n} laughed for the first time in days."
+      "There was a letter for {n}. Someone at home had drawn a small picture in the corner. {n} laughed for the first time in days.",
+      "A letter came for {n} with a sketch of the kitchen at home. {n} pinned it to the dugout wall.",
+      "The letter for {n} smelled faintly of soap. {n} held it close for a long time before opening it.",
+      "Someone at home had written the address three times, to be sure. The letter reached {n} anyway.",
+      "{n} got a letter full of small news: a new calf, a broken gate, a wedding in the spring.",
+      "The letter for {n} had a few coins taped inside. They would buy almost nothing here, but {n} kept them.",
+      "A thin letter reached {n}. Only five lines long, and {n} knew every one of them by heart before supper.",
+      "{n} read the letter out loud to the squad, skipping the private parts. The men asked to hear it again.",
+      "A letter for {n} came with a photograph. {n} looked at it for a long time and said nothing.",
+      "The letter for {n} ended with 'come home soon'. {n} read the last line more than the rest.",
+      "A letter reached {n} with a child's drawing of a soldier. The soldier in the drawing was smiling. {n} tried to as well.",
+      "The censor had blacked out two words in the letter for {n}. {n} guessed what they were and laughed.",
+      "{n} found a letter on the fire step, left by the runner. {n} read it while the kettle boiled.",
+      "A letter for {n} came all the way from home in nine days. {n} counted them on the envelope.",
+      "There was a letter for {n} and a little tobacco folded inside. The tobacco went round the squad. The letter did not.",
+      "The letter for {n} asked if the food was good. {n} wrote back that it was. That was a lie, but a kind one.",
+      "{n} got a letter with a recipe in it. Nobody in the trench had any of the things it needed.",
+      "A letter came for {n} with a ribbon tied around it. {n} kept the ribbon in a tunic pocket.",
+      "The letter for {n} had been in the rain somewhere along the way. {n} dried it by the stove, page by page.",
+      "{n} read the letter, folded it, unfolded it, and read it again. The sentry pretended not to see.",
+      "A letter for {n} said the whole street was asking about the front. {n} did not know where to begin the answer.",
+      "The letter for {n} was written in pencil, with a lot of crossing out. {n} liked the crossed-out parts best.",
+      "The runner said a letter for {n} had come up with the ammunition. {n} went to get it before the ammunition.",
+      "{n} got a letter with a pressed leaf from the tree by the front door at home.",
+      "A short letter reached {n}: everyone is well, the dog misses you. {n} read the part about the dog twice."
     ]
   }
 }
