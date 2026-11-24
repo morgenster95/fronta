@@ -1,0 +1,12 @@
+{
+  "_": "Day reel Day 15 – noviny 24. 11. 13:00 UTC (state.day 16); nováčci 23. 11. 00:00–24. 11. 00:00 UTC z gitu; výzva RAID (post s raid: true)",
+  "label": 15,
+  "fell": [94, 70],
+  "why": "Hegemony: 97 wounded on stretchers · medics reached 55%",
+  "hero": { "handle": "pavla.9_", "name": "Karel Pavla", "note": "5 kills · @pavla.9_" },
+  "patron": { "handle": "dale.coop", "name": "Matthias Coop", "dog": "Crumb", "breed": "dachshund" },
+  "bonds": ["Matthias Coop", "Roland \"Ash\" Hud", "Konrad Dorf", "Nils Ewalters", "Wendel \"Whistle\" Gonzo"],
+  "race": [130, 117],
+  "joined": [39, 29],
+  "army": [1037, 1187]
+}

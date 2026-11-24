@@ -245,6 +245,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'front15') {
+    // Day reel Day 15 (24. 11.): bouře, ztráty, Karel Pavla, Matthias Coop, závod, počty a výzva k nočnímu raidu se zakrytými kartičkami (reel-front15.js)
+    return import('./reel-front15.js').then(async ({ startDay15Reel }) => {
+      await startDay15Reel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'front14') {
     // Day reel Day 14 (23. 11.): noc drátařů, ztráty, nejlepší střelec a medik, patroni, Bone Quarry, počty (reel-front14.js)
     return import('./reel-front14.js').then(async ({ startDay14Reel }) => {
