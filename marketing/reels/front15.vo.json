@@ -1,5 +1,5 @@
 {
- "seconds": 85.0,
+ "seconds": 88.5,
  "voice": "en-GB-RyanNeural",
  "lines": [
   [
@@ -10,105 +10,111 @@
   ],
   [
    2.6,
-   4.19,
-   "A storm hit the front in the night. It tore the canvas off the aid post.",
-   "storm"
-  ],
-  [
-   7.04,
-   2.74,
-   "The orderlies held it down with their own bodies until dawn.",
-   "storm2"
-  ],
-  [
-   10.03,
-   3.36,
-   "By morning, ninety-four Hegemony and seventy Concord had fallen.",
-   "fell"
-  ],
-  [
-   13.64,
-   4.89,
-   "Ninety-seven Hegemony wounded lay on stretchers. The medics reached only half of them.",
-   "why"
-  ],
-  [
-   18.78,
-   6.49,
-   "Concord sniper Karel Pavla fired once through a steel loophole, and closed the shutter. Five enemies down.",
-   "hero"
-  ],
-  [
-   25.52,
-   9.35,
-   "Yesterday a bullet went through Matthias Coop's arm. He asked the medic if that was good. The best kind, said the medic. Today he was back.",
-   "coop"
-  ],
-  [
-   35.12,
-   3.79,
-   "Five soldiers bought War Bonds this week. The front thanks them.",
-   "bonds"
-  ],
-  [
-   39.16,
-   4.21,
-   "Bone Quarry: Hegemony one hundred and thirty, Concord one hundred and seventeen.",
-   "race"
-  ],
-  [
-   43.62,
-   2.44,
-   "Sixty-eight new soldiers came up the line yesterday.",
-   "joined"
-  ],
-  [
-   46.31,
-   2.75,
-   "Two thousand two hundred and twenty-four now hold the front.",
-   "army"
-  ],
-  [
-   49.31,
-   1.81,
-   "One thousand and thirty-seven Hegemony.",
-   "armyH"
-  ],
-  [
-   51.37,
-   2.4,
-   "One thousand one hundred and eighty-seven Concord.",
-   "armyC"
-  ],
-  [
-   54.02,
    5.43,
    "Tonight, the raiders go out. They black their faces, and leave their letters behind.",
    "raid"
   ],
   [
-   59.7,
+   8.28,
    6.56,
    "Over the top. Through the wire. Into the enemy trench. Many will not come back.",
    "over"
   ],
   [
-   66.51,
+   15.09,
    4.91,
    "But those who do may bring something back. Something small, hidden in the enemy mud.",
    "find"
   ],
   [
-   71.67,
+   20.25,
    5.22,
    "Not every raider finds one. Nobody knows what it is. Not yet.",
    "secret"
   ],
   [
-   77.14,
+   25.72,
    4.45,
    "Comment RAID, and your soldier goes with them. Only the living bring it home.",
    "cta"
+  ],
+  [
+   30.42,
+   4.59,
+   "Last night, a storm hit the front. It tore the canvas off the aid post.",
+   "storm"
+  ],
+  [
+   35.26,
+   2.74,
+   "The orderlies held it down with their own bodies until dawn.",
+   "storm2"
+  ],
+  [
+   38.25,
+   3.36,
+   "By morning, ninety-four Hegemony and seventy Concord had fallen.",
+   "fell"
+  ],
+  [
+   41.86,
+   4.89,
+   "Ninety-seven Hegemony wounded lay on stretchers. The medics reached only half of them.",
+   "why"
+  ],
+  [
+   47.0,
+   6.49,
+   "Concord sniper Karel Pavla fired once through a steel loophole, and closed the shutter. Five enemies down.",
+   "hero"
+  ],
+  [
+   53.74,
+   9.35,
+   "Yesterday a bullet went through Matthias Coop's arm. He asked the medic if that was good. The best kind, said the medic. Today he was back.",
+   "coop"
+  ],
+  [
+   63.34,
+   3.79,
+   "Five soldiers bought War Bonds this week. The front thanks them.",
+   "bonds"
+  ],
+  [
+   67.38,
+   4.21,
+   "Bone Quarry: Hegemony one hundred and thirty, Concord one hundred and seventeen.",
+   "race"
+  ],
+  [
+   71.84,
+   2.44,
+   "Sixty-eight new soldiers came up the line yesterday.",
+   "joined"
+  ],
+  [
+   74.53,
+   2.75,
+   "Two thousand two hundred and twenty-four now hold the front.",
+   "army"
+  ],
+  [
+   77.53,
+   1.81,
+   "One thousand and thirty-seven Hegemony.",
+   "armyH"
+  ],
+  [
+   79.59,
+   2.4,
+   "One thousand one hundred and eighty-seven Concord.",
+   "armyC"
+  ],
+  [
+   82.24,
+   2.78,
+   "The raiders leave tonight. Comment RAID.",
+   "cta2"
   ]
  ]
 }
