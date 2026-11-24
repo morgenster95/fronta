@@ -196,7 +196,11 @@ export function initOrderFx({ world, anchor, roster, map, tex, anims, hospitals,
       const fl = new Graphics(); // vlajka strany na střeše (16. 11.: aby se bunkry obou stran rozlišily); ruina vlajku nemá, jen doutná
       pbs.push({ s, fl, f, ruin, front: toEnemy > 0, t0: (Math.round(sl.x) * 37) % 4000 });
       s.anchor.set(0.5, 0.5);
-      s.x = Math.round(sl.x + 14); s.y = Math.round(sl.y + toEnemy * 18);
+      // 24. 11. (uživatel: bunkr zakrýval vojáka): zákop se lomí (traverzy), takže bunkr stojí před NEJPŘEDNĚJŠÍM stanovištěm v okolí,
+      // ne před tím, podle kterého byl vybrán; jinak ležel přes vojáky v předsunutém kusu zákopu
+      const near = map.slots[f].filter((x) => x.line === 'front' && Math.abs(x.x - (sl.x + 14)) < 44).map((x) => x.y);
+      const fy = near.length ? (toEnemy > 0 ? Math.max(...near) : Math.min(...near)) : sl.y;
+      s.x = Math.round(sl.x + 14); s.y = Math.round(fy + toEnemy * 18);
       // bunkr před valem: u strany, která míří dolů, leží před pytli (nad nimi); u druhé ho zakryjí vojáci v zákopu
       (toEnemy > 0 ? pbTop : layer).addChild(s);
       (toEnemy > 0 ? pbTop : layer).addChild(fl);
