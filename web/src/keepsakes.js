@@ -8,11 +8,12 @@ const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 const HOW = { wire: 'on the wire', raid: 'on a night raid', pilot: 'after a flight' };
 
 // nejvyšší úroveň podpory (jen jedna medaile): hvězda → Officers' Mess, stužka + pes → Field Post, stužka → War Bonds
-export function supporterMedal(theme, medals = [], dog = null) {
+export function supporterMedal(theme, medals = [], dog = null, handle = '') {
   const S = theme.support, list = S?.medals;
   if (!list) return null;
   const has = (m) => medals.includes(m);
-  const id = S.star && has(S.star.medal) ? 'officers-mess' : has(S.medal) && dog ? 'field-post' : has(S.medal) ? 'war-bonds' : null;
+  const mess = (S.star && has(S.star.medal)) || (S.messNoStar || []).includes(handle); // Officers' Mess bez hvězdy nad hlavou (přání patrona)
+  const id = mess ? 'officers-mess' : has(S.medal) && dog ? 'field-post' : has(S.medal) ? 'war-bonds' : null;
   return id ? list.find((m) => m.id === id) || null : null;
 }
 
@@ -26,8 +27,8 @@ function grouped(theme, cards = []) {
 }
 
 // řádky na kartě vojáka (prázdný řetězec, když nic nemá)
-export function cardRows(theme, rec) {
-  const m = supporterMedal(theme, rec.medals, rec.dog);
+export function cardRows(theme, rec, handle = '') {
+  const m = supporterMedal(theme, rec.medals, rec.dog, handle);
   const g = grouped(theme, rec.cards);
   let h = '';
   if (m) h += `<h3>Medals</h3><div class="ks-row">${`<button type="button" class="ks-m" data-medal="${esc(m.id)}" title="${esc(m.name)}">${medalImg(m)}</button>`}</div>`;
@@ -36,9 +37,9 @@ export function cardRows(theme, rec) {
 }
 
 // police v rodu: medaile podpory (jen když je) + celá sada kartiček (chybějící rubem)
-export function houseShelf(theme, rec) {
+export function houseShelf(theme, rec, handle = '') {
   const C = theme.cards;
-  const m = supporterMedal(theme, rec.medals, rec.dog);
+  const m = supporterMedal(theme, rec.medals, rec.dog, handle);
   const g = new Map(grouped(theme, rec.cards).map((x) => [x.card.id, x]));
   let h = '';
   if (m) h += `<h3 class="ks-h"><span>Medals</span></h3><div class="ks-grid ks-gm"><button type="button" class="ks-s got" data-medal="${esc(m.id)}">${medalImg(m)}<small>${esc(m.name)}</small></button></div>`;

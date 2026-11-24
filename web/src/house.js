@@ -146,7 +146,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
       <div class="hs-tree" id="hs-tree">${tree}</div>
       <h3>The generations</h3>
       ${cards}
-      <div id="hs-keep">${houseShelf(theme, rec)}</div>
+      <div id="hs-keep">${houseShelf(theme, rec, F.handle)}</div>
       <h3>Family album</h3>
       <div class="album">
         ${badges.map((b) => `<div class="al ${b.got ? 'got' : 'locked'}" title="${esc(b.desc)}"><span class="ic">${b.got ? esc(b.icon) : '?'}</span><b>${esc(b.name)}</b><small>${b.got ? dayLabel(b.got.day) : esc(b.desc)}</small></div>`).join('')}

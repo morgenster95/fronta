@@ -367,7 +367,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       fam.unshift(`<span class="dog-line"><img src="${BASE}/assets/props/dog_${esc(rec.dog.breed)}_sit.png" alt="" width="64" height="64"><span><span class="medal">🐕 ${esc(rec.dog.name)}</span> ${esc(br?.name || 'dog')}, trench dog of the House of ${esc(rec.family)}</span></span>`);
     }
     $('card-family').innerHTML = fam.join('<br>');
-    $('card-kit').innerHTML = cardRows(theme, rec); // medaile podpory a kartičky (web/src/keepsakes.js)
+    $('card-kit').innerHTML = cardRows(theme, rec, s.handle); // medaile podpory a kartičky (web/src/keepsakes.js)
     wireKeepsakes($('card-kit'), theme, rec, toast);
     // zápisy téhož dne (starší záznamy z úvodu, smrt a příchod nástupce) se ukážou pod jedním nadpisem dne
     const li = (list) => {

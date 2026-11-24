@@ -6,7 +6,7 @@ Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co
 
 ## 24. 11.: KARTIČKY A MEDAILE PODPOROVATELŮ (NASAZENO)
 - **Sweetheart cards** (`docs/CARDS.md`, `engine/cards.js`, `web/src/keepsakes.js`): nález po drátu / raidu / letu, dědí se, v rodu police 8 kartiček (chybějící rubem), na kartě vojáka řádek jen když nějakou má. V den nasazení je nikdo nemá (neběží akce).
-- **Medaile podporovatelů** (pixel, varianta A z `docs/mockups/medals/support/`): jen nejvyšší úroveň; v01py (Officers' Mess bez hvězdy) se ukazuje jako Field Post (pes + stužka). Trench Dog spona nebude.
+- **Medaile podporovatelů** (pixel, varianta A z `docs/mockups/medals/support/`): jen nejvyšší úroveň; v01py má medaili Officers' Mess (nechce jen hvězdu nad hlavou, `theme.support.messNoStar`, jediná výjimka). Trench Dog spona nebude.
 - **Bojové medaile (`docs/MEDALS.md`) NEZVEŘEJŇOVAT**, uživatel je drží na později jako novinku.
 
 ## 19. 11. VEČER: VLASTNÍ DOMÉNA mudandiron.app (NASAZENO)

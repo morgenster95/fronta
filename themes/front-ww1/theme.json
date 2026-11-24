@@ -1164,6 +1164,8 @@
       { "id": "field-post", "img": "field-post", "name": "Field Post", "line": "keeps the Field Post running for the men at the front" },
       { "id": "war-bonds", "img": "war-bonds", "name": "War Bonds", "line": "bought War Bonds and supported the making of Mud and Iron" }
     ],
+    "messNoStar": ["v01py"],
+    "_messNoStar": "Patroni Officers' Mess, kteří nechtějí hvězdu nad vojákem (vidí ji ostatní): medaile Officers' Mess na kartě a v rodu ano. Jediná výjimka v01py (uživatel 24. 11.).",
     "_medals": "24. 11. (uživatel): pixelové medaile podporovatelů na kartě vojáka a v rodu (web/src/keepsakes.js), jen nejvyšší úroveň. Officers' Mess = medaile officers-star, Field Post = war-bonds + pes, War Bonds = war-bonds. Obrázky web/public/assets/medals/<img>.png (varianta A z docs/mockups/medals/support).",
     "buttons": true,
     "_buttons": "buttons: false = tlačítka Support na webu skrytá (13.–14. 11. byla skrytá, Ko-fi zamítlo platby); od 14. 11. zapnuto s odkazem na Patreon."
