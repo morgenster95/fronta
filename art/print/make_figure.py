@@ -1,7 +1,7 @@
 # 3D figurka vojáka ze spritů hry (voxely = pixely). Tvar: průnik siluety zepředu (south) a z boku (east/west); barvy stěn z pohledů
 # south (předek), north (záda, zrcadleně), east/west (boky). Výstup: STL (jedna barva, k natírání) + OBJ/MTL s barvami (Bambu Studio / PrusaSlicer
 # umí barvy z OBJ převést na vícebarevný tisk) + náhled. Podstavec: blátivá destička.
-# python3 art/print/make_figure.py hegemony 2.0   (strana, mm na voxel)
+# python3 art/print/make_figure.py hegemony 2.0 6   (strana, mm na voxel, tloušťka ve voxelech)
 import sys, struct, math
 from PIL import Image, ImageDraw
 R = '/home/user/fronta/'; OUT = R + 'art/print/'
@@ -13,9 +13,12 @@ n = 32
 op = lambda im, u, z: 0 <= u < n and 0 <= z < n and im.getpixel((u, n - 1 - z))[3] > 128
 col = lambda im, u, z: im.getpixel((u, n - 1 - z))[:3]
 # souřadnice: x = sloupec ze south, y = hloubka (0 = předek), z = výška (0 = chodidla)
-front = lambda x, z: op(S, x, z)
-depth = lambda y, z: op(E, n - 1 - y, z) or op(Wst, y, z)
-vox = {(x, y, z) for x in range(n) for y in range(n) for z in range(n) if front(x, z) and depth(y, z)}
+# Jen předek a záda (uživatel 24. 11.: boční pohled u figurky nefunguje): obrys = sjednocení south a zrcadleného north,
+# stejná tloušťka D voxelů; přední polovina má barvy ze south, zadní z north.
+D = int(sys.argv[3]) if len(sys.argv) > 3 else 6
+Nm = N.transpose(Image.FLIP_LEFT_RIGHT)
+sil = lambda x, z: op(S, x, z) or op(Nm, x, z)
+vox = {(x, y, z) for x in range(n) for y in range(D) for z in range(n) if sil(x, z)}
 # podstavec (2 vrstvy), o 2 voxely širší než postava
 xs = [v[0] for v in vox]; ys = [v[1] for v in vox]
 BASE = (58, 44, 32)
@@ -26,15 +29,16 @@ def near(im, u, z, du=(0, 1, -1, 2, -2, 3, -3)):  # průhledný pixel → nejbli
     for d in du:
         if op(im, u + d, z): return col(im, u + d, z)
     return (60, 60, 60)
+def pick(a, b, x, z):  # barva z prvního pohledu, kde pixel je, jinak z druhého
+    return col(a, x, z) if op(a, x, z) else col(b, x, z) if op(b, x, z) else (60, 60, 60)
 def face_color(v, nrm):
     x, y, z = v
     if v in base: return BASE if nrm != (0, 0, 1) else (74, 58, 40)
-    if nrm == (0, -1, 0): return col(S, x, z)
-    if nrm == (0, 1, 0): return near(N, n - 1 - x, z)
-    if nrm == (1, 0, 0): return near(Wst, y, z)       # soldier's left side (+x), viewed from that side
-    if nrm == (-1, 0, 0): return near(E, n - 1 - y, z)
-    if nrm == (0, 0, 1): return near(S, x, z)
-    return (30, 28, 25)
+    front_half = y < D / 2
+    if nrm == (0, -1, 0): return pick(S, Nm, x, z)
+    if nrm == (0, 1, 0): return pick(Nm, S, x, z)
+    if nrm[2] == -1: return (30, 28, 25)
+    return pick(S, Nm, x, z) if front_half else pick(Nm, S, x, z)  # boky a temeno: barva okraje z bližšího pohledu
 DIRS = [(1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)]
 def quad(v, d):
     x, y, z = v; dx, dy, dz = d
@@ -75,7 +79,7 @@ def render(yaw):
     K = 9; img = Image.new('RGB', (520, 620), (40, 38, 35)); dr = ImageDraw.Draw(img)
     ca, sa = math.cos(yaw), math.sin(yaw)
     def pr(p):
-        x, y, z = p[0] - 16, p[1] - 16, p[2]
+        x, y, z = p[0] - 16, p[1] - D / 2, p[2]
         rx, ry = x * ca - y * sa, x * sa + y * ca
         return (260 + rx * K, 470 - z * K - ry * K * 0.45), ry
     light = {(0, 0, 1): 1.0, (0, -1, 0): .9, (0, 1, 0): .9, (1, 0, 0): .75, (-1, 0, 0): .75, (0, 0, -1): .4}
