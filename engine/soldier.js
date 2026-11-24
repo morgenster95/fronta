@@ -274,6 +274,7 @@ export function heir(s, day, theme, story, today = null) {
     bg: s.bg ? { ...makeBackground({ id: `${s.id}#${gen}` }, story), home: s.bg.home } : undefined,
     record: [...s.record], // deník rodu pokračuje: zápisy padlého se nikdy nemažou
     recFrom: s.record.length,
+    ...(s.cards?.length ? { cards: [...s.cards] } : {}), // sběratelské kartičky patří rodu (engine/cards.js)
   };
   n.name = displayName(n);
   n.relation = pick(rand, story.relations);

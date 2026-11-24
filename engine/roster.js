@@ -771,6 +771,7 @@ export function buildPublic(state, theme) {
       hits: s.hits || 0,
       hitsBy: s.hitsBy || {},
       dog: s.dog ? { name: s.dog.name, breed: s.dog.breed, since: s.dog.since } : null,
+      cards: s.cards || [], // sběratelské kartičky rodu (engine/cards.js)
     };
   }
   // žebříčky a pamětní listina: samostatné soubory, web je načte až po otevření záložky (hlavní data nerostou)

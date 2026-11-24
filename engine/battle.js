@@ -23,6 +23,7 @@ import { orderStretchers, orderMedics, orderGuns, orderBarrage } from './orders.
 import { fallSoldier, addEntry } from './soldier.js';
 import { gunTargets, gunUpkeep } from './gun.js';
 import { mineBlasts } from './mine.js';
+import { findCard, cardsNewsLine } from './cards.js';
 
 const B = (theme) => theme.battle;
 const short = (theme, f) => theme.factions[f].name.replace(/^The /, '');
@@ -215,6 +216,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const watch = theme.factions.map((_, f) => lineup(state, f, (s) => able(s) && s.line === 'front' && !outside.has(s.id)));
     const wk = WC.weather?.[state.weather] ?? 1;
     const res = theme.factions.map(() => ({ n: 0, yards: 0, hit: [], secs: {} }));
+    const cardsFound = [];
     for (const s of vol) {
       const f = s.faction, side = state.battle.sides[f];
       let sec = s.sector;
@@ -240,6 +242,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         const bk = { light: 'bulletLight', heavy: 'bulletHeavy', crit: 'bulletCrit' }[sev];
         ev(s, sev === 'light' ? 'hit' : 'wounded', `Out on the wire with the wiring party. ${eventEntry(story[bk] ? bk : hitKind(sev), s, day, theme, story, {}, today)}`);
       } else if (story.wiringSafe?.length) ev(s, 'wiring', eventEntry('wiringSafe', s, day, theme, story, { sector: sec }, today));
+      const card = findCard(state, theme, s, 'wire', day); // kartička v blátě (engine/cards.js): jen kdo se vrátí živý a ne těžce raněný
+      if (card) cardsFound.push(card);
     }
     if (vol.length) {
       const nm = (f) => short(theme, f);
@@ -250,7 +254,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         day, kind: 'wiring', h: 'Wiring parties in no man\'s land',
         text: `Last night ${parts.join(', and ')}.` +
           (home.length === 1 ? ` The ${nm(home[0])} stayed in the trench and kept every rifle on the parapet.` : '') +
-          (hit.length ? ` Caught in the flares: ${theme.factions.map((_, f) => res[f].hit.length ? `${res[f].hit.length} ${nm(f)} (${res[f].hit.filter((h) => h.sev !== 'light').length} badly)` : null).filter(Boolean).join(', ')}.` : ' Everyone came back.'), // noviny jen čísla (uživatel 19. 11. a 23. 11.), jména zůstávají v denících
+          (hit.length ? ` Caught in the flares: ${theme.factions.map((_, f) => res[f].hit.length ? `${res[f].hit.length} ${nm(f)} (${res[f].hit.filter((h) => h.sev !== 'light').length} badly)` : null).filter(Boolean).join(', ')}.` : ' Everyone came back.') + cardsNewsLine(theme, cardsFound), // noviny jen čísla (uživatel 19. 11. a 23. 11.), jména zůstávají v denících
         wiring: res,
       });
     }
@@ -269,6 +273,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     const raiders = ro.ids.map((id) => state.soldiers.find((x) => x.id === id)).filter((x) => x && x.status === 'active' && !x.wound && !busy.has(x.id));
     const res = theme.factions.map(() => ({ n: 0, kills: 0, wounded: 0, fell: 0, hurt: 0, empty: 0, best: {} }));
     const hitByRaid = new Set();
+    const cardsFound = [];
     const wk = RC.weather?.[state.weather] ?? 1;
     for (const s of raiders) {
       const f = s.faction, e = 1 - f, r = res[f];
@@ -314,6 +319,8 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         else r.hurt++;
         if (!s.wound.outright) ev(s, sev === 'light' ? 'hit' : 'wounded', eventEntry('nightRaidHurt', s, day, theme, story, {}, today));
       } else if (!res[f].best[s.handle] && rr() < 0.5) ev(s, 'raid', eventEntry('nightRaidBack', s, day, theme, story, {}, today));
+      const card = findCard(state, theme, s, 'raid', day);
+      if (card) cardsFound.push(card);
     }
     if (raiders.length) {
       const nm = (f) => short(theme, f);
@@ -329,7 +336,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
       const home = theme.factions.map((_, f) => f).filter((f) => !res[f].n);
       out.news.push({
         day, kind: 'raid', h: RC.newsHead || 'Night raid',
-        text: parts.join(' ') + (home.length === 1 ? ` The ${nm(home[0])} sent nobody over and waited behind the parapet.` : ''),
+        text: parts.join(' ') + (home.length === 1 ? ` The ${nm(home[0])} sent nobody over and waited behind the parapet.` : '') + cardsNewsLine(theme, cardsFound),
         raid: res.map(({ best, ...x }) => x),
       });
     }

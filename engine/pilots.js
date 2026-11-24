@@ -5,6 +5,7 @@
 //   state.pilots    = [ { handle, since, variant } | null, … ]                                             pilot strany (index = frakce)
 // Pilot je voják s `archetype: 'pilot'` (nikdy se nelosuje, nejde si ho přát ani převelet); `s.prevRole` = role před povýšením na pilota.
 import { rngFor } from './rng.js';
+import { findCard } from './cards.js';
 
 const short = (theme, f) => theme.factions[f].name.replace(/^The /, '');
 const alive = (s) => s && s.status !== 'fallen';
@@ -91,7 +92,7 @@ export function pilotSortie(state, theme, day, weatherId, fall, wound) {
     const mgs = state.soldiers.filter((x) => x.faction === 1 - f && x.archetype === 'machinegunner' && x.status === 'active').length;
     const risk = (cfg.shotDown ?? 0.05) + (cfg.perTenMG ?? 0.01) * Math.floor(mgs / 10);
     const r = rngFor(theme.id, 'sortie', day, f);
-    if (r() >= risk) continue;
+    if (r() >= risk) { findCard(state, theme, s, 'pilot', day); continue; } // vrátil se z letu: kartička (engine/cards.js, strop cards.cap.pilot)
     const dies = r() < (cfg.deathShare ?? 0.5);
     const name = s.name, handle = s.handle;
     endPilot(state, f, s);

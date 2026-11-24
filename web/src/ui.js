@@ -8,6 +8,7 @@ import { initHouse } from './house.js';
 import { dayLabel, dayNo } from './day.js';
 import { renderCampaign } from './campaign.js';
 import { BASE } from './assets.js';
+import { cardRows, wireKeepsakes } from './keepsakes.js';
 
 const $ = (id) => document.getElementById(id);
 const STATUS = ['On the line', 'Wounded', 'Missing in action', 'Prisoner of war', 'Fallen'];
@@ -285,6 +286,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       $('card-status').textContent = 'Waiting for a name';
       $('card-enlisted').textContent = '—';
       $('card-family').innerHTML = '';
+      $('card-kit').innerHTML = '';
       $('card-record').innerHTML = `<li>This rifle has no name yet. Comment <b>${esc(f.keyword)}</b> under our pinned reel on ${esc(theme.instagram)} and the next free post on the ${esc(f.name.replace('The ', ''))} line is yours.</li>`;
       drawPortrait(s);
       $('card-share').onclick = () => show('enlist');
@@ -313,6 +315,7 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
     $('card-sector').textContent = '…';
     $('card-enlisted').textContent = '…';
     $('card-family').innerHTML = '';
+    $('card-kit').innerHTML = '';
     $('card-record').innerHTML = '<li class="muted">Fetching papers…</li>';
     drawPortrait(s);
     $('card-share').onclick = () => share(s);
@@ -364,6 +367,8 @@ export function initUI({ theme, roster, soldiers, tex, onSelect, onZoom }) {
       fam.unshift(`<span class="dog-line"><img src="${BASE}/assets/props/dog_${esc(rec.dog.breed)}_sit.png" alt="" width="64" height="64"><span><span class="medal">🐕 ${esc(rec.dog.name)}</span> ${esc(br?.name || 'dog')}, trench dog of the House of ${esc(rec.family)}</span></span>`);
     }
     $('card-family').innerHTML = fam.join('<br>');
+    $('card-kit').innerHTML = cardRows(theme, rec); // medaile podpory a kartičky (web/src/keepsakes.js)
+    wireKeepsakes($('card-kit'), theme, rec, toast);
     // zápisy téhož dne (starší záznamy z úvodu, smrt a příchod nástupce) se ukážou pod jedním nadpisem dne
     const li = (list) => {
       const days = [];

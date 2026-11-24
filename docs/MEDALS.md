@@ -1,4 +1,10 @@
-# Medaile (NÁVRH 2026-11-23, nic nenasazeno)
+# Medaile (NÁVRH 2026-11-23; bojové medaile nenasazeny, medaile podporovatelů NASAZENY 24. 11.)
+
+**Medaile podporovatelů (24. 11.):** `docs/mockups/medals/support.py`, nasazena varianta A: War Bonds (bronzová mince s dluhopisem), Field Post (ocelová destička s dopisem),
+Officers' Mess (zlatá osmicípá hvězda). Stejné pro obě strany, stuha s pruhy War Bonds. Ukazuje se jen nejvyšší úroveň (`theme.support.medals`, `web/src/keepsakes.js`):
+hvězda `officers-star` → Officers' Mess, `war-bonds` + pes → Field Post, `war-bonds` → War Bonds. Spona Trench Dog NEBUDE (uživatel: pes je součástí úrovní).
+**Bojové medaile níž uživatel zatím nechce zveřejnit** (nechává je na později jako novinku).
+
 
 Grafika: `docs/mockups/medals/medals.py` (kreslené v kódu, Trench 24, plátno 15 × 23 px, osa ve sloupci 7, kontrola souměrnosti a zavěšení na kroužku je přímo ve skriptu),
 arch `medals_sheet.png`, jednotlivé kusy `png/<id>_<heg|con>.png`, ukázka na kartě a v novinách `medals_in_use.png`.

@@ -4,6 +4,11 @@ Tenhle soubor čte Claude Code i v cloudu (aplikace Claude v mobilu, claude.ai/c
 Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co je teď ve hře), `docs/BATTLE.md` a `docs/COMBAT_ROLES.md` (boj), `docs/ONBOARDING.md` (rekruti a provoz),
 `docs/SCHEDULE.md` (rytmus dne), `docs/MAP_MISSIONS.md` (výpravy, vypnuté), **`docs/MECHANICS.md` (deník domluvených mechanik)**. `docs/DESIGN.md` je původní návrh, neaktualizuje se.
 
+## 24. 11.: KARTIČKY A MEDAILE PODPOROVATELŮ (NASAZENO)
+- **Sweetheart cards** (`docs/CARDS.md`, `engine/cards.js`, `web/src/keepsakes.js`): nález po drátu / raidu / letu, dědí se, v rodu police 8 kartiček (chybějící rubem), na kartě vojáka řádek jen když nějakou má. V den nasazení je nikdo nemá (neběží akce).
+- **Medaile podporovatelů** (pixel, varianta A z `docs/mockups/medals/support/`): jen nejvyšší úroveň; v01py (Officers' Mess bez hvězdy) se ukazuje jako Field Post (pes + stužka). Trench Dog spona nebude.
+- **Bojové medaile (`docs/MEDALS.md`) NEZVEŘEJŇOVAT**, uživatel je drží na později jako novinku.
+
 ## 19. 11. VEČER: VLASTNÍ DOMÉNA mudandiron.app (NASAZENO)
 - Hra běží na **https://mudandiron.app** (Firebase Hosting, web `mudandiron`; Cloudflare DNS: A `@` 199.36.158.100 + TXT `hosting-site=mudandiron`, oba **DNS only**). `mudandiron.web.app` přesměrovává (skript v `web/index.html`, zachová `?s=handle`). `authDomain: 'mudandiron.app'`, doména v Firebase Auth i v OAuth klientovi (uživatel 19. 11.).
 - Přihlášení hráčů: jen se jednou znovu přihlásí stejným Google účtem (nároky jsou ve Firestore podle uid), žádné nové ověření.

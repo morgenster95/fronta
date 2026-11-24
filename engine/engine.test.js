@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { generateFront } from './mapgen.js';
+import { findCard } from './cards.js';
 import { emptyState, applyComment, parseComment, dailyTick, parseRole, roleReply } from './roster.js';
 
 const theme = JSON.parse(fs.readFileSync(new URL('../themes/front-ww1/theme.json', import.meta.url)));
@@ -1500,4 +1501,34 @@ test('převzetí: odkaz ?claim=1 místo kódu se pozná (bot poradí), kód ENLI
   assert.deepEqual(parseComment('@mudandiron https://mudandiron.web.app/?s=abc&claim=1 proud to serve!', theme), { type: 'claimLink' });
   assert.equal(parseComment('ENLIST-AB12 https://mudandiron.app/?s=abc&claim=1', theme).type, 'claim');
   assert.notEqual(parseComment('HEGEMONY', theme)?.type, 'claimLink');
+});
+
+test('kartičky: nález jen po návratu z akce, vzácnost podle theme.cards, pilot strop 1, rod je dědí', () => {
+  const s = emptyState(theme);
+  for (let i = 0; i < 40; i++) applyComment(s, { id: `k${i}`, userId: `ku${i}`, username: `cardman${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
+  const sure = { ...theme, cards: { ...theme.cards, chance: { wire: 1, raid: 1, pilot: 1 } } };
+  const a = s.soldiers[0];
+  const c = findCard(s, sure, a, 'wire', s.day);
+  assert.ok(c && sure.cards.set.some((x) => x.id === c.id));
+  assert.equal(a.cards.length, 1);
+  assert.match(a.record.at(-1)[1], /sweetheart card/);
+  assert.equal(findCard(s, { ...theme, cards: { ...theme.cards, chance: { wire: 0 } } }, a, 'wire', s.day), null, 'bez šance nic');
+  const b = s.soldiers[1];
+  b.wound = { sev: 'heavy', day: s.day }; b.status = 'wounded';
+  assert.equal(findCard(s, sure, b, 'raid', s.day), null, 'těžce raněný na akci nic nenajde');
+  const p = s.soldiers[2];
+  assert.ok(findCard(s, sure, p, 'pilot', s.day));
+  assert.equal(findCard(s, sure, p, 'pilot', s.day + 1), null, 'pilot nejvýš 1');
+  // vzácnost: z 4 000 losů ~70 / 25 / 5 %
+  const n = { common: 0, rare: 0, legendary: 0 };
+  for (let i = 0; i < 4000; i++) { const x = { id: `t${i}`, name: 'T', status: 'active', record: [] }; n[findCard(s, sure, x, 'wire', 1).rarity]++; }
+  assert.ok(Math.abs(n.common / 4000 - 0.7) < 0.04 && Math.abs(n.legendary / 4000 - 0.05) < 0.02, JSON.stringify(n));
+  // padlý předá kartičky nástupci
+  a.status = 'fallen'; a.fallenDay = s.day;
+  dailyTick(s, theme, story);
+  assert.deepEqual(s.soldiers.find((x) => x.handle === a.handle).cards?.map((x) => x.id), [c.id]);
+  // výchozí theme: šance malá, za 2 000 pokusů na drátu ~8 %
+  let got = 0;
+  for (let i = 0; i < 2000; i++) if (findCard(s, theme, { id: `w${i}`, name: 'W', status: 'active', record: [] }, 'wire', 3)) got++;
+  assert.ok(got > 110 && got < 210, `drát ~8 %: ${got}`);
 });

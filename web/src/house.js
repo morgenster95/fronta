@@ -1,3 +1,4 @@
+import { houseShelf, wireKeepsakes } from './keepsakes.js';
 // Rod hráče (záložka „House of …“), oznámení o smrti, pamětní listina a žebříčky. Návrh: docs/mockups/family/.
 // Data: karta vojáka ze shardu (records/N.json: fallen = záznamy generací, generation, recFrom, medals, houseBadges…),
 // /data/honour.json a /data/boards.json se načtou až po otevření záložky.
@@ -145,6 +146,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
       <div class="hs-tree" id="hs-tree">${tree}</div>
       <h3>The generations</h3>
       ${cards}
+      <div id="hs-keep">${houseShelf(theme, rec)}</div>
       <h3>Family album</h3>
       <div class="album">
         ${badges.map((b) => `<div class="al ${b.got ? 'got' : 'locked'}" title="${esc(b.desc)}"><span class="ic">${b.got ? esc(b.icon) : '?'}</span><b>${esc(b.name)}</b><small>${b.got ? dayLabel(b.got.day) : esc(b.desc)}</small></div>`).join('')}
@@ -155,6 +157,7 @@ export function initHouse({ theme, roster, soldiers, show, loadRecord, loadOlder
         <button type="button" id="hs-honour">Roll of Honour</button>
         <button type="button" id="hs-boards">Leaderboards</button>
       </div>`;
+    wireKeepsakes($('hs-keep'), theme, rec, toast);
     $('hs-tree').scrollLeft = 9999; // na telefonu je vidět současná generace
     $('hs-share').onclick = () => shareLink(`${location.origin}/?s=${encodeURIComponent(F.handle)}&house=1`, `The House of ${rec.family} at the front in ${theme.title}.`);
     $('hs-honour').onclick = () => openHonour();

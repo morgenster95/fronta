@@ -1,4 +1,11 @@
-# Sběratelské kartičky „Sweetheart cards“ (NÁVRH 2026-11-23, nic nenasazeno)
+# Sběratelské kartičky „Sweetheart cards“ (NASAZENO 2026-11-24)
+
+**Stav 24. 11. (uživatel: „teď bych jen přidal ty kartičky“):** engine `engine/cards.js` (`findCard` po wiring party, nočním raidu a letu pilota v `engine/battle.js` a `engine/pilots.js`),
+téma `theme.cards` (šance 8 / 10 / 10 %, pilot strop 1, vzácnost 70 / 25 / 5 %, sada #01–#08, věta do deníku, řádek do novin jen číslem), stav `s.cards = [{ id, day, how, by }]`,
+dědí se (`heir` v `engine/soldier.js`), v dávce záznamů `rec.cards`. Web `web/src/keepsakes.js`: řádek SWEETHEART CARDS na kartě vojáka (jen když nějakou má),
+v rodu police „Sweetheart cards · Set 1 n / 8“ (chybějící rubem, pod medailemi), ťuknutí = líc + rub a kdo/kde/kdy. Obrázky `web/public/assets/cards/card_<id>.png` (54×87) a `back.png` (`docs/mockups/cards/make_back.py`).
+Ve chvíli nasazení neběží drát, raid ani pilot, takže kartičku zatím nikdo nemá. Vyskakovací okno při nálezu a ikonka na mapě zatím NEJSOU.
+
 
 Grafika: obraz z PixelLabu 72 × 96 px (`art/cine/card_pinup_*.png`, Pro Flash, paleta Trench 24, 5 generací za kus) v rámečku kresleném v kódu
 (`docs/mockups/cards/make_cards.py`: karta 88 × 128 px, písmo Silkscreen 8 px přímo v mřížce, kontrola šířky textu). Náhled `docs/mockups/cards/cards_sheet.png`.

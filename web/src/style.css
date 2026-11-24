@@ -442,3 +442,27 @@ body.reel:not(.show-nav) .hosp-ptr { display: none; }
 /* Trench Dog na kartě vojáka */
 .dog-line { display: inline-flex; align-items: center; gap: 6px; }
 .dog-line img { width: 64px; height: 64px; margin: -14px -6px -8px -14px; image-rendering: pixelated; }
+/* medaile podpory a sběratelské kartičky (web/src/keepsakes.js) */
+#card-kit h3 { margin: 12px 0 6px; }
+.ks-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.ks-row button, .ks-grid button { background: none; border: 0; padding: 0; margin: 0; cursor: pointer; position: relative; min-height: 0; }
+.px-medal, .px-card { image-rendering: pixelated; display: block; }
+.px-medal { width: 30px; height: 46px; }
+.px-card { width: 54px; height: 87px; }
+.ks-x { position: absolute; right: -4px; top: -4px; font: 10px 'Silkscreen', monospace; color: #e8b84a; background: #1a1815; padding: 0 2px; }
+.ks-h { display: flex; justify-content: space-between; }
+.ks-grid { display: grid; gap: 8px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ks-grid .ks-s { border: 1px solid var(--line); background: #211f1b; padding: 6px 2px 4px; text-align: center; color: inherit; }
+.ks-grid .ks-s.got { border-color: #6b4a2a; }
+.ks-grid .ks-s img { margin: 0 auto; }
+.ks-gc .px-card { width: 72px; height: 116px; max-width: 100%; height: auto; aspect-ratio: 54 / 87; }
+.ks-grid .ks-s small { display: block; font: 8px 'Silkscreen', monospace; color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ks-grid .ks-s.lock img { opacity: .45; }
+.ks-grid .ks-s.lock small { opacity: .5; }
+.ks-grid .ks-x { right: 3px; top: 2px; }
+.ks-lore { font-size: 14px; margin: 8px 0 0; }
+#ks-zoom { position: fixed; inset: 0; z-index: 70; background: rgba(14, 13, 12, .94); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 16px; }
+#ks-zoom .ks-pair { display: flex; gap: 14px; }
+#ks-zoom .px-card.big { width: min(162px, 40vw); height: auto; aspect-ratio: 54 / 87; }
+#ks-zoom .ks-t { font: 12px 'Silkscreen', monospace; color: var(--ink); text-align: center; line-height: 1.7; max-width: 340px; }
+#ks-zoom .r-rare { color: #c4b8a0; } #ks-zoom .r-legendary, #ks-zoom .r-common { color: #e8b84a; } #ks-zoom .r-common { color: var(--muted); }

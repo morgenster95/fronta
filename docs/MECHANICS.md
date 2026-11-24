@@ -582,3 +582,7 @@ Nástroj: scratchpad `rolesim.mjs` (zabití podle role střelce); oficiálně `n
 **Proč:** uživatel: místo přeskupování podle zemí ukázat původ hráčů v úkrytech, kde spí. Země omezit na velké celky.
 **Návrh:** `web/src/shelters.js`: kryt (přední linie), plechový oblouk (podpůrná), stan (zálohy), ~1 úkryt na 28 vojáků, mimo obvaziště; vchod odvrácený od nepřítele (Concord vidíme vchody, Hegemonii zezadu).
 Klik = panel se jménem úkrytu, počtem, 7 oblastmi světa (praporky) a jmény. Oblast si hráč vybere v účtu (`profiles/{uid}.region`), smyčka přenese k vojákovi. Snímky `docs/mockups/shelters/`.
+
+## 2026-11-24: Sběratelské kartičky a medaile podporovatelů (NASAZENO)
+- Kartičky „Sweetheart cards“ (`docs/CARDS.md`, `engine/cards.js`, `theme.cards`): kdo se vrátí z wiring party (8 %), nočního raidu (10 %) nebo letu pilota (10 %, nejvýš 1) živý a ne těžce raněný, najde kartičku. Bez stropu. Vzácnost 70 / 25 / 5 %. Dědí se v rodu. Noviny jen číslem („N sweetheart cards were picked up in the mud.“), deník jednou větou.
+- Medaile podporovatelů (pixelové, `docs/MEDALS.md`): na kartě vojáka a v rodu jen nejvyšší úroveň. Bojové medaile zatím NE (uživatel je chce později jako novinku).

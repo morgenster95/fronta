@@ -1061,6 +1061,80 @@
   },
   "storyShare": 1,
   "_storyShare": "Podíl vojáků, kteří dostanou každý den zápis do deníku (1 = každý, jeden zápis za den; dřív 0,25). Při velkém počtu hráčů roste stav (data/state.json) o ~220 B na vojáka a den.",
+  "cards": {
+    "_note": "Sběratelské kartičky (docs/CARDS.md, nasazeno 24. 11.): kdo se vrátí živý z wiring party, nočního raidu nebo letu, najde se šancí chance kartičku. Bez stropu, pilot nejvýš 1. Kartičky patří rodu (dědí se). Obrázky web/public/assets/cards/card_<id>.png (54×87) a back.png.",
+    "chance": {
+      "wire": 0.08,
+      "raid": 0.1,
+      "pilot": 0.1
+    },
+    "cap": {
+      "pilot": 1
+    },
+    "rarity": {
+      "common": 0.7,
+      "rare": 0.25,
+      "legendary": 0.05
+    },
+    "rarityName": {
+      "common": "common",
+      "rare": "rare",
+      "legendary": "legendary"
+    },
+    "setName": "Set 1",
+    "set": [
+      {
+        "id": "01",
+        "name": "Hello",
+        "rarity": "common"
+      },
+      {
+        "id": "02",
+        "name": "Dreamer",
+        "rarity": "rare"
+      },
+      {
+        "id": "03",
+        "name": "Sunday",
+        "rarity": "common"
+      },
+      {
+        "id": "04",
+        "name": "Call Me",
+        "rarity": "common"
+      },
+      {
+        "id": "05",
+        "name": "Goggles",
+        "rarity": "rare"
+      },
+      {
+        "id": "06",
+        "name": "Seaside",
+        "rarity": "common"
+      },
+      {
+        "id": "07",
+        "name": "Wings",
+        "rarity": "legendary"
+      },
+      {
+        "id": "08",
+        "name": "My Pal",
+        "rarity": "common"
+      }
+    ],
+    "entry": {
+      "wire": "Out on the wire, {name}'s hand closed on something flat in the mud: a sweetheart card, '{card}' ({rarity}). {name} dried it inside a helmet and kept it.",
+      "raid": "Back from the raid, {name} found a sweetheart card in a coat pocket that was not there before: '{card}' ({rarity}). Nobody asked where it came from.",
+      "pilot": "After the flight, {name} found a sweetheart card tucked behind the compass: '{card}' ({rarity}). The mechanic swore he never saw it."
+    },
+    "news": {
+      "one": "One sweetheart card was picked up in the mud.",
+      "many": "{n} sweetheart cards were picked up in the mud."
+    },
+    "lore": "Sweetheart cards were printed in the capital and sold for a penny. Men kept them in their helmets. They turn up in the mud after wiring parties, raids and flights. Nobody throws one away: when a man falls, his cards stay with his family."
+  },
   "inheritMedals": [
     "war-bonds",
     "officers-star",
@@ -1085,6 +1159,12 @@
       "line": "dines in the Officers' Mess for keeping the front supplied",
       "entry": "{name} was invited to the Officers' Mess for keeping the front supplied. The colonel poured a real coffee and raised his cup: 'The front does not forget its friends.'"
     },
+    "medals": [
+      { "id": "officers-mess", "img": "officers-mess", "name": "Officers' Mess", "line": "dines in the Officers' Mess for keeping the front supplied" },
+      { "id": "field-post", "img": "field-post", "name": "Field Post", "line": "keeps the Field Post running for the men at the front" },
+      { "id": "war-bonds", "img": "war-bonds", "name": "War Bonds", "line": "bought War Bonds and supported the making of Mud and Iron" }
+    ],
+    "_medals": "24. 11. (uživatel): pixelové medaile podporovatelů na kartě vojáka a v rodu (web/src/keepsakes.js), jen nejvyšší úroveň. Officers' Mess = medaile officers-star, Field Post = war-bonds + pes, War Bonds = war-bonds. Obrázky web/public/assets/medals/<img>.png (varianta A z docs/mockups/medals/support).",
     "buttons": true,
     "_buttons": "buttons: false = tlačítka Support na webu skrytá (13.–14. 11. byla skrytá, Ko-fi zamítlo platby); od 14. 11. zapnuto s odkazem na Patreon."
   },
