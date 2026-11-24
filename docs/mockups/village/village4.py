@@ -40,7 +40,7 @@ for n, cx in [('big/house_ochre', 38), ('big/shop_epicerie', 118), ('big/house_b
 def col(names, right_edge=None, left_edge=None, y0=HE + 5):
     y = y0
     for n in names:
-        img = L(f'street/v_{n}')
+        img = L(f'street/roof_{n}')
         if right_edge is not None: img = img.transpose(Image.FLIP_LEFT_RIGHT); cx = right_edge - img.width / 2
         else: cx = left_edge + img.width / 2
         put(img, cx, y + img.height); y += img.height - 1
