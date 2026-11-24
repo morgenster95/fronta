@@ -36,11 +36,17 @@ for n, x, y in [('fence', 20, 300), ('fence', 54, 300), ('tree_planter', 110, 40
 # horní řady: domy čelem k vodorovné ulici
 for n, cx in [('big/house_ochre', 38), ('big/shop_epicerie', 118), ('big/house_brick', 240), ('big/shop_boucherie', 320)]: put(L(n), cx, HS - 5)
 # dole: domy bokem podél svislé ulice (štít ke kameře), za nimi druhý dům
-# domy z boku (štítová stěna ke kameře) v řadě podél svislé ulice; vlevo od ulice zrcadlené, ať boční pás míří k ulici
-def putm(img, cx, foot): put(img.transpose(Image.FLIP_LEFT_RIGHT), cx, foot)
-for i, (n, f) in enumerate([('house_cream', 300), ('house_stone', 368)]): putm(L(f'side/{n}_side'), 128, f)
-for i, (n, f) in enumerate([('house_brick', 300), ('shop_epicerie', 368)]): put(L(f'side/{n}_side'), 230, f)
-for n, cx, f in [('side/house_ochre_side', 62, 330), ('side/shop_mustard_side', 304, 330)]: put(L(n), cx, f)
+# svislá ulice: moduly domů (střecha shora + pruh fasády do ulice), skládají se těsně pod sebe; vlevo od ulice zrcadlené
+def col(names, right_edge=None, left_edge=None, y0=HE + 5):
+    y = y0
+    for n in names:
+        img = L(f'street/v_{n}')
+        if right_edge is not None: img = img.transpose(Image.FLIP_LEFT_RIGHT); cx = right_edge - img.width / 2
+        else: cx = left_edge + img.width / 2
+        put(img, cx, y + img.height); y += img.height - 1
+col(['cream', 'stone', 'ochre'], right_edge=VS - 4)
+col(['brick', 'shop', 'mustard'], left_edge=VE + 4)
+for n, cx, f in [('side/house_ochre_side', 40, 330), ('side/shop_mustard_side', 320, 330)]: put(L(n), cx, f)
 # dekorace podél ulic a na křižovatce
 props = [('lamp', 152, HS - 2), ('lamp', 206, HS - 2), ('lamp', 152, HE + 30), ('lamp_broken', 210, HE + 34), ('poster_column', 206, HS + 2), ('cafe_table', 266, HS + 10),
          ('flower_box', 18, HS - 4), ('plant_pot', 92, HS - 3), ('plant_pot', 294, HS - 3), ('shop_sign', 150, 108), ('bench', 76, HS + 14), ('mailbox', 102, HS + 8),
