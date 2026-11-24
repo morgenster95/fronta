@@ -20,6 +20,7 @@ import { grantDog, revokeDog, renameDog } from '../engine/dog.js';
 import { awardFirstThousand, inheritMedals, switchFaction, grantSupport, grantStar, revokeStar, rewriteSupport, linkSupport, grantTitle, lateVote, applyComment, parseComment, requestTransfer, applyTransfers, parseRole, wishRole, roleReply, findOwnSoldier, TAKEN } from '../engine/roster.js';
 import { volunteer, raidReply } from '../engine/valley.js';
 import { wiringReturns } from '../engine/wiring.js';
+import { joinRaid } from '../engine/nightraid.js';
 import { build } from '../engine/battle.js';
 import { convertReward } from '../engine/race.js';
 import { deathReply } from '../engine/house.js';
@@ -150,6 +151,10 @@ async function main() {
       if (c.cmd === 'switchFaction') {
         const r = switchFaction(state, theme, map, c.handle, c.faction);
         console.log(r ? `⇄ @${r.handle}: ${r.from} → ${r.to}, ${r.unit}, ${r.sector}` : `⇄ příkaz ${c.id}: nic se nezměnilo`);
+      }
+      if (c.cmd === 'raid') { // ruční přihláška na noční raid (24. 11.): Instagram hráčovy komentáře skrývá a API je nevrátí (jesus.gr9)
+        const sol = state.soldiers.find((x) => x.handle === String(c.handle || '').toLowerCase().replace(/^@/, ''));
+        console.log(`🗡 ruční raid @${c.handle}: ${sol ? joinRaid(state, sol) : 'voják nenalezen'}`);
       }
       if (c.cmd === 'enlist') { // ruční nábor (18. 11.): komentář, který bot nepoznal (např. před opravou překlepů); IG ID se doplní z dalšího komentáře hráče
         const r = applyComment(state, { id: `cmd-${c.id}`, userId: null, username: c.handle, text: c.text || theme.factions[c.faction].keyword, timestamp: new Date().toISOString() }, theme, story, map);

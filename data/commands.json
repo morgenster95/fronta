@@ -631,5 +631,11 @@
     "cmd": "dog",
     "handle": "hunter_dorf0629",
     "_note": "Patreon Officers' Mess (2026-11-24): Trench Dog, plemeno a jméno losuje hra"
+  },
+  {
+    "id": "raid-jesus.gr9-20261124",
+    "cmd": "raid",
+    "handle": "jesus.gr9",
+    "_note": "ruční přihláška na raid: Instagram jeho komentáře skrývá, API je nevrátí (2026-11-24)"
   }
 ]

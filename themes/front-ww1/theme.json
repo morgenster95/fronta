@@ -1281,5 +1281,22 @@
         0.85
       ]
     ]
+  },
+  "letters": {
+    "_": "24. 11.: věty o dopisu z domova (engine/roster.js, pošta); střídají se po dnech, ať denní odesílatel nemá pořád stejný zápis.",
+    "lines": [
+      "A letter from home reached {n} before dusk. {n} read it twice and slept a little easier.",
+      "Mail came up the line with a letter for {n}. {n} read it in the dugout and kept the envelope.",
+      "A letter from home found {n} before the night shift. {n} folded it small and kept it close.",
+      "The mail bag came up with the soup. There was a letter for {n}, and the soup went cold while {n} read it.",
+      "{n} got a letter today. The handwriting was shaky, but the news was good. The letter went inside the helmet, for luck.",
+      "A letter for {n} came with a pressed flower inside. {n} showed the flower to nobody.",
+      "{n} read the new letter by the light of a match, then another match, then a third.",
+      "The corporal called out the mail. {n} heard the name and almost ran.",
+      "The letter for {n} was mostly about the weather at home. {n} read that part twice too.",
+      "A letter reached {n} in the rain. The ink ran a little, but every word that mattered was still there.",
+      "{n} kept the new letter in a breast pocket all day, and touched the pocket now and then to check it was there.",
+      "There was a letter for {n}. Someone at home had drawn a small picture in the corner. {n} laughed for the first time in days."
+    ]
   }
 }
