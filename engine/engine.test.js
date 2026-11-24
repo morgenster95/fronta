@@ -995,7 +995,7 @@ test('deník: každý voják má každý den právě jeden zápis, bez mezer (th
     }
     checked++;
   }
-  assert.ok(checked > 20); // od 18. 11. víc padlých → méně vojáků první generace
+  assert.ok(checked > 10); // od 18. 11. a znovu 24. 11. víc padlých → méně vojáků první generace
 });
 
 test('stav se ukládá po částech: state.json bez zápisů, zápisy po dávkách; načtení vrátí totéž a ztracenou dávku pozná', async () => {
@@ -1357,7 +1357,8 @@ test('boj: dva výstřely denně (battle.roles.shots) dají víc zásahů než j
     const s = emptyState(theme);
     enlist(s, 160, `sh2${seed}_`);
     s.day = 5;
-    const cfg = { ...theme, battle: { ...theme.battle, roles: { ...theme.battle.roles, shots } } };
+    const R = Object.fromEntries(Object.entries(theme.battle.roles).map(([k, v]) => [k, v && typeof v === 'object' ? { ...v, shots: undefined } : v])); // výstřely podle role (24. 11.) tu vypnuté: test měří roles.shots
+    const cfg = { ...theme, battle: { ...theme.battle, roles: { ...R, shots } } };
     battleTick(s, cfg, story, 6);
     const st = s.battle.stats.at(-1).sides;
     return st.reduce((a, x) => a + Object.values(x.hits.fire).reduce((p, q) => p + q, 0), 0);

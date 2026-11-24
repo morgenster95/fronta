@@ -649,9 +649,11 @@
       "rifleman": {
         "fire": 0.25,
         "severity": {
-          "light": 0.3,
-          "heavy": 0.12
-        }
+          "light": 0.6,
+          "heavy": 0.2
+        },
+        "shots": 3,
+        "_24": "24. 11. (uživatel): puškař má víc nábojů a střílí celý den: 3 výstřely denně, zásahy 40 % lehce / 40 % těžce / 20 % kriticky (dřív 1 výstřel, 70/18/12)."
       },
       "machinegunner": {
         "fire": 0.38,
@@ -662,7 +664,9 @@
         "suppress": 0.15,
         "suppressMax": 0.3,
         "covers": 4,
-        "_": "potlačení: každý kulomet naproti sníží palbu nepřítele o suppress (nejvýš suppressMax)"
+        "_": "potlačení: každý kulomet naproti sníží palbu nepřítele o suppress (nejvýš suppressMax)",
+        "shots": 2,
+        "_24": "24. 11.: kulomet 2 výstřely denně (dál potlačuje palbu nepřátel poblíž, nejvýš o 30 %)."
       },
       "sniper": {
         "fire": 0.45,
@@ -676,10 +680,11 @@
       },
       "officer": {
         "fire": 0.008,
-        "lead": 0.2,
-        "covers": 12,
+        "lead": 0.35,
+        "covers": 20,
         "xp": 0.25,
-        "_": "velení: +lead palby a +xp zkušeností vojákům poblíž"
+        "_": "velení: +lead palby a +xp zkušeností vojákům poblíž",
+        "_24": "24. 11.: velení +35 % palby (dřív 20 %), pokryje 20 vojáků (dřív 12)."
       },
       "runner": {
         "relay": 0.25,
@@ -690,7 +695,9 @@
         "counter": 0.2,
         "covers": 10,
         "_": "telefon k dělostřelectvu: vojáci poblíž −counter zásahů z pozadí",
-        "counterShell": 0.4
+        "counterShell": 0.4,
+        "counterFire": 0.25,
+        "_24": "24. 11.: telefon k dělům proti střeleckým hnízdům: nepřátelští střelci poblíž spojařů trefí až o 25 % méně (podle pokrytí)."
       },
       "sapper": {
         "repair": 0.08,
@@ -699,20 +706,25 @@
       "cook": {
         "heal": 0.3,
         "worsen": 0.5,
-        "covers": 4,
-        "_": "lehce ranění poblíž: +heal šance zahojit se i bez mediků, zhoršení ×(1 − worsen)"
+        "covers": 8,
+        "_": "lehce ranění poblíž: +heal šance zahojit se i bez mediků, zhoršení ×(1 − worsen)",
+        "relief": 0.5,
+        "always": true,
+        "_24": "24. 11.: lehce raněný u kuchaře potřebuje o polovinu méně práce mediků (relief), kuchař pomáhá hojit i ošetřované (always), pokryje 8 (dřív 4)."
       },
       "chaplain": {
-        "faith": 0.2,
-        "covers": 3,
-        "_": "kaplan: smrt kritických na nosítkách ×(1 − faith × pokrytí); jeden kaplan pokryje covers umírajících"
+        "faith": 0.35,
+        "covers": 6,
+        "_": "kaplan: smrt kritických na nosítkách ×(1 − faith × pokrytí); jeden kaplan pokryje covers umírajících",
+        "heavy": true,
+        "_24": "24. 11.: víra 0,35 (dřív 0,2), i u těžce raněných (méně umírají při dlouhém ležení a rozhodnutí po 2 nocích), pokryje 6 (dřív 3)."
       },
       "medic": {
         "work": 2,
         "_": "práce za den (× úroveň)"
       },
       "kill": 0.8,
-      "killHeavy": 0.7,
+      "killHeavy": 0.4,
       "shots": 1,
       "_shots19": "19. 11.: zpět na 1 výstřel denně, protože od teď střílí všichni vojáci ve všech liniích (dřív jen přední). 2 výstřely × všichni = ~110 padlých první den a do 3 dnů ~200 denně (medici by nestíhali); 1 výstřel = stabilně ~65 padlých a ~210 raněných denně při 1 400 hráčích.",
       "_shots": "18. 11. (uživatel: na 500 hráčů je ~9 padlých denně málo, cíl ~30): každý střelec střílí 2× denně (2. kolo jen kdo zůstal zdravý, obě strany naráz), smrtelnost těžký 0,7 (dřív 0,25), kritický 0,8 (dřív 0,5), kritický od odstřelovače 0,9 (dřív 0,6). Simulace: ~32 padlých a ~90 raněných denně za obě strany.",
@@ -722,7 +734,8 @@
       "_kill": "kill: šance, že kritický zásah kulkou zabije na místě (roles.<role>.kill přebíjí). Ostatní smrti vznikají z nedostatku lůžek, nosítek a mediků.",
       "pilot": {
         "fire": 0
-      }
+      },
+      "_killHeavy24": "24. 11. (návrh G3): těžký zásah zabije na místě 0,4 (dřív 0,7): víc raněných doleží na nosítka, rozhodují medici."
     },
     "xp": {
       "gain": {
@@ -820,14 +833,21 @@
       "rounds": 2,
       "rest": true,
       "_deadly": "19. 11. (uživatel: raid má být opravdu smrtící): až 2 souboje za noc (druhý jen po vítězném prvním), smrtelnost zblízka kritický 0,95, těžký 0,75; raideři ráno v bitvě nestřílí (vyčerpaní).",
-      "hurt": 0.25,
+      "hurt": 0.4,
       "hurtPerMG": 0.03,
       "maxHurt": 0.6,
-      "raiderKill": 0.6,
-      "raiderKillHeavy": 0.35,
+      "raiderKill": 0.75,
+      "raiderKillHeavy": 0.5,
       "xp": 4,
       "badgeAt": 3,
-      "newsHead": "Night raid"
+      "newsHead": "Night raid",
+      "roles": {
+        "rifleman": {
+          "win": 1.3,
+          "hurt": 0.6
+        }
+      },
+      "_24": "24. 11. (uživatel: raid má být velmi nebezpečný, výhoda puškaři): riziko na cestě zpět 0,4 (dřív 0,25), smrt kritického 0,75 / těžkého 0,5; puškař vyhrává souboj ×1,3 a má riziko ×0,6."
     },
     "wiring": {
       "keyword": "WIRE",
@@ -880,7 +900,14 @@
         ],
         "_": "zpráva v Gazette, když má strana průměrný drát pod 'below' (nebo je pod bombardováním a drát má pod 'below'); engine/battle.js h, why a call můžou být pole variant (každý den jiná).",
         "mendedShelled": "In the night {n} volunteers crawled out and put up {yards} yards of new wire. Then the last shells came down and tore much of it apart again. Without the wiring parties it would be down to {without}%."
-      }
+      },
+      "roles": {
+        "sapper": {
+          "risk": 0.5,
+          "repair": 1.5
+        }
+      },
+      "_roles": "24. 11. (uživatel): na drátu má výhodu ženista: poloviční riziko, oprava ×1,5."
     },
     "mine": {
       "hit": 0.85,
@@ -1160,11 +1187,28 @@
       "entry": "{name} was invited to the Officers' Mess for keeping the front supplied. The colonel poured a real coffee and raised his cup: 'The front does not forget its friends.'"
     },
     "medals": [
-      { "id": "officers-mess", "img": "officers-mess", "name": "Officers' Mess", "line": "dines in the Officers' Mess for keeping the front supplied" },
-      { "id": "field-post", "img": "field-post", "name": "Field Post", "line": "keeps the Field Post running for the men at the front" },
-      { "id": "war-bonds", "img": "war-bonds", "name": "War Bonds", "line": "bought War Bonds and supported the making of Mud and Iron" }
+      {
+        "id": "officers-mess",
+        "img": "officers-mess",
+        "name": "Officers' Mess",
+        "line": "dines in the Officers' Mess for keeping the front supplied"
+      },
+      {
+        "id": "field-post",
+        "img": "field-post",
+        "name": "Field Post",
+        "line": "keeps the Field Post running for the men at the front"
+      },
+      {
+        "id": "war-bonds",
+        "img": "war-bonds",
+        "name": "War Bonds",
+        "line": "bought War Bonds and supported the making of Mud and Iron"
+      }
     ],
-    "messNoStar": ["v01py"],
+    "messNoStar": [
+      "v01py"
+    ],
     "_messNoStar": "Patroni Officers' Mess, kteří nechtějí hvězdu nad vojákem (vidí ji ostatní): medaile Officers' Mess na kartě a v rodu ano. Jediná výjimka v01py (uživatel 24. 11.).",
     "_medals": "24. 11. (uživatel): pixelové medaile podporovatelů na kartě vojáka a v rodu (web/src/keepsakes.js), jen nejvyšší úroveň. Officers' Mess = medaile officers-star, Field Post = war-bonds + pes, War Bonds = war-bonds. Obrázky web/public/assets/medals/<img>.png (varianta A z docs/mockups/medals/support).",
     "buttons": true,

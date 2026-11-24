@@ -4,6 +4,9 @@ Tenhle soubor čte Claude Code i v cloudu (aplikace Claude v mobilu, claude.ai/c
 Proto tu je všechno, co je potřeba k práci. Podrobnosti: `docs/STATUS.md` (co je teď ve hře), `docs/BATTLE.md` a `docs/COMBAT_ROLES.md` (boj), `docs/ONBOARDING.md` (rekruti a provoz),
 `docs/SCHEDULE.md` (rytmus dne), `docs/MAP_MISSIONS.md` (výpravy, vypnuté), **`docs/MECHANICS.md` (deník domluvených mechanik)**. `docs/DESIGN.md` je původní návrh, neaktualizuje se.
 
+## 24. 11.: ROLE G3 (NASAZENO, od novin 24. 11.)
+- Puškař 3 výstřely (40/40/20 lehce/těžce/kriticky), kulomet 2 (dál potlačuje), těžký zásah zabije na místě 0,4; silnější poručík, kuchař (ulehčí medikům u lehce raněných), kaplan (i těžce ranění), spojař (protipalba na střelce). Drát: výhoda ženista, raid: velmi nebezpečný, výhoda puškař. Bez postihu za přeplnění, péče beze změny. Odhad ~190 padlých denně za obě strany (dřív ~100). Detail `docs/MECHANICS.md` 2026-11-24. Nápad čeká: průzkum SCOUT pro odstřelovače, lehce raněný střílí napůl.
+
 ## 24. 11.: KARTIČKY A MEDAILE PODPOROVATELŮ (NASAZENO)
 - **Sweetheart cards** (`docs/CARDS.md`, `engine/cards.js`, `web/src/keepsakes.js`): nález po drátu / raidu / letu, dědí se, v rodu police 8 kartiček (chybějící rubem), na kartě vojáka řádek jen když nějakou má. V den nasazení je nikdo nemá (neběží akce).
 - **Medaile podporovatelů** (pixel, varianta A z `docs/mockups/medals/support/`): jen nejvyšší úroveň; v01py má medaili Officers' Mess (nechce jen hvězdu nad hlavou, `theme.support.messNoStar`, jediná výjimka). Trench Dog spona nebude.

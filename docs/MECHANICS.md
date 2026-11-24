@@ -596,3 +596,10 @@ Zabití na 100 vojáků role za den (puškař / kulomet / odstřelovač): dnes 3
 Samí odstřelovači (H, G3): vlastní padlí 110 místo 89, nepřítel 67 místo 70 → nevyplatí se, i bez postihu. Samí puškaři: 114 a 55. Bez podpůrných rolí (G): H 99 místo 77. Bez mediků (G): +14 / +13 padlých denně.
 Drát (G): zasažen ženista 14 %, ostatní 25–39 %. Raid (G): umírá 16–26 % raiderů, puškař zabije 43 na 100 raiderů (ostatní 24–33).
 **Průzkum (NÁVRH, nepostaveno):** výzva SCOUT; v noci jdou dobrovolníci do země nikoho; úspěch označí kulomety a poručíky nepřítele v úseku → příští den vlastní palba v úseku +X % a odstřelovač vždy míří na označené cíle; riziko střední, odstřelovač ×0,5 rizika a lepší výsledek.
+
+## 2026-11-24 · G3 nasazeno (NASAZENO, první vydání 24. 11. 13:00 UTC)
+Uživatel: „udělej G3, péče jako dnes“ + puškař víc smrtelný („40 lehce / 30 těžce / 20 kriticky“, nastaveno 40/40/20 = `rifleman.severity` light 0,6, heavy 0,2).
+Hodnoty: puškař 3 výstřely, kulomet 2 (potlačení dál), `killHeavy` 0,4, poručík 0,35 / 20, kuchař relief 0,5 + always + covers 8, kaplan 0,35 + heavy + covers 6, spojař counterFire 0,25, drát ženista riziko ×0,5 / oprava ×1,5, raid hurt 0,4, raiderKill 0,75 / 0,5, puškař win ×1,3 hurt ×0,6. Péče beze změny (1 / 2 / 3). Bez postihu za přeplnění.
+Simulace (8 × 3 dny): padlí H 110 : C 84 za den (dřív 53 : 48), raněných ~250 : 228, pokrytí mediky 44 % / 63 %, bez péče umírá 36 : 19. Zabití na 100 vojáků role za den: puškař ~10,5, kulomet ~8, odstřelovač ~9,5. Samí odstřelovači: vlastní padlí 139 (místo 110), nepřítel 64 (místo 84) → nevyplatí se. Samí puškaři: 143 a 82.
+Náhled vydání 24. 11. (`preview-tick`): H 94 padlých / 254 zasažených, C 70 / 242, medici 55 % / 75 %.
+Ladění: šance a výstřely v `battle.roles`, jedno číslo; zpět na dřívější stav = smazat `rifleman.shots`, `machinegunner.shots`, vrátit `rifleman.severity` 0,3/0,12 a `killHeavy` 0,7.
