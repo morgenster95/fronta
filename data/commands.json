@@ -637,5 +637,50 @@
     "cmd": "raid",
     "handle": "jesus.gr9",
     "_note": "ruční přihláška na raid: Instagram jeho komentáře skrývá, API je nevrátí (2026-11-24)"
+  },
+  {
+    "id": "fix-edheadl-letter-d12",
+    "cmd": "fixEntry",
+    "handle": "edheadl",
+    "day": 12,
+    "find": "A letter from home reached Lucien Edheadl before dusk. Lucien Edheadl read it twice and slept a little easier.",
+    "replace": "The mail bag came up with the soup. There was a letter for Lucien Edheadl, and the soup went cold while Lucien Edheadl read it.",
+    "_note": "pokyn uživatele 24. 11.: dopis se v deníku opakoval stejnou větou (naše chyba), přepis na různé věty"
+  },
+  {
+    "id": "fix-edheadl-letter-d13",
+    "cmd": "fixEntry",
+    "handle": "edheadl",
+    "day": 13,
+    "find": "A letter from home reached Lucien Edheadl before dusk. Lucien Edheadl read it twice and slept a little easier.",
+    "replace": "A letter for Lucien Edheadl came up the line that evening. The corporal did not send it back. He put it in his own pocket and said he would hand it over himself.",
+    "_note": "pokyn uživatele 24. 11.: dopis se v deníku opakoval stejnou větou (naše chyba), přepis na různé věty"
+  },
+  {
+    "id": "fix-edheadl-letter-d14",
+    "cmd": "fixEntry",
+    "handle": "edheadl",
+    "day": 14,
+    "find": "A letter from home reached Lucien Edheadl before dusk. Lucien Edheadl read it twice and slept a little easier.",
+    "replace": "The corporal kept his word. The letter he had carried for two days was handed to Lucien Edheadl, who read it standing up, still covered in mud.",
+    "_note": "pokyn uživatele 24. 11.: dopis se v deníku opakoval stejnou větou (naše chyba), přepis na různé věty"
+  },
+  {
+    "id": "fix-edheadl-letter-d15",
+    "cmd": "fixEntry",
+    "handle": "edheadl",
+    "day": 15,
+    "find": "A letter from home reached Lucien Edheadl before dusk. Lucien Edheadl read it twice and slept a little easier.",
+    "replace": "A letter reached Lucien Edheadl in the rain. The ink ran a little, but every word that mattered was still there.",
+    "_note": "pokyn uživatele 24. 11.: dopis se v deníku opakoval stejnou větou (naše chyba), přepis na různé věty"
+  },
+  {
+    "id": "fix-edheadl-letter-d16",
+    "cmd": "fixEntry",
+    "handle": "edheadl",
+    "day": 16,
+    "find": "A letter from home reached Lucien Edheadl before dusk. Lucien Edheadl read it twice and slept a little easier.",
+    "replace": "Lucien Edheadl kept the new letter in a breast pocket all day, and touched the pocket now and then to check it was there.",
+    "_note": "pokyn uživatele 24. 11.: dopis se v deníku opakoval stejnou větou (naše chyba), přepis na různé věty"
   }
 ]
