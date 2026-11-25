@@ -1955,7 +1955,7 @@
     "kw": null,
     "text": "@dallas_bernhoester glad you’re concord too my friend",
     "at": "2026-11-25T23:11:03+0000",
-    "likes": 0,
+    "likes": 1,
     "reply": true
    },
    {
@@ -1965,6 +1965,16 @@
     "kw": "HOSPITAL",
     "text": "Hegemony needs a hospital can’t keep bleeding like that.",
     "at": "2026-11-25T23:12:43+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18112945145354568",
+    "handle": "hughesjack02",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "Need a hospital for concord, I recieve a light wound a while back and id hate to imagine what would happen if it was more serious.",
+    "at": "2026-11-25T23:20:44+0000",
     "likes": 0,
     "reply": false
    }
