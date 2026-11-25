@@ -1795,7 +1795,7 @@
     "kw": "HOSPITAL",
     "text": "HOSPITAL. The storm tore the canvas off our aid post, 189 brothers fell today, and medics reach only 1 in 3 wounded. We already have our permanent Grey Mill howitzer to counter Concord's attack and smash any 4-day Tortoise tank that draws fire. Lock in a permanent concrete hospital dugout with surgeons and stretchers before 13:00 UTC. Iron endures. - Pvt. Konrad Sebs",
     "at": "2026-11-25T20:24:56+0000",
-    "likes": 3,
+    "likes": 4,
     "reply": false
    },
    {
@@ -1805,7 +1805,7 @@
     "kw": "HOSPITAL",
     "text": "Hospital for Concord please, if only we had a hospital before, Albin wouldn't have died. I want to make sure less of our soldiers meet the same fate",
     "at": "2026-11-25T20:24:26+0000",
-    "likes": 1,
+    "likes": 2,
     "reply": false
    },
    {
@@ -1837,6 +1837,26 @@
     "at": "2026-11-25T20:59:04+0000",
     "likes": 0,
     "reply": false
+   },
+   {
+    "id": "17900051565415264",
+    "handle": "greendreadnought34",
+    "faction": 1,
+    "kw": null,
+    "text": "To Nils Noraajs. I’m Cyril Greedndreadn. I’m assuming you’re a stretcher bearer such as I. I request that medics and stretcher bearers aren’t fired upon by either side. This is a gentleman’s war after all. Those who save lives should be free from harm",
+    "at": "2026-11-25T21:20:12+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "17898105912432042",
+    "handle": "chibachow",
+    "faction": 1,
+    "kw": null,
+    "text": "@mudandiron can I make a standing request to go out on raids for the next month?",
+    "at": "2026-11-25T21:22:06+0000",
+    "likes": 0,
+    "reply": true
    }
   ]
  },
