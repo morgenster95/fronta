@@ -1605,7 +1605,7 @@
     "kw": "HOSPITAL",
     "text": "Hegemony hospital. Our men's lives are the priority.",
     "at": "2026-11-25T19:05:47+0000",
-    "likes": 2,
+    "likes": 3,
     "reply": false
    },
    {
@@ -1657,6 +1657,36 @@
     "at": "2026-11-25T19:21:24+0000",
     "likes": 0,
     "reply": true
+   },
+   {
+    "id": "18166175626498416",
+    "handle": "uwuandrea_",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hospital, We, soldiers of Hegemony never leave a comrade behind. My family has paio a huge price with 4 dead sons.",
+    "at": "2026-11-25T19:31:23+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18128256325936868",
+    "handle": "averelle_3d",
+    "faction": 1,
+    "kw": "TANK",
+    "text": "Concord Tank, more power less casualties",
+    "at": "2026-11-25T19:29:59+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18001897893043626",
+    "handle": "ancient_space_man",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "Concord Hospital, the wounded are piled miles high",
+    "at": "2026-11-25T19:27:19+0000",
+    "likes": 0,
+    "reply": false
    }
   ]
  },
