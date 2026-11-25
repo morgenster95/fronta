@@ -1665,7 +1665,7 @@
     "kw": "HOSPITAL",
     "text": "Hospital, We, soldiers of Hegemony never leave a comrade behind. My family has paio a huge price with 4 dead sons.",
     "at": "2026-11-25T19:31:23+0000",
-    "likes": 4,
+    "likes": 5,
     "reply": false
    },
    {
@@ -1705,6 +1705,26 @@
     "kw": null,
     "text": "I found a bag of biscuits! 😂",
     "at": "2026-11-25T19:54:28+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "17944173510379595",
+    "handle": "axel_chasserant",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "Hospital for Concord ! Taking care of our boys !!",
+    "at": "2026-11-25T20:01:57+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "17917135359509862",
+    "handle": "cashbandicoot3",
+    "faction": 0,
+    "kw": "TANK",
+    "text": "tank hegemony i wanna drive that shit",
+    "at": "2026-11-25T19:58:50+0000",
     "likes": 0,
     "reply": false
    }
