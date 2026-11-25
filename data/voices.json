@@ -1565,7 +1565,7 @@
     "kw": "TANK",
     "text": "There's always more bodies to throw in the dirt Hegemony needs a tank!",
     "at": "2026-11-25T18:51:15+0000",
-    "likes": 1,
+    "likes": 2,
     "reply": false
    },
    {
@@ -1595,6 +1595,26 @@
     "kw": "TANK",
     "text": "Tank for the Hegemony... Oh and Btw I also requested transfer to be a Sniper",
     "at": "2026-11-25T18:57:24+0000",
+    "likes": 1,
+    "reply": false
+   },
+   {
+    "id": "17979984900138357",
+    "handle": "0kaique0cr",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hegemony hospital. Our men's lives are the priority.",
+    "at": "2026-11-25T19:05:47+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18126955156903713",
+    "handle": "eliyork13",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hegemony needs a hospital, we have fewer soldiers and should take care of them",
+    "at": "2026-11-25T19:02:53+0000",
     "likes": 0,
     "reply": false
    }
