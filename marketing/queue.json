@@ -1416,6 +1416,59 @@
       "mediaDropped": [
         "reel_cards.mp4"
       ]
+    },
+    {
+      "id": "reel-front16",
+      "type": "reel",
+      "files": [
+        "reel_front16.mp4"
+      ],
+      "publishAt": "2026-11-25T18:00:00Z",
+      "caption": "DAY 16 · The deadliest day of the war.\n\nLast night 23 sweetheart cards came back from the enemy trenches. One of them was WINGS, the legendary card, found on the raid by a Hegemony machine gunner, Felix Dougc.\n\n322 raiders went over in the rain and 131 enemies died in their own trenches. By morning 358 had fallen. 450 lie wounded in the mud, and the medics can reach only one in three.\n\n🗳 Now each side decides. HOSPITAL: a new dugout, surgeons and stretchers, fewer of your wounded die. TANK: a Behemoth for the Hegemony, a Tortoise for the Concord, your shooters hit harder for 4 days, but a tank draws fire.\n\nComment HOSPITAL or TANK. Each side votes for itself. Results in the Gazette at 13:00 UTC.\n\n+74 soldiers yesterday. 2,289 now hold the front: 1,077 Hegemony · 1,212 Concord.\n\n#pixelart #indiegame #ww1 #gamedev",
+      "vote": {
+        "question": "Save your wounded, or win the fight?",
+        "perFaction": true,
+        "minHours": 8,
+        "note": "Comment HOSPITAL or TANK under the post. Each side votes for itself; your soldier is your ballot.",
+        "options": [
+          {
+            "kw": "HOSPITAL",
+            "label": "A new hospital dugout, surgeons and stretchers: fewer of your wounded die",
+            "build": "dugout",
+            "stretchers": 20,
+            "medics": 80,
+            "die": 0.7,
+            "days": 4,
+            "outcome": "The {side} dug a new hospital dugout. Surgeons and stretcher teams came up the line."
+          },
+          {
+            "kw": "TANK",
+            "label": "A tank for 4 days: your shooters hit harder, but it draws fire",
+            "fire": 1.35,
+            "exposed": 1.1,
+            "days": 4,
+            "byFaction": {
+              "0": {
+                "outcome": "A Behemoth tank rolled up behind the Hegemony line, guns out. Every shooter near it fires harder, and every enemy gun now looks for it."
+              },
+              "1": {
+                "outcome": "A Tortoise tank clanked up behind the Concord line, turret turning. Every shooter near it fires harder, and every enemy gun now looks for it."
+              }
+            }
+          }
+        ]
+      },
+      "_note": "Day reel Day 16 + hlasování HOSPITAL / TANK (schváleno uživatelem 25. 11., vydat v 18:00 UTC)."
+    },
+    {
+      "id": "story-reel-front16",
+      "type": "story",
+      "files": [
+        "story_reel-front16.jpg"
+      ],
+      "caption": "",
+      "publishAt": "2026-11-25T18:10:00Z",
+      "_note": "Story k položce reel-front16 (pravidlo: ke každé novince i story). "
     }
   ]
 }
