@@ -742,5 +742,17 @@
     "cmd": "dog",
     "handle": "vis.acquillae",
     "_note": "pokyn uživatele 25. 11.: má mít psa (plemeno a jméno losuje hra)"
+  },
+  {
+    "id": "support-grebegue-20261125",
+    "cmd": "support",
+    "handle": "grebegue",
+    "_note": "Patreon Field Post (2026-11-25): stužka"
+  },
+  {
+    "id": "dog-grebegue-20261125",
+    "cmd": "dog",
+    "handle": "grebegue",
+    "_note": "Patreon Field Post (2026-11-25): Trench Dog, plemeno a jméno losuje hra"
   }
 ]
