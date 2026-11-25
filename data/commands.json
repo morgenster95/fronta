@@ -736,5 +736,11 @@
     "cmd": "dog",
     "handle": "gunny1717",
     "_note": "Patreon Officers' Mess (2026-11-25): Trench Dog, plemeno a jméno losuje hra"
+  },
+  {
+    "id": "dog-vis.acquillae-20261125",
+    "cmd": "dog",
+    "handle": "vis.acquillae",
+    "_note": "pokyn uživatele 25. 11.: má mít psa (plemeno a jméno losuje hra)"
   }
 ]
