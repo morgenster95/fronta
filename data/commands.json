@@ -700,5 +700,17 @@
     "find": "The sergeant crossed the name off the missing list.",
     "replace": "The sergeant crossed the name off the missing list. The corporal kept his word: the letter he had carried for two days went straight into Lucien Edheadl's muddy hands.",
     "_note": "pokyn uživatele 24. 11.: pořadí v zápisu dne 14 (dopis až po návratu)"
+  },
+  {
+    "id": "star-iamthreatnotyou-20261125",
+    "cmd": "star",
+    "handle": "iamthreatnotyou",
+    "_note": "Patreon Officers' Mess (2026-11-25): hvězda + War Bonds"
+  },
+  {
+    "id": "dog-iamthreatnotyou-20261125",
+    "cmd": "dog",
+    "handle": "iamthreatnotyou",
+    "_note": "Patreon Officers' Mess (2026-11-25): Trench Dog, plemeno a jméno losuje hra"
   }
 ]
