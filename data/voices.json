@@ -1545,7 +1545,7 @@
     "kw": "HOSPITAL",
     "text": "Hospital for hegemony, we are losing brave souls",
     "at": "2026-11-25T18:54:15+0000",
-    "likes": 0,
+    "likes": 1,
     "reply": false
    },
    {
@@ -1605,7 +1605,7 @@
     "kw": "HOSPITAL",
     "text": "Hegemony hospital. Our men's lives are the priority.",
     "at": "2026-11-25T19:05:47+0000",
-    "likes": 0,
+    "likes": 2,
     "reply": false
    },
    {
@@ -1615,6 +1615,16 @@
     "kw": "HOSPITAL",
     "text": "Hegemony needs a hospital, we have fewer soldiers and should take care of them",
     "at": "2026-11-25T19:02:53+0000",
+    "likes": 1,
+    "reply": false
+   },
+   {
+    "id": "18124096160072914",
+    "handle": "jakub.prokes",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hospital for Hegemony. The losses are worse than ever on both sides.",
+    "at": "2026-11-25T19:11:11+0000",
     "likes": 0,
     "reply": false
    }
