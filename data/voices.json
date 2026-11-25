@@ -1675,7 +1675,7 @@
     "kw": "TANK",
     "text": "Concord Tank, more power less casualties",
     "at": "2026-11-25T19:29:59+0000",
-    "likes": 1,
+    "likes": 2,
     "reply": false
    },
    {
@@ -1725,6 +1725,16 @@
     "kw": "TANK",
     "text": "tank hegemony i wanna drive that shit",
     "at": "2026-11-25T19:58:50+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18503963293096580",
+    "handle": "castlecrasher1",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hegemony hospital,  our brothers need aid",
+    "at": "2026-11-25T20:06:26+0000",
     "likes": 0,
     "reply": false
    }
