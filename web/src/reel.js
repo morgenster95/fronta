@@ -245,6 +245,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'front16') {
+    // Day reel Day 16 (25. 11.): kartičky za titulkem, WINGS, raid v dešti, nejkrvavější den, hlasování HOSPITAL / TANK (reel-front16.js)
+    return import('./reel-front16.js').then(async ({ startDay16Reel }) => {
+      await startDay16Reel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'cards') {
     // virální reel o sběratelských kartičkách (25. 11.): hák WINGS, raid / drát / dopis s novými scénami, sada podle vzácnosti, dědictví, výzva (reel-cards.js)
     return import('./reel-cards.js').then(async ({ startCardsReel }) => {

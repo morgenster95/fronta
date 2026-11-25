@@ -607,3 +607,9 @@ Ladění: šance a výstřely v `battle.roles`, jedno číslo; zpět na dřívě
 ## 2026-11-24 večer: dopis z domova (NASAZENO)
 - Věty o dopisu: 36 různých (`theme.letters.lines`), střídají se po dnech (`(order + day) % n`). Dřív 3 věty a výběr jen podle pořadí narukování → denní odesílatel měl každý den stejnou větu (edheadl; jeho zápisy dny 12–16 přepsány příkazem fixEntry na pokyn uživatele).
 - Kartička v dopise: 0,5 % na dopis, max. 1 z dopisů na vojáka (`docs/CARDS.md`).
+
+## 2026-11-25: hlasování HOSPITAL / TANK (NÁVRH, vyjde s Day reelem Day 16)
+Uživatel: „hodně raněných, dává smysl hlasování, které přidá nemocnici, ale ať je tam něco, co jim ztíží rozhodování: tank by určitě chtěli“. Každá strana volí sama, účinek od příští bitvy, 4 dny.
+- **HOSPITAL:** trvale +1 nemocniční kryt (`build: dugout`: 4 lůžka, 4 nosítka), na 4 dny +20 nosítek, +80 práce mediků, úmrtnost kriticky raněných ×0,7 (`marketing/reels/front16.vote.draft.json`).
+- **TANK:** na 4 dny palba všech vlastních střelců ×1,35, ale tank přitahuje palbu: zásahy na vlastní vojáky ×1,1 (`fire`, `exposed`). Hegemonie dostane **Behemoth** (těžký kosočtverečný, ocelově šedý s rezavým pruhem), Concord **Tortoise** (malý s věží, olivový se žlutou hvězdou); sprity `web/public/assets/props/tank_{heg,con}_{front,back,side}.png` z archu `art/cine/tank_sheet_a.png` (PixelLab 9 gen.).
+- Na mapě zatím tank není (k doplnění, pokud TANK vyhraje). Čísla jsou odhad, neověřené simulací.

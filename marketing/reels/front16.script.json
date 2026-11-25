@@ -1,0 +1,18 @@
+{
+ "seconds": 75,
+ "auto": true,
+ "drums": ["day", [], "cta"],
+ "lines": [
+  [0.3, "Day sixteen.", "day"],
+  [1.8, "Last night, twenty-three sweetheart cards came back from the enemy trenches.", "cards"],
+  [0, "One of them was Wings, the legendary card. Felix Dougc, a Hegemony machine gunner, found it on the raid.", "wings"],
+  [0, "Three hundred and twenty-two raiders went over in the rain. One hundred and thirty-one enemies died in their own trenches.", "raid"],
+  [0, "It was the deadliest day of the war. Three hundred and fifty-eight fell.", "cost"],
+  [0, "Four hundred and fifty lie wounded in the mud. The medics can reach only one in three.", "cost2"],
+  [0, "Seventy-four new soldiers came up yesterday. Two thousand two hundred and eighty-nine now hold the front.", "army"],
+  [0, "Now each side decides.", "vote"],
+  [0, "Hospital: a new dugout, surgeons and stretchers. Fewer of your wounded will die.", "hosp"],
+  [0, "Tank: a Behemoth for the Hegemony, a Tortoise for the Concord. Your shooters hit harder for four days. But a tank draws fire.", "tank"],
+  [0, "Save your wounded, or win the fight? Comment HOSPITAL or TANK. Each side votes for itself.", "cta"]
+ ]
+}

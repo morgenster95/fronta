@@ -1,0 +1,62 @@
+{
+  "_": "Day reel Day 16 – noviny 25. 11. 13:00 UTC (state.day 17); nováčci 24. 11. 00:00–25. 11. 00:00 UTC z gitu; hlasování HOSPITAL / TANK",
+  "label": 16,
+  "cards": {
+    "n": 23,
+    "ids": [
+      "03",
+      "02",
+      "06",
+      "01",
+      "02",
+      "08",
+      "03",
+      "08",
+      "01",
+      "08",
+      "08",
+      "06",
+      "02",
+      "03",
+      "06",
+      "04",
+      "07",
+      "01",
+      "08",
+      "04",
+      "01",
+      "01",
+      "04"
+    ],
+    "raid": 22,
+    "pilot": 1
+  },
+  "wings": {
+    "handle": "dougc117",
+    "name": "Felix Dougc",
+    "role": "Hegemony machine gunner"
+  },
+  "raid": {
+    "out": 322,
+    "kills": 131,
+    "lost": 38
+  },
+  "fell": [
+    189,
+    169
+  ],
+  "wounded": 450,
+  "cover": "1 in 3",
+  "race": [
+    170,
+    142
+  ],
+  "joined": [
+    44,
+    30
+  ],
+  "army": [
+    1077,
+    1212
+  ]
+}

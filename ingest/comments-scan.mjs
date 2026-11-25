@@ -19,7 +19,7 @@ async function ig(path, params = {}) {
 // slova, podle kterých poznáme hlášení chyby nebo dotaz
 const PROBLEM = /\b(bug|bugs|broken|error|glitch|crash|lag|stuck|freez|not work|doesn'?t work|dont work|isn'?t work|won'?t|can'?t|cannot|couldn'?t|didn'?t|did not|no reply|never got|not (load|show|showing|appear|there)|missing|wrong|help|log ?in|sign ?in|login|claim|code|card|site|website|page|link|blank|black screen|white screen|loading)\b/i;
 // komentáře, které jsou jen herní hesla (nábor, role, akce, hlasy, kódy)
-const KEYWORDS = /^(?:[@#]\S+\s*)*(?:hegemony|concord|wire|raid|pilot|hospital|pillbox(es)?|ammo|dugouts?|doctor|sandbags?|fortify|rifleman|medic|sniper|mg|machine ?gunner|sapper|runner|signaller|cook|chaplain|officer|lieutenant|enlist-\w{4}|[\s\p{Emoji}\p{P}])+$/iu;
+const KEYWORDS = /^(?:[@#]\S+\s*)*(?:hegemony|concord|wire|raid|pilot|hospital|tanks?|pillbox(es)?|ammo|dugouts?|doctor|sandbags?|fortify|rifleman|medic|sniper|mg|machine ?gunner|sapper|runner|signaller|cook|chaplain|officer|lieutenant|enlist-\w{4}|[\s\p{Emoji}\p{P}])+$/iu;
 
 const me = await ig(USER, { fields: 'username' });
 const own = (me.username || '').toLowerCase();
