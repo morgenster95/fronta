@@ -724,5 +724,17 @@
     "cmd": "dog",
     "handle": "eversonae",
     "_note": "Patreon Officers' Mess (2026-11-25): Trench Dog, plemeno a jméno losuje hra"
+  },
+  {
+    "id": "star-gunny1717-20261125",
+    "cmd": "star",
+    "handle": "gunny1717",
+    "_note": "Patreon Officers' Mess (2026-11-25): hvězda + War Bonds"
+  },
+  {
+    "id": "dog-gunny1717-20261125",
+    "cmd": "dog",
+    "handle": "gunny1717",
+    "_note": "Patreon Officers' Mess (2026-11-25): Trench Dog, plemeno a jméno losuje hra"
   }
 ]
