@@ -132,7 +132,7 @@ export async function startCardsReel({ cam, map, soldiers, tex, anims }) {
       if (flip.spin != null) { const a = flip.spin * 2.2; sx = Math.cos(a); showFace = false; } // rub se točí
       else { const k = clamp01((t - flip.at) / 0.45); sx = Math.cos((1 - k) * Math.PI); showFace = k > 0.5; }
       const s = flip.spin != null ? 0.85 + 0.05 * Math.sin(t * 3) : 1 + 0.06 * Math.exp(-(t - flip.at) * 4);
-      big.style.transform = `scale(${Math.max(0.02, Math.abs(sx)) * s}, ${s})`;
+      big.style.transform = `translateY(${flip.spin != null ? 70 : 0}px) scale(${Math.max(0.02, Math.abs(sx)) * s}, ${s})`; // při háku níž, ať nepřekrývá nápis
       back.style.opacity = showFace ? 0 : 1; face.style.opacity = showFace ? 1 : 0;
       glowEl.style.background = showFace ? `radial-gradient(circle, ${gl}cc 0%, ${gl}00 65%)` : 'none';
       const lab = $('#cd-lab');
