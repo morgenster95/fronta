@@ -1757,6 +1757,36 @@
     "at": "2026-11-25T20:10:35+0000",
     "likes": 0,
     "reply": false
+   },
+   {
+    "id": "17945938392389147",
+    "handle": "gergely.v_",
+    "faction": 0,
+    "kw": "TANK",
+    "text": "Tank all the way, Iron endures!",
+    "at": "2026-11-25T20:20:34+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18121724060000761",
+    "handle": "punished_dumas",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "Concord tank, let's make sure it's Hegemony who needs those hospitals",
+    "at": "2026-11-25T20:19:21+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18641319223038030",
+    "handle": "dav.cl_",
+    "faction": 1,
+    "kw": "TANK",
+    "text": "concord tank, less will die if we kill them faster",
+    "at": "2026-11-25T20:18:24+0000",
+    "likes": 0,
+    "reply": false
    }
   ]
  },
