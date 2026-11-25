@@ -1335,7 +1335,7 @@
     "kw": "TANK",
     "text": "Concord tanks, we need reclaim the trenches and regain the positions taken.",
     "at": "2026-11-25T18:14:14+0000",
-    "likes": 2,
+    "likes": 4,
     "reply": false
    },
    {
@@ -1345,7 +1345,7 @@
     "kw": "TANK",
     "text": "Concord tank\n\nHegemony says “iron endures”, I wonder if they have tasted concord steel.",
     "at": "2026-11-25T18:25:09+0000",
-    "likes": 2,
+    "likes": 4,
     "reply": false
    },
    {
@@ -1395,7 +1395,7 @@
     "kw": "HOSPITAL",
     "text": "Hospital please 😭 Trench Raiders kicked my ass and there’s no room for me in our rank infirmary",
     "at": "2026-11-25T18:30:06+0000",
-    "likes": 0,
+    "likes": 3,
     "reply": false
    },
    {
@@ -1427,6 +1427,56 @@
     "at": "2026-11-25T18:33:45+0000",
     "likes": 0,
     "reply": true
+   },
+   {
+    "id": "18116885144023723",
+    "handle": "danie.g27",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hegemony hospital. Better to have more people alive than dead",
+    "at": "2026-11-25T18:40:11+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18118920707148238",
+    "handle": "goober_train",
+    "faction": 1,
+    "kw": "TANK",
+    "text": "Concord tank. There’s always more bodies. We need more ground in order to put the people there",
+    "at": "2026-11-25T18:40:01+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18120066035086753",
+    "handle": "raso_ronnie",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hegemony tank, we already have a hospital in our trench it seems",
+    "at": "2026-11-25T18:39:25+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "17945905506381318",
+    "handle": "itz_fabian0120",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "The Hegemony is outnumbered, we need to conserve our manpower with a new hospital",
+    "at": "2026-11-25T18:37:56+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "17912794950668829",
+    "handle": "ajango117",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "Hospitals are needed after that raid for concord",
+    "at": "2026-11-25T18:37:54+0000",
+    "likes": 0,
+    "reply": false
    }
   ]
  },
