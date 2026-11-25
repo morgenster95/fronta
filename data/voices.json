@@ -1737,6 +1737,26 @@
     "at": "2026-11-25T20:06:26+0000",
     "likes": 0,
     "reply": false
+   },
+   {
+    "id": "18128690107697689",
+    "handle": "mems_and_broken_dreams",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hospital för hegemony We need to save our wounded",
+    "at": "2026-11-25T20:14:23+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "17983139475132926",
+    "handle": "danxdoody",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "As a Concord medic, it pains me to see all our soldiers bleeding out in the mud. We need another hospital. Together, or not at all!",
+    "at": "2026-11-25T20:10:35+0000",
+    "likes": 0,
+    "reply": false
    }
   ]
  },
