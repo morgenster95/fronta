@@ -1935,7 +1935,7 @@
     "kw": "HOSPITAL",
     "text": "Concord, Hospital. \n\n4 days of a tank vs more lives saved long term.",
     "at": "2026-11-25T22:46:26+0000",
-    "likes": 4,
+    "likes": 5,
     "reply": false
    },
    {
@@ -1995,7 +1995,7 @@
     "kw": "TANK",
     "text": "Concord we really need medical a tank can wait and they didnt even live that long anyways",
     "at": "2026-11-25T23:36:31+0000",
-    "likes": 0,
+    "likes": 1,
     "reply": false
    },
    {
@@ -2005,6 +2005,16 @@
     "kw": "HOSPITAL",
     "text": "Hegemony hospital. No tank can hold a trench filled only with the dead!",
     "at": "2026-11-25T23:43:12+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "17913415338667740",
+    "handle": "kyrie_eleisson",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "Concord hospital! We need to save lives.",
+    "at": "2026-11-25T23:48:24+0000",
     "likes": 0,
     "reply": false
    }
