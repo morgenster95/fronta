@@ -1394,7 +1394,10 @@
         "id": "18103174373414353",
         "permalink": "https://www.instagram.com/reel/DgKcriahfTP/",
         "at": "2026-11-25T11:43:09.804Z"
-      }
+      },
+      "mediaDropped": [
+        "reel_cards.mp4"
+      ]
     },
     {
       "id": "story-reel-cards",
