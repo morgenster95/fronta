@@ -1165,7 +1165,7 @@
     "kw": "HOSPITAL",
     "text": "Concord hospital got wounded 3 times we need bigger hospitals if i recover this time ill become a medic",
     "at": "2026-11-25T18:06:15+0000",
-    "likes": 0,
+    "likes": 1,
     "reply": false
    },
    {
@@ -1195,7 +1195,87 @@
     "kw": "TANK",
     "text": "Concord needs tanks! The Hedgemony's already taken too many positions!",
     "at": "2026-11-25T18:03:32+0000",
-    "likes": 1,
+    "likes": 3,
+    "reply": false
+   },
+   {
+    "id": "18184275661438254",
+    "handle": "straight_dogma_son",
+    "faction": 1,
+    "kw": "TANK",
+    "text": "Concord Tank we need armor and power to protect our soldiers while the medics work",
+    "at": "2026-11-25T18:12:41+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18086983166709772",
+    "handle": "tons355",
+    "faction": 1,
+    "kw": "TANK",
+    "text": "Concorde Tank , We outnumber them if we have more firepower we win",
+    "at": "2026-11-25T18:12:34+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18145758514614698",
+    "handle": "alessiosantori",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "Concord hospital we need to buold a strong base i don t understand how we have more soldiers but lesser positions taken",
+    "at": "2026-11-25T18:11:54+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18146925013596670",
+    "handle": "nothing_va1",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "I took someone’s helmet and got wounded we need hospitals at concord I got 2 other guys wounded next to me and I’m their medic lol",
+    "at": "2026-11-25T18:11:33+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18082511288733122",
+    "handle": "thicc_kochek",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "Hospital! We can't man any tanks without any men!",
+    "at": "2026-11-25T18:11:03+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18123034915989228",
+    "handle": "flying_wizzerd",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "Hospital, the hegemony have too many advantages and we need as much casualty care as possible, even if they get the tank we can get one later",
+    "at": "2026-11-25T18:10:15+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18118031657150546",
+    "handle": "mangotto.id",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hegemony Hospital. And how to join Raid actually?",
+    "at": "2026-11-25T18:09:47+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18117601733605901",
+    "handle": "chibachow",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "I feel the hospital would benefit keeping people alive",
+    "at": "2026-11-25T18:09:35+0000",
+    "likes": 0,
     "reply": false
    }
   ]
