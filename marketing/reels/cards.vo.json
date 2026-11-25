@@ -1,0 +1,78 @@
+{
+ "seconds": 53.8,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.3,
+   4.66,
+   "My war game has eight hidden cards. Almost nobody will ever find this one.",
+   "hook"
+  ],
+  [
+   5.21,
+   5.15,
+   "Every soldier here is a real person from my comments. And any of them can find these.",
+   "real"
+  ],
+  [
+   10.61,
+   3.81,
+   "Go on a night raid. Search the enemy you left in the crater.",
+   "raid"
+  ],
+  [
+   14.67,
+   1.47,
+   "Some raiders come back with this.",
+   "raid2"
+  ],
+  [
+   16.39,
+   4.4,
+   "Crawl out at night to mend the wire. Sometimes the mud gives something back.",
+   "wire"
+  ],
+  [
+   21.04,
+   5.22,
+   "Or just write to your soldier. Once in a while, there is a card inside the letter from home.",
+   "letter"
+  ],
+  [
+   26.51,
+   2.47,
+   "Five are common. Two are rare.",
+   "rarity"
+  ],
+  [
+   29.23,
+   4.55,
+   "And one is legendary. Wings. One card in twenty.",
+   "wings"
+  ],
+  [
+   34.03,
+   4.76,
+   "If your soldier falls, the cards go to the heir. Nobody throws one away.",
+   "heir"
+  ],
+  [
+   39.04,
+   2.47,
+   "More missions are coming, and more ways to find them.",
+   "more"
+  ],
+  [
+   41.76,
+   4.97,
+   "Comment HEGEMONY or CONCORD, and your soldier joins the war. Then go find them.",
+   "cta"
+  ],
+  [
+   46.98,
+   3.37,
+   "Mud and Iron. Free at mudandiron dot app.",
+   "end"
+  ]
+ ]
+}
