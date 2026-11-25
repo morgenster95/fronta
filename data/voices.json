@@ -1195,7 +1195,7 @@
     "kw": "TANK",
     "text": "Concord needs tanks! The Hedgemony's already taken too many positions!",
     "at": "2026-11-25T18:03:32+0000",
-    "likes": 3,
+    "likes": 4,
     "reply": false
    },
    {
@@ -1275,6 +1275,66 @@
     "kw": "HOSPITAL",
     "text": "I feel the hospital would benefit keeping people alive",
     "at": "2026-11-25T18:09:35+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18038628443888129",
+    "handle": "evan_moores04",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "Concord hospital I need a MEDIC",
+    "at": "2026-11-25T18:18:24+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18117993578275627",
+    "handle": "dan1hand",
+    "faction": 0,
+    "kw": "TANK",
+    "text": "Hegemony tank and Id like to join a raid",
+    "at": "2026-11-25T18:18:03+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18123920588284078",
+    "handle": "johnmetheny07",
+    "faction": 0,
+    "kw": null,
+    "text": "Stop it with the cards please",
+    "at": "2026-11-25T18:16:49+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18135667444702105",
+    "handle": "jeeves2121",
+    "faction": 0,
+    "kw": "TANK",
+    "text": "Tanks for the Hegemony, the less of them to shoot at us, the less of us wounded",
+    "at": "2026-11-25T18:16:18+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18120405278591790",
+    "handle": "tripletonyt",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "Concord, tank. We need to retake some ground - a bigger hospital is like putting a band aid on a wound that will only get progressively worse",
+    "at": "2026-11-25T18:15:08+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18093062045263227",
+    "handle": "jdanieltzn",
+    "faction": 1,
+    "kw": "TANK",
+    "text": "Concord tanks, we need reclaim the trenches and regain the positions taken.",
+    "at": "2026-11-25T18:14:14+0000",
     "likes": 0,
     "reply": false
    }
