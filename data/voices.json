@@ -1857,6 +1857,36 @@
     "at": "2026-11-25T21:22:06+0000",
     "likes": 0,
     "reply": true
+   },
+   {
+    "id": "17920218111520294",
+    "handle": "illegalxeno9",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hegemony Hospital. We can get a tank later, our artillery can shred theirs.",
+    "at": "2026-11-25T21:27:43+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "17944529499379496",
+    "handle": "mischief077",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "Hospital for Concord, it's a basic necessity",
+    "at": "2026-11-25T21:26:48+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18117355364139531",
+    "handle": "easton.stoll",
+    "faction": 0,
+    "kw": "TANK",
+    "text": "Tank. We need to clear Concord out, casualties are inevitable",
+    "at": "2026-11-25T21:25:57+0000",
+    "likes": 0,
+    "reply": false
    }
   ]
  },
