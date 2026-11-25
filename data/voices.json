@@ -1325,7 +1325,7 @@
     "kw": "HOSPITAL",
     "text": "Concord, tank. We need to retake some ground - a bigger hospital is like putting a band aid on a wound that will only get progressively worse",
     "at": "2026-11-25T18:15:08+0000",
-    "likes": 0,
+    "likes": 1,
     "reply": false
    },
    {
@@ -1335,6 +1335,46 @@
     "kw": "TANK",
     "text": "Concord tanks, we need reclaim the trenches and regain the positions taken.",
     "at": "2026-11-25T18:14:14+0000",
+    "likes": 1,
+    "reply": false
+   },
+   {
+    "id": "18106800998418402",
+    "handle": "albertljungcrantz",
+    "faction": 1,
+    "kw": "TANK",
+    "text": "Concord tank\n\nHegemony says “iron endures”, I wonder if they have tasted concord steel.",
+    "at": "2026-11-25T18:25:09+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18140904568733024",
+    "handle": "llibrecommellair",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "My brother died in the raid, it was his very first day on the front. We have too many wounded. We need a hospital for the Hegemony",
+    "at": "2026-11-25T18:24:25+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18177631777457032",
+    "handle": "martinjohn.walker",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hospital, I'm a medic after all",
+    "at": "2026-11-25T18:21:19+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18082324163720562",
+    "handle": "pavla.9_",
+    "faction": 1,
+    "kw": null,
+    "text": "Also I have been alive for 16 days and I don't have the honour of the 14 days, please give me I have fought for it",
+    "at": "2026-11-25T18:21:07+0000",
     "likes": 0,
     "reply": false
    }
