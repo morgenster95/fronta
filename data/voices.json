@@ -1335,7 +1335,7 @@
     "kw": "TANK",
     "text": "Concord tanks, we need reclaim the trenches and regain the positions taken.",
     "at": "2026-11-25T18:14:14+0000",
-    "likes": 4,
+    "likes": 5,
     "reply": false
    },
    {
@@ -1435,7 +1435,7 @@
     "kw": "HOSPITAL",
     "text": "Hegemony hospital. Better to have more people alive than dead",
     "at": "2026-11-25T18:40:11+0000",
-    "likes": 1,
+    "likes": 2,
     "reply": false
    },
    {
@@ -1465,7 +1465,7 @@
     "kw": "HOSPITAL",
     "text": "The Hegemony is outnumbered, we need to conserve our manpower with a new hospital",
     "at": "2026-11-25T18:37:56+0000",
-    "likes": 0,
+    "likes": 1,
     "reply": false
    },
    {
@@ -1515,7 +1515,7 @@
     "kw": "HOSPITAL",
     "text": "Hegemony hospital. Tank is temporary, hospital will give better results long term",
     "at": "2026-11-25T18:45:06+0000",
-    "likes": 0,
+    "likes": 1,
     "reply": false
    },
    {
@@ -1525,6 +1525,46 @@
     "kw": "HOSPITAL",
     "text": "I definitely vote hospital since its forever and not just 4 days!! Temporary bonus over permanent survivability...easy choice",
     "at": "2026-11-25T18:44:48+0000",
+    "likes": 2,
+    "reply": false
+   },
+   {
+    "id": "18135679240775685",
+    "handle": "arcadialoren",
+    "faction": 0,
+    "kw": "TANK",
+    "text": "Hegemony Tank, we need to keep pushing!",
+    "at": "2026-11-25T18:54:40+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18115078252896123",
+    "handle": "aggiomarco",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hospital for hegemony, we are losing brave souls",
+    "at": "2026-11-25T18:54:15+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18114284981221617",
+    "handle": "kennethm05",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "Concord Hospital. We need to care for our wounded. We mustn't allow them to die on the Mud on field stretches",
+    "at": "2026-11-25T18:51:16+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18514711702102377",
+    "handle": "cosmicloopy",
+    "faction": 0,
+    "kw": "TANK",
+    "text": "There's always more bodies to throw in the dirt Hegemony needs a tank!",
+    "at": "2026-11-25T18:51:15+0000",
     "likes": 0,
     "reply": false
    }
