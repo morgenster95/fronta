@@ -1375,7 +1375,7 @@
     "kw": null,
     "text": "Also I have been alive for 16 days and I don't have the honour of the 14 days, please give me I have fought for it",
     "at": "2026-11-25T18:21:07+0000",
-    "likes": 0,
+    "likes": 1,
     "reply": false
    },
    {
@@ -1395,7 +1395,7 @@
     "kw": "HOSPITAL",
     "text": "Hospital please 😭 Trench Raiders kicked my ass and there’s no room for me in our rank infirmary",
     "at": "2026-11-25T18:30:06+0000",
-    "likes": 3,
+    "likes": 4,
     "reply": false
    },
    {
@@ -1435,7 +1435,7 @@
     "kw": "HOSPITAL",
     "text": "Hegemony hospital. Better to have more people alive than dead",
     "at": "2026-11-25T18:40:11+0000",
-    "likes": 0,
+    "likes": 1,
     "reply": false
    },
    {
@@ -1445,7 +1445,7 @@
     "kw": "TANK",
     "text": "Concord tank. There’s always more bodies. We need more ground in order to put the people there",
     "at": "2026-11-25T18:40:01+0000",
-    "likes": 0,
+    "likes": 1,
     "reply": false
    },
    {
@@ -1475,6 +1475,56 @@
     "kw": "HOSPITAL",
     "text": "Hospitals are needed after that raid for concord",
     "at": "2026-11-25T18:37:54+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18194001355407094",
+    "handle": "hawkenram",
+    "faction": 1,
+    "kw": "TANK",
+    "text": "It's painful to say but we need more fire power tank",
+    "at": "2026-11-25T18:48:48+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18104515325416919",
+    "handle": "channel17georgia",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "my soldier sadly fell today, hospitals were full.",
+    "at": "2026-11-25T18:48:18+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18383015170241388",
+    "handle": "yoboiwhitecheddar",
+    "faction": 1,
+    "kw": null,
+    "text": "I’m lowkey wounded so I’ll say infirmary",
+    "at": "2026-11-25T18:47:22+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18651475249056833",
+    "handle": "jordanillman",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hegemony hospital. Tank is temporary, hospital will give better results long term",
+    "at": "2026-11-25T18:45:06+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "17888732205506306",
+    "handle": "ghostbebrii",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "I definitely vote hospital since its forever and not just 4 days!! Temporary bonus over permanent survivability...easy choice",
+    "at": "2026-11-25T18:44:48+0000",
     "likes": 0,
     "reply": false
    }
