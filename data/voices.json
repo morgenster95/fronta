@@ -1325,7 +1325,7 @@
     "kw": "HOSPITAL",
     "text": "Concord, tank. We need to retake some ground - a bigger hospital is like putting a band aid on a wound that will only get progressively worse",
     "at": "2026-11-25T18:15:08+0000",
-    "likes": 1,
+    "likes": 2,
     "reply": false
    },
    {
@@ -1335,7 +1335,7 @@
     "kw": "TANK",
     "text": "Concord tanks, we need reclaim the trenches and regain the positions taken.",
     "at": "2026-11-25T18:14:14+0000",
-    "likes": 1,
+    "likes": 2,
     "reply": false
    },
    {
@@ -1345,7 +1345,7 @@
     "kw": "TANK",
     "text": "Concord tank\n\nHegemony says “iron endures”, I wonder if they have tasted concord steel.",
     "at": "2026-11-25T18:25:09+0000",
-    "likes": 0,
+    "likes": 2,
     "reply": false
    },
    {
@@ -1377,6 +1377,36 @@
     "at": "2026-11-25T18:21:07+0000",
     "likes": 0,
     "reply": false
+   },
+   {
+    "id": "18189705175418308",
+    "handle": "ewalters120",
+    "faction": 1,
+    "kw": "TANK",
+    "text": "Concord tanks to take it to the Hegemony positions",
+    "at": "2026-11-25T18:31:03+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18204043201382810",
+    "handle": "miles.peebles",
+    "faction": 1,
+    "kw": "HOSPITAL",
+    "text": "Hospital please 😭 Trench Raiders kicked my ass and there’s no room for me in our rank infirmary",
+    "at": "2026-11-25T18:30:06+0000",
+    "likes": 0,
+    "reply": false
+   },
+   {
+    "id": "18047024576831132",
+    "handle": "javimty97",
+    "faction": 1,
+    "kw": "TANK",
+    "text": "@jdanieltzn tanks don't claim sh, fool 😭",
+    "at": "2026-11-25T18:28:04+0000",
+    "likes": 0,
+    "reply": true
    }
   ]
  },
