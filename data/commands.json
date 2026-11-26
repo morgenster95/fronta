@@ -766,5 +766,17 @@
     "cmd": "dog",
     "handle": "dominicanknght",
     "_note": "Patreon Officers' Mess (2026-11-25): Trench Dog, plemeno a jméno losuje hra"
+  },
+  {
+    "id": "support-dan1hand-20261126",
+    "cmd": "support",
+    "handle": "dan1hand",
+    "_note": "Patreon Field Post (2026-11-26): stužka"
+  },
+  {
+    "id": "dog-dan1hand-20261126",
+    "cmd": "dog",
+    "handle": "dan1hand",
+    "_note": "Patreon Field Post (2026-11-26): Trench Dog, plemeno a jméno losuje hra"
   }
 ]
