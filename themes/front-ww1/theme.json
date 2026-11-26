@@ -620,7 +620,8 @@
         "_": "těžce: nosítka/lůžko; bez péče riziko zhoršení (v zákopu ×trench); hojí se od minDays s heal × péče (na lůžku × care místa)",
         "healPow": 2,
         "maxDays": 1,
-        "resolveWorsen": 0.4,
+        "resolveWorsen": 0.2,
+        "resolveWorsenCare": 0.6,
         "resolveHeal": 0.3,
         "resolveCare": 0.6,
         "_resolve": "15. 11. (uživatel: rychleji ozdravovat nebo zabíjet): od minDays 1 se může zahojit; po maxDays 2 nocích se rozhodne: zahojí se s šancí resolveHeal + resolveCare × péče, jinak zemře."

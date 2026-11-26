@@ -667,7 +667,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         if (C.maxDays && !fresh && day - w.day >= C.maxDays) {
           const ph = C.resolveHeal + C.resolveCare * g;
           if (rand() < ph + (R.chaplain.heavy ? faith * (1 - ph) : 0)) recover(s, 'patchedStretcher');
-          else if (C.resolveWorsen && rand() < C.resolveWorsen) { // rozhodnutí v jednom dni (26. 11., uživatel): zahojí se, zhorší se na kritického, nebo zemře
+          else if (C.resolveWorsen != null && rand() < C.resolveWorsen + (C.resolveWorsenCare || 0) * g + (R.chaplain.heavy ? faith * 0.5 : 0)) { // podíl zhoršení (místo smrti) roste s péčí mediků a vírou kaplana // rozhodnutí v jednom dni (26. 11., uživatel): zahojí se, zhorší se na kritického, nebo zemře
             w.sev = 'crit'; w.critDays = 0; s.lastCrit = day;
             ev(s, 'wounded', eventEntry('worsened', s, day, theme, story, {}, today));
           } else if (die(s, 'diedNoBed', 'nocare')) continue;
