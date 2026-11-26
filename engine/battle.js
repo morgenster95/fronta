@@ -55,6 +55,24 @@ export function hospital(state, theme, f) {
   return { ...base, name: F.name, big: true, beds: base.beds + F.beds, stretchers: base.stretchers + (F.stretchers || 0), care: Math.max(base.care, F.care), critRisk: Math.min(base.critRisk, F.critRisk) };
 }
 
+// Po dostavění nemocnice (polní nemocnice, 26. 11.) obsadí nová lůžka těžce a kriticky ranění z nosítek (kritičtí první, pak kdo leží déle).
+// Jen přesun místa: účinek lůžek na péči a smrti se projeví až v dalším tahu.
+export function fillBeds(state, theme, day = state.day) {
+  let n = 0;
+  theme.factions.forEach((_, f) => {
+    const side = ensureBattle(state, theme).sides[f], H = hospital(state, theme, f);
+    const mine = state.soldiers.filter((s) => s.faction === f && isWounded(s));
+    side.beds = (side.beds || []).filter((id) => mine.some((s) => s.id === id && s.wound.place === 'bed'));
+    const pri = (s) => (s.wound.sev === 'crit' ? 0 : 1);
+    const queue = mine.filter((s) => s.wound.sev !== 'light' && s.wound.place !== 'bed').sort((a, b) => pri(a) - pri(b) || a.wound.day - b.wound.day);
+    for (const s of queue) {
+      if (side.beds.length >= H.beds) break;
+      s.wound.place = 'bed'; s.wound.bedDay = day; side.beds.push(s.id); n++;
+    }
+  });
+  return n;
+}
+
 export function build(state, theme, f, id) {
   const def = B(theme)?.buildings?.[id];
   if (!def) return null;

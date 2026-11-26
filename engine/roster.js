@@ -14,7 +14,7 @@ import { findCard } from './cards.js';
 import { resolvePilotCall, pilotFire, pilotSortie, pilotsPublic } from './pilots.js';
 import { wiringKeyword, joinWiring } from './wiring.js';
 import { raidCall, joinRaid } from './nightraid.js';
-import { battleTick, battlePublic, build as buildStructure, ensureBattle, levelOf, gunsSilent } from './battle.js';
+import { battleTick, battlePublic, fillBeds, build as buildStructure, ensureBattle, levelOf, gunsSilent } from './battle.js';
 import { awardHouseBadges, noticeDeath } from './house.js';
 import { ensureValley, valleyTick, valleyDanger, valleyRecover, raidKeyword, volunteer, valleyPublic } from './valley.js';
 
@@ -581,6 +581,7 @@ export function dailyTick(state, theme, story, ctx = {}) {
   }
   if (state.guns) state.guns = state.guns.filter((x) => !(x.until != null && x.until <= day));
   for (const b of state.pendingBuilds || []) buildStructure(state, theme, b.faction, b.id); // odložené stavby (polní nemocnice) až po dnešním boji
+  if ((state.pendingBuilds || []).length) fillBeds(state, theme, day); // nová lůžka hned obsadí ranění z nosítek (účinek od zítřka)
   state.pendingBuilds = [];
   if (theme.race) checkKillRace(state, theme, story); // závod „kdo první zabije N“: zpráva o dobytí jde do state.news (níž se přidá do novin)
   const events = [...raid.events, ...fight.events];

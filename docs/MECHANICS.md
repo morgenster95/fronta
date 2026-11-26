@@ -635,3 +635,4 @@ Uživatel: „hodně raněných, dává smysl hlasování, které přidá nemocn
 
 ## 2026-11-26: Grey Mill dělo stažené (NASAZENO, pokyn uživatele)
 - Uživatel: dělo (odměna) bylo nespravedlivé, dnes střílí naposledy. Příkaz `endGun` (`data/commands.json`, `poll-comments.mjs`) nastaví `gun.until = state.day + 1`; dnešní tah ještě vystřelí, po něm se dělo odstraní (`dailyTick`, zpráva „The gun is withdrawn“ do příštích novin). Nové odměny typu `gun` časově omezit: návrh 10 dní (čeká na rozhodnutí).
+- **Lůžka po dostavění (26. 11., uživatel: „lidé leží na zemi, v nemocnici volná lůžka“):** nemocnice se dostavěla po dnešním boji, ale ranění zůstali na nosítkách, protože obsazování lůžek běží jen v tahu. `fillBeds` (`engine/battle.js`) po dostavění přesune kritické a těžce raněné z nosítek na nová lůžka (jen místo, účinek péče od dalšího tahu); jednorázově příkaz `fillBeds`.

@@ -21,7 +21,7 @@ import { awardFirstThousand, inheritMedals, switchFaction, grantSupport, grantSt
 import { volunteer, raidReply } from '../engine/valley.js';
 import { wiringReturns } from '../engine/wiring.js';
 import { joinRaid } from '../engine/nightraid.js';
-import { build } from '../engine/battle.js';
+import { build, fillBeds } from '../engine/battle.js';
 import { convertReward } from '../engine/race.js';
 import { deathReply } from '../engine/house.js';
 
@@ -230,6 +230,7 @@ async function main() {
         const before = (state.news || []).length; state.news = (state.news || []).filter((x) => !(x.h === c.h && x.day >= state.day - 1));
         console.log(`📰 vyřazeno ${before - state.news.length}× „${c.h}“`);
       }
+      if (c.cmd === 'fillBeds') console.log(`🛏 volná lůžka obsazena z nosítek: ${fillBeds(state, theme)}`); // po dostavění nemocnice (26. 11., uživatel: lůžka volná, ranění na zemi)
       if (c.cmd === 'endGun') { // konec těžkého děla po dnešní palbě (26. 11., uživatel: odměna nemá platit donekonečna): dnešní tah ještě vystřelí, pak se stáhne
         const g = (state.guns || []).find((x) => x.id === c.id_gun);
         if (g) g.until = state.day + 1;
