@@ -1,0 +1,18 @@
+# Najde vojáka podporovatele podle SHA-256 hashe e-mailu (ručně). Nikdy nezadávej e-mail otevřeně: vstupy i logy veřejného repa jsou veřejné.
+name: find-supporter
+on:
+  workflow_dispatch:
+    inputs:
+      hash: { description: 'sha256 e-mailu (malá písmena)', required: true }
+jobs:
+  find:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: node tools/find-supporter.mjs ${{ inputs.hash }}
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
