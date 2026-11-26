@@ -849,5 +849,11 @@
     "cmd": "dog",
     "handle": "winters_ist_hier",
     "_note": "Patreon Officers' Mess (2026-11-26): Trench Dog, plemeno a jméno losuje hra"
+  },
+  {
+    "id": "support-hughesjack02-20261126",
+    "cmd": "support",
+    "handle": "hughesjack02",
+    "_note": "Patreon War Bonds (2026-11-26): stužka; voják nalezen přes Google účet (e-mail se nezapisuje)"
   }
 ]
