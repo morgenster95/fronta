@@ -1,7 +1,7 @@
 // Day reel Day 17 (26. 11. 2026, noviny 26. 11. 13:00 UTC; /?reel=front17&vacant=700, jen vývojový server), na výšku, do minuty.
 // Uživatel 26. 11.: krátké statistiky, příběh hráče, který drží nejdéle naživu, podle logů, nové filmové scény, někde se střílí.
 // Hrdina: Cyril „Doc“ Zaboravljeni (zaboravljeninemanjic, Hegemonie, puškař, První vlna, 4 medaile) podle jeho deníku.
-// Stavba: titulek dne → ztráty → nemocnice (30 lůžek, na mapě) → Cyril na mapě (reflektor) → signing → portrait → call → duel (+ Cyril na mapě) → počty → výzva.
+// Stavba: titulek dne přes záběr hrdiny na mapě (úvodní snímek je každý den jiný) → ztráty → nemocnice → signing → hit → promo → duel → Cyril na mapě → počty → výzva.
 import { CSS as BASE } from './reel-day1.js';
 import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, slam, clamp01, win, easeOut, tagAt, dayTitle } from './reel-kit.js';
 import { makeDay17Scenes } from './cinema-d17.js';
@@ -20,6 +20,7 @@ const CSS = `${BASE}${FX_CSS}
 #f17-fell { top: 10%; border-color: #a33b2b; } #f17-hosp { top: 14%; border-color: #e3d9c3; }
 .f17-tag { position: absolute; transform: translate(-50%, -100%); font-family: 'Silkscreen', monospace; font-size: 22px; max-width: 480px; text-align: center; padding: 6px 12px; background: rgba(14,13,12,0.92); border: 3px solid #c8553d; color: #e3d9c3; opacity: 0; }
 .f17-tag small { display: block; font-family: 'VT323', monospace; font-size: 26px; color: #c9b99a; }
+#f17-hero { transform: translate(-50%, 0); }
 #f17-big { position: absolute; left: 0; right: 0; top: 26%; text-align: center; font-family: 'Silkscreen', monospace; color: #e3d9c3; text-shadow: 6px 6px 0 #0e0d0c; opacity: 0; }
 #f17-big .k { font-size: 30px; letter-spacing: 0.12em; color: #c9b99a; } #f17-big b { display: block; font-size: 120px; font-weight: 400; color: #c9c26a; line-height: 1; } #f17-big .p { font-size: 34px; color: #d98f3f; margin-top: 10px; }
 #f17-side { position: absolute; left: 0; right: 0; top: 58%; text-align: center; font-family: 'Silkscreen', monospace; opacity: 0; }
@@ -47,20 +48,20 @@ export async function startDay17Reel({ cam, map, soldiers, tex, anims }) {
   const hero = soldiers.find((s) => s.handle === D.hero.handle && s.slot);
   const posOf = (q) => (q?.sprite ? { x: q.sprite.x, y: q.sprite.y } : q);
   const site = window.__front?.hospitals?.sites?.filter((s) => s.faction === 0).sort((a, b) => b.beds.length - a.beds.length)[0];
-  const duelEnd = tt.medals; // střelba trvá do věty o medailích, pak Cyril na mapě
+  const duelEnd = tt.medals;
   const K = [[0, hRef.x - 40, fy - 30, 1.6, 'cut'], [tt.fell - 0.01, hRef.x + 40, fy - 30, 1.65], [tt.fell, hRef.x - 60, fy - 30, 1.5, 'cut'], [tt.hosp - 0.01, hRef.x + 160, fy - 30, 1.55]];
-  if (site) K.push([tt.hosp, site.x - 70, site.y - 10, 3.3, 'cut'], [tt.hero - 0.01, site.x + 70, site.y - 10, 3.3]); // zoom nad 3,2: střecha zmizí a vidět jsou lůžka s raněnými
-  else K.push([tt.hosp, hRef.x, hRef.y, 1.4, 'cut'], [tt.hero - 0.01, hRef.x, hRef.y, 1.4]);
+  if (site) K.push([tt.hosp, site.x - 70, site.y - 10, 3.3, 'cut'], [tt.sign - 0.01, site.x + 70, site.y - 10, 3.3]); // zoom nad 3,2: střecha zmizí a vidět jsou lůžka s raněnými
+  else K.push([tt.hosp, hRef.x, hRef.y, 1.4, 'cut'], [tt.sign - 0.01, hRef.x, hRef.y, 1.4]);
   const pan = (l) => [l[Math.floor(l.length * 0.08)] || l[0], l[Math.floor(l.length * 0.92)] || l.at(-1)];
   if (fH.length) { const [a, b] = pan(fH); K.push([tt.army, a.x, a.y - 20, 1.6, 'cut'], [tt.army + 3.2, b.x, b.y - 20, 1.6]); }
   if (fC.length) { const [a, b] = pan(fC); K.push([tt.army + 3.2, a.x, a.y - 20, 1.6, 'cut'], [tt.cta - 0.01, b.x, b.y - 20, 1.6]); }
   K.push([tt.cta, hRef.x, fy + 20, 2.0, 'cut'], [END, hRef.x + 60, fy + 30, 2.1]);
   const camAt = camPath(K.sort((p, q) => p[0] - q[0]));
-  const spots = [[tt.hero, tt.sign, hero, 4.8], [duelEnd, tt.army, hero, 4.8]].filter((x) => x[2]);
+  const spots = [[0, tt.fell, hero, 4.2, 44], [tt.medals, tt.army, hero, 4.8, 44]].filter((x) => x[2]); // úvodní záběr pod titulkem = hrdina dne (každý den jiný, ať feed nemá stejné náhledy)
   const spotAt = (t) => spots.find(([a, b]) => t >= a && t < b);
   const sub = subtitles(vo);
-  const fx = transitions([[tt.fell, 'black', 0.4], [tt.hosp, 'whip'], [tt.hero, 'whip'], [tt.sign, 'black', 0.4], [tt.letter, 'black', 0.4], [tt.raid, 'black', 0.4], [tt.duel, 'black', 0.3], [duelEnd, 'flash'], [tt.army, 'whip'], [tt.cta, 'black', 0.4]].sort((x, y) => x[0] - y[0]));
-  const SFX = [[tt.day, 'drum', 0], [tt.fell, 'drum', 0], [tt.hero, 'drum', 0], [tt.duel + 0.6, 'drum', 0], [tt.duel + 1.0, 'drum', 0], [tt.duel + 2.4, 'drum', 0], [tt.duel + 2.8, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]];
+  const fx = transitions([[tt.fell, 'black', 0.4], [tt.hosp, 'whip'], [tt.sign, 'black', 0.4], [tt.hit, 'black', 0.4], [tt.promo, 'black', 0.4], [tt.duel, 'black', 0.3], [duelEnd, 'flash'], [tt.army, 'whip'], [tt.cta, 'black', 0.4]].sort((x, y) => x[0] - y[0]));
+  const SFX = [[tt.day, 'drum', 0], [tt.fell, 'drum', 0], [tt.hit + 2.4, 'drum', 0], [tt.hit + 3.2, 'drum', 0], [tt.duel + 2.4, 'drum', 0], [tt.duel + 3.4, 'drum', 0], [tt.duel + 5.6, 'drum', 0], [tt.duel + 6.3, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]];
 
   document.body.classList.add('reel');
   const style = document.createElement('style');
@@ -110,22 +111,22 @@ export async function startDay17Reel({ cam, map, soldiers, tex, anims }) {
     const f = fx(t);
     let [x, y, z] = camAt(t);
     const S = spotAt(t);
-    if (S) { const p = posOf(S[2]); x = p.x; y = p.y - 16; z = S[3]; }
+    if (S) { const p = posOf(S[2]); x = p.x; y = p.y - S[4]; z = S[3]; } // hrdina níž než střed (střed zakrývá titulek dne)
     cam.set(x, y, z * (1 + 0.05 * f.punch));
     for (const q of soldiers) if (q.sprite && q.vacant && q.sprite.alpha < 1) q.sprite.alpha = 1; // žádní duchové
-    const film = t >= tt.sign && t < tt.letter ? ['signing', t - tt.sign]
-      : t >= tt.letter && t < tt.raid ? ['letter', t - tt.letter]
-      : t >= tt.raid && t < tt.duel ? ['raid', t - tt.raid]
+    const film = t >= tt.sign && t < tt.hit ? ['signing', t - tt.sign]
+      : t >= tt.hit && t < tt.promo ? ['hit', t - tt.hit]
+      : t >= tt.promo && t < tt.duel ? ['promo', t - tt.promo]
       : t >= tt.duel && t < duelEnd ? ['duel', t - tt.duel] : null;
     if (film) sc.draw(film[0], film[1]);
     show('#f17-art', film ? 1 : 0);
     paint({ ...f, black: Math.max(f.black, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) }, 0);
     day(t, { n: D.label, sub: 'THE LAST MAN FROM DAY ONE', from: 0.2, to: tt.fell - 0.1, subAt: 1.0 });
     slam($('#f17-fell'), t, tt.fell + 0.5, tt.hosp - 0.05, 1.3, -2);
-    slam($('#f17-hosp'), t, tt.hosp + 0.4, tt.hero - 0.05, 1.3, -2);
+    slam($('#f17-hosp'), t, tt.hosp + 0.4, tt.sign - 0.05, 1.3, -2);
     if (hero) {
-      tagAt($('#f17-hero'), { x: posOf(hero).x, y: posOf(hero).y - 30 }, cam, win(t, tt.hero + 0.3, tt.sign - 0.05, 0.12), 0);
-      tagAt($('#f17-hero2'), { x: posOf(hero).x, y: posOf(hero).y - 30 }, cam, win(t, duelEnd + 0.2, tt.army - 0.05, 0.12), 0);
+      tagAt($('#f17-hero'), { x: posOf(hero).x, y: posOf(hero).y + 10 }, cam, t < tt.fell ? win(t, 0.0, tt.fell - 0.05, 0.12) : 0, 0); // pod hrdinou (střed obrazu zabírá titulek dne)
+      tagAt($('#f17-hero2'), { x: posOf(hero).x, y: posOf(hero).y - 30 }, cam, win(t, tt.medals + 0.2, tt.army - 0.05, 0.12), 0);
     }
     show('#f17-big', t >= tt.army && t < tt.cta ? 1 : 0);
     $('#f17-big b').textContent = Math.round((D.army[0] + D.army[1]) * easeOut(clamp01((t - tt.army) / 1.2))).toLocaleString('en-US');
