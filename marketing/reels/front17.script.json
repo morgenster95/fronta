@@ -24,28 +24,33 @@
   ],
   [
    0,
-   "But one man has been here since the first morning.",
+   "Meet the last man from Day one.",
    "hero"
   ],
   [
    0,
-   "Cyril Doc Zaboravljeni signed up on Day one. Nobody else from that morning is still standing.",
+   "Cyril Doc Zaboravljeni signed up on the first morning. They gave him a rifle, a spade and a number.",
    "sign"
   ],
   [
    0,
-   "He keeps a lucky button in his pocket. He draws his friends in the margins of his letters.",
-   "portrait"
+   "His mother writes every Sunday. He draws his friends in the margins when he writes back.",
+   "letter"
   ],
   [
    0,
-   "At the brickworks he shouted across the wire. An enemy answered, pretending to be an officer.",
-   "call"
+   "On Day eleven, raiders cut the wire in the night. He was hit and carried to the hospital. He came back.",
+   "raid"
   ],
   [
    0,
-   "Two wounds. Four medals. Last night he won a bet at R F twelve, and two enemy soldiers went down.",
+   "Yesterday he won a bet at R F twelve. Two enemy soldiers went down.",
    "duel"
+  ],
+  [
+   0,
+   "Lance corporal now. Four medals. Seventeen days, and he is still here.",
+   "medals"
   ],
   [
    0,

@@ -47,7 +47,7 @@ export async function startDay17Reel({ cam, map, soldiers, tex, anims }) {
   const hero = soldiers.find((s) => s.handle === D.hero.handle && s.slot);
   const posOf = (q) => (q?.sprite ? { x: q.sprite.x, y: q.sprite.y } : q);
   const site = window.__front?.hospitals?.sites?.filter((s) => s.faction === 0).sort((a, b) => b.beds.length - a.beds.length)[0];
-  const duelEnd = tt.duel + 4.9; // do konce filmové scény střelby, pak Cyril na mapě
+  const duelEnd = tt.medals; // střelba trvá do věty o medailích, pak Cyril na mapě
   const K = [[0, hRef.x - 40, fy - 30, 1.6, 'cut'], [tt.fell - 0.01, hRef.x + 40, fy - 30, 1.65], [tt.fell, hRef.x - 60, fy - 30, 1.5, 'cut'], [tt.hosp - 0.01, hRef.x + 160, fy - 30, 1.55]];
   if (site) K.push([tt.hosp, site.x - 70, site.y - 10, 3.3, 'cut'], [tt.hero - 0.01, site.x + 70, site.y - 10, 3.3]); // zoom nad 3,2: střecha zmizí a vidět jsou lůžka s raněnými
   else K.push([tt.hosp, hRef.x, hRef.y, 1.4, 'cut'], [tt.hero - 0.01, hRef.x, hRef.y, 1.4]);
@@ -59,8 +59,8 @@ export async function startDay17Reel({ cam, map, soldiers, tex, anims }) {
   const spots = [[tt.hero, tt.sign, hero, 4.8], [duelEnd, tt.army, hero, 4.8]].filter((x) => x[2]);
   const spotAt = (t) => spots.find(([a, b]) => t >= a && t < b);
   const sub = subtitles(vo);
-  const fx = transitions([[tt.fell, 'black', 0.4], [tt.hosp, 'whip'], [tt.hero, 'whip'], [tt.sign, 'black', 0.4], [tt.portrait, 'black', 0.4], [tt.call, 'black', 0.4], [tt.duel, 'black', 0.3], [duelEnd, 'flash'], [tt.army, 'whip'], [tt.cta, 'black', 0.4]].sort((x, y) => x[0] - y[0]));
-  const SFX = [[tt.day, 'drum', 0], [tt.fell, 'drum', 0], [tt.hero, 'drum', 0], [tt.duel + 0.5, 'drum', 0], [tt.duel + 0.9, 'drum', 0], [tt.duel + 2.5, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]];
+  const fx = transitions([[tt.fell, 'black', 0.4], [tt.hosp, 'whip'], [tt.hero, 'whip'], [tt.sign, 'black', 0.4], [tt.letter, 'black', 0.4], [tt.raid, 'black', 0.4], [tt.duel, 'black', 0.3], [duelEnd, 'flash'], [tt.army, 'whip'], [tt.cta, 'black', 0.4]].sort((x, y) => x[0] - y[0]));
+  const SFX = [[tt.day, 'drum', 0], [tt.fell, 'drum', 0], [tt.hero, 'drum', 0], [tt.duel + 0.6, 'drum', 0], [tt.duel + 1.0, 'drum', 0], [tt.duel + 2.4, 'drum', 0], [tt.duel + 2.8, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]];
 
   document.body.classList.add('reel');
   const style = document.createElement('style');
@@ -113,9 +113,9 @@ export async function startDay17Reel({ cam, map, soldiers, tex, anims }) {
     if (S) { const p = posOf(S[2]); x = p.x; y = p.y - 16; z = S[3]; }
     cam.set(x, y, z * (1 + 0.05 * f.punch));
     for (const q of soldiers) if (q.sprite && q.vacant && q.sprite.alpha < 1) q.sprite.alpha = 1; // žádní duchové
-    const film = t >= tt.sign && t < tt.portrait ? ['signing', t - tt.sign]
-      : t >= tt.portrait && t < tt.call ? ['portrait', t - tt.portrait]
-      : t >= tt.call && t < tt.duel ? ['call', t - tt.call]
+    const film = t >= tt.sign && t < tt.letter ? ['signing', t - tt.sign]
+      : t >= tt.letter && t < tt.raid ? ['letter', t - tt.letter]
+      : t >= tt.raid && t < tt.duel ? ['raid', t - tt.raid]
       : t >= tt.duel && t < duelEnd ? ['duel', t - tt.duel] : null;
     if (film) sc.draw(film[0], film[1]);
     show('#f17-art', film ? 1 : 0);
@@ -146,5 +146,5 @@ export async function startDay17Reel({ cam, map, soldiers, tex, anims }) {
       if (subEl.dataset.text !== s) { subEl.dataset.text = s; subEl.innerHTML = `<span>${s}</span>`; }
     } else subEl.style.opacity = 0;
   }
-  window.__reel = { seconds: END, sfx: SFX, frame, ready: true };
+  window.__reel = { seconds: END, sfx: SFX, frame, ready: true, tt };
 }
