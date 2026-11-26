@@ -377,7 +377,7 @@ test('boj: polní nemocnice (10 lůžek) se přidá k zemnicím a jde postavit j
   assert.equal(hospital(s, theme, 0).beds, 8);
   assert.ok(build(s, theme, 0, 'hospital'));
   const H = hospital(s, theme, 0);
-  assert.equal(H.beds, 28); assert.equal(H.big, true); assert.equal(H.dugouts, 2);
+  assert.equal(H.beds, 38); assert.equal(H.big, true); assert.equal(H.dugouts, 2);
   assert.equal(build(s, theme, 0, 'hospital'), null, 'jen jedna');
 });
 

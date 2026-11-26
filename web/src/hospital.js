@@ -126,7 +126,7 @@ export function hospitalArt({ beds = 4, faction = 0, entrance = 1 }) {
 // kamínka s rourou, police s obvazy, schody dolů z vchodu. Nahoře zaoblená vlnitá plechová střecha zasypaná hlínou a pytli,
 // komín, bílé pole s červeným křížem a pruh plachtoviny v barvě strany. Kreslí se pro vchod dole a pro vchod nahoře se překlopí.
 function dugoutArt({ faction = 0, entrance = 1, beds = 4 }) {
-  const wide = beds >= 10; // polní nemocnice (26. 11.): 360 × 184 px, 20 lůžek (2 řady po 7 nahoře, 3 + 3 kolem vchodu)
+  const wide = beds >= 10; // polní nemocnice (26. 11.): 360 × 184 px, 30 lůžek (2 řady po 7 nahoře, uprostřed 2 × 3 + 2 × 2 kolem operačního stolu, 3 + 3 kolem vchodu)
   const { W, H } = hospitalSize(wide ? 10 : 4), wall = 8, door = 24;
   const c = document.createElement('canvas');
   c.width = W; c.height = H;
@@ -178,6 +178,10 @@ function dugoutArt({ faction = 0, entrance = 1, beds = 4 }) {
     for (const y of [yA, yB]) for (let i = 0; i < 7; i++) bedAt(wall + iw + 5 + i * (cw + 6), y, i < 4 ? 0 : 1);
     for (let i = 0; i < 3; i++) bedAt(wall + iw + 5 + i * (cw + 6), yBot, 0);
     for (let i = 0; i < 3; i++) bedAt(W - wall - iw - 5 - cw - i * (cw + 6), yBot, 1);
+    // střed: kolem operačního stolu (levý a pravý blok, vnitřní lůžka u stolu vynechána)
+    const yM1 = Math.round(H / 2) - 12, yM2 = yM1 + ch + 16;
+    for (let i = 0; i < 3; i++) { bedAt(wall + iw + 5 + i * (cw + 6), yM1, 0); bedAt(W - wall - iw - 5 - cw - i * (cw + 6), yM1, 1); }
+    for (let i = 0; i < 2; i++) { bedAt(wall + iw + 5 + i * (cw + 6), yM2, 0); bedAt(W - wall - iw - 5 - cw - i * (cw + 6), yM2, 1); }
   } else {
     const colsX = [wall + iw + 5, W - wall - iw - 5 - cw];
     const rows = [wall + iw + 9, H - wall - iw - 10 - ch - 4];
@@ -216,7 +220,7 @@ function dugoutArt({ faction = 0, entrance = 1, beds = 4 }) {
   rect(doorX0 - 9, H - wall - iw - 16, 3, 14, 6); rect(doorX0 - 5, H - wall - iw - 16, 3, 14, 13);
   // nosítka před vchodem (pro raněné bez lůžka)
   const stretchers = [];
-  for (let i = 0; i < 12; i++) stretchers.push({ x: W / 2 + (i % 2 ? 1 : -1) * (30 + Math.floor(i / 2) * 36), y: H + 12 }); // do stran, další řada až po 12
+  for (let i = 0; i < 12; i++) stretchers.push({ x: W / 2 + (i % 2 ? 1 : -1) * (30 + Math.floor(i / 2) * 36), y: -16 }); // 26. 11. (uživatel): nosítka ZA nemocnicí (na protější straně než vchod), další řady dál dozadu
 
   // střecha: zaoblený vlnitý plech, okraje zasypané hlínou a pytli, komín, kříž, pruh plachty v barvě strany
   const R = 10;

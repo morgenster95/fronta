@@ -301,7 +301,7 @@ async function boot() {
         if (back - HH / 2 > 24 && back + HH / 2 < map.H * map.tile - 24) y = back;
       }
       const n = Math.max(1, pub[f]?.hospital?.dugouts || 0);
-      const kinds = [...(big ? [20] : []), ...Array.from({ length: n }, () => (built ? 4 : 2))]; // velká napřed (první lůžka)
+      const kinds = [...(big ? [30] : []), ...Array.from({ length: n }, () => (built ? 4 : 2))]; // velká napřed (první lůžka)
       // volné místo bez zákopů (nemocnice nesmí stát na spojovacím zákopu), co nejblíž středu vojáků
       const T2 = map.tile, taken = [];
       let HW = 100;
@@ -345,7 +345,7 @@ async function boot() {
         const s = byHandle.get(b.handle);
         const p = st[i % st.length];
         if (!s || !p) return;
-        Object.assign(s, { x: p.x, y: p.y + Math.floor(i / st.length) * 20 * (f === 0 ? 1 : -1), hosp: 'stretcher', sev: b.sev }); // řady nosítek před vchodem
+        Object.assign(s, { x: p.x, y: p.y + Math.floor(i / st.length) * 20 * (f === 0 ? -1 : 1), hosp: 'stretcher', sev: b.sev }); // řady nosítek za nemocnicí (dozadu od vchodu)
         // nosítka pod raněným: dvě tyče a plachtovina
         const g = new Graphics();
         g.rect(Math.round(s.x - 16), Math.round(s.y - 4), 32, 1).fill(0x3d3730);

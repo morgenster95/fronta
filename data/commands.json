@@ -810,5 +810,26 @@
     "id": "fillBeds-20261126b",
     "cmd": "fillBeds",
     "_note": "po zvětšení polní nemocnice na 20 lůžek obsadit nová lůžka z nosítek"
+  },
+  {
+    "id": "amend-hosp-beds30-1-d18",
+    "cmd": "amendChronicle",
+    "day": 18,
+    "find": "20 beds, an operating table",
+    "replace": "30 beds, an operating table",
+    "_note": "uživatel 26. 11.: polní nemocnice má 30 lůžek"
+  },
+  {
+    "id": "amend-hosp-beds30-2-d18",
+    "cmd": "amendChronicle",
+    "day": 18,
+    "find": "20 beds, an operating table",
+    "replace": "30 beds, an operating table",
+    "_note": "uživatel 26. 11.: polní nemocnice má 30 lůžek"
+  },
+  {
+    "id": "fillBeds-20261126c",
+    "cmd": "fillBeds",
+    "_note": "30 lůžek: obsadit nová lůžka z nosítek"
   }
 ]
