@@ -1,0 +1,112 @@
+<title>Lore Blackwater Basin</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* Layout: úzký sloupec jako polní deník; dvě karty stran vedle sebe (na mobilu pod sebou). */
+:root{--bg:#ece5d3;--fg:#2a2620;--muted:#6b6354;--rule:#c9bfa6;--card:#f5efe0;--heg:#4f5a63;--hegbar:#a4542b;--con:#58652f;--conbar:#d2a31c;--accent:#8a3b1f;--note:#e6dcc3;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1b17;--fg:#e6dfcd;--muted:#a39a85;--rule:#3b372e;--card:#272420;--heg:#9fb0bd;--hegbar:#c9683a;--con:#a6b66a;--conbar:#e0b43a;--accent:#e08a5d;--note:#2f2b24;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1d1b17;--fg:#e6dfcd;--muted:#a39a85;--rule:#3b372e;--card:#272420;--heg:#9fb0bd;--hegbar:#c9683a;--con:#a6b66a;--conbar:#e0b43a;--accent:#e08a5d;--note:#2f2b24;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:18px/1.6 'Source Serif 4',Georgia,serif;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:46rem;margin:0 auto}
+h1,h2,h3,.tag{font-family:'Special Elite','Courier New',monospace;font-weight:400}
+h1{font-size:2.3rem;line-height:1.15;margin:0 0 .3rem;text-wrap:balance}
+h2{font-size:1.45rem;margin:3rem 0 .8rem;padding-top:1rem;border-top:2px solid var(--rule);text-wrap:balance}
+h3{font-size:1.15rem;margin:0 0 .4rem}
+p{margin:.6rem 0}
+.tag{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.lead{color:var(--muted);font-style:italic}
+.status{background:var(--note);padding:.7rem 1rem;border-left:4px solid var(--accent);font-size:.95rem;margin:1.2rem 0}
+.sides{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:16px;margin:1rem 0}
+.side{background:var(--card);padding:1rem 1.1rem;border-top:6px solid var(--c)}
+.side.h{--c:var(--hegbar)}.side.c{--c:var(--conbar)}
+.side h3{color:var(--n)}.side.h{--n:var(--heg)}.side.c{--n:var(--con)}
+.side ul{margin:.4rem 0 0;padding-left:1.1rem}.side li{margin:.2rem 0;font-size:.95rem}
+.news{display:grid;gap:10px;margin:1rem 0;padding:0;list-style:none;counter-reset:n}
+.news li{background:var(--card);padding:.6rem .9rem;font-style:italic;font-size:.97rem;border-left:3px solid var(--rule)}
+.people{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr))}
+.people div{background:var(--card);padding:.8rem 1rem;font-size:.95rem}
+.people b{font-family:'Special Elite',monospace;font-weight:400;display:block}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.95rem;min-width:30rem}
+th,td{text-align:left;padding:.5rem .7rem;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:'Special Elite',monospace;font-weight:400;color:var(--accent);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase}
+ol.q{padding-left:1.3rem}ol.q li{margin:.5rem 0}
+</style>
+<main>
+<p class="tag">Mud &amp; Iron · návrh k odsouhlasení</p>
+<h1>Blackwater Basin</h1>
+<p class="lead">Svět, dvě strany a zprávy zpoza fronty. Texty ve hře budou anglicky, jednoduchou angličtinou. Tohle je česká verze pro tebe.</p>
+<div class="status">Stav: <b>NÁVRH</b>. Nic z toho zatím není ve hře. Do novin se nezapíše nic, dokud to neschválíš. Pravidla: žádné skutečné země ani osoby, ton vážný, humor jen drobný a nikdy na úkor mrtvých.</div>
+
+<h2>1. Svět v kostce</h2>
+<p><b>Doba:</b> fiktivní „Velká válka“, ne přesný rok. Zima, zákopy, první plyn, první letadla a tanky, tedy to, co už ve hře je.</p>
+<p><b>Místo:</b> úzký pás země mezi dvěma říšemi, Blackwater Basin. Vede jím <b>Blackwater Canal</b>, jediná vodní cesta mezi severními doly a jižními přístavy. Kdo drží kanál, živí armádu i zemi. Proto se bojuje právě tady.</p>
+<p><b>Fronta ve hře</b> je jeden úsek tohoto sporu: Verdel Ridge, Hill 304, Grey Mill, Blackwater Canal, Bone Quarry a další kóty.</p>
+
+<h2>2. Dvě strany</h2>
+<div class="sides">
+<div class="side h"><h3>Hegemonie</h3>
+<p class="lead">ocelově šedá, rezavý pruh</p>
+<ul><li>Průmyslová říše na jihu: továrny, železnice, ocel.</li><li>Velká a organizovaná, silná na děla a řád.</li><li>Motto: <i>Order holds the line.</i> Vojáci jí říkají „the Machine“.</li><li>Slabina: vzdálené vedení. Rozkazy z hlavního města často nesedí na bláto fronty.</li><li>Folklór: hlášení, kapitáni s deníky, ocelové helmy.</li></ul></div>
+<div class="side c"><h3>Concord</h3>
+<p class="lead">olivová, žlutá hvězda</p>
+<ul><li>Svaz svobodných měst a farem na severu: milice, rolníci, horníci.</li><li>Málo průmyslu, zbraně a zásoby musí často přivézt po kanále, o který se bojuje.</li><li>Motto: <i>Together we hold.</i> Vojáci mu říkají „the Union“.</li><li>Slabina: nedostatek vybavení.</li><li>Folklór: písně, dopisy z domova, zvířata v týlu, hvězda na čapce.</li></ul></div>
+</div>
+<p>Obě strany mají své věřící, báje a hrdiny. Nepřítel není „zlý“, je jen na druhé straně drátu. Hráč si stranu vybírá kvůli hře, ne kvůli dobru a zlu.</p>
+
+<h2>3. Proč se bojuje</h2>
+<p>Před sedmi lety Hegemonie zvýšila poplatky za proplutí kanálem. Concord odpověděl blokádou a Hegemonie obsadila první kóty „na ochranu plavby“. Od té doby se obě strany zakopaly a z kanálu udělaly jedinou otázku: <b>kdo ho drží, ten nakrmí zimu.</b></p>
+
+<h2>4. Svět mimo frontu</h2>
+<p>Nová občasná rubrika v novinách, <b>Dispatch from abroad</b>: 2–3 věty, jednou týdně nebo při velkých událostech. Okruhy:</p>
+<ul>
+<li><b>Politika:</b> parlament Hegemonie jedná o příděl chleba, sněm Concordu o půjčce, generál je odvolán nebo povýšen.</li>
+<li><b>Neutrálové:</b> přístav <b>Port Ember</b> prodává uhlí a ocel oběma stranám.</li>
+<li><b>Jiné fronty:</b> moře (Nordhaven Sound, ponorky a blokáda), kolonie na jihu.</li>
+<li><b>Domácí fronta:</b> příděly, cenzura pošty, ženy v muniční továrně, uprchlíci, ceny uhlí.</li>
+<li><b>Technika:</b> plynové masky, polní telefon, rádio, tanky, letadla.</li>
+</ul>
+<h3 style="margin-top:1.4rem">Deset ukázkových zpráv (ať vidíš tón)</h3>
+<ol class="news">
+<li>Parliament in the Hegemony debated a bread ration. The vote was close. The soldiers heard about it a week later and were not surprised.</li>
+<li>The Concord assembly voted a winter loan for the front. Farmers sent grain. The cities sent boots.</li>
+<li>Port Ember sold coal to both sides again. The harbour master said coal does not ask who buys it.</li>
+<li>A new cold front is coming from the north. Weather men in both capitals agree. This is a rare thing.</li>
+<li>The Hegemony press says the canal will be open by spring. The soldiers at Blackwater Canal say they will believe it when they see a boat.</li>
+<li>In Concord, women in the shell factory worked a night shift to fill the quota. The quota was raised the next morning.</li>
+<li>A Hegemony general was recalled to the capital. The reason was not given. The trenches did not notice.</li>
+<li>The censors in both countries cut the same line from soldiers' letters: “I miss you.” Nobody knows why.</li>
+<li>Far to the south, a colony asks for independence from the Hegemony. The newspapers there are closed. The news came in a sailor's pocket.</li>
+<li>A neutral country offered to host peace talks. Both sides said they would think about it. Both sides are still thinking.</li>
+</ol>
+
+<h2>5. Postavy</h2>
+<p>Jen tři stálé, ať nepřebijí hráče. Deník fronty zůstává o skutečných hráčích.</p>
+<div class="people">
+<div><b>Maršál Orsolt Vane</b>Hegemonie. Starý, přísný, věří mapám víc než lidem.</div>
+<div><b>Ilsa Kereth</b>Concord. Bývalá učitelka, zvolená velitelkou svazu, bojuje s omezenými zdroji.</div>
+<div><b>Tomas Wray</b>Neutrální korespondent. Píše „Dispatch from abroad“ a provází čtenáře světem.</div>
+</div>
+
+<h2>6. Jak se lore váže na hru</h2>
+<p>Zprávy ze světa by nebyly jen ozdoba, ale spouštěč událostí:</p>
+<div class="tbl"><table>
+<thead><tr><th>Zpráva ze světa</th><th>Možný herní účinek</th></tr></thead>
+<tbody>
+<tr><td>Blokáda přístavu, příděly</td><td>Několik dní méně munice (AMMO slabší)</td></tr>
+<tr><td>Mírová jednání</td><td>Jednorázový „klid zbraní“, den bez bombardování</td></tr>
+<tr><td>Zimní půjčka, dodávka bot</td><td>Menší riziko zákopové nohy, víc lehce raněných se vyléčí</td></tr>
+<tr><td>Odvolaný generál</td><td>Na pár dní chaos: slabší rozkazy z hlasování</td></tr>
+<tr><td>Nová zbraň (plyn, tank, letadlo)</td><td>Spustí příslušnou událost</td></tr>
+<tr><td>Povstání v koloniích</td><td>Posily pro jednu stranu (nábor +x %)</td></tr>
+</tbody></table></div>
+
+<h2>7. K odsouhlasení</h2>
+<ol class="q">
+<li>Souhlasí jádro: <b>Blackwater Basin</b>, <b>Hegemonie</b> (jih, průmysl) a <b>Concord</b> (sever, svaz měst)?</li>
+<li>Ponechat jména Port Ember, Nordhaven Sound, Orsolt Vane, Ilsa Kereth, Tomas Wray, nebo změnit?</li>
+<li>Jak často má vycházet „Dispatch from abroad“: jednou týdně, nebo jen při událostech?</li>
+<li>Smí zprávy ze světa mít herní účinky (tabulka výše), nebo jen příběh?</li>
+<li>Má se lore objevit i ve videích (krátký úvod „Day N“ s větou ze světa) a na Patreonu (např. „Z deníku korespondenta“ pro Field Post)?</li>
+</ol>
+</main>
