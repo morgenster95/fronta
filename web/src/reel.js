@@ -245,6 +245,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'front17') {
+    // Day reel Day 17 (26. 11.): nejdéle žijící hráč Cyril „Doc“ Zaboravljeni podle deníku, nové filmové scény (reel-front17.js)
+    return import('./reel-front17.js').then(async ({ startDay17Reel }) => {
+      await startDay17Reel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'front16') {
     // Day reel Day 16 (25. 11.): kartičky za titulkem, WINGS, raid v dešti, nejkrvavější den, hlasování HOSPITAL / TANK (reel-front16.js)
     return import('./reel-front16.js').then(async ({ startDay16Reel }) => {

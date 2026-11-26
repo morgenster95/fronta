@@ -442,6 +442,8 @@ def build_story(name="story"):
         music = lament(dur) * 1.3 + drone(dur) * 0.4 + rain(dur) * 0.4
     elif name in ("wire2",):  # výzva WIRE před zimou: tichá noc, pak bubny u stavu drátu a výzvy
         music = war_score(dur, cue, hits=("state", "cta")) * 0.9 + rain(dur) * 0.3
+    elif name in ("front17",):  # Day reel Day 17: příběh nejdéle žijícího hráče, střelba, výzva
+        music = war_score(dur, cue, hits=("day", "fell", "hero", "duel", "cta")) * 1.0 + rain(dur) * 0.15
     elif name in ("front16",):  # Day reel Day 16: kartičky, raid v dešti, nejkrvavější den, hlasování
         music = war_score(dur, cue, hits=("day", "wings", "raid", "cost", "vote", "cta")) * 1.05 + rain(dur) * 0.45
     elif name in ("cards",):  # virální reel o kartičkách: napětí, odhalení karet, bubny ke konci
@@ -470,7 +472,7 @@ def build_story(name="story"):
     beat = 60 / 70
     # bubny: od Hegemonie, ztichnou před půlnocí a po dědicovi se rozjedou ke konci
     t = start
-    while t < dur - 3 and name not in ("ridge", "hill304", "front9", "front10", "front11", "roll", "lone", "growth", "dogs", "trialC", "front12", "front13", "front14", "front15", "cards", "front16", "wire2") and not name.startswith("news"):  # ridge má bubny přímo v hudbě (epic_score)
+    while t < dur - 3 and name not in ("ridge", "hill304", "front9", "front10", "front11", "roll", "lone", "growth", "dogs", "trialC", "front12", "front13", "front14", "front15", "cards", "front16", "front17", "wire2") and not name.startswith("news"):  # ridge má bubny přímo v hudbě (epic_score)
         quiet = any(a < t < b for a, b in quiet_parts)
         if not quiet:
             strength = 0.3 + 0.7 * min(1, (t - start) / (dur - start - 10))

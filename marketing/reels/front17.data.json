@@ -1,0 +1,30 @@
+{
+ "_": "Day reel Day 17 – noviny 26. 11. 13:00 UTC (state.day 18); hrdina = nejdéle žijící hráč Cyril \"Doc\" Zaboravljeni (zaboravljeninemanjic), deník z data/state-records",
+ "label": 17,
+ "fell": [
+  106,
+  122
+ ],
+ "wounded": 336,
+ "beds": 30,
+ "joined": [
+  17,
+  29
+ ],
+ "army": [
+  1097,
+  1241
+ ],
+ "race": [
+  190,
+  171
+ ],
+ "hero": {
+  "handle": "zaboravljeninemanjic",
+  "name": "Cyril \"Doc\" Zaboravljeni",
+  "sector": "R-F12",
+  "medals": 4,
+  "wounds": 2,
+  "note": "Hegemony rifleman · since Day 1"
+ }
+}
