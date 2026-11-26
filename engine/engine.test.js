@@ -473,7 +473,7 @@ test('hlasování po frakcích staví: HOSPITAL postaví dugout jen té straně,
   assert.ok(!s.battle.sides[1].built.hospital);
   assert.match(s.events.at(-1).text, /field hospital/);
   assert.deepEqual(s.pendingBuilds, [], 'odložená stavba se dokončila po dnešním boji');
-  assert.match(s.events.at(-1).text, /opens tomorrow/);
+  assert.match(s.events.at(-1).text, /patients go in tomorrow/);
 });
 
 import { heir as heirOf, lifeRecord, fallSoldier } from './soldier.js';
