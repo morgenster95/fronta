@@ -118,14 +118,19 @@ export async function makeDay17Scenes(tex = {}, anims = {}, posterC = null) {
       planks(64, H, [P.ink, P.mud0, P.mud1, P.mud2]);
       g.fillStyle = 'rgba(160,190,230,0.10)'; g.beginPath(); g.moveTo(54, 64); g.lineTo(74, 64); g.lineTo(88, 140); g.lineTo(46, 140); g.fill();
       glow(45, 72, 40, 0.18, '217,143,63');
-      tl(R.lanternN, 78, 44);
-      // lůžka (PixelLab); Cyril na prvním, další raněný na druhém
-      tl(R.cotN, 8, 74); put(S.lyW, 62, 128);
-      tl(R.cotN, 44, 118);
-      const lie = t < 4.6, sit = t >= 4.6 && t < 6.4;
-      if (lie) put(S.lyE, 24, 100); else if (sit) put(once(S.sitE, t - 4.6, 6), 24, 100); else put(S.standN, 22, 112);
-      if (t < 4.6) put(at(S.band, t, 6), 8, 104 - 0); else if (t < 6.4) put(S.standN, 70, 140);
-      tl(R.medN, 70, 150 - 11);
+      // lůžka stejná jako v nemocnici ve hře (web/src/hospital.js bedAt): vodorovné, rám, prostěradlo, deka, polštář; voják leží na lůžku vodorovně (levé lůžko hlavou doleva, pravé doprava)
+      const bed = (x, y, right) => { const cw = 36, ch = 15;
+        px(P.ink, x, y + ch - 1, cw, 2); px(P.mud1, x, y, cw, ch); px(P.bone, x + 2, y + 2, cw - 4, ch - 4);
+        const bx = right ? x + 2 : x + 13; px(P.steel, bx, y + 2, cw - 15, ch - 4); px(P.grey, bx, y + 2, cw - 15, 1);
+        px(P.white, right ? x + cw - 10 : x + 3, y + 3, 7, ch - 6); px(P.ink, x, y, 1, 1); px(P.ink, x + cw - 1, y, 1, 1);
+        return [x + cw / 2 + 2, y + ch / 2 + 1]; };
+      const [ax, ay] = bed(26, 92, false);
+      const [qx, qy] = bed(44, 128, true);
+      put(S.lyW, qx, qy + 2);
+      const lie = t < 2.6, sit = t >= 2.6 && t < 3.8;
+      if (lie) put(S.lyE, ax, ay + 2); else if (sit) put(once(S.sitE, t - 2.6, 6), ax, ay + 2); else put(S.standN, ax + 30, ay + 10);
+      if (t < 2.6) put(at(S.band, t, 6), 14, ay + 8); else if (t < 3.8) put(S.standN, 12, ay + 8);
+      tl(R.medN, 66, 140); tl(R.lanternN, 76, 56);
       g.fillStyle = 'rgba(20,24,44,0.14)'; g.fillRect(0, 0, W, H);
     },
     office(t) {
