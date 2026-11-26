@@ -29,8 +29,13 @@
   ],
   [
    0,
-   "On Day eleven, raiders came through the wire. He was shot, and the medics got him to the hospital. Two days later, he was back.",
+   "On Day eleven, raiders came through the wire, and he was shot.",
    "hit"
+  ],
+  [
+   0,
+   "The medics got him to the hospital. Two days later, he was back.",
+   "ward"
   ],
   [
    0,
