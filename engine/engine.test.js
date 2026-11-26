@@ -377,7 +377,7 @@ test('boj: polní nemocnice (10 lůžek) se přidá k zemnicím a jde postavit j
   assert.equal(hospital(s, theme, 0).beds, 8);
   assert.ok(build(s, theme, 0, 'hospital'));
   const H = hospital(s, theme, 0);
-  assert.equal(H.beds, 18); assert.equal(H.big, true); assert.equal(H.dugouts, 2);
+  assert.equal(H.beds, 28); assert.equal(H.big, true); assert.equal(H.dugouts, 2);
   assert.equal(build(s, theme, 0, 'hospital'), null, 'jen jedna');
 });
 
@@ -966,7 +966,7 @@ test('v12: nosítka rostou s medici (aidPost.stretchersPerMedic), lůžka zůst�
 test('v12: triáž – kritický bez místa vezme lůžko těžce raněnému', () => {
   const s = setup(60, 'tri');
   const side = s.soldiers.filter((x) => x.faction === 0);
-  const cfg = quiet({ aidPost: { ...theme.battle.aidPost, beds: 1, stretchers: 0, stretchersPerMedic: 0, critRisk: 0 }, care: { ...theme.battle.care, linger: null, triage: 1, crit: { ...theme.battle.care.crit, dieBase: 0 } } });
+  const cfg = quiet({ aidPost: { ...theme.battle.aidPost, beds: 1, stretchers: 0, stretchersPerMedic: 0, critRisk: 0 }, care: { ...theme.battle.care, bedDays: null, heavy: { ...theme.battle.care.heavy, maxDays: 2 }, linger: null, triage: 1, crit: { ...theme.battle.care.crit, dieBase: 0 } } });
   hurt(side[0], 'heavy', 19);
   battleTick(s, cfg, story, 19);
   assert.equal(side[0].wound.place, 'bed', 'těžký dostal lůžko');
@@ -1490,7 +1490,7 @@ import { grantDog, revokeDog } from './dog.js';
 test('Trench Dog: pes se jménem a plemenem, příběhy jen u vojáka se psem, nástupce psa zdědí', () => {
   const s = emptyState(theme);
   for (let i = 0; i < 40; i++) applyComment(s, { id: `d${i}`, userId: `du${i}`, username: `dogman${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
-  const r = grantDog(s, theme, story, '@dogman3', { breed: 'collie' });
+  const r = grantDog(s, theme, story, '@dogman3', { breed: 'collie', name: 'Rufus' }); // pevné jméno: náhodné (např. Thunder) se shoduje se slovy v textech o počasí
   assert.ok(r && r.dog.name && r.dog.breed === 'collie');
   assert.equal(grantDog(s, theme, story, 'dogman3'), null, 'druhého psa nedostane');
   const owner = s.soldiers.find((x) => x.handle === 'dogman3');

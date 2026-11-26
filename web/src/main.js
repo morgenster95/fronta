@@ -301,7 +301,7 @@ async function boot() {
         if (back - HH / 2 > 24 && back + HH / 2 < map.H * map.tile - 24) y = back;
       }
       const n = Math.max(1, pub[f]?.hospital?.dugouts || 0);
-      const kinds = [...(big ? [10] : []), ...Array.from({ length: n }, () => (built ? 4 : 2))]; // velká napřed (první lůžka)
+      const kinds = [...(big ? [20] : []), ...Array.from({ length: n }, () => (built ? 4 : 2))]; // velká napřed (první lůžka)
       // volné místo bez zákopů (nemocnice nesmí stát na spojovacím zákopu), co nejblíž středu vojáků
       const T2 = map.tile, taken = [];
       let HW = 100;

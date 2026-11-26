@@ -627,7 +627,7 @@ Uživatel: „hodně raněných, dává smysl hlasování, které přidá nemocn
 
 
 ## 2026-11-26: Polní nemocnice (10 lůžek) místo zemnic (NASAZENO, pokyn uživatele)
-- Výsledek hlasování HOSPITAL (`build: dugout`) teď staví **Field hospital** (`theme.battle.buildings.hospital`): 10 lůžek, +8 nosítek, péče 1,6, riziko kritického 0,35; **přidá se** k obvazišti a zemnicím (lůžka a nosítka se sčítají, péče = nejlepší, riziko = nejnižší), max 1. Strana s 2 zemnicemi má tedy 18 lůžek místo 8. (Původní verze „nahradí zemnice“ zrušena na pokyn uživatele.)
+- Výsledek hlasování HOSPITAL (`build: dugout`) teď staví **Field hospital** (`theme.battle.buildings.hospital`): 10 lůžek, +8 nosítek, péče 1,6, riziko kritického 0,35; **přidá se** k obvazišti a zemnicím (lůžka a nosítka se sčítají, péče = nejlepší, riziko = nejnižší), max 1. Strana s 2 zemnicemi má tedy 28 lůžek místo 8 (26. 11.: velká nemocnice zvětšena z 10 na 20 lůžek). (Původní verze „nahradí zemnice“ zrušena na pokyn uživatele.)
 - Mapování je v enginu (`upgradeBuild` v `engine/roster.js`), takže běžící hlasování se nemění. Smazáním klíče `buildings.hospital` v tématu se vrátí zemnice.
 - Mapa: velká stavba vedle zemnic 312×104 px (`web/src/hospital.js`, `dugoutArt` s `beds >= 10`), 6 lůžek nahoře + 2 + 2 kolem vchodu, operační stůl, kamínka, police, střecha s křížem a plachtou barvy strany. Dev náhled `/?hospital=big`.
 - Test: „polní nemocnice (10 lůžek) nahradí zemnice…“.
@@ -636,3 +636,10 @@ Uživatel: „hodně raněných, dává smysl hlasování, které přidá nemocn
 ## 2026-11-26: Grey Mill dělo stažené (NASAZENO, pokyn uživatele)
 - Uživatel: dělo (odměna) bylo nespravedlivé, dnes střílí naposledy. Příkaz `endGun` (`data/commands.json`, `poll-comments.mjs`) nastaví `gun.until = state.day + 1`; dnešní tah ještě vystřelí, po něm se dělo odstraní (`dailyTick`, zpráva „The gun is withdrawn“ do příštích novin). Nové odměny typu `gun` časově omezit: návrh 10 dní (čeká na rozhodnutí).
 - **Lůžka po dostavění (26. 11., uživatel: „lidé leží na zemi, v nemocnici volná lůžka“):** nemocnice se dostavěla po dnešním boji, ale ranění zůstali na nosítkách, protože obsazování lůžek běží jen v tahu. `fillBeds` (`engine/battle.js`) po dostavění přesune kritické a těžce raněné z nosítek na nová lůžka (jen místo, účinek péče od dalšího tahu); jednorázově příkaz `fillBeds`.
+
+## 2026-11-26: Těžce ranění se řeší za 1 den, kritičtí za 2 (NASAZENO od tahu 27. 11., pokyn uživatele)
+- Důvod: dva dny ležení jsou pro hráče nuda; těžce raněný se rozhodne hned při dalším tahu: **zahojí se** (`resolveHeal 0,3 + resolveCare 0,6 × péče`), **zhorší se na kritického** (40 % neúspěchů, `resolveWorsen`) nebo **zemře** (zbytek). Kritičtí zůstávají 2 dny (stabilizace, operace na lůžku).
+- Lůžko: těžce raněný na lůžku odchází po 1 dni, kritický po 2 (`care.bedDays`). Medik pro lůžko dál 0 práce (léčí nemocnice: operace a lékaři v `hospital()`; viz `care.need` = 0 na lůžku).
+- Simulace (4 dny, dnešní stav, 28 lůžek na stranu, 6 běhů): dříve padlí H/C 377 / 291, po 4. dni mimo lůžko (těžce+krit.) 106 / 105; nově 331 / 280, mimo lůžko 57 / 52, kritických 5 / 3 místo 7 / 4. Raní se řeší rychleji, padlých je o něco méně (každý těžký hází jednou, ne dvakrát).
+- Zpět: `care.heavy.maxDays` 2, smazat `resolveWorsen`, `care.bedDays`.
+- Polní nemocnice zvětšena na **20 lůžek** (grafika 360×184 px, 2 řady po 7 + 3 + 3 u vchodu); text v novinách 18. opraven příkazem `amendChronicle`.

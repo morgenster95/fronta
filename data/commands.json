@@ -789,5 +789,26 @@
     "id": "fillBeds-20261126",
     "cmd": "fillBeds",
     "_note": "Polní nemocnice dostavěna po tahu 26. 11.: nová lůžka obsadí ranění z nosítek"
+  },
+  {
+    "id": "amend-hosp-beds-1-d18",
+    "cmd": "amendChronicle",
+    "day": 18,
+    "find": "10 beds, an operating table",
+    "replace": "20 beds, an operating table",
+    "_note": "uživatel 26. 11.: polní nemocnice má 20 lůžek"
+  },
+  {
+    "id": "amend-hosp-beds-2-d18",
+    "cmd": "amendChronicle",
+    "day": 18,
+    "find": "10 beds, an operating table",
+    "replace": "20 beds, an operating table",
+    "_note": "uživatel 26. 11.: polní nemocnice má 20 lůžek"
+  },
+  {
+    "id": "fillBeds-20261126b",
+    "cmd": "fillBeds",
+    "_note": "po zvětšení polní nemocnice na 20 lůžek obsadit nová lůžka z nosítek"
   }
 ]

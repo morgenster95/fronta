@@ -653,10 +653,10 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         if (!w.operated) {
           if (w.sev === 'crit' && rand() < C.dieBase * H.critRisk * (ctx.dieOf?.(s) ?? 1)) { if (die(s, 'diedInBed', 'wounds')) continue; }
           w.operated = true;
-          if (w.sev === 'crit') { w.sev = 'heavy'; ev(s, 'stabilized', eventEntry('stabilized', s, day, theme, story, {}, today)); }
+          if (w.sev === 'crit') { w.wasCrit = true; w.sev = 'heavy'; ev(s, 'stabilized', eventEntry('stabilized', s, day, theme, story, {}, today)); }
         }
         // 2 dny od uložení: zpět na frontu (i kdo ležel déle podle starých pravidel, odchází hned)
-        if (day - (w.bedDay ?? day) >= 2) recover(s, 'recovered');
+        if (day - (w.bedDay ?? day) >= (cfg.care.bedDays ? (w.wasCrit ? cfg.care.bedDays.crit : cfg.care.bedDays.heavy) : 2)) recover(s, 'recovered'); // bedDays (26. 11.): těžký 1 den, kritický 2
       } else if (w.sev === 'heavy') {
         const trench = w.place === 'trench';
         const newbie = day - (s.enlisted ?? day) < cfg.newbieDays && !w.shell;
@@ -667,7 +667,10 @@ export function battleTick(state, theme, story, day, ctx = {}) {
         if (C.maxDays && !fresh && day - w.day >= C.maxDays) {
           const ph = C.resolveHeal + C.resolveCare * g;
           if (rand() < ph + (R.chaplain.heavy ? faith * (1 - ph) : 0)) recover(s, 'patchedStretcher');
-          else if (die(s, 'diedNoBed', 'nocare')) continue;
+          else if (C.resolveWorsen && rand() < C.resolveWorsen) { // rozhodnutí v jednom dni (26. 11., uživatel): zahojí se, zhorší se na kritického, nebo zemře
+            w.sev = 'crit'; w.critDays = 0; s.lastCrit = day;
+            ev(s, 'wounded', eventEntry('worsened', s, day, theme, story, {}, today));
+          } else if (die(s, 'diedNoBed', 'nocare')) continue;
           continue;
         }
         const L = cfg.care.linger;

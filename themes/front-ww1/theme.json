@@ -619,7 +619,8 @@
         "minDays": 1,
         "_": "těžce: nosítka/lůžko; bez péče riziko zhoršení (v zákopu ×trench); hojí se od minDays s heal × péče (na lůžku × care místa)",
         "healPow": 2,
-        "maxDays": 2,
+        "maxDays": 1,
+        "resolveWorsen": 0.4,
         "resolveHeal": 0.3,
         "resolveCare": 0.6,
         "_resolve": "15. 11. (uživatel: rychleji ozdravovat nebo zabíjet): od minDays 1 se může zahojit; po maxDays 2 nocích se rozhodne: zahojí se s šancí resolveHeal + resolveCare × péče, jinak zemře."
@@ -640,6 +641,7 @@
         "max": 0.6,
         "_": "15. 11. (uživatel): těžce raněný bez lůžka může zemřít; riziko za noc = (base + perDay × dní od zranění) × (1 − care × péče mediků) × (v zákopu bez nosítek trench, a to už první noc), nejvýš max. Nováčci (newbieDays) chránění."
       },
+      "bedDays": { "heavy": 1, "crit": 2 },
       "triage": 1,
       "_triage": "triage: kritický bez místa vezme lůžko nebo nosítka těžce raněnému.",
       "_bed": "lůžko = operace: první noc na lůžku kritický umírá s dieBase × critRisk místa, kdo přežije, je těžce raněný a druhý den se vrací na frontu (nejvýš 2 dny na lůžku); engine/battle.js",
@@ -965,14 +967,14 @@
       },
       "hospital": {
         "name": "Field hospital",
-        "done": "built a large field hospital behind the reserve line, out of rifle range: 10 beds, an operating table and a surgeon's lamp",
-        "start": "raised a large field hospital behind the reserve line, out of rifle range: 10 beds, an operating table and a surgeon's lamp. The first patients go in tomorrow",
-        "beds": 10,
+        "done": "built a large field hospital behind the reserve line, out of rifle range: 20 beds, an operating table and a surgeon's lamp",
+        "start": "raised a large field hospital behind the reserve line, out of rifle range: 20 beds, an operating table and a surgeon's lamp. The first patients go in tomorrow",
+        "beds": 20,
         "care": 1.6,
         "max": 1,
         "stretchers": 8,
         "critRisk": 0.35,
-        "_": "26. 11.: výsledek hlasování HOSPITAL (build dugout) staví tohle; velkou stavbou s 10 lůžky NAVÍC k obvazišti a zemnicím (lůžka a nosítka se sčítají)"
+        "_": "26. 11.: výsledek hlasování HOSPITAL (build dugout) staví tohle; velkou stavbou s 20 lůžky NAVÍC k obvazišti a zemnicím (lůžka a nosítka se sčítají)"
       },
       "sandbags": {
         "name": "Sandbag parapets",
