@@ -778,5 +778,11 @@
     "cmd": "dog",
     "handle": "dan1hand",
     "_note": "Patreon Field Post (2026-11-26): Trench Dog, plemeno a jméno losuje hra"
+  },
+  {
+    "id": "endGun-mill-20261126",
+    "cmd": "endGun",
+    "id_gun": "mill",
+    "_note": "Grey Mill gun: naposledy střílí v tahu 26. 11., pak odjede (pokyn uživatele)"
   }
 ]

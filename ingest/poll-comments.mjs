@@ -230,6 +230,11 @@ async function main() {
         const before = (state.news || []).length; state.news = (state.news || []).filter((x) => !(x.h === c.h && x.day >= state.day - 1));
         console.log(`📰 vyřazeno ${before - state.news.length}× „${c.h}“`);
       }
+      if (c.cmd === 'endGun') { // konec těžkého děla po dnešní palbě (26. 11., uživatel: odměna nemá platit donekonečna): dnešní tah ještě vystřelí, pak se stáhne
+        const g = (state.guns || []).find((x) => x.id === c.id_gun);
+        if (g) g.until = state.day + 1;
+        console.log(`🔫 dělo ${c.id_gun}: naposledy střílí v tahu dne ${g ? g.until : '?'}`);
+      }
       if (c.cmd === 'setLogTo') { // konec lepších zásob z kóty (interní, v novinách se nehlásí)
         const v = (state.victories || []).find((x) => x.id === c.id_victory);
         if (v && v.logTo != null) { v.logTo = c.to; console.log(`📦 zásoby ${v.id} do dne ${c.to}`); }

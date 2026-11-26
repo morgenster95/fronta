@@ -576,6 +576,10 @@ export function dailyTick(state, theme, story, ctx = {}) {
   const dieOf = (s) => orderDie(state, s.faction, day);
   pilotSortie(state, theme, day, weather?.id, fallSoldier, (s, sev) => { s.wound = { sev, day }; s.status = 'wounded'; s.woundsTaken = (s.woundsTaken || 0) + 1; }); // denní vzlet: bouře/mlha drží na zemi, jinak malá šance sestřelení
   const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf, shellOf, fireOf, killOf, unsuppressed, healOf, exposedOf, dieOf, shotsOf }) : { events: [], news: [], ids: new Set() };
+  for (const g of (state.guns || []).filter((x) => x.until != null && x.until <= day)) { // děla s koncem platnosti (příkaz endGun) po poslední palbě odjedou
+    fight.news.push({ day, h: 'The gun is withdrawn', text: `${g.name.replace(/^the/, 'The')} fired its last shells. The ${sideName(theme, g.faction)} limbered it up and sent it to another front. The gun pit stands empty.`, kind: 'gun' });
+  }
+  if (state.guns) state.guns = state.guns.filter((x) => !(x.until != null && x.until <= day));
   for (const b of state.pendingBuilds || []) buildStructure(state, theme, b.faction, b.id); // odložené stavby (polní nemocnice) až po dnešním boji
   state.pendingBuilds = [];
   if (theme.race) checkKillRace(state, theme, story); // závod „kdo první zabije N“: zpráva o dobytí jde do state.news (níž se přidá do novin)
