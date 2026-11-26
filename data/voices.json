@@ -1975,7 +1975,7 @@
     "kw": "HOSPITAL",
     "text": "Need a hospital for concord, I recieve a light wound a while back and id hate to imagine what would happen if it was more serious.",
     "at": "2026-11-25T23:20:44+0000",
-    "likes": 2,
+    "likes": 3,
     "reply": false
    },
    {
@@ -2077,6 +2077,16 @@
     "at": "2026-11-26T01:05:17+0000",
     "likes": 0,
     "reply": false
+   },
+   {
+    "id": "18064753781536682",
+    "handle": "gadost144hd",
+    "faction": 1,
+    "kw": null,
+    "text": "@dorio_dorno looks like you accidentally voted for the wrong thing. If I understood correctly you can write one more comment to change the vote, since only the last one counts",
+    "at": "2026-11-26T01:26:53+0000",
+    "likes": 0,
+    "reply": true
    }
   ]
  },
