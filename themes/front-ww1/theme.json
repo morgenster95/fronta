@@ -969,10 +969,9 @@
         "beds": 10,
         "care": 1.6,
         "max": 1,
-        "replaces": "dugout",
         "stretchers": 8,
         "critRisk": 0.35,
-        "_": "26. 11.: výsledek hlasování HOSPITAL (build dugout) staví tohle; nahradí hospital dugouty (8 lůžek) jednou velkou stavbou s 10 lůžky"
+        "_": "26. 11.: výsledek hlasování HOSPITAL (build dugout) staví tohle; velkou stavbou s 10 lůžky NAVÍC k obvazišti a zemnicím (lůžka a nosítka se sčítají)"
       },
       "sandbags": {
         "name": "Sandbag parapets",

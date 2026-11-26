@@ -627,7 +627,7 @@ Uživatel: „hodně raněných, dává smysl hlasování, které přidá nemocn
 
 
 ## 2026-11-26: Polní nemocnice (10 lůžek) místo zemnic (NASAZENO, pokyn uživatele)
-- Výsledek hlasování HOSPITAL (`build: dugout`) teď staví **Field hospital** (`theme.battle.buildings.hospital`): 10 lůžek, +8 nosítek, péče 1,6, riziko kritického 0,35; **nahradí** zemnice (`replaces: dugout`, 2 zemnice = 8 lůžek, +8 nosítek, péče 1,5), max 1. Čistý přínos: +2 lůžka, lepší péče; nosítka stejně.
+- Výsledek hlasování HOSPITAL (`build: dugout`) teď staví **Field hospital** (`theme.battle.buildings.hospital`): 10 lůžek, +8 nosítek, péče 1,6, riziko kritického 0,35; **přidá se** k obvazišti a zemnicím (lůžka a nosítka se sčítají, péče = nejlepší, riziko = nejnižší), max 1. Strana s 2 zemnicemi má tedy 18 lůžek místo 8. (Původní verze „nahradí zemnice“ zrušena na pokyn uživatele.)
 - Mapování je v enginu (`upgradeBuild` v `engine/roster.js`), takže běžící hlasování se nemění. Smazáním klíče `buildings.hospital` v tématu se vrátí zemnice.
-- Mapa: jedna velká stavba 312×104 px (`web/src/hospital.js`, `dugoutArt` s `beds >= 10`), 6 lůžek nahoře + 2 + 2 kolem vchodu, operační stůl, kamínka, police, střecha s křížem a plachtou barvy strany. Dev náhled `/?hospital=big`.
+- Mapa: velká stavba vedle zemnic 312×104 px (`web/src/hospital.js`, `dugoutArt` s `beds >= 10`), 6 lůžek nahoře + 2 + 2 kolem vchodu, operační stůl, kamínka, police, střecha s křížem a plachtou barvy strany. Dev náhled `/?hospital=big`.
 - Test: „polní nemocnice (10 lůžek) nahradí zemnice…“.

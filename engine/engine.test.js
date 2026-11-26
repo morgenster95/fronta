@@ -371,13 +371,13 @@ const enlist = (s, n, tag = 'b') => {
   for (let i = 0; i < n; i++) applyComment(s, { id: `${tag}${i}`, userId: `${tag}${i}`, username: `${tag}${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
 };
 
-test('boj: polní nemocnice (10 lůžek) nahradí zemnice a jde postavit jen jednou', () => {
+test('boj: polní nemocnice (10 lůžek) se přidá k zemnicím a jde postavit jen jednou', () => {
   const s = emptyState(theme);
   build(s, theme, 0, 'dugout'); build(s, theme, 0, 'dugout');
   assert.equal(hospital(s, theme, 0).beds, 8);
   assert.ok(build(s, theme, 0, 'hospital'));
   const H = hospital(s, theme, 0);
-  assert.equal(H.beds, 10); assert.equal(H.big, true); assert.equal(s.battle.sides[0].built.dugout, 0);
+  assert.equal(H.beds, 18); assert.equal(H.big, true); assert.equal(H.dugouts, 2);
   assert.equal(build(s, theme, 0, 'hospital'), null, 'jen jedna');
 });
 

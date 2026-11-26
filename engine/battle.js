@@ -48,10 +48,11 @@ export function hospital(state, theme, f) {
   const sc = (v) => v + Math.floor(medics * (a.stretchersPerMedic || 0)) + orderStretchers(state, f, state.day); // + nosítka z rozkazu (BEARERS)
   // care = násobek hojení těžce raněného proti nosítkům s plnou péčí (≥ 1), critRisk = násobek rizika smrti kritického za noc
   // proti nosítkům (≤ 1): lůžko je tak VŽDY lepší než nosítka, nemocnice lepší než obvaziště
-  const F = cfg.buildings.hospital, big = F && count(side, 'hospital') > 0; // polní nemocnice (26. 11.): jedna velká stavba místo zemnic, nahrazuje je (build)
-  if (big) return { name: F.name, dugout: true, big: true, dugouts: 1, beds: F.beds, stretchers: sc(a.stretchers + (F.stretchers || 0)), care: F.care, critRisk: F.critRisk };
-  if (!n) return { name: a.name, dugout: false, dugouts: 0, beds: a.beds, stretchers: sc(a.stretchers), care: a.care, critRisk: a.critRisk };
-  return { name: d.name, dugout: true, dugouts: n, beds: n * d.beds, stretchers: sc(a.stretchers + n * (d.stretchers || 0)), care: d.care, critRisk: d.critRisk };
+  const F = cfg.buildings.hospital, big = F && count(side, 'hospital') > 0; // polní nemocnice (26. 11.): velká stavba NAVÍC k obvazišti a zemnicím (lůžka, nosítka se sčítají, péče nejlepší z nich)
+  const base = !n ? { name: a.name, dugout: false, dugouts: 0, beds: a.beds, stretchers: sc(a.stretchers), care: a.care, critRisk: a.critRisk }
+    : { name: d.name, dugout: true, dugouts: n, beds: n * d.beds, stretchers: sc(a.stretchers + n * (d.stretchers || 0)), care: d.care, critRisk: d.critRisk };
+  if (!big) return base;
+  return { ...base, name: F.name, big: true, beds: base.beds + F.beds, stretchers: base.stretchers + (F.stretchers || 0), care: Math.max(base.care, F.care), critRisk: Math.min(base.critRisk, F.critRisk) };
 }
 
 export function build(state, theme, f, id) {
@@ -61,7 +62,6 @@ export function build(state, theme, f, id) {
   if (def.requires && !count(side, def.requires)) return null;
   if (def.max && count(side, id) >= def.max) return null;
   side.built[id] = count(side, id) + 1;
-  if (def.replaces) side.built[def.replaces] = 0; // velká stavba nahradí menší
   if (def.wire) for (const k of Object.keys(side.wire)) side.wire[k] = Math.min(1, side.wire[k] + def.wire);
   return `The ${short(theme, f)} ${def.done || `built: ${def.name}`}`;
 }

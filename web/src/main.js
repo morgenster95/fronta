@@ -290,8 +290,9 @@ async function boot() {
       const sup = ext(f, 'support'), res = ext(f, 'reserve');
       // náhled postavené nemocnice na vývojovém serveru: /?hospital=dugout
       const built = !!pub[f]?.hospital?.dugout || new URLSearchParams(import.meta.env.DEV ? location.search : '').get('hospital') === 'big' || (import.meta.env.DEV && new URLSearchParams(location.search).get('hospital') === 'dugout');
-      const big = !!pub[f]?.hospital?.big || (import.meta.env.DEV && new URLSearchParams(location.search).get('hospital') === 'big');
-      const { W: HW, H: HH } = hospitalSize(big ? 10 : built ? 4 : 2);
+      const devBig = import.meta.env.DEV && new URLSearchParams(location.search).get('hospital') === 'big';
+      const big = !!pub[f]?.hospital?.big || devBig; // polní nemocnice je NAVÍC k obvazišti a zemnicím
+      const HH = hospitalSize(4).H;
       // obvaziště (stan) mezi podpůrnou linií a zálohami; postavená nemocnice je hluboký dugout dál v týlu, za zálohami
       // (mimo dosah kulek, ranění se k ní nosí spojovacím zákopem), když se tam vejde; jinak na místě obvaziště
       let y = sup && res ? (f === 0 ? (res[1] + sup[0]) / 2 : (sup[1] + res[0]) / 2) : map.front[f] * map.tile + (f === 0 ? -200 : 200);
@@ -299,11 +300,13 @@ async function boot() {
         const back = f === 0 ? res[0] - 70 - HH / 2 : res[1] + 70 + HH / 2;
         if (back - HH / 2 > 24 && back + HH / 2 < map.H * map.tile - 24) y = back;
       }
-      const n = big ? 1 : Math.max(1, pub[f]?.hospital?.dugouts || 0);
+      const n = Math.max(1, pub[f]?.hospital?.dugouts || 0);
+      const kinds = [...(big ? [10] : []), ...Array.from({ length: n }, () => (built ? 4 : 2))]; // velká napřed (první lůžka)
       // volné místo bez zákopů (nemocnice nesmí stát na spojovacím zákopu), co nejblíž středu vojáků
       const T2 = map.tile, taken = [];
+      let HW = 100;
       const free = (x, y0) => {
-        for (const t of taken) if (Math.abs(t - x) < HW + 30) return false;
+        for (const t of taken) if (Math.abs(t.x - x) < (t.w + HW) / 2 + 24) return false;
         for (let ty = Math.floor((y0 - HH / 2 - 12) / T2); ty <= Math.floor((y0 + HH / 2 + 12) / T2); ty++)
           for (let tx = Math.floor((x - HW / 2 - 8) / T2); tx <= Math.floor((x + HW / 2 + 8) / T2); tx++) {
             const g = map.grid[ty * map.W + tx];
@@ -311,14 +314,15 @@ async function boot() {
           }
         return true;
       };
-      for (let i = 0; i < n; i++) {
+      for (const kb of kinds) {
+        HW = hospitalSize(kb).W;
         let x = cx;
         for (let k = 0; k < 120; k++) {
           const cand = cx + (k % 2 ? 1 : -1) * Math.ceil(k / 2) * 16;
           if (free(cand, y)) { x = cand; break; }
         }
-        taken.push(x);
-        sites.push({ faction: f, x, y, beds: big ? 10 : built ? 4 : 2, entrance: f === 0 ? 1 : -1 });
+        taken.push({ x, w: HW });
+        sites.push({ faction: f, x, y, beds: kb, entrance: f === 0 ? 1 : -1 });
       }
     });
     const H = buildHospitals(sites);
