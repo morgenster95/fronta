@@ -1,0 +1,72 @@
+{
+ "seconds": 58.0,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.3,
+   0.8,
+   "Day seventeen.",
+   "day"
+  ],
+  [
+   1.8,
+   5.15,
+   "One hundred and six Hegemony soldiers fell. One hundred and twenty-two from Concord.",
+   "fell"
+  ],
+  [
+   7.2,
+   5.25,
+   "Three hundred and thirty-six lie wounded. A thirty-bed field hospital opens tomorrow.",
+   "hosp"
+  ],
+  [
+   12.7,
+   1.55,
+   "Meet the last man from Day one.",
+   "hero"
+  ],
+  [
+   14.5,
+   5.98,
+   "Cyril Doc Zaboravljeni signed up on the first morning. They gave him a rifle, a spade and a number.",
+   "sign"
+  ],
+  [
+   20.73,
+   5.01,
+   "His mother writes every Sunday. He draws his friends in the margins when he writes back.",
+   "letter"
+  ],
+  [
+   25.99,
+   6.7,
+   "On Day eleven, raiders cut the wire in the night. He was hit and carried to the hospital. He came back.",
+   "raid"
+  ],
+  [
+   32.94,
+   4.67,
+   "Yesterday he won a bet at R F twelve. Two enemy soldiers went down.",
+   "duel"
+  ],
+  [
+   37.86,
+   5.96,
+   "Lance corporal now. Four medals. Seventeen days, and he is still here.",
+   "medals"
+  ],
+  [
+   44.07,
+   5.44,
+   "Forty-six new soldiers came up the line. Two thousand three hundred and thirty-eight hold it now.",
+   "army"
+  ],
+  [
+   49.76,
+   4.8,
+   "Pick a side. Comment HEGEMONY or CONCORD, and your soldier joins the war.",
+   "cta"
+  ]
+ ]
+}
