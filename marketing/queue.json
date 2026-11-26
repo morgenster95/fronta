@@ -1482,6 +1482,26 @@
         "permalink": "https://www.instagram.com/stories/mudandiron/4038363359192009057",
         "at": "2026-11-25T18:14:18.211Z"
       }
+    },
+    {
+      "id": "reel-front17",
+      "type": "reel",
+      "files": [
+        "reel_front17.mp4"
+      ],
+      "publishAt": "2026-11-26T16:45:00Z",
+      "caption": "DAY 17 · The last man from Day one.\n\nCyril \"Doc\" Zaboravljeni signed up on the first morning, and he is the only one from that morning still standing. He was shot in a night raid on Day 11 and was back two days later. They made him lance corporal on Day 16. Last night two enemy soldiers came for him. Both went down.\n\n106 Hegemony and 122 Concord soldiers fell yesterday. 336 lie wounded. A 30-bed field hospital opens tomorrow.\n\nPick a side: comment HEGEMONY or CONCORD under any post and your soldier joins the war.\n\n+46 soldiers yesterday. 2,338 now hold the front: 1,097 Hegemony · 1,241 Concord.\n\n#pixelart #indiegame #ww1 #gamedev",
+      "_note": "Day reel Day 17: Cyril „Doc“ Zaboravljeni, nejdéle žijící hráč (schváleno uživatelem 26. 11., nasadit hned)."
+    },
+    {
+      "id": "story-reel-front17",
+      "type": "story",
+      "files": [
+        "reel_front17.mp4"
+      ],
+      "caption": "",
+      "publishAt": "2026-11-26T16:55:00Z",
+      "_note": "Story k položce reel-front17 (pravidlo: ke každé novince i story). "
     }
   ]
 }
