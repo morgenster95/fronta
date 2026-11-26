@@ -24,11 +24,11 @@ function sandbag(x, y) {
 }
 
 // rozměry nemocnice podle počtu lůžek (pro umístění na mapě a spojovací zákop)
-export const hospitalSize = (beds) => (beds >= 4 ? { W: 168, H: 104 } : { W: 100, H: 54 });
+export const hospitalSize = (beds) => (beds >= 10 ? { W: 312, H: 104 } : beds >= 4 ? { W: 168, H: 104 } : { W: 100, H: 54 });
 
 // rozměry v pixelech světa; entrance: 1 = vchod dole (k přední linii Hegemonie), -1 = nahoře (Concord)
 export function hospitalArt({ beds = 4, faction = 0, entrance = 1 }) {
-  if (beds >= 4) return dugoutArt({ faction, entrance });
+  if (beds >= 4) return dugoutArt({ faction, entrance, beds });
   const cots = beds; // 2 = obvaziště (stan s plachtou); 4 = nemocniční dugout (dugoutArt)
   const W = cots >= 4 ? 112 : 100, H = cots >= 4 ? 80 : 54, wall = 6, door = 20;
   const c = document.createElement('canvas');
@@ -125,8 +125,9 @@ export function hospitalArt({ beds = 4, faction = 0, entrance = 1 }) {
 // --- nemocniční dugout (staví se hlasováním): hluboký kryt za zálohami, roubený trámy, 4 lůžka, operační stůl pod lampou,
 // kamínka s rourou, police s obvazy, schody dolů z vchodu. Nahoře zaoblená vlnitá plechová střecha zasypaná hlínou a pytli,
 // komín, bílé pole s červeným křížem a pruh plachtoviny v barvě strany. Kreslí se pro vchod dole a pro vchod nahoře se překlopí.
-function dugoutArt({ faction = 0, entrance = 1 }) {
-  const { W, H } = hospitalSize(4), wall = 8, door = 24;
+function dugoutArt({ faction = 0, entrance = 1, beds = 4 }) {
+  const wide = beds >= 10; // polní nemocnice (26. 11.): 312 px široká, 10 lůžek (6 nahoře, 2 + 2 kolem vchodu)
+  const { W, H } = hospitalSize(wide ? 10 : 4), wall = 8, door = 24;
   const c = document.createElement('canvas');
   c.width = W; c.height = H;
   const g = c.getContext('2d');
@@ -161,9 +162,7 @@ function dugoutArt({ faction = 0, entrance = 1 }) {
   // lůžka: 2 vlevo, 2 vpravo; rám, prostěradlo, deka v barvě strany, polštář
   const blanket = faction === 0 ? [14, 15] : [11, 12];
   const cw = 36, ch = 15, slots = [];
-  const colsX = [wall + iw + 5, W - wall - iw - 5 - cw];
-  const rows = [wall + iw + 9, H - wall - iw - 10 - ch - 4];
-  for (const y of rows) for (const [ci, x] of colsX.entries()) {
+  const bedAt = (x, y, ci) => {
     rect(x, y + ch - 1, cw, 2, 0, 0.6);
     rect(x, y, cw, ch, 3);
     rect(x + 2, y + 2, cw - 4, ch - 4, 8);
@@ -173,6 +172,16 @@ function dugoutArt({ faction = 0, entrance = 1 }) {
     rect(pxx, y + 3, 7, ch - 6, 9);
     px(x, y, 1); px(x + cw - 1, y, 1); px(x, y + ch - 1, 1); px(x + cw - 1, y + ch - 1, 1);
     slots.push({ x: x + cw / 2 + 2, y: y + ch / 2 + 1 });
+  };
+  if (wide) {
+    const yTop = wall + iw + 13, yBot = H - wall - iw - 10 - ch - 4;
+    for (let i = 0; i < 6; i++) bedAt(wall + iw + 5 + i * (cw + 8), yTop, i < 3 ? 0 : 1);
+    for (const x of [wall + iw + 5, wall + iw + 5 + cw + 6]) bedAt(x, yBot, 0);
+    for (const x of [W - wall - iw - 5 - 2 * cw - 6, W - wall - iw - 5 - cw]) bedAt(x, yBot, 1);
+  } else {
+    const colsX = [wall + iw + 5, W - wall - iw - 5 - cw];
+    const rows = [wall + iw + 9, H - wall - iw - 10 - ch - 4];
+    for (const y of rows) for (const [ci, x] of colsX.entries()) bedAt(x, y, ci);
   }
   // operační stůl uprostřed pod lampou: bílé plátno, tác s nástroji, kbelík
   const mx = Math.round(W / 2), my = Math.round(H / 2) - 4;

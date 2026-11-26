@@ -625,3 +625,9 @@ Uživatel: „hodně raněných, dává smysl hlasování, které přidá nemocn
 **Na mapě (`web/src/tank-fx.js`):** Behemoth (Hegemonie, čelní pohled) a Tortoise (Concord, zadní pohled) jezdí v cyklu ~27 s: u zákopu → VPŘED do země nikoho → pálí → COUVÁ (nikdy se neotáčí) → pálí → couvá k zákopu → pálí → dokola. Zášleh hlavně, zpětný ráz, kouř, kulometné dávky, dopady granátů v zákopu nepřítele, zvuk děla a motoru, prach a výfuk. Dev náhled `/?orders=0:TANK` (strana:heslo).
 **Možné rozšíření (NÁVRH, nepostaveno):** tank se opotřebuje (4 dny = ~25 % denně), vlastní ženisté v okruhu ho opravují, nepřátelské těžké dělo (Grey Mill) ho může vyřadit (vrak na mapě); dává smysl ženistům a dělu.
 
+
+## 2026-11-26: Polní nemocnice (10 lůžek) místo zemnic (NASAZENO, pokyn uživatele)
+- Výsledek hlasování HOSPITAL (`build: dugout`) teď staví **Field hospital** (`theme.battle.buildings.hospital`): 10 lůžek, +8 nosítek, péče 1,6, riziko kritického 0,35; **nahradí** zemnice (`replaces: dugout`, 2 zemnice = 8 lůžek, +8 nosítek, péče 1,5), max 1. Čistý přínos: +2 lůžka, lepší péče; nosítka stejně.
+- Mapování je v enginu (`upgradeBuild` v `engine/roster.js`), takže běžící hlasování se nemění. Smazáním klíče `buildings.hospital` v tématu se vrátí zemnice.
+- Mapa: jedna velká stavba 312×104 px (`web/src/hospital.js`, `dugoutArt` s `beds >= 10`), 6 lůžek nahoře + 2 + 2 kolem vchodu, operační stůl, kamínka, police, střecha s křížem a plachtou barvy strany. Dev náhled `/?hospital=big`.
+- Test: „polní nemocnice (10 lůžek) nahradí zemnice…“.

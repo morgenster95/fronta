@@ -289,8 +289,9 @@ async function boot() {
       const cx = (openX0 + openX1) / 2; // střed otevřené fronty: stálé místo (nemění se s vojáky), jen když se otevřou nové sektory
       const sup = ext(f, 'support'), res = ext(f, 'reserve');
       // náhled postavené nemocnice na vývojovém serveru: /?hospital=dugout
-      const built = !!pub[f]?.hospital?.dugout || (import.meta.env.DEV && new URLSearchParams(location.search).get('hospital') === 'dugout');
-      const { W: HW, H: HH } = hospitalSize(built ? 4 : 2);
+      const built = !!pub[f]?.hospital?.dugout || new URLSearchParams(import.meta.env.DEV ? location.search : '').get('hospital') === 'big' || (import.meta.env.DEV && new URLSearchParams(location.search).get('hospital') === 'dugout');
+      const big = !!pub[f]?.hospital?.big || (import.meta.env.DEV && new URLSearchParams(location.search).get('hospital') === 'big');
+      const { W: HW, H: HH } = hospitalSize(big ? 10 : built ? 4 : 2);
       // obvaziště (stan) mezi podpůrnou linií a zálohami; postavená nemocnice je hluboký dugout dál v týlu, za zálohami
       // (mimo dosah kulek, ranění se k ní nosí spojovacím zákopem), když se tam vejde; jinak na místě obvaziště
       let y = sup && res ? (f === 0 ? (res[1] + sup[0]) / 2 : (sup[1] + res[0]) / 2) : map.front[f] * map.tile + (f === 0 ? -200 : 200);
@@ -298,7 +299,7 @@ async function boot() {
         const back = f === 0 ? res[0] - 70 - HH / 2 : res[1] + 70 + HH / 2;
         if (back - HH / 2 > 24 && back + HH / 2 < map.H * map.tile - 24) y = back;
       }
-      const n = Math.max(1, pub[f]?.hospital?.dugouts || 0);
+      const n = big ? 1 : Math.max(1, pub[f]?.hospital?.dugouts || 0);
       // volné místo bez zákopů (nemocnice nesmí stát na spojovacím zákopu), co nejblíž středu vojáků
       const T2 = map.tile, taken = [];
       const free = (x, y0) => {
@@ -317,7 +318,7 @@ async function boot() {
           if (free(cand, y)) { x = cand; break; }
         }
         taken.push(x);
-        sites.push({ faction: f, x, y, beds: built ? 4 : 2, entrance: f === 0 ? 1 : -1 });
+        sites.push({ faction: f, x, y, beds: big ? 10 : built ? 4 : 2, entrance: f === 0 ? 1 : -1 });
       }
     });
     const H = buildHospitals(sites);

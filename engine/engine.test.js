@@ -371,6 +371,16 @@ const enlist = (s, n, tag = 'b') => {
   for (let i = 0; i < n; i++) applyComment(s, { id: `${tag}${i}`, userId: `${tag}${i}`, username: `${tag}${i}`, text: i % 2 ? 'CONCORD' : 'HEGEMONY' }, theme, story, map);
 };
 
+test('boj: polní nemocnice (10 lůžek) nahradí zemnice a jde postavit jen jednou', () => {
+  const s = emptyState(theme);
+  build(s, theme, 0, 'dugout'); build(s, theme, 0, 'dugout');
+  assert.equal(hospital(s, theme, 0).beds, 8);
+  assert.ok(build(s, theme, 0, 'hospital'));
+  const H = hospital(s, theme, 0);
+  assert.equal(H.beds, 10); assert.equal(H.big, true); assert.equal(s.battle.sides[0].built.dugout, 0);
+  assert.equal(build(s, theme, 0, 'hospital'), null, 'jen jedna');
+});
+
 test('boj: stavby jen hlasováním, obvaziště 2 lůžka, každá nemocnice má 4 lůžka, další se dá odhlasovat', () => {
   const s = emptyState(theme);
   assert.equal(hospital(s, theme, 0).beds, 2);
@@ -458,10 +468,10 @@ test('hlasování po frakcích staví: HOSPITAL postaví dugout jen té straně,
   const c = (id, u, text) => applyComment(s, { id, userId: u, username: u, text, mediaId: 'mv' }, theme, story, map);
   c('x1', 'hv0', 'HOSPITAL'); c('x2', 'hv1', 'FORTIFY'); c('x3', 'hv3', 'FORTIFY');
   dailyTick(s, theme, story);
-  assert.equal(s.battle.sides[0].built.dugout, 1);
+  assert.equal(s.battle.sides[0].built.hospital, 1);
   assert.equal(s.battle.sides[1].built.sandbags, 1);
-  assert.ok(!s.battle.sides[1].built.dugout);
-  assert.match(s.events.at(-1).text, /hospital dugout/);
+  assert.ok(!s.battle.sides[1].built.hospital);
+  assert.match(s.events.at(-1).text, /field hospital/);
 });
 
 import { heir as heirOf, lifeRecord, fallSoldier } from './soldier.js';

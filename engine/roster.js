@@ -483,7 +483,8 @@ function resolveFactionVote(state, v, theme) {
   const orders = issueOrders(state, per.filter((p) => p.winner).map((p) => tankOrder({ ...p.winner, ...(p.winner.byFaction?.[p.faction] || {}), faction: p.faction })), state.day + 2); // 16. 11. (uživatel): rozkaz platí až od příští bitvy (dnes se teprve postaví, na mapě je vidět hned); byFaction: stejné heslo, jiný účinek podle strany
   // stavby (dugout, pytle, drát…): trvalé, staví se jen hlasováním
   // věta o stavbě (theme.battle.buildings[].done) nahradí obecný výsledek možnosti, ať se v Gazette neříká totéž dvakrát
-  const builtOf = per.map((p) => (p.winner?.build ? buildStructure(state, theme, p.faction, p.winner.build) : null));
+  const upgradeBuild = (id) => (id === 'dugout' && theme.battle?.buildings?.hospital ? 'hospital' : id); // HOSPITAL staví polní nemocnici (10 lůžek), když je v tématu
+  const builtOf = per.map((p) => (p.winner?.build ? buildStructure(state, theme, p.faction, upgradeBuild(p.winner.build)) : null));
   const built = builtOf.filter(Boolean);
   const text = per.map((p, i) => (builtOf[i] ? `${builtOf[i]}.`
     : (p.winner ? p.winner.byFaction?.[p.faction]?.outcome || p.winner.outcome || '' : 'No word came back from the {side}: nothing was built.').replaceAll('{side}', sideName(theme, p.faction)))).join(' ');
