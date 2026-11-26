@@ -1209,6 +1209,921 @@
     {
       "w": 4,
       "text": "{name} offered [a biscuit|a length of string|a spare button] for a better place near the stove. The offer was refused with surprising dignity."
+    },
+    {
+      "w": 3,
+      "archetype": "rifleman",
+      "text": "{name} cleaned the rifle for the third time today. The sergeant said it was already clean. {name} said it could be cleaner."
+    },
+    {
+      "w": 3,
+      "archetype": "rifleman",
+      "text": "{name} counted the rounds in the pouch twice and got two different numbers. {He} decided the second one was the right one."
+    },
+    {
+      "w": 3,
+      "archetype": "rifleman",
+      "text": "{name} spent the afternoon fixing a loose sling with a piece of telephone wire. It held. {He} was prouder of that than of any shot."
+    },
+    {
+      "w": 3,
+      "archetype": "rifleman",
+      "text": "A new recruit asked {name} how to hold a rifle in the cold. {name} showed {him}, then showed {him} again, slower."
+    },
+    {
+      "w": 3,
+      "archetype": "rifleman",
+      "text": "{name} carved a notch in the stock for every day on the line. There is not much wood left."
+    },
+    {
+      "w": 3,
+      "archetype": "rifleman",
+      "text": "{name} wrapped the rifle bolt in a rag to keep the dirt out. The rag was a sock. The sock was not {his}."
+    },
+    {
+      "w": 3,
+      "archetype": "rifleman",
+      "text": "On the fire step, {name} watched the wire at {sector} until the shapes in the dark stopped moving. They were posts."
+    },
+    {
+      "w": 3,
+      "archetype": "rifleman",
+      "text": "{name} traded half a ration of tobacco for a better rifle oil. The deal was fair, and nobody else would have made it."
+    },
+    {
+      "w": 3,
+      "archetype": "rifleman",
+      "text": "The squad lined up to have their rifles looked over. {name}'s was the only one the officer did not hand back with a frown."
+    },
+    {
+      "w": 3,
+      "archetype": "rifleman",
+      "text": "{name} practiced loading with {his} eyes shut. After an hour, {he} could do it in the time it takes to cough."
+    },
+    {
+      "w": 3,
+      "archetype": "rifleman",
+      "text": "{name} found a bullet on the trench floor, still shiny. {He} put it in {his} pocket for luck, then took it out again, just in case."
+    },
+    {
+      "w": 3,
+      "archetype": "rifleman",
+      "text": "{name} was ordered to fire only on a clear target. {He} waited all day for one. It was the longest day of the week."
+    },
+    {
+      "w": 3,
+      "archetype": "medic",
+      "text": "{name} sewed a torn coat before sewing a torn man. The man did not mind. {He} was asleep."
+    },
+    {
+      "w": 3,
+      "archetype": "medic",
+      "text": "{name} was handed a boot full of water and a man with a hole in his foot. {He} dealt with both."
+    },
+    {
+      "w": 3,
+      "archetype": "medic",
+      "text": "A boy asked {name} if it would hurt. {name} said yes, and then talked about the sea until it was over."
+    },
+    {
+      "w": 3,
+      "archetype": "medic",
+      "text": "{name} ran out of clean bandages at noon and boiled the old ones in a mess tin. They were whiter than before."
+    },
+    {
+      "w": 3,
+      "archetype": "medic",
+      "text": "{name} checked every man in the section for lice. It took two hours. The squad called it the most thorough inspection of the war."
+    },
+    {
+      "w": 3,
+      "archetype": "medic",
+      "text": "A man with a cough would not report to the aid post. {name} walked up to {sector} and listened to {his} chest on the fire step."
+    },
+    {
+      "w": 3,
+      "archetype": "medic",
+      "text": "{name} tied a splint with a bayonet scabbard and a bootlace. It looked terrible and worked perfectly."
+    },
+    {
+      "w": 3,
+      "archetype": "medic",
+      "text": "{name} found a patient asleep on a stretcher and stood guard over {him} until the surgeon came."
+    },
+    {
+      "w": 3,
+      "archetype": "medic",
+      "text": "Three men came in with the same blisters. {name} gave them the same advice: change your socks, and then change them again."
+    },
+    {
+      "w": 3,
+      "archetype": "medic",
+      "text": "{name} put a red cross on a clean white sheet and hung it outside the aid post. It was the only color for miles."
+    },
+    {
+      "w": 3,
+      "archetype": "medic",
+      "text": "{name} wrote every patient's name on a card and pinned it to the stretcher. By dawn, the whole row looked like a small school."
+    },
+    {
+      "w": 3,
+      "archetype": "medic",
+      "text": "{name} was thanked by a man who could not remember {his} name. {name} said that was fine. They never do."
+    },
+    {
+      "w": 3,
+      "archetype": "cook",
+      "text": "{name} stirred the pot and tasted it. {He} added salt, then pepper, then a long silence. The silence helped the most."
+    },
+    {
+      "w": 3,
+      "archetype": "cook",
+      "text": "{name} baked flat bread on a shovel over the fire. It was the first bread that tasted like bread in a month."
+    },
+    {
+      "w": 3,
+      "archetype": "cook",
+      "text": "{name} found a sack of onions behind a ruined barn. The squad ate onion soup for three days and wept happily."
+    },
+    {
+      "w": 3,
+      "archetype": "cook",
+      "text": "The queue for soup was long. {name} gave the last man a double portion without being asked."
+    },
+    {
+      "w": 3,
+      "archetype": "cook",
+      "text": "{name} boiled coffee in a bucket and strained it through a sock. Nobody asked which sock."
+    },
+    {
+      "w": 3,
+      "archetype": "cook",
+      "text": "{name} carried the stew up to {sector} in two pails. A shell burst nearby. The soup survived. The carrier shook, but the soup did not spill."
+    },
+    {
+      "w": 3,
+      "archetype": "cook",
+      "text": "{name} was given a goose by a farmer who would not say where it came from. The goose was cooked within the hour. Nobody asked a single question."
+    },
+    {
+      "w": 3,
+      "archetype": "cook",
+      "text": "{name} made a pie out of bully beef and old biscuits. It was ugly, and the squad scraped the dish clean."
+    },
+    {
+      "w": 3,
+      "archetype": "cook",
+      "text": "{name} chopped wood for the stove until dark. The stove was warm, the soup was hot, and {he} was the only one who did not sit down."
+    },
+    {
+      "w": 3,
+      "archetype": "cook",
+      "text": "The ration truck was late, so {name} made soup from the last of everything. It was thin, but it was hot."
+    },
+    {
+      "w": 3,
+      "archetype": "cook",
+      "text": "{name} gave a new recruit a wooden spoon with a small carving on the handle. 'So you do not lose it,' {he} said."
+    },
+    {
+      "w": 3,
+      "archetype": "cook",
+      "text": "{name} washed the pots by lamplight and sang under {his} breath. Half the dugout fell asleep to it."
+    },
+    {
+      "w": 3,
+      "archetype": "signaller",
+      "text": "{name} spent the night repairing a telephone line cut by a shell. {He} found the break at dawn, a yard from where {he} started."
+    },
+    {
+      "w": 3,
+      "archetype": "signaller",
+      "text": "{name} sent a message with a lamp from {sector}: three long, two short, a pause. The answer came back: understood."
+    },
+    {
+      "w": 3,
+      "archetype": "signaller",
+      "text": "{name} tested the field telephone and heard a stranger humming on the line. {He} hummed back. The line went quiet."
+    },
+    {
+      "w": 3,
+      "archetype": "signaller",
+      "text": "{name} wound a spool of wire across a shelled road at night. By morning the line was working, and the road was not."
+    },
+    {
+      "w": 3,
+      "archetype": "signaller",
+      "text": "{name} taught the runner a simple code of knocks on a board. By evening the whole dugout was knocking back."
+    },
+    {
+      "w": 3,
+      "archetype": "signaller",
+      "text": "{name} was asked for a message to the colonel. It took a minute to send and four hours to be answered."
+    },
+    {
+      "w": 3,
+      "archetype": "signaller",
+      "text": "A bird nested in the telephone box at {sector}. {name} refused to move it until the eggs hatched."
+    },
+    {
+      "w": 3,
+      "archetype": "signaller",
+      "text": "{name} listened to the line all night. {He} heard the war breathing in it, far away, and then silence."
+    },
+    {
+      "w": 3,
+      "archetype": "signaller",
+      "text": "The telephone rang once at three in the morning. {name} answered. It was the wrong number. {name} stayed up anyway."
+    },
+    {
+      "w": 3,
+      "archetype": "signaller",
+      "text": "{name} repaired the field telephone with a button, a bent nail and a piece of chewing gum. It worked until noon."
+    },
+    {
+      "w": 3,
+      "archetype": "signaller",
+      "text": "{name} climbed a pole at {sector} to fix the line. Halfway up, {he} remembered {he} did not like heights. {He} finished the job anyway."
+    },
+    {
+      "w": 3,
+      "archetype": "signaller",
+      "text": "{name} tested every flag signal twice before sending it. A wrong message is worse than a late one."
+    },
+    {
+      "w": 3,
+      "archetype": "sapper",
+      "text": "{name} shored up a collapsing wall at {sector} with planks from an old door. It held. It still had a number on it."
+    },
+    {
+      "w": 3,
+      "archetype": "sapper",
+      "text": "{name} spent the night digging a drain in the trench floor. By morning, the water was running the right way."
+    },
+    {
+      "w": 3,
+      "archetype": "sapper",
+      "text": "{name} checked the wire at {sector} with gloves on and a lantern off. {He} found two gaps and closed them."
+    },
+    {
+      "w": 3,
+      "archetype": "sapper",
+      "text": "{name} rolled out a coil of barbed wire in the dark. A thorn caught {his} sleeve, and {he} said exactly one word."
+    },
+    {
+      "w": 3,
+      "archetype": "sapper",
+      "text": "{name} cut firewood from a broken fence. The fence was the only thing between the squad and a field of mud."
+    },
+    {
+      "w": 3,
+      "archetype": "sapper",
+      "text": "{name} measured the depth of a new trench with a stick and a piece of string. It was two inches short. The squad dug two more."
+    },
+    {
+      "w": 3,
+      "archetype": "sapper",
+      "text": "{name} built a rack for rifles out of ammunition boxes. The corporal inspected it and said it was too neat."
+    },
+    {
+      "w": 3,
+      "archetype": "sapper",
+      "text": "{name} reinforced a dugout roof with logs and sandbags. It will not stop a big shell, but it will stop the dust."
+    },
+    {
+      "w": 3,
+      "archetype": "sapper",
+      "text": "{name} laid duckboards in {sector}. The first man to walk on them said it was like a street in a real town."
+    },
+    {
+      "w": 3,
+      "archetype": "sapper",
+      "text": "{name} dug a small ditch around the aid post to carry water away. The medic thanked {him} with a boiled egg."
+    },
+    {
+      "w": 3,
+      "archetype": "sapper",
+      "text": "{name} found a crack in the parapet at {sector} and filled it with sandbags and stones. The next bullet hit the stones and did no harm."
+    },
+    {
+      "w": 3,
+      "archetype": "sapper",
+      "text": "{name} sharpened a shovel until it could shave. {He} did not shave with it, but the squad respected the shovel."
+    },
+    {
+      "w": 3,
+      "archetype": "runner",
+      "text": "{name} ran a message from {sector} to the colonel's dugout and back in twenty minutes. It was a record, and nobody timed it."
+    },
+    {
+      "w": 3,
+      "archetype": "runner",
+      "text": "{name} carried a bag of mail through a shelled trench. Every letter arrived. Two had mud on them."
+    },
+    {
+      "w": 3,
+      "archetype": "runner",
+      "text": "{name} learned the shortest way between three dugouts and a bad corner. {He} drew it on a boot sole with chalk."
+    },
+    {
+      "w": 3,
+      "archetype": "runner",
+      "text": "A message was too important to write down. {name} memorized it and repeated it under {his} breath all the way to the front line."
+    },
+    {
+      "w": 3,
+      "archetype": "runner",
+      "text": "{name} crossed the open ground between {sector} and the support trench in six seconds. Nobody saw {him}, which is the idea."
+    },
+    {
+      "w": 3,
+      "archetype": "runner",
+      "text": "{name} was handed a note with no address. {He} asked around for an hour and delivered it to a man who cried."
+    },
+    {
+      "w": 3,
+      "archetype": "runner",
+      "text": "{name} had a message for the lieutenant and found only {his} cap. The lieutenant was in the next trench. The message was delivered, late."
+    },
+    {
+      "w": 3,
+      "archetype": "runner",
+      "text": "{name} slept three hours between runs and woke up already running. {His} legs did not have an opinion."
+    },
+    {
+      "w": 3,
+      "archetype": "runner",
+      "text": "A shell burst behind {name} halfway to {sector}. {He} did not look back, and arrived with the message and a ringing head."
+    },
+    {
+      "w": 3,
+      "archetype": "runner",
+      "text": "{name} carried two pails of water and a message at the same time. The water arrived first."
+    },
+    {
+      "w": 3,
+      "archetype": "runner",
+      "text": "{name} was thanked by an officer, which is rare. {He} wrote it in {his} notebook so nobody could say it did not happen."
+    },
+    {
+      "w": 3,
+      "archetype": "runner",
+      "text": "{name} waited in a dugout doorway for a gap in the firing. It came after ten minutes. {He} went through it like a rabbit."
+    },
+    {
+      "w": 3,
+      "archetype": "sniper",
+      "text": "{name} spent six hours in a hole at {sector} watching a single gap in the enemy wire. Nothing moved. It was a good day."
+    },
+    {
+      "w": 3,
+      "archetype": "sniper",
+      "text": "{name} lay still while a rat ran across {his} back. It took all the self-control {he} owned."
+    },
+    {
+      "w": 3,
+      "archetype": "sniper",
+      "text": "{name} cleaned the scope with a corner of a handkerchief. It is the cleanest thing in the trench."
+    },
+    {
+      "w": 3,
+      "archetype": "sniper",
+      "text": "{name} made a hat out of grass and burlap and wore it for the whole shift. Even the squad could not find {him}."
+    },
+    {
+      "w": 3,
+      "archetype": "sniper",
+      "text": "{name} watched a bird land on the enemy parapet and stay a full minute. {He} had a clear shot and did not take it."
+    },
+    {
+      "w": 3,
+      "archetype": "sniper",
+      "text": "{name} measured the distance to a lone post in the open and wrote it down. The number was 412. {He} circled it twice."
+    },
+    {
+      "w": 3,
+      "archetype": "sniper",
+      "text": "{name} took one shot in the whole day. It was the only one needed."
+    },
+    {
+      "w": 3,
+      "archetype": "sniper",
+      "text": "{name} climbed out before dawn and crawled to a new position. Behind a stump, in the dark, {he} waited for the light."
+    },
+    {
+      "w": 3,
+      "archetype": "sniper",
+      "text": "{name} was told not to fire until the order came. The order did not come. {He} lay still for eight hours anyway."
+    },
+    {
+      "w": 3,
+      "archetype": "sniper",
+      "text": "{name} swapped places with a spotter and found out how hard the job really is. The spotter bought {him} a mug of tea after."
+    },
+    {
+      "w": 3,
+      "archetype": "sniper",
+      "text": "{name} slept in the afternoon so as not to sleep in the dark. It is the strangest schedule on the front."
+    },
+    {
+      "w": 3,
+      "archetype": "sniper",
+      "text": "{name} drew the enemy line from memory in a notebook. Every sandbag, every post. The officers asked to borrow it."
+    },
+    {
+      "w": 3,
+      "archetype": "machinegunner",
+      "text": "{name} cleaned every part of the machine gun with an old toothbrush. The gun was happier, and so was the crew."
+    },
+    {
+      "w": 3,
+      "archetype": "machinegunner",
+      "text": "{name} oiled the gun until it shone. A man leaned on it and left a fingerprint. {name} cleaned it again, without a word."
+    },
+    {
+      "w": 3,
+      "archetype": "machinegunner",
+      "text": "{name} carried the heavy tripod up the trench on {his} shoulders, swearing quietly in two languages."
+    },
+    {
+      "w": 3,
+      "archetype": "machinegunner",
+      "text": "{name} counted the belts in the box and found one missing. {He} searched the whole position and found it under the cook's coat."
+    },
+    {
+      "w": 3,
+      "archetype": "machinegunner",
+      "text": "The machine gun jammed at {sector}. {name} fixed it in the dark with a pocketknife and a lot of patience."
+    },
+    {
+      "w": 3,
+      "archetype": "machinegunner",
+      "text": "{name} tested the gun with a short burst. The enemy answered with silence. {He} counted that as a draw."
+    },
+    {
+      "w": 3,
+      "archetype": "machinegunner",
+      "text": "{name} taught the new loader how to feed the belt. It took six tries, two curses and a spoon."
+    },
+    {
+      "w": 3,
+      "archetype": "machinegunner",
+      "text": "{name} built a roof of boards over the gun position. The crew sleeps under it and calls it the hotel."
+    },
+    {
+      "w": 3,
+      "archetype": "machinegunner",
+      "text": "{name} was ordered to hold fire until the signal. {He} waited with a finger on the trigger and a sweat on {his} neck."
+    },
+    {
+      "w": 3,
+      "archetype": "machinegunner",
+      "text": "{name} swapped the barrel with a cool one and left the hot one in a bucket of water. The bucket hissed for a minute."
+    },
+    {
+      "w": 3,
+      "archetype": "machinegunner",
+      "text": "{name} dragged the gun to a new position at {sector} before dawn. It weighs a good deal more at four in the morning."
+    },
+    {
+      "w": 3,
+      "archetype": "machinegunner",
+      "text": "{name} fell asleep behind the gun. The loader covered {him} with a blanket and took the watch."
+    },
+    {
+      "w": 3,
+      "archetype": "officer",
+      "text": "{name} walked the whole trench at {sector} before dawn, shaking every hand. It took an hour and made a small difference."
+    },
+    {
+      "w": 3,
+      "archetype": "officer",
+      "text": "{name} read the orders three times and kept the important one for the squad. The others went in the stove."
+    },
+    {
+      "w": 3,
+      "archetype": "officer",
+      "text": "{name} gave up a seat in the dugout to a wounded man and spent the night on a box. The squad noticed."
+    },
+    {
+      "w": 3,
+      "archetype": "officer",
+      "text": "{name} drew a map of the sector on the back of a ration crate. By the end of the day, three officers had copied it."
+    },
+    {
+      "w": 3,
+      "archetype": "officer",
+      "text": "{name} inspected the rifles and found them clean. {He} inspected them again to be sure. They were still clean."
+    },
+    {
+      "w": 3,
+      "archetype": "officer",
+      "text": "{name} wrote letters for six men who could not write. It took the whole evening and a pencil."
+    },
+    {
+      "w": 3,
+      "archetype": "officer",
+      "text": "{name} was asked by the colonel how morale was. {He} said it was good, and then told the truth after the colonel left."
+    },
+    {
+      "w": 3,
+      "archetype": "officer",
+      "text": "{name} stayed on the fire step for two hours so the sentries could eat. Nobody had asked {him}."
+    },
+    {
+      "w": 3,
+      "archetype": "officer",
+      "text": "{name} praised a private by name in front of the whole line. The private went red and stood a little taller for a week."
+    },
+    {
+      "w": 3,
+      "archetype": "officer",
+      "text": "{name} got a new pair of boots from the quartermaster and gave them to the man with the worst feet."
+    },
+    {
+      "w": 3,
+      "archetype": "officer",
+      "text": "{name} shared a plan with the squad before the patrol. Every man could repeat it. That is the whole of command."
+    },
+    {
+      "w": 3,
+      "archetype": "officer",
+      "text": "{name} stood at the door of the dugout and told every man that came in: well done today. Most of them did not know what for."
+    },
+    {
+      "w": 3,
+      "archetype": "chaplain",
+      "text": "{name} held a service in a dugout with a ration box for an altar. The congregation was twelve men and a dog."
+    },
+    {
+      "w": 3,
+      "archetype": "chaplain",
+      "text": "{name} wrote a letter home for a man who could not find the words. It took an hour and the man dictated one sentence."
+    },
+    {
+      "w": 3,
+      "archetype": "chaplain",
+      "text": "{name} sat with a frightened recruit through the night and said very little. By morning, the boy was sleeping."
+    },
+    {
+      "w": 3,
+      "archetype": "chaplain",
+      "text": "{name} blessed the bread before the meal, and the soup after. The cook considered it part of the recipe."
+    },
+    {
+      "w": 3,
+      "archetype": "chaplain",
+      "text": "{name} walked along the line at dusk with a lantern. Every man {he} passed nodded. Some bowed their heads."
+    },
+    {
+      "w": 3,
+      "archetype": "chaplain",
+      "text": "{name} said a prayer for the dead in a language half the squad did not know. They stood anyway."
+    },
+    {
+      "w": 3,
+      "archetype": "chaplain",
+      "text": "{name} listened to a corporal talk for an hour about his farm. {He} nodded in the right places and did not interrupt."
+    },
+    {
+      "w": 3,
+      "archetype": "chaplain",
+      "text": "{name} shared a pouch of tobacco with a man who had not spoken for two days. By the end of the pipe, the man said thank you."
+    },
+    {
+      "w": 3,
+      "archetype": "chaplain",
+      "text": "{name} made a small cross from two rifle cleaning rods and a piece of wire. It hangs above the aid post door."
+    },
+    {
+      "w": 3,
+      "archetype": "chaplain",
+      "text": "{name} read a psalm aloud at {sector} while the guns were quiet. It was the only quiet hour of the week."
+    },
+    {
+      "w": 3,
+      "archetype": "chaplain",
+      "text": "{name} carried water to the wounded along the stretcher row. {He} said nothing, only gave each man a cup and moved on."
+    },
+    {
+      "w": 3,
+      "archetype": "chaplain",
+      "text": "{name} walked to the graves behind the line with a bucket and a brush, and cleaned each cross by hand."
+    },
+    {
+      "w": 3,
+      "text": "{name} found a clean spoon in the trench and kept it. It was the best find of the week."
+    },
+    {
+      "w": 3,
+      "text": "{name} spent the morning shaving with a cracked mirror and cold water. The result looked like a map of a small country."
+    },
+    {
+      "w": 3,
+      "text": "{name} wrote a short letter home. The first line said: I am well. The second line said: really."
+    },
+    {
+      "w": 3,
+      "text": "A mouse ran across {name}'s boot and into a biscuit tin. {He} let it stay. It was the only visitor all day."
+    },
+    {
+      "w": 3,
+      "text": "{name} traded a button for a pinch of tea. By the end of the week, the button had come back, and so had the tea."
+    },
+    {
+      "w": 3,
+      "text": "{name} learned a new card game from a man in the next trench. {He} lost, and was told it was a good start."
+    },
+    {
+      "w": 3,
+      "text": "A quiet afternoon. {name} sat on an ammunition box and watched the smoke from the stove make shapes."
+    },
+    {
+      "w": 3,
+      "text": "{name} tried to sleep and could not. {He} counted sandbags until the count came out odd, and then started again."
+    },
+    {
+      "w": 3,
+      "text": "{name} helped dig a latrine and later dug a second one in a better spot. The first was relabeled as a storage pit."
+    },
+    {
+      "w": 3,
+      "text": "{name} found a bent fork in the mud and polished it for an hour. {He} now owns the best fork in the squad."
+    },
+    {
+      "w": 3,
+      "text": "{name} listened to a corporal tell the same story for the fourth time. The ending changed again."
+    },
+    {
+      "w": 3,
+      "text": "{name} mended a hole in {his} sock with a piece of {his} shirt. The squad called it a new uniform."
+    },
+    {
+      "w": 3,
+      "text": "{name} was given a pencil and a scrap of paper and wrote a poem. It had six lines and one rhyme. The squad cheered the rhyme."
+    },
+    {
+      "w": 3,
+      "text": "{name} borrowed a razor and returned it cleaner than before. It was the first compliment the owner had had in weeks."
+    },
+    {
+      "w": 3,
+      "text": "{name} spent a quiet hour looking at a photograph and not saying whose it was."
+    },
+    {
+      "w": 3,
+      "text": "The squad played a game of guessing what was in the stew. {name} was the closest and nobody wanted to know."
+    },
+    {
+      "w": 3,
+      "text": "{name} found a pair of dry socks and put them on. For a whole minute, nothing in the war mattered."
+    },
+    {
+      "w": 3,
+      "text": "{name} was woken by a rat on the chest and let it be. They shared the dugout and agreed on nothing."
+    },
+    {
+      "w": 3,
+      "text": "{name} read the same page of an old newspaper five times. It was the only reading material within a mile."
+    },
+    {
+      "w": 3,
+      "text": "{name} tried to whistle a tune and found that {he} had forgotten the second half. {He} hummed the first half all day."
+    },
+    {
+      "w": 3,
+      "text": "{name} drew a face on a tin cup with a charred stick. The cup has been watching over the dugout ever since."
+    },
+    {
+      "w": 3,
+      "text": "A cheerful man from the next unit came by to borrow a match. {name} gave {him} the whole box and regretted nothing."
+    },
+    {
+      "w": 3,
+      "text": "{name} was made to clean the mess tins. {He} did it carefully and with great ceremony, to make a point."
+    },
+    {
+      "w": 3,
+      "text": "{name} watched the sun rise from the fire step and thought of nothing. It was the best part of the day."
+    },
+    {
+      "w": 3,
+      "text": "{name} traded stories with a man from the far side of the country. Neither could understand the other's accent, and neither minded."
+    },
+    {
+      "w": 3,
+      "text": "{name} found a tiny flower growing in a crack in the sandbags. {He} told nobody and watered it from {his} canteen."
+    },
+    {
+      "w": 3,
+      "text": "{name} was woken at midnight for a false alarm. {He} went back to bed and dreamed of a real one."
+    },
+    {
+      "w": 3,
+      "text": "{name} sorted the squad's letters by size and then by smell. The mail sergeant was not amused."
+    },
+    {
+      "w": 3,
+      "text": "{name} left a note on the dugout wall: 'Back soon.' Somebody added: 'Sure.' Somebody else added: 'We hope.'"
+    },
+    {
+      "w": 3,
+      "text": "{name} swapped boots with a man whose feet were the same size and whose luck was better. Time will tell."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "{name} spent the night on the fire step at {sector}, watching a dark line that might have been a hedge."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "Two flares went up over {place}. {name} counted the seconds between them and the sound. It was a habit by now."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "{name} heard a shovel in the dark beyond the wire. {He} reported it to the sergeant, who nodded and said: ours or theirs?"
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "At {sector}, {name} spent an hour looking at the same patch of ground. By dawn, {he} knew every stone."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "{name} was woken by a sentry shaking {his} boot. The sentry had nothing to say. {He} only wanted company."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "{name} peeked through a loophole and saw a rabbit between the lines. For a moment, nobody fired."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "{name} cleaned the loophole at {sector} with a stick. It had filled with dirt from last night's bursts."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "{name} took the middle watch and stared at the wire. A cloud passed over the moon, and the wire seemed to walk."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "A sudden burst of firing woke the line. {name} grabbed {his} rifle and jumped onto the fire step, then found nothing. It was a false alarm."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "{name} replaced a torn sandbag at {sector} with a new one. A small job. The squad noticed and said nothing, which is a thank you."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "{name} checked the wire at {sector} on {his} hands and knees. It was whole. {He} returned before dawn with mud on {his} chin."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "{name} watched a patrol leave the trench at {sector} and counted them out. Later {he} counted them in."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "{name} was ordered to hold the loophole until relief. It came four hours late. {He} did not complain."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "A flare hung over {place} for a long time. {name} saw the whole of no man's land at once, and did not forget it."
+    },
+    {
+      "w": 3,
+      "line": "front",
+      "text": "{name} drank cold tea from a mess tin on the fire step. It was terrible, and it was the best part of the watch."
+    },
+    {
+      "w": 3,
+      "line": "support",
+      "text": "{name} carried a load of sandbags up the communication trench. The trench is long, and {his} back is longer."
+    },
+    {
+      "w": 3,
+      "line": "support",
+      "text": "{name} cut wood for the stove at the support dugout. The stack is higher than the dugout."
+    },
+    {
+      "w": 3,
+      "line": "support",
+      "text": "{name} repaired a broken ladder at {sector} with two nails and a good deal of language."
+    },
+    {
+      "w": 3,
+      "line": "support",
+      "text": "{name} was sent to fetch water from a well behind the line. It took three trips and a lot of care."
+    },
+    {
+      "w": 3,
+      "line": "support",
+      "text": "{name} unpacked a crate of tins and counted them twice. There were eleven. The list said twelve."
+    },
+    {
+      "w": 3,
+      "line": "support",
+      "text": "{name} spent the day digging a new communication trench. By dusk, it was almost a trench."
+    },
+    {
+      "w": 3,
+      "line": "support",
+      "text": "{name} helped haul an ammunition box up the slope. The box was heavy. So was the silence."
+    },
+    {
+      "w": 3,
+      "line": "support",
+      "text": "{name} swept the dugout floor with a branch. The floor did not improve, but the dugout smelled of pine."
+    },
+    {
+      "w": 3,
+      "line": "support",
+      "text": "{name} sorted the ammunition by caliber and then by mood. The cases were in better humor than the men."
+    },
+    {
+      "w": 3,
+      "line": "support",
+      "text": "{name} was given a mallet and told to drive twenty stakes. By nightfall, {he} had driven nineteen and a thumb."
+    },
+    {
+      "w": 3,
+      "line": "support",
+      "text": "{name} guarded a store of rations against rats for the whole shift. The rats won on points."
+    },
+    {
+      "w": 3,
+      "line": "support",
+      "text": "{name} was handed a lantern and a map and told to find a supply dump that had moved. It had. {He} found it anyway."
+    },
+    {
+      "w": 3,
+      "line": "reserve",
+      "text": "In reserve, {name} washed a shirt in a bucket and hung it on a rifle to dry. It looked like a flag of surrender."
+    },
+    {
+      "w": 3,
+      "line": "reserve",
+      "text": "{name} slept in a barn with fifty others. The snoring formed a kind of music, and {he} fell asleep to it."
+    },
+    {
+      "w": 3,
+      "line": "reserve",
+      "text": "{name} got a day of rest and spent it sitting on a wall. Nothing happened, and it was lovely."
+    },
+    {
+      "w": 3,
+      "line": "reserve",
+      "text": "{name} walked into the village and bought an apple. It was the best apple of {his} life, and {he} told everyone."
+    },
+    {
+      "w": 3,
+      "line": "reserve",
+      "text": "{name} had a hot bath in a big tub with three other men. The water was gray. The mood was golden."
+    },
+    {
+      "w": 3,
+      "line": "reserve",
+      "text": "{name} was given a new pair of boots. They did not fit, and {he} cherished them anyway."
+    },
+    {
+      "w": 3,
+      "line": "reserve",
+      "text": "{name} played cards in the hayloft with a deck missing the queen of hearts. The game was fairer without her."
+    },
+    {
+      "w": 3,
+      "line": "reserve",
+      "text": "{name} wrote a long letter home. It said very little and ran to four pages."
+    },
+    {
+      "w": 3,
+      "line": "reserve",
+      "text": "{name} was detailed to paint the sergeant's name on a board. {He} got the spelling right on the second try."
+    },
+    {
+      "w": 3,
+      "line": "reserve",
+      "text": "{name} sat in the sun and watched the horses graze. They did not seem to know there was a war."
+    },
+    {
+      "w": 3,
+      "line": "reserve",
+      "text": "{name} was inspected, drilled and fed in that order. {He} liked the last part best."
+    },
+    {
+      "w": 3,
+      "line": "reserve",
+      "text": "{name} listened to a band play in the square. The tuba was a little flat, and the crowd did not care."
     }
   ],
   "promotion": [
@@ -1225,7 +2140,13 @@
     "{name} is {rank} now. At supper, a recruit waited for {him} to sit before taking a place. {He} noticed.",
     "The promotion to {rank} reached {name} on a creased slip of paper. {He} smoothed it and put it with the letters from home.",
     "{name} was made {rank} after keeping the section together under fire. {He} asked that the rest of the section be mentioned too.",
-    "{name} accepted promotion to {rank}. Later, {he} practised giving the morning orders quietly enough not to wake the dugout."
+    "{name} accepted promotion to {rank}. Later, {he} practised giving the morning orders quietly enough not to wake the dugout.",
+    "{name} has been made {rank}. The new stripes were sewn on by a man who admitted he had never sewn anything before.",
+    "The sergeant read out the order at {sector}: {name} is now {rank}. The squad cheered, and the new {rank} asked for quiet.",
+    "{name} was promoted to {rank} after bringing a message through a barrage at {place}. {He} says the message was not important. It was.",
+    "{name} took charge of the squad at {sector} when the {oldRank} fell. By morning, the squad had a new {rank}.",
+    "{name} is {rank} now. The stripes are crooked, and {he} refuses to straighten them.",
+    "{name} got the stripe of {rank} for steady nerves at {place}. The squad has not decided if it is a gift or a punishment."
   ],
   "wounded": [
     "Shrapnel at {place}. {name} walked to the aid post on {his} own feet and asked for a cigarette before the stitches.",
@@ -1380,7 +2301,27 @@
     "{a} drew a map of {b}'s hometown from {bs}'s stories. {bs} says it is wrong in every detail, and carries it everywhere.",
     "{a} carried {b}'s rifle all the way up to {place} after {bs} twisted an ankle. Neither has said thank you. Neither needs to.",
     "{a} and {b} both swear they saw a ghost at {place}. Each says the other screamed first.",
-    "{a} saved the last of the sugar for {b}'s birthday. Nobody knows if it really was {bs}'s birthday. It was a good day anyway."
+    "{a} saved the last of the sugar for {b}'s birthday. Nobody knows if it really was {bs}'s birthday. It was a good day anyway.",
+    "{a} lent {b} a spare pair of socks. {b} promised to return them. Both knew that would not happen.",
+    "{a} and {b} found a puddle of dry ground and fought over it for an hour. They ended up sharing it.",
+    "{a} caught {b} writing a love letter and read it over {bs} shoulder. {b} threw a boot. {a} told nobody.",
+    "{a} saved {b}'s last cigarette from a falling sandbag. {b} did not say thanks, but kept the stub.",
+    "{b} taught {a} how to tie a perfect knot. {a} used it to tie {as} boots together by mistake.",
+    "{a} and {b} sat back to back all night to keep warm, and agreed not to mention it in the morning.",
+    "{a} carried {b}'s pack for half a mile and never said a word. {b} noticed.",
+    "{a} and {b} swapped hats for a day to see if anyone would notice. Nobody did, and both were a little insulted.",
+    "{a} read a page of {b}'s diary by accident. {a} did not tell, but was kinder for a week.",
+    "{b} woke {a} from a nightmare by calling {as} name. {a} did not say thank you, but poured the tea.",
+    "{a} and {b} made a pact: whoever got leave first would visit the other's mother. They shook on it.",
+    "{a} found a blister on {b}'s heel and bound it with a strip of {as} own shirt. {b} did not argue.",
+    "{a} and {b} tried to teach the squad a song in two languages. The squad learned the wrong half of each.",
+    "{a} and {b} disagreed about the best way to make tea. The tea was ruined, and so was the afternoon.",
+    "{a} gave {b} the dry end of the bunk and took the wet one. {b} noticed and said, quietly, that {bs} would swap tomorrow.",
+    "{a} and {b} stood watch together and traded jokes in whispers. The jokes were old, but the whispers were new.",
+    "{a} found {b}'s lost photo in the mud and wiped it clean before returning it. Neither mentioned it again.",
+    "{a} and {b} built a small shelf out of a cracker box. It holds two mugs, a candle and one shared hope.",
+    "{a} fell asleep on {b}'s shoulder during a rest. {b} sat very still for an hour.",
+    "{a} ate {b}'s portion by mistake and spent the rest of the day apologizing in tobacco."
   ],
   "enemy": [
     "At {place}, {a} of the {af} and {b} of the {bf} traded insults across the wire for an hour. By the end they were trading recipes.",
@@ -1412,7 +2353,16 @@
     "A dog crosses no man's land at {place} every night, fed by {a} on one side and {b} on the other. The {af} call it Patrol. The {bf} call it Spy.",
     "{a} ({af}) and {b} ({bf}) were sent out to cut the other side's wire at {place} on the same night. They met in the middle and agreed to go home.",
     "{b} of the {bf} shouted across the wire at {place}, asking for the football scores from home. {a} of the {af} shouted them back. Some of them were even true.",
-    "{a} of the {af} lobbed a tin of jam over the wire at {place}. It came back empty, washed, with a flower inside and {b}'s name scratched on the lid."
+    "{a} of the {af} lobbed a tin of jam over the wire at {place}. It came back empty, washed, with a flower inside and {b}'s name scratched on the lid.",
+    "{a} ({af}) shouted a joke across the wire at {place}. {b} ({bf}) shouted one back. Neither understood the other, and both laughed.",
+    "{b} of the {bf} left a loaf of bread on a post at {place}, with a note: 'for whoever is hungry'. {a} took the bread and left a tin of beef.",
+    "{a} and {b} spotted each other across a ruined orchard at {place}. Both raised a hand. Both lowered it quickly.",
+    "{a} ({af}) heard a mouth organ from the {bf} trench at {place}. {a} knew the tune. {a} sang along under {as} breath.",
+    "{b} of the {bf} waved a white rag at {place} to pick up a wounded man. {a} held fire until the man was in.",
+    "{a} and {b} sat on opposite sides of a crater at {place} for a long moment. Then {b} nodded and slid out the other way.",
+    "A white dog ran between the lines at {place}. {a} ({af}) and {b} ({bf}) both whistled for it. It chose neither.",
+    "{b} of the {bf} traded a button for a cigarette with {a} through a hole in the wall at {place}. Both pretended it never happened.",
+    "At {place}, {a} ({af}) saw {b} ({bf}) washing a shirt in a puddle. Neither fired, and the shirt was clean by noon."
   ],
   "arcs": [
     {
@@ -1854,6 +2804,112 @@
         "The artist tried again while {name} read a letter. The new portrait was better, though the ears became the subject of discussion.",
         "{name} sent the portrait home after asking the artist to leave the ears alone. A photograph would have cost more than {he} could spare.",
         "A reply from home thanked {name} for the portrait. It is already on the mantelpiece, where the family apparently recognises the ears."
+      ]
+    },
+    {
+      "id": "boots2",
+      "w": 3,
+      "vars": {
+        "swap": [
+          "a spare lace",
+          "two cigarettes",
+          "a tin of jam",
+          "a pocket knife"
+        ]
+      },
+      "steps": [
+        "{name}'s left boot has opened at the toe. {He} tied it with string and walked as if nothing had happened.",
+        "{name} asked every man in the squad if anyone had a spare pair of boots. Nobody had. One man offered {swap} as a sign of sympathy.",
+        "A supply truck stopped at the dump. {name} got in the line early and got to the front. The boots were two sizes too big, and {he} wore them with three pairs of socks.",
+        "{name}'s new boots have a way of squeaking on the duckboards. The sergeant says it is better than not hearing {him} at all."
+      ]
+    },
+    {
+      "id": "kitten",
+      "w": 3,
+      "vars": {
+        "cat": [
+          "Private",
+          "Trouble",
+          "Mittens",
+          "Sergeant",
+          "Biscuit",
+          "Whiskers"
+        ]
+      },
+      "steps": [
+        "A thin gray kitten wandered into {sector} and hid in {name}'s helmet. {He} gave it a spoon of condensed milk.",
+        "The kitten now follows {name} everywhere. The squad calls it {cat}, and {name} pretends not to care.",
+        "{cat} caught its first rat today and laid it at {name}'s feet. {name} said thank you and buried it quietly.",
+        "{cat} has moved into the dugout for good. It sleeps on {name}'s chest and is not asked to leave."
+      ]
+    },
+    {
+      "id": "village_map",
+      "w": 3,
+      "steps": [
+        "{name} started drawing a map of {his} village on the dugout wall with a piece of charcoal. {He} started with the church.",
+        "Every evening {name} adds a street or a house to the wall map. The squad has begun to point out what is missing.",
+        "A man from the next trench came by to look at {name}'s map. He turned out to be from the next village. They talked for hours.",
+        "The wall map is almost finished. {name} added the last thing today: a tiny dot, with a name next to it, for the house {he} will return to."
+      ]
+    },
+    {
+      "id": "sourdough",
+      "w": 3,
+      "steps": [
+        "{name} has been given a small jar of sourdough starter by the cook, with strict instructions to keep it alive. It lives in {his} coat.",
+        "The starter bubbled all night in {name}'s coat. {He} slept badly, but the jar is doing well.",
+        "{name} baked the first loaf over the stove today. It was flat, dense, and slightly sour. The squad ate every crumb.",
+        "{name} gave a piece of the starter to a man in the next dugout. 'Keep it warm,' {he} said. 'It likes company.'"
+      ]
+    },
+    {
+      "id": "sandbag_flowers",
+      "w": 3,
+      "steps": [
+        "{name} found a packet of seeds in a ruined house and put them in a tin of soil on the parapet at {sector}.",
+        "Two green shoots have come up in {name}'s tin. The squad has agreed not to step near it.",
+        "The shoots in {name}'s tin have grown a hand tall. A passing officer stopped, looked, and said nothing.",
+        "A small yellow flower opened in {name}'s tin at {sector} this morning. Half the squad came to see it."
+      ]
+    },
+    {
+      "id": "watch_repair",
+      "w": 3,
+      "steps": [
+        "{name}'s watch stopped at ten past four. {He} has carried it ever since, as if it were still running.",
+        "{name} asked the sapper to look at the watch. The sapper opened it with a pin and said: it is not broken, it is tired.",
+        "The sapper cleaned the watch with a feather and a drop of oil. After an hour, it started to tick.",
+        "{name} wore the watch on the fire step today. It is four minutes slow, and {he} would not change it for a gold one."
+      ]
+    },
+    {
+      "id": "star_book",
+      "w": 3,
+      "steps": [
+        "{name} found a torn book about the night sky in a ruined library. It has no cover, but it has pictures of stars.",
+        "On night watch {name} found the bright star in the book and told the sentry beside {him} its name.",
+        "Now half the squad can name three stars. {name} insists on testing them before dawn watch, in a whisper.",
+        "A cloudy night. {name} could not see a single star, and recited them all from memory instead."
+      ]
+    },
+    {
+      "id": "mail_game",
+      "w": 3,
+      "vars": {
+        "prize": [
+          "a biscuit",
+          "a pinch of tea",
+          "a pencil",
+          "an old magazine"
+        ]
+      },
+      "steps": [
+        "The squad has started a game: guess how many letters will come in the next mail. {name} guessed seven. It was twelve.",
+        "{name} bet {prize} that the mail would be late. The mail was on time. {He} paid with grace and a sigh.",
+        "{name} guessed the exact number of letters this time. The squad accused {him} of reading the bag.",
+        "The mail game has become a tradition. {name} keeps the score on a board by the stove, and nobody trusts the score."
       ]
     }
   ],
