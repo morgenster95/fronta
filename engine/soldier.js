@@ -75,7 +75,12 @@ export function displayName(s) {
 // Jeden zápis za den: další text téhož dne se připojí za poslední zápis (voják má v deníku každý den jeden odstavec).
 export function addEntry(s, day, text) {
   if (!text) return;
+  // 26. 11. (uživatel: celé jméno se pořád opakuje): ve vlastním deníku se po prvním zápisu používá jen křestní jméno
+  if (s.first && s.name && s.record.length) text = text.split(s.name).join(s.first);
   const last = s.record.at(-1);
+  // stejný „Shot by X (@handle).“ dvakrát v jednom denním zápisu (zásah + smrt) se nezopakuje
+  if (last && last[0] === day) for (const m of text.match(/\s*Shot by [^()]*\(@[\w.]+\)\./g) || []) if (last[1].includes(m.trim())) text = text.replace(m, '');
+  if (!text.trim()) return;
   if (last && last[0] === day) last[1] = `${last[1]} ${text}`;
   else s.record.push([day, text]);
 }
