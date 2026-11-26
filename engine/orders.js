@@ -55,14 +55,19 @@ export function orderFire(state, faction, day, role) {
   return live(state, faction, day).reduce((m, o) => { const f = typeof o.fire === 'number' ? o.fire : (o.fire?.[role] ?? 1); return m * (1 + (f - 1) * (1 - (o.ruined || 0))); }, 1);
 }
 
+// tank (26. 11., NÁVRH): rozkaz s `tank: { r, fire, exposed }` stojí v jednom okně fronty, jen tam platí; poloha `x` se vybírá v battle.js
+export function orderTank(state, faction, day) {
+  return live(state, faction, day).find((o) => o.tank) || null;
+}
+
 // vítězné možnosti → rozkazy (začínají dnem `from`)
 export function issueOrders(state, winners, from) {
   const add = winners
-    .filter((w) => w && (w.danger != null || w.recover != null || w.shell != null || w.fire != null || w.mine || w.heal != null || w.stretchers != null || w.medics != null || w.exposed != null || w.die != null || w.guns != null || w.barrage != null))
+    .filter((w) => w && (w.danger != null || w.recover != null || w.shell != null || w.fire != null || w.mine || w.heal != null || w.stretchers != null || w.medics != null || w.exposed != null || w.die != null || w.guns != null || w.barrage != null || w.tank))
     .map((w) => ({
       faction: w.faction, kw: w.kw, label: w.label, from, to: from + (w.days ?? 3) - 1,
       ...(w.danger != null ? { danger: w.danger } : {}), ...(w.recover != null ? { recover: w.recover } : {}),
-      ...(w.shell != null ? { shell: w.shell } : {}), ...(w.fire != null ? { fire: w.fire } : {}), ...(w.mine ? { mine: true } : {}), ...(w.heal != null ? { heal: w.heal } : {}), ...(w.stretchers != null ? { stretchers: w.stretchers } : {}), ...(w.medics != null ? { medics: w.medics } : {}), ...(w.exposed != null ? { exposed: w.exposed } : {}), ...(w.die != null ? { die: w.die } : {}), ...(w.guns != null ? { guns: w.guns } : {}), ...(w.barrage != null ? { barrage: w.barrage } : {}),
+      ...(w.shell != null ? { shell: w.shell } : {}), ...(w.fire != null ? { fire: w.fire } : {}), ...(w.mine ? { mine: true } : {}), ...(w.heal != null ? { heal: w.heal } : {}), ...(w.stretchers != null ? { stretchers: w.stretchers } : {}), ...(w.medics != null ? { medics: w.medics } : {}), ...(w.exposed != null ? { exposed: w.exposed } : {}), ...(w.die != null ? { die: w.die } : {}), ...(w.guns != null ? { guns: w.guns } : {}), ...(w.barrage != null ? { barrage: w.barrage } : {}), ...(w.tank ? { tank: w.tank } : {}),
     }));
   state.orders = [...(state.orders || []), ...add].slice(-40);
   return add;

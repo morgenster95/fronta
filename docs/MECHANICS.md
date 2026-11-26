@@ -613,3 +613,15 @@ Uživatel: „hodně raněných, dává smysl hlasování, které přidá nemocn
 - **HOSPITAL:** trvale +1 nemocniční kryt (`build: dugout`: 4 lůžka, 4 nosítka), na 4 dny +20 nosítek, +80 práce mediků, úmrtnost kriticky raněných ×0,7 (`marketing/reels/front16.vote.draft.json`).
 - **TANK:** na 4 dny palba všech vlastních střelců ×1,35, ale tank přitahuje palbu: zásahy na vlastní vojáky ×1,1 (`fire`, `exposed`). Hegemonie dostane **Behemoth** (těžký kosočtverečný, ocelově šedý s rezavým pruhem), Concord **Tortoise** (malý s věží, olivový se žlutou hvězdou); sprity `web/public/assets/props/tank_{heg,con}_{front,back,side}.png` z archu `art/cine/tank_sheet_a.png` (PixelLab 9 gen.).
 - Na mapě zatím tank není (k doplnění, pokud TANK vyhraje). Čísla jsou odhad, neověřené simulací.
+
+## 2026-11-26: TANK jako jednotka na mapě (NASAZENO jako výchozí varianta, čeká na potvrzení uživatele)
+**Proč:** plošný TANK z hlasování (palba ×1,35, zásahy na vlastní ×1,1) byl příliš silný a skoro zadarmo. Simulace (20 běhů × 3 dny, stav 25. 11.): vlastní padlí +4 za den, nepřátelé padlí **+44** (z 88 na 131). HOSPITAL ušetří ~12 vlastních životů za den. Nemocnice by byla zbytečná.
+**Nově (`theme.tank`):** tank je jeden na stranu, stojí v nejhustším úseku vlastní první linie (okno ±`r` px, engine `battle.js`, poloha `tankX` v rozkazu) a platí jen tam:
+- vlastní střelci v okruhu `r` = 1 200 px (~15–17 % první linie, ~85 střelců): palba ×2,2;
+- nepřítel zasahuje vlastní vojáky v okruhu ×1,8 (tank přitahuje palbu);
+- jinde na frontě beze změny; 4 dny od příští bitvy.
+**Simulace (20 běhů × 3 dny, za den):** základ H 93,8 : C 88,3 padlých; HOSPITAL H 81,7 (−12); TANK Hegemonie: vlastní +5, nepřátelé **+15** (raněných nepřátel +29); TANK Concord: vlastní +2, nepřátelé +16. Tank bere ~15 nepřátel za cenu 2–5 vlastních, nemocnice šetří ~12 vlastních: obě volby srovnatelně cenné.
+**Vypnutí/ladění:** smazat `theme.tank` (pak platí starý plošný rozkaz) nebo změnit `r`/`fire`/`exposed`. Test: `engine/engine.test.js` „tank z hlasování“.
+**Na mapě (`web/src/tank-fx.js`):** Behemoth (Hegemonie, čelní pohled) a Tortoise (Concord, zadní pohled) jezdí v cyklu ~27 s: u zákopu → VPŘED do země nikoho → pálí → COUVÁ (nikdy se neotáčí) → pálí → couvá k zákopu → pálí → dokola. Zášleh hlavně, zpětný ráz, kouř, kulometné dávky, dopady granátů v zákopu nepřítele, zvuk děla a motoru, prach a výfuk. Dev náhled `/?orders=0:TANK` (strana:heslo).
+**Možné rozšíření (NÁVRH, nepostaveno):** tank se opotřebuje (4 dny = ~25 % denně), vlastní ženisté v okruhu ho opravují, nepřátelské těžké dělo (Grey Mill) ho může vyřadit (vrak na mapě); dává smysl ženistům a dělu.
+

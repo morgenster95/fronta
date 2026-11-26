@@ -566,6 +566,13 @@
       }
     ]
   },
+  "tank": {
+    "r": 1200,
+    "fire": 2.2,
+    "exposed": 1.8,
+    "days": 4,
+    "_": "26. 11. (NÁVRH): rozkaz TANK z hlasování = jeden tank v nejhustším úseku vlastní první linie; v okruhu r px vlastní střelci střílí ×fire a nepřítel zasahuje vlastní vojáky ×exposed; jinde beze změny. Vypnout = smazat tento klíč (pak platí plošný fire 1,35 / exposed 1,1 z hlasování). Simulace: docs/MECHANICS.md"
+  },
   "battle": {
     "_note": "Denní boj (engine/battle.js, docs/COMBAT_ROLES.md). Všechna čísla se dají ladit; dopad ukáže node tools/sim-battle.mjs --kpi (a --set klíč=hodnota). Pravděpodobnosti jsou na vojáka a den.",
     "enabled": true,

@@ -475,7 +475,12 @@ function resolveFactionVote(state, v, theme) {
   const total = Object.keys(v.tallies).length;
 
   const winner = per.map((p) => `${sideName(theme, p.faction)}: ${p.winner?.kw ?? 'no votes'}`).join(' · ');
-  const orders = issueOrders(state, per.filter((p) => p.winner).map((p) => ({ ...p.winner, ...(p.winner.byFaction?.[p.faction] || {}), faction: p.faction })), state.day + 2); // 16. 11. (uživatel): rozkaz platí až od příští bitvy (dnes se teprve postaví, na mapě je vidět hned); byFaction: stejné heslo, jiný účinek podle strany
+  const tankOrder = (w) => { // TANK (26. 11.): místo plošného bonusu tank vázaný na místo (theme.tank: dosah r, palba, zásahy na vlastní, dny); bez theme.tank platí starý plošný rozkaz
+    if (w.kw !== 'TANK' || !theme.tank) return w;
+    const { fire, exposed, ...rest } = w;
+    return { ...rest, tank: { r: theme.tank.r, fire: theme.tank.fire, exposed: theme.tank.exposed }, days: theme.tank.days ?? w.days };
+  };
+  const orders = issueOrders(state, per.filter((p) => p.winner).map((p) => tankOrder({ ...p.winner, ...(p.winner.byFaction?.[p.faction] || {}), faction: p.faction })), state.day + 2); // 16. 11. (uživatel): rozkaz platí až od příští bitvy (dnes se teprve postaví, na mapě je vidět hned); byFaction: stejné heslo, jiný účinek podle strany
   // stavby (dugout, pytle, drát…): trvalé, staví se jen hlasováním
   // věta o stavbě (theme.battle.buildings[].done) nahradí obecný výsledek možnosti, ať se v Gazette neříká totéž dvakrát
   const builtOf = per.map((p) => (p.winner?.build ? buildStructure(state, theme, p.faction, p.winner.build) : null));
@@ -710,7 +715,7 @@ export function buildPublic(state, theme) {
       ...(state.vote.perFaction ? { perFaction: true } : {}), ...(state.vote.note ? { note: state.vote.note } : {}),
     } : null,
     battle: battlePublic(state, theme),
-    orders: (state.orders || []).filter((o) => state.day + 1 <= o.to).map(({ faction, kw, label, from, to, ruined }) => ({ faction, kw, label, from, to, ...(ruined ? { ruined } : {}) })),
+    orders: (state.orders || []).filter((o) => state.day + 1 <= o.to).map(({ faction, kw, label, from, to, ruined, tankX }) => ({ faction, kw, label, from, to, ...(ruined ? { ruined } : {}), ...(tankX != null ? { tankX } : {}) })),
     pilots: pilotsPublic(state), // piloti stran pro web (letadlo nad frontou)
     shells: state.shells ? { counts: state.shells.counts, target: state.shells.target, openedAt: state.shells.openedAt } : null, // souboj komentářů: živé počty granátů
     updated: new Date().toISOString(),

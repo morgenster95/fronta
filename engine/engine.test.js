@@ -1533,3 +1533,16 @@ test('kartičky: nález jen po návratu z akce, vzácnost podle theme.cards, pil
   for (let i = 0; i < 2000; i++) if (findCard(s, theme, { id: `w${i}`, name: 'W', status: 'active', record: [] }, 'wire', 3)) got++;
   assert.ok(got > 110 && got < 210, `drát ~8 %: ${got}`);
 });
+
+test('tank z hlasování: místní účinek (orderTank, issueOrders nese tank), bez rozkazu nic', async () => {
+  const { issueOrders, orderTank } = await import('./orders.js');
+  const st = { day: 10, orders: [] };
+  assert.equal(orderTank(st, 0, 12), null);
+  const add = issueOrders(st, [{ faction: 0, kw: 'TANK', label: 'tank', tank: { r: 1200, fire: 2.2, exposed: 1.8 }, days: 4 }], 12);
+  assert.equal(add.length, 1);
+  assert.deepEqual(add[0].tank, { r: 1200, fire: 2.2, exposed: 1.8 });
+  assert.equal(add[0].from, 12); assert.equal(add[0].to, 15);
+  assert.ok(orderTank(st, 0, 13));
+  assert.equal(orderTank(st, 0, 16), null);
+  assert.equal(orderTank(st, 1, 13), null);
+});

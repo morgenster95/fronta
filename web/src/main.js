@@ -12,6 +12,7 @@ import { startReel } from './reel.js';
 import { buildHospitals, roofAlpha, hospitalSize } from './hospital.js';
 import { hospitalNav } from './hospital-nav.js';
 import { initOrderFx } from './orders-fx.js';
+import { initTankFx } from './tank-fx.js';
 import { initPlanes } from './planes.js';
 import { initWire, placeVolunteers } from './wire.js';
 import { initObservation } from './observation.js';
@@ -354,6 +355,8 @@ async function boot() {
 
   // viditelné účinky rozkazů z hlasování (kryty proti bombardování, lékař u obvaziště)
   const orderFx = initOrderFx({ world, anchor: terrainLayer, roster, map, tex, anims, hospitals, theme, openX0, openX1 });
+  // tank z hlasování TANK: jezdí vpřed, pálí, couvá (web/src/tank-fx.js; dev náhled /?orders=0:TANK)
+  const tankFx = initTankFx({ world, roster, map, theme, openX0, openX1 });
   // letadla pilotů nad frontou (web/src/planes.js; dev náhled /?planes=0,1)
   const planeFx = initPlanes({ world, map, roster, openX0, openX1 });
   // NÁVRH úkrytů (jen dev náhled /?shelters=1, web/src/shelters.js)
@@ -490,6 +493,7 @@ async function boot() {
     sfx.setWeather(new URLSearchParams(location.search).get('wx') || (winter.on ? winterFall(roster.weather) || 'clear' : roster.weather)); // v zimě vítr místo deště
     if (gunFx) gunFx.sfx = sfx;
     convoy.sfx = sfx;
+    tankFx.sfx = sfx;
     const btn = document.getElementById('sound');
     const paint = () => {
       btn.textContent = sfx.on ? '🔊' : '🔇';
@@ -510,6 +514,7 @@ async function boot() {
     paint();
   }
   const life = createLife({ world, actorLayer, theme, anims, tex, map, dirs: DIRS, fx: fxSheets, aims, breath, sfx, winter: winter.on });
+  tankFx.life = life;
   for (const s of placed) life.setupSprite(s, s.sprite);
 
   // kulometná hnízda: kulometčík v přední linii se přikrčí za kulomet na trojnožce (objekt z PixelLabu, šikmo k nepříteli)
@@ -723,7 +728,7 @@ async function boot() {
   const hospNav = hospitalNav({ world, cam, sites: hospitals?.sites, theme, soldiers, hidden: !!reelParam && reelParam !== 'news' });
 
   // --- smyčka ---
-  if (import.meta.env.DEV) window.__front = { convoy, planeFx, obsFx, gunFx, mineFx, life, cam, soldiers, tex, anims, hospitals, orderFx, open: (s) => ui.openSoldier(s) }; // ladění v konzoli
+  if (import.meta.env.DEV) window.__front = { tankFx, convoy, planeFx, obsFx, gunFx, mineFx, life, cam, soldiers, tex, anims, hospitals, orderFx, open: (s) => ui.openSoldier(s) }; // ladění v konzoli
   const visibleSoldiers = [];
   // ?slow=N zpomalí animace a efekty N× (jen pro kontrolu výstřelů na snímcích obrazovky)
   const slow = Math.max(1, Number(new URLSearchParams(location.search).get('slow')) || 1);
@@ -778,6 +783,7 @@ async function boot() {
 
     // simulovaný život (výstřely, granáty, světlice, zdravotníci) + otřes kamery při blízkém dopadu
     orderFx.update(now, view);
+    tankFx.update(now, view);
     planeFx.update(now, view, sfx);
     gunFx?.update(now, app.ticker.deltaMS, view);
     convoy.update(now, app.ticker.deltaMS, view);

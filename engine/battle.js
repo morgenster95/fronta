@@ -19,7 +19,7 @@
 import { rngFor } from './rng.js';
 import { eventEntry } from './story.js';
 import { activeBarrage, activeObservation } from './race.js';
-import { orderStretchers, orderMedics, orderGuns, orderBarrage } from './orders.js';
+import { orderStretchers, orderMedics, orderGuns, orderBarrage, orderTank } from './orders.js';
 import { fallSoldier, addEntry } from './soldier.js';
 import { gunTargets, gunUpkeep } from './gun.js';
 import { mineBlasts } from './mine.js';
@@ -177,12 +177,25 @@ export function battleTick(state, theme, story, day, ctx = {}) {
   // mina z kóty (reward 'mine', engine/mine.js): po dni kopání vybuchne pod nejhustším úsekem nepřátelské první linie, nebo ji nepřítel zavalí
   const mineFire = mineBlasts(state, theme, day, X, able);
   const mineOn = (s) => mineFire.find((m) => m.ids && m.target === s.faction && m.ids.has(s.id));
+  // tank (26. 11., NÁVRH): v okně poloměru r kolem tanku střílí vlastní střelci víc (fire) a nepřítel víc zasahuje vlastní vojáky (exposed: tank přitahuje palbu).
+  // Poloha = nejhustší okno vlastní první linie (jako mina); ukládá se do rozkazu (`tankX`), web podle ní kreslí tank
+  const tankOf = theme.factions.map((_, f) => {
+    const o = orderTank(state, f, day);
+    if (!o) return null;
+    const T = o.tank, xs = state.soldiers.filter((x) => x.faction === f && x.line === 'front' && x.status === 'active' && !x.wound).map(X).sort((a, b) => a - b);
+    if (!xs.length) return null;
+    let best = 0, bi = 0, j = 0;
+    for (let i = 0; i < xs.length; i++) { while (xs[j] < xs[i] - 2 * T.r) j++; if (i - j + 1 > best) { best = i - j + 1; bi = Math.round((xs[j] + xs[i]) / 2); } }
+    o.tankX = bi;
+    return { x: bi, r: T.r, fire: T.fire ?? 1, exposed: T.exposed ?? 1 };
+  });
+  const tankNear = (s, k) => { const t = tankOf[s.faction]; return t && Math.abs(X(s) - t.x) <= t.r ? t[k] : 1; };
   const coverOf = (s) => {
     const side = state.battle.sides[s.faction];
     const wire = side.wire[s.sector] ?? (side.wire[s.sector] = cfg.wire.start);
     const service = day - (s.enlisted ?? day);
     return (cfg.line[s.line] ?? 1) * (1 - cfg.buildings.sandbags.cover * count(side, 'sandbags')) * (1 - cfg.wire.cover * wire)
-      * (1 - cfg.experience * Math.min(1, service / cfg.experienceDays)) * (ctx.exposedOf?.(s) ?? 1);
+      * (1 - cfg.experience * Math.min(1, service / cfg.experienceDays)) * (ctx.exposedOf?.(s) ?? 1) * tankNear(s, 'exposed');
   };
   const severity = (s, table, rand, shell) => {
     const service = day - (s.enlisted ?? day);
@@ -389,7 +402,7 @@ export function battleTick(state, theme, story, day, ctx = {}) {
     // pozorovatelna (15. 11., uživatel): pozorovatel hlásí, kde stojí nepřátelské kulomety, takže střelce strany s pozorovatelnou nepotlačí
     // spojař (roles.signaller.counterFire, 24. 11. NÁVRH): telefonem navádí vlastní děla na střelecká hnízda; střelec, u kterého jsou nepřátelští spojaři, trefí méně
     const cf = R.signaller?.counterFire ? R.signaller.counterFire * share(near(sigFire[e], X(s), range).length, R.signaller.covers, near(targetsOf[e], X(s), range).length) : 0;
-    const p = fire * (SL[s.line] ?? 1) * mult(theme, s) * (1 + lead) * (ctx.unsuppressed?.(s) ? 1 : 1 - suppress) * sat * (crowd[f][s.archetype] ?? 1) * (ctx.fireOf?.(s) ?? 1) * (1 - cf);
+    const p = fire * (SL[s.line] ?? 1) * mult(theme, s) * (1 + lead) * (ctx.unsuppressed?.(s) ? 1 : 1 - suppress) * sat * (crowd[f][s.archetype] ?? 1) * (ctx.fireOf?.(s) ?? 1) * tankNear(s, 'fire') * (1 - cf);
     stats[f].shots++;
     const rand = round ? rngFor(s.id, `fire${round}`, day) : rngFor(s.id, 'fire', day);
     if (rand() >= p) continue;
