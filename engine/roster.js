@@ -484,7 +484,14 @@ function resolveFactionVote(state, v, theme) {
   // stavby (dugout, pytle, drát…): trvalé, staví se jen hlasováním
   // věta o stavbě (theme.battle.buildings[].done) nahradí obecný výsledek možnosti, ať se v Gazette neříká totéž dvakrát
   const upgradeBuild = (id) => (id === 'dugout' && theme.battle?.buildings?.hospital ? 'hospital' : id); // HOSPITAL staví polní nemocnici (10 lůžek), když je v tématu
-  const builtOf = per.map((p) => (p.winner?.build ? buildStructure(state, theme, p.faction, upgradeBuild(p.winner.build)) : null));
+  // polní nemocnice (26. 11.): dnešní den se vyhodnotí ještě se starými lůžky, stavba se dokončí až po dnešním boji (dailyTick, `pendingBuilds`)
+  const deferBuild = (f, id) => {
+    const def = theme.battle.buildings[id], side = ensureBattle(state, theme).sides[f];
+    if ((side.built[id] || 0) >= (def.max || 99) || (state.pendingBuilds || []).some((b) => b.faction === f && b.id === id)) return null;
+    (state.pendingBuilds ||= []).push({ faction: f, id });
+    return def.start || `The ${sideName(theme, f)} began building: ${def.name}, ready tomorrow`;
+  };
+  const builtOf = per.map((p) => (p.winner?.build ? (upgradeBuild(p.winner.build) === 'hospital' ? deferBuild(p.faction, 'hospital') : buildStructure(state, theme, p.faction, upgradeBuild(p.winner.build))) : null));
   const built = builtOf.filter(Boolean);
   const text = per.map((p, i) => (builtOf[i] ? `${builtOf[i]}.`
     : (p.winner ? p.winner.byFaction?.[p.faction]?.outcome || p.winner.outcome || '' : 'No word came back from the {side}: nothing was built.').replaceAll('{side}', sideName(theme, p.faction)))).join(' ');
@@ -569,6 +576,8 @@ export function dailyTick(state, theme, story, ctx = {}) {
   const dieOf = (s) => orderDie(state, s.faction, day);
   pilotSortie(state, theme, day, weather?.id, fallSoldier, (s, sev) => { s.wound = { sev, day }; s.status = 'wounded'; s.woundsTaken = (s.woundsTaken || 0) + 1; }); // denní vzlet: bouře/mlha drží na zemi, jinak malá šance sestřelení
   const fight = theme.battle ? battleTick(state, theme, story, day, { busy: raid.ids, dangerOf, careOf, shellOf, fireOf, killOf, unsuppressed, healOf, exposedOf, dieOf, shotsOf }) : { events: [], news: [], ids: new Set() };
+  for (const b of state.pendingBuilds || []) buildStructure(state, theme, b.faction, b.id); // odložené stavby (polní nemocnice) až po dnešním boji
+  state.pendingBuilds = [];
   if (theme.race) checkKillRace(state, theme, story); // závod „kdo první zabije N“: zpráva o dobytí jde do state.news (níž se přidá do novin)
   const events = [...raid.events, ...fight.events];
   const today = new Set(); // šablony použité dnes (rozmanitost mezi vojáky)

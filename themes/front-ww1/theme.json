@@ -966,6 +966,7 @@
       "hospital": {
         "name": "Field hospital",
         "done": "built a large field hospital behind the reserve line, out of rifle range: 10 beds, an operating table and a surgeon's lamp",
+        "start": "began building a large field hospital behind the reserve line, out of rifle range: 10 beds, an operating table and a surgeon's lamp. It opens tomorrow",
         "beds": 10,
         "care": 1.6,
         "max": 1,

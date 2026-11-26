@@ -631,3 +631,4 @@ Uživatel: „hodně raněných, dává smysl hlasování, které přidá nemocn
 - Mapování je v enginu (`upgradeBuild` v `engine/roster.js`), takže běžící hlasování se nemění. Smazáním klíče `buildings.hospital` v tématu se vrátí zemnice.
 - Mapa: velká stavba vedle zemnic 312×104 px (`web/src/hospital.js`, `dugoutArt` s `beds >= 10`), 6 lůžek nahoře + 2 + 2 kolem vchodu, operační stůl, kamínka, police, střecha s křížem a plachtou barvy strany. Dev náhled `/?hospital=big`.
 - Test: „polní nemocnice (10 lůžek) nahradí zemnice…“.
+- **Pořadí (pokyn uživatele 26. 11.):** polní nemocnice se po výhře hlasování jen zahájí (`state.pendingBuilds`, zpráva „…opens tomorrow“). Dnešní den (zranění, smrti, nemoci) se vyhodnotí ještě se starým obvazištěm a zemnicemi, stavba se dokončí až po dnešním boji (`dailyTick` po `battleTick`), lůžka platí od zítřejšího dne. Mapa ji ukáže hned po novinách.
