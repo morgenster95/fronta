@@ -110,9 +110,9 @@ export async function makeDay17Scenes(tex = {}, anims = {}) {
       put(S.poster, 45, 86); put(S.poster, 25, 86); put(S.poster, 65, 86);
       px(P.ink, 12, 87, 66, 1); label('SIGN TODAY', 17, 89, P.rust2);
       // stůl náboru: důstojník stojí za ním, stůl se kreslí přes jeho nohy
-      put(S.officer, 60, 138);
-      tl(R.tableD, 40, 118);
-      tl(R.flagD, 70, 104);
+      put(S.officer, 58, 126);
+      tl(R.flagD, 2, 94);
+      tl(R.tableD, 44, 118);
       const arrive = 3.0, x = Math.min(30, -6 + t * (36 / arrive));
       if (t < arrive) put(at(S.walkE, t, 7), Math.round(x), 150);
       else put(once(S.saluteE, t - arrive - 0.2, 7), 30, 150);
@@ -123,23 +123,23 @@ export async function makeDay17Scenes(tex = {}, anims = {}) {
       // noc, Den 11: nahoře barikáda z pytlů (PixelLab), Cyril za ní; dole za drátem raider. Raider přijde, vymění střely, Cyril padne před barikádou, raider odejde, medik s lékárnou obvazuje
       field(0, H, [P.ink, P.dark, P.mud0, P.mud1], (x, y) => 0.1 + 0.28 * hash(x >> 2, y >> 2, 178));
       const fl = (t % 6) / 6; glow(20 + fl * 55, 30, 56, 0.4 * Math.sin(fl * Math.PI), '220,230,255');
-      const bx = 8, by = 54, cx = 30;
+      const bx = 6, by = 62, cx = 24;
       for (const [x, y, i] of [[18, 124, 0], [48, 128, 1], [78, 124, 2]]) put(R.broken[i], x, y);
-      const rx = 30;
+      const rx = 24;
       if (t < 1.8) put(at(S.rWalkN, t, 6), rx, Math.round(186 - t * 26));
       else if (t < 3.8) put(at(S.rFireN, t, 8), rx, 140);
       else put(at(S.rWalkS, t, 6), rx, Math.round(140 + (t - 3.8) * 26));
       // Cyril za barikádou (nohy zakryté) do 3,2 s; pak padá a leží před barikádou
       const standing = t < 3.2;
-      if (standing) put(t < 1.0 ? S.stand : at(S.fireN, t, 8), cx, by + 17);
-      tl(R.barrN, bx, by); tl(R.cornerN, bx + 42, by + 1);
-      tl(R.tentN, 44, by - 22);
-      if (!standing) { if (t < 4.2) put(once(S.fall, t - 3.2, 8), cx, by + 52); else put(S.lyN, cx, by + 52); }
+      if (standing) put(t < 1.0 ? S.stand : at(S.fireN, t, 8), cx, by + 13);
+      tl(R.barrN, bx, by); tl(R.cornerN, bx + 38, by + 4);
+      tl(R.tentN, 48, by - 12);
+      if (!standing) { if (t < 4.2) put(once(S.fall, t - 3.2, 8), cx, by + 44); else put(S.lyN, cx, by + 44); }
       for (const t0 of [1.9, 2.3, 2.7]) { const k = t - t0; if (k >= 0 && k < 0.15) glow(rx + 6, 126, 8, 0.8 * (1 - k / 0.15), '255,230,170'); }
       for (const t0 of [1.3, 2.1, 2.9]) { const k = t - t0; if (k >= 0 && k < 0.15) glow(cx - 10, by + 28, 8, 0.8 * (1 - k / 0.15), '255,230,170'); }
       if (t > 3.1 && t < 3.5) glow(cx, by + 8, 14, 0.5 * (3.5 - t) / 0.4, '220,40,40');
       // medik přijde zleva k ležícímu (od 4,4 s), pak obvazuje; lékárna mu leží vedle
-      if (t >= 4.4) { tl(R.medN, 52, by + 40); const mx = Math.min(10, -8 + (t - 4.4) * 14); if (mx < 10) put(at(S.medE, t, 7), Math.round(mx), by + 52); else put(at(S.bandN, t - 5.7, 6), 10, by + 52); }
+      if (t >= 4.4) { tl(R.medN, 56, by + 36); const mx = Math.min(6, -8 + (t - 4.4) * 14); if (mx < 6) put(at(S.medE, t, 7), Math.round(mx), by + 44); else put(at(S.bandN, t - 5.7, 6), 6, by + 44); }
       g.fillStyle = 'rgba(20,24,44,0.15)'; g.fillRect(0, 0, W, H);
     },
     promo(t) {
@@ -147,15 +147,15 @@ export async function makeDay17Scenes(tex = {}, anims = {}) {
       field(0, 50, ['#3a3048', '#7a5560', P.fire, P.gold], (x, y) => y / 50);
       glow(45, 50, 40, 0.5, '230,170,110');
       field(50, H, [P.mud0, P.mud1, P.mud2], (x, y) => 0.3 + 0.35 * hash(x >> 2, y >> 2, 179));
-      tl(R.flagD, 2, 70);
-      put(S.officer, 62, 112);
-      tl(R.mapD, 40, 96);
+      tl(R.flagD, 2, 78);
+      put(S.officer, 60, 112);
+      tl(R.mapD, 42, 96);
       const sal = t > 1.6 ? once(S.saluteE, t - 1.6, 7) : null;
-      put(sal || S.stand, 26, 140);
-      if (t > 0.4) { const k = clamp((t - 0.4) / 0.6), px0 = 52, py0 = 94 - k * 6;
-        px(P.ink, px0, py0, 14, 18); px(P.white, px0 + 1, py0 + 1, 12, 16); px(P.pale, px0 + 1, py0 + 14, 12, 3);
-        for (let i = 0; i < 2; i++) { const yy = py0 + 3 + i * 5; px(P.gold, px0 + 3, yy + 2, 8, 1); px(P.gold, px0 + 4, yy + 1, 6, 1); px(P.gold, px0 + 5, yy, 4, 1); }
-        if (t > 2.4) glow(px0 + 7, py0 + 9, 12 + 3 * Math.sin(t * 8), 0.4, '240,200,110'); }
+      put(sal || S.stand, 24, 138);
+      if (t > 0.4) { const k = clamp((t - 0.4) / 0.6), px0 = 50, py0 = 90 - k * 6;
+        px(P.ink, px0, py0, 10, 13); px(P.white, px0 + 1, py0 + 1, 8, 11); px(P.pale, px0 + 1, py0 + 10, 8, 2);
+        for (let i = 0; i < 2; i++) { const yy = py0 + 2 + i * 4; px(P.gold, px0 + 2, yy + 2, 6, 1); px(P.gold, px0 + 3, yy + 1, 4, 1); px(P.gold, px0 + 4, yy, 2, 1); }
+        if (t > 2.4) glow(px0 + 5, py0 + 7, 10 + 2 * Math.sin(t * 8), 0.4, '240,200,110'); }
       g.fillStyle = 'rgba(100,60,50,0.08)'; g.fillRect(0, 0, W, H);
     },
     duel(t) {
@@ -164,9 +164,9 @@ export async function makeDay17Scenes(tex = {}, anims = {}) {
       field(40, H, [P.mud0, P.mud1, P.mud2], (x, y) => 0.3 + 0.38 * hash(x >> 2, y >> 2, 176));
       for (let x = 0; x < W; x++) if (hash(x, 4, 177) < 0.5) px(P.mud3, x, 112);
       put(R.wire[0], 28, 126); put(R.wire[1], 66, 128); put(R.wire[2], 106, 126); put(R.crater, 14, 214);
-      const bx = 36, by = 48, cx = 58;
-      put(at(S.dFire, t, 9), cx, by + 17);
-      tl(R.barrU, bx, by); tl(R.cornerU, bx + 42, by + 1); tl(R.rackU, bx - 36, by - 8); tl(R.cratesU, bx + 84, by + 4);
+      const bx = 44, by = 52, cx = 62;
+      put(at(S.dFire, t, 9), cx, by + 13);
+      tl(R.barrU, bx, by); tl(R.cornerU, bx + 36, by + 3); tl(R.rackU, bx - 28, by - 3); tl(R.cratesU, bx + 72, by + 8);
       const foe = (x, tFire, tDie) => {
         if (t < 2.0) put(at(S.eWalk, t, 6), x, Math.round(205 - t * 27));
         else if (t < tFire) put(once(S.eKneel, t - 2.0, 8), x, 151);
