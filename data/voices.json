@@ -2035,7 +2035,7 @@
     "kw": "HOSPITAL",
     "text": "Hospital I sat in those trenches unattended for days. We won't win with dead men.",
     "at": "2026-11-26T00:02:30+0000",
-    "likes": 1,
+    "likes": 2,
     "reply": false
    },
    {
@@ -2065,7 +2065,7 @@
     "kw": "HOSPITAL",
     "text": "Hegemony hospitals, we need to keep our boys alive!",
     "at": "2026-11-26T00:51:44+0000",
-    "likes": 1,
+    "likes": 2,
     "reply": false
    },
    {
@@ -2075,7 +2075,7 @@
     "kw": "HOSPITAL",
     "text": "Hegemony hospitals, help us medics keep you soldiers in the fight!",
     "at": "2026-11-26T01:05:17+0000",
-    "likes": 1,
+    "likes": 2,
     "reply": false
    },
    {
@@ -2105,7 +2105,7 @@
     "kw": "HOSPITAL",
     "text": "Hegemony, hospital. Gotta think long term",
     "at": "2026-11-26T02:37:21+0000",
-    "likes": 0,
+    "likes": 1,
     "reply": false
    },
    {
@@ -2115,7 +2115,7 @@
     "kw": "HOSPITAL",
     "text": "@tyler_mcconne_ll I also vote for more hospitals for concourd",
     "at": "2026-11-26T02:36:54+0000",
-    "likes": 0,
+    "likes": 1,
     "reply": true
    },
    {
@@ -2127,6 +2127,16 @@
     "at": "2026-11-26T02:56:21+0000",
     "likes": 0,
     "reply": true
+   },
+   {
+    "id": "17958925863027600",
+    "handle": "na.da.na",
+    "faction": 0,
+    "kw": "HOSPITAL",
+    "text": "Hegemony: hospital. Guys, there are more patients waiting outside the hospitals than there are inside. We need so many more beds, urgently!",
+    "at": "2026-11-26T04:00:00+0000",
+    "likes": 0,
+    "reply": false
    }
   ]
  },
