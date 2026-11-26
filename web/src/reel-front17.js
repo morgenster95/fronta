@@ -4,14 +4,20 @@
 // Stavba: titulek dne přes záběr hrdiny na mapě (úvodní snímek je každý den jiný) → ztráty → nemocnice → signing → hit → promo → duel → Cyril na mapě → počty → výzva.
 import { CSS as BASE } from './reel-day1.js';
 import { FX_CSS, cues, camPath, subtitles, transitions, fxLayers, slam, clamp01, win, easeOut, tagAt, dayTitle } from './reel-kit.js';
-import { makeDay17Scenes } from './cinema-d17.js';
+import { makeFight } from './fight-fx.js';
+import { loadImage } from './assets.js';
+// rekvizity z PixelLabu (art/cine/prop_*.png, zmenšené podle skutečné velikosti: tools/fit-props.py, pravidla měřítka v CLAUDE.md)
+import tableSrc from '../../art/cine/prop_recruit_table.png';
+import boardSrc from '../../art/cine/prop_notice_board.png';
+import medSrc from '../../art/cine/prop_medic_box.png';
+import cratesSrc from '../../art/cine/prop_ammo_crates.png';
+import lanternSrc from '../../art/cine/prop_lantern_post.png';
 import script from '../../marketing/reels/front17.script.json';
 import D from '../../marketing/reels/front17.data.json';
 
 const files = import.meta.glob('../../marketing/reels/front17.vo.json', { eager: true, import: 'default' });
 
 const CSS = `${BASE}${FX_CSS}
-#f17-art { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; object-fit: cover; opacity: 0; }
 .f17-panel { position: absolute; left: 7%; right: 7%; background: rgba(14,13,12,0.93); border: 3px solid #524a3f; padding: 14px 16px; opacity: 0; }
 .f17-panel .t { font-family: 'Silkscreen', monospace; font-size: 20px; color: #d98f3f; text-align: center; letter-spacing: 0.08em; margin-bottom: 8px; }
 .f17-panel .row { display: flex; justify-content: space-between; align-items: baseline; font-family: 'Silkscreen', monospace; font-size: 22px; margin: 4px 0; color: #e3d9c3; }
@@ -55,6 +61,7 @@ export async function startDay17Reel({ cam, map, soldiers, tex, anims }) {
   const pan = (l) => [l[Math.floor(l.length * 0.08)] || l[0], l[Math.floor(l.length * 0.92)] || l.at(-1)];
   if (fH.length) { const [a, b] = pan(fH); K.push([tt.army, a.x, a.y - 20, 1.6, 'cut'], [tt.army + 3.2, b.x, b.y - 20, 1.6]); }
   if (fC.length) { const [a, b] = pan(fC); K.push([tt.army + 3.2, a.x, a.y - 20, 1.6, 'cut'], [tt.cta - 0.01, b.x, b.y - 20, 1.6]); }
+  if (hero) { const hp = posOf(hero); const sx0 = hp.x - 6, sy0 = hp.y - 400; K.push([tt.sign, sx0 + 8, sy0 - 6, 4.0, 'cut'], [tt.hit, hp.x, hp.y + 32, 4.2, 'cut'], [tt.promo, hp.x + 10, hp.y - 8, 5.0, 'cut'], [tt.duel, hp.x, hp.y + 34, 4.0, 'cut'], [tt.medals - 0.01, hp.x, hp.y + 34, 4.0]); }
   K.push([tt.cta, hRef.x, fy + 20, 2.0, 'cut'], [END, hRef.x + 60, fy + 30, 2.1]);
   const camAt = camPath(K.sort((p, q) => p[0] - q[0]));
   const spots = [[0, tt.fell, hero, 4.2, 44], [tt.medals, tt.army, hero, 4.8, 44]].filter((x) => x[2]); // úvodní záběr pod titulkem = hrdina dne (každý den jiný, ať feed nemá stejné náhledy)
@@ -73,6 +80,7 @@ export async function startDay17Reel({ cam, map, soldiers, tex, anims }) {
     <div id="f17-fell" class="f17-panel"><div class="t">DAY ${D.label} · CASUALTIES</div><div class="row"><span>HEGEMONY</span><b class="r">${D.fell[0]} FELL</b></div><div class="row"><span>CONCORD</span><b class="r">${D.fell[1]} FELL</b></div></div>
     <div id="f17-hosp" class="f17-panel"><div class="t">THE FIELD HOSPITAL</div><div class="row"><span>WOUNDED</span><b class="r">${D.wounded}</b></div><div class="row"><span>BEDS FROM TOMORROW</span><b>${D.beds}</b></div></div>
     ${hero ? `<div id="f17-hero" class="f17-tag">★ ${D.hero.name.toUpperCase()}<small>@${D.hero.handle}<br>${D.hero.note}</small></div><div id="f17-hero2" class="f17-tag">${D.hero.name.toUpperCase()}<small>${D.hero.wounds} wounds · ${D.hero.medals} medals · sector ${D.hero.sector}</small></div>` : ''}
+    <div id="f17-doc" class="f17-tag">CYRIL "DOC"</div>
     <div id="f17-big"><div class="k">ON THE FRONT NOW</div><b>0</b><div class="p">+${D.joined[0] + D.joined[1]} yesterday</div></div>
     <div id="f17-side"><span></span></div>
     <div id="f17-cta"><div class="big">PICK A SIDE<br>HEGEMONY or CONCORD</div><div class="sm">comment it on any post<br>and your soldier joins the line</div><div class="url">mudandiron.app</div></div>
@@ -84,8 +92,48 @@ export async function startDay17Reel({ cam, map, soldiers, tex, anims }) {
   const day = dayTitle(root);
   const $ = (s) => root.querySelector(s);
   const show = (sel, o) => { const el = $(sel); if (el) el.style.opacity = o; };
-  const sc = await makeDay17Scenes(tex, anims);
-  sc.canvas.id = 'f17-art'; root.prepend(sc.canvas);
+
+  // ---- scény přímo na mapě hry (uživatel 26. 11.: kreslená „hlína“ nevypadá jako fronta): skutečné zákopy, drát, krátery, sousední vojáci ----
+  const fight = await makeFight({ anims, soldiers, tex });
+  const cvs = async (src) => { const im = await loadImage(src); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; c.getContext('2d').drawImage(im, 0, 0); return c; };
+  const tableC = await cvs(tableSrc), boardC = await cvs(boardSrc), medC = await cvs(medSrc), cratesC = await cvs(cratesSrc), lanternC = await cvs(lanternSrc);
+  const posterC = (() => { // nástěnka s plakátem FIRST WAVE (barvy Hegemonie: ocel a rez), nápis ručním pixelovým písmem 3×5 na PixelLab nástěnce
+    const G = { F: '111100110100100', I: '111010010010111', R: '110101110101101', S: '011100010001110', T: '111010010010010', W: '101101101111101', A: '010101111101101', V: '101101101101010', E: '111100110100111' };
+    const c = document.createElement('canvas'); c.width = boardC.width; c.height = boardC.height; const g = c.getContext('2d'); g.imageSmoothingEnabled = false;
+    g.drawImage(boardC, 0, 0);
+    const px = 4, py = 3, w = c.width - 8, h = 19;
+    g.fillStyle = '#0e0d0c'; g.fillRect(px - 1, py - 1, w + 2, h + 2); g.fillStyle = '#c4b8a0'; g.fillRect(px, py, w, h);
+    g.fillStyle = '#7e3b2a'; g.fillRect(px, py, w, 8);
+    const word = (txt, x0, y0, col) => { g.fillStyle = col; [...txt].forEach((ch, i) => { const bits = G[ch]; for (let k = 0; k < 15; k++) if (bits[k] === '1') g.fillRect(x0 + i * 4 + (k % 3), y0 + Math.floor(k / 3), 1, 1); }); };
+    word('FIRST', px + Math.round((w - 19) / 2), py + 1, '#e3d9c3'); word('WAVE', px + Math.round((w - 15) / 2), py + 10, '#3d3730');
+    return c;
+  })();
+  const chevC = (() => { const c = document.createElement('canvas'); c.width = 10; c.height = 13; const g = c.getContext('2d'); g.fillStyle = '#0e0d0c'; g.fillRect(0, 0, 10, 13); g.fillStyle = '#e3d9c3'; g.fillRect(1, 1, 8, 11);
+    g.fillStyle = '#d98f3f'; for (const y of [3, 7]) { g.fillRect(2, y + 2, 6, 1); g.fillRect(3, y + 1, 4, 1); g.fillRect(4, y, 2, 1); } return c; })();
+  const H0 = hero ? posOf(hero) : { x: hRef.x, y: hRef.y }, cx = H0.x, cy = H0.y;
+  const sx = cx - 6, sy = cy - 400; // zázemí (náborová stanice) mezi podpůrnou a záložní linií
+  const tS = tt.sign, tH = tt.hit, tP = tt.promo, tD = tt.duel, tM = tt.medals;
+  const prop = (c, x, y, from, to, rise = null) => fight.prop({ canvas: c, from, to, pos: (t) => [x, y - c.height / 2 - (rise ? rise(t) : 0)] });
+  if (hero) {
+    fight.puppet({ x: -9999, y: -9999, from: tS, to: tM, keys: [], hide: hero }); // skutečný Cyril ustoupí hercům po celou dobu příběhu
+    // 1) Den 1: nábor
+    prop(tableC, sx + 16, sy + 4, tS, tH); prop(posterC, sx + 50, sy + 6, tS, tH); prop(cratesC, sx + 74, sy + 2, tS, tH); prop(lanternC, sx - 34, sy - 6, tS, tH);
+    fight.puppet({ x: sx + 16, y: sy - 4, from: tS, to: tH, keys: [{ t0: tS, key: 'hegemony_officer', dir: 'south' }] });
+    fight.puppet({ x: sx - 60, y: sy + 10, from: tS, to: tH, keys: [{ t0: tS, key: 'hegemony', anim: 'walk', dir: 'east', fps: 7, loop: true, move: [sx - 4, sy + 10, 3.2] }, { t0: tS + 3.4, key: 'hegemony', anim: 'salute', dir: 'east', fps: 7 }] });
+    // 2) Den 11: raid. Raider přijde k drátu, Cyril střílí, je zasažen a padne, raider odejde, medik přijde a obvazuje
+    fight.puppet({ x: cx, y: cy, from: tH, to: tP, keys: [{ t0: tH, key: 'hegemony', dir: 'south' }, { t0: tH + 1.0, key: 'hegemony', anim: 'fire', dir: 'south', fps: 8, loop: true }, { t0: tH + 3.2, key: 'hegemony', anim: 'fall', dir: 'south', fps: 8 }, { t0: tH + 4.3, key: 'hegemony', anim: 'lying-wounded', dir: 'east', fps: 1 }] });
+    fight.puppet({ x: cx - 12, y: cy + 112, from: tH, to: tH + 6.2, keys: [{ t0: tH, key: 'concord', anim: 'walk', dir: 'north', fps: 6, loop: true, move: [cx - 12, cy + 62, 2.2] }, { t0: tH + 2.2, key: 'concord', anim: 'fire', dir: 'north', fps: 8, loop: true }, { t0: tH + 3.9, key: 'concord', anim: 'walk', dir: 'south', fps: 6, loop: true, move: [cx - 12, cy + 120, 2.3] }] });
+    fight.puppet({ x: cx - 70, y: cy + 4, from: tH + 4.4, to: tP, keys: [{ t0: tH + 4.4, key: 'hegemony_medic', anim: 'walk', dir: 'east', fps: 7, loop: true, move: [cx - 16, cy + 4, 3.3] }, { t0: tH + 7.7, key: 'hegemony_medic', anim: 'bandage', dir: 'east', fps: 6, loop: true }] });
+    prop(medC, cx + 16, cy + 6, tH + 4.4, tP);
+    // 3) Den 16: povýšení. Důstojník předá rozkaz, Cyril zasalutuje, nad rozkazem naskočí stuhy
+    fight.puppet({ x: cx, y: cy, from: tP, to: tD, keys: [{ t0: tP, key: 'hegemony', dir: 'south' }, { t0: tP + 1.2, key: 'hegemony', anim: 'salute', dir: 'east', fps: 7 }] });
+    fight.puppet({ x: cx + 22, y: cy, from: tP, to: tD, keys: [{ t0: tP, key: 'hegemony_officer', dir: 'west' }] });
+    prop(chevC, cx + 11, cy - 22, tP + 0.5, tD, (t) => Math.min(6, (t - tP - 0.5) * 8));
+    // 4) Den 17: dva nepřátelé jdou k drátu vedle sebe, každý klekne, vymění si s Cyrilem střely a padne; Cyril drží pozici
+    fight.puppet({ x: cx, y: cy, from: tD, to: tM, keys: [{ t0: tD, key: 'hegemony', dir: 'south' }, { t0: tD + 0.8, key: 'hegemony', anim: 'fire', dir: 'south', fps: 8, loop: true }] });
+    const foe = (x, tKneel, tFire, tDie) => fight.puppet({ x, y: cy + 112, from: tD, to: tM, keys: [{ t0: tD, key: 'concord', anim: 'walk', dir: 'north', fps: 6, loop: true, move: [x, cy + 64, tKneel] }, { t0: tD + tKneel, key: 'concord', anim: 'kneel', dir: 'north', fps: 8 }, { t0: tD + tFire, key: 'concord', anim: 'fire', dir: 'north', fps: 8, loop: true }, { t0: tD + tDie, key: 'concord', anim: 'die', dir: 'north', fps: 8 }] });
+    foe(cx - 26, 2.0, 2.7, 3.7); foe(cx + 26, 2.2, 3.3, 5.0);
+  }
 
   // reflektor (pravidlo uživatele 23. 11.): představovaný voják musí být celý vidět; okolí se skryje (běží těsně před vykreslením)
   let hidden = [];
@@ -114,12 +162,8 @@ export async function startDay17Reel({ cam, map, soldiers, tex, anims }) {
     if (S) { const p = posOf(S[2]); x = p.x; y = p.y - S[4]; z = S[3]; } // hrdina níž než střed (střed zakrývá titulek dne)
     cam.set(x, y, z * (1 + 0.05 * f.punch));
     for (const q of soldiers) if (q.sprite && q.vacant && q.sprite.alpha < 1) q.sprite.alpha = 1; // žádní duchové
-    const film = t >= tt.sign && t < tt.hit ? ['signing', t - tt.sign]
-      : t >= tt.hit && t < tt.promo ? ['hit', t - tt.hit]
-      : t >= tt.promo && t < tt.duel ? ['promo', t - tt.promo]
-      : t >= tt.duel && t < duelEnd ? ['duel', t - tt.duel] : null;
-    if (film) sc.draw(film[0], film[1]);
-    show('#f17-art', film ? 1 : 0);
+    fight.update(t);
+    const film = t >= tt.sign && t < tt.medals; // scény na mapě: titulky nahoře (postavy uprostřed)
     paint({ ...f, black: Math.max(f.black, t > END - 0.6 ? clamp01((t - END + 0.6) / 0.5) : 0) }, 0);
     day(t, { n: D.label, sub: 'THE LAST MAN FROM DAY ONE', from: 0.2, to: tt.fell - 0.1, subAt: 1.0 });
     slam($('#f17-fell'), t, tt.fell + 0.5, tt.hosp - 0.05, 1.3, -2);
@@ -128,6 +172,7 @@ export async function startDay17Reel({ cam, map, soldiers, tex, anims }) {
       tagAt($('#f17-hero'), { x: posOf(hero).x, y: posOf(hero).y + 10 }, cam, t < tt.fell ? win(t, 0.0, tt.fell - 0.05, 0.12) : 0, 0); // pod hrdinou (střed obrazu zabírá titulek dne)
       tagAt($('#f17-hero2'), { x: posOf(hero).x, y: posOf(hero).y - 30 }, cam, win(t, tt.medals + 0.2, tt.army - 0.05, 0.12), 0);
     }
+    if (hero) tagAt($('#f17-doc'), { x: cx, y: cy - 34 }, cam, (t >= tH && t < tM) ? 0.95 : 0, 0);
     show('#f17-big', t >= tt.army && t < tt.cta ? 1 : 0);
     $('#f17-big b').textContent = Math.round((D.army[0] + D.army[1]) * easeOut(clamp01((t - tt.army) / 1.2))).toLocaleString('en-US');
     const split = tt.army + 3.2;
