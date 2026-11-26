@@ -489,7 +489,7 @@ function resolveFactionVote(state, v, theme) {
     const def = theme.battle.buildings[id], side = ensureBattle(state, theme).sides[f];
     if ((side.built[id] || 0) >= (def.max || 99) || (state.pendingBuilds || []).some((b) => b.faction === f && b.id === id)) return null;
     (state.pendingBuilds ||= []).push({ faction: f, id });
-    return def.start || `The ${sideName(theme, f)} began building: ${def.name}, ready tomorrow`;
+    return `The ${sideName(theme, f)} ${def.start || `began building: ${def.name}. It opens tomorrow`}`;
   };
   const builtOf = per.map((p) => (p.winner?.build ? (upgradeBuild(p.winner.build) === 'hospital' ? deferBuild(p.faction, 'hospital') : buildStructure(state, theme, p.faction, upgradeBuild(p.winner.build))) : null));
   const built = builtOf.filter(Boolean);
