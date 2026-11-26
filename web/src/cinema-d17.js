@@ -9,8 +9,20 @@
 //  • duel    – večer, Den 17: Cyril na pytlích; první nepřítel přijde k drátu, vymění si s ním střelbu a padne; po něm druhý
 import { off } from './cinema.js';
 import { loadImage } from './assets.js';
-import propCratesSrc from '../../art/cine/prop_crates.png';
 import stretcherSrc from '../../art/cine/prop_stretcher.png';
+// rekvizity z PixelLabu (sada propsheet_d17, 26. 11., 6 generací, měřítko 1:1 jako ve hře)
+import tableSrc from '../../art/cine/prop_recruit_table.png';
+import boardSrc from '../../art/cine/prop_notice_board.png';
+import barrSrc from '../../art/cine/prop_barricade.png';
+import cornerSrc from '../../art/cine/prop_barricade_corner.png';
+import lanternSrc from '../../art/cine/prop_lantern_post.png';
+import cratesSrc from '../../art/cine/prop_ammo_crates.png';
+import deskSrc from '../../art/cine/prop_field_desk.png';
+import medSrc from '../../art/cine/prop_medic_box.png';
+import flagSrc from '../../art/cine/prop_flag_pole.png';
+import tentSrc from '../../art/cine/prop_tent_medic.png';
+import mapSrc from '../../art/cine/prop_map_table.png';
+import rackSrc from '../../art/cine/prop_rifle_rack.png';
 
 let W = 135, H = 240;
 const SIZE = { signing: [90, 160], hit: [90, 160], promo: [90, 160], duel: [135, 240] };
@@ -60,7 +72,12 @@ export async function makeDay17Scenes(tex = {}, anims = {}) {
   const R = {
     wire: await Promise.all([0, 1, 2].map((i) => prop(`/assets/props/wire_intact_${i}.png`, DUSK))),
     broken: await Promise.all([0, 1, 2].map((i) => prop(`/assets/props/wire_broken_${i}.png`, NIGHT))),
-    crater: await prop('/assets/props/crater_water.png', DUSK), stretcher: await prop(stretcherSrc, NIGHT), crates: await prop(propCratesSrc, CAND),
+    crater: await prop('/assets/props/crater_water.png', DUSK), stretcher: await prop(stretcherSrc, NIGHT),
+    // rekvizity: jen lehký nádech barvy scény, ať jim zůstanou barvy (uživatel 26. 11.: nemají moc barev)
+    tableD: await prop(tableSrc, 'rgba(120,80,70,0.06)'), lanternD: await prop(lanternSrc, 'rgba(120,80,70,0.06)'), cratesD: await prop(cratesSrc, 'rgba(120,80,70,0.06)'), flagD: await prop(flagSrc, 'rgba(120,80,70,0.05)'),
+    deskD: await prop(deskSrc, 'rgba(120,80,70,0.06)'), mapD: await prop(mapSrc, 'rgba(120,80,70,0.06)'), rackD: await prop(rackSrc, 'rgba(120,80,70,0.06)'),
+    barrN: await prop(barrSrc, 'rgba(30,38,70,0.14)'), cornerN: await prop(cornerSrc, 'rgba(30,38,70,0.14)'), lanternN: await prop(lanternSrc, null), medN: await prop(medSrc, 'rgba(30,38,70,0.1)'), tentN: await prop(tentSrc, 'rgba(30,38,70,0.12)'),
+    barrU: await prop(barrSrc, 'rgba(70,50,60,0.08)'), cornerU: await prop(cornerSrc, 'rgba(70,50,60,0.08)'), cratesU: await prop(cratesSrc, 'rgba(70,50,60,0.08)'), rackU: await prop(rackSrc, 'rgba(70,50,60,0.08)'),
   };
   const feet = new Map();
   const at = (arr, t, fps) => (arr?.length ? arr[Math.floor(t * fps) % arr.length] : null);
@@ -71,6 +88,7 @@ export async function makeDay17Scenes(tex = {}, anims = {}) {
     const x = Math.round(cx - c.width / 2), y = Math.round(foot - feet.get(c));
     if (flip) { g.save(); g.translate(x + c.width, y); g.scale(-1, 1); g.drawImage(c, 0, 0); g.restore(); } else g.drawImage(c, x, y);
   };
+  const tl = (c, x, y) => { if (c) g.drawImage(c, Math.round(x), Math.round(y)); }; // rekvizita levým horním rohem
   const px = (c, x, y, w = 1, h = 1) => { g.fillStyle = c; g.fillRect(Math.round(x), Math.round(y), w, h); };
   const field = (y0, y1, cols, f) => { for (let y = y0; y < y1; y++) for (let x = 0; x < W; x++) { const v = clamp(f(x, y)) * 0.999; const u = v * (cols.length - 1); const i = Math.floor(u); px(u - i > by(x, y) ? cols[Math.min(cols.length - 1, i + 1)] : cols[i], x, y); } };
   const glow = (x, y, r, a, rgb) => { const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgba(${rgb},${a})`); gr.addColorStop(1, `rgba(${rgb},0)`); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); };
@@ -79,84 +97,76 @@ export async function makeDay17Scenes(tex = {}, anims = {}) {
 
   const scenes = {
     signing(t) {
-      // úsvit: dřevěná stěna s plakátem FIRST WAVE (papír, rámeček, voják ze hry v sépii), stůl s důstojníkem; Cyril přijde zleva, zasalutuje
+      // úsvit prvního dne: malovaná dřevěná stěna s plakátem FIRST WAVE (pozadí), před ní stůl náboru (PixelLab) s důstojníkem, lucerna; Cyril přijde a zasalutuje
       field(0, 60, ['#3a3048', '#7a5560', P.fire, P.gold], (x, y) => y / 60);
       glow(70, 60, 40, 0.5, '230,170,110');
       field(60, H, [P.mud0, P.mud1, P.mud2], (x, y) => 0.3 + 0.35 * hash(x >> 2, y >> 2, 171));
       for (let y = 18; y < 100; y++) for (let x = 0; x < W; x++) px(((x + (y >> 3) * 5) % 9 === 0) ? P.ink : (y % 8 === 0 ? P.mud1 : P.mud2), x, y);
       px(P.ink, 0, 17, W, 1); px(P.ink, 0, 100, W, 1);
-      // plakát v našem stylu: tmavý rámeček, krémový papír, červený pruh s nápisem, voják v sépii, pruh dole
       px(P.ink, 10, 21, 70, 80); px(P.white, 12, 23, 66, 76); px(P.pale, 12, 88, 66, 11);
       px(P.rust, 12, 23, 66, 14); px(P.rust2, 12, 36, 66, 1);
       label('FIRST WAVE', 15, 27, P.white);
-      px(P.mud1, 12, 38, 66, 50); field(38, 88, [P.mud2, P.sand, P.bone], (x, y) => 0.3 + 0.4 * hash(x >> 1, y >> 1, 177)); // pozadí obrazu
+      field(38, 88, [P.mud2, P.sand, P.bone], (x, y) => 0.3 + 0.4 * hash(x >> 1, y >> 1, 177));
       put(S.poster, 45, 86); put(S.poster, 25, 86); put(S.poster, 65, 86);
       px(P.ink, 12, 87, 66, 1); label('SIGN TODAY', 17, 89, P.rust2);
-      // stůl s knihou a důstojníkem
-      put(S.officer, 70, 134); // důstojník stojí ZA stolem (stůl se kreslí přes jeho nohy)
-      px(P.ink, 52, 120, 36, 3); px(P.mud3, 52, 121, 36, 16); px(P.mud1, 52, 135, 36, 2); px(P.ink, 54, 136, 2, 16); px(P.ink, 84, 136, 2, 16);
-      px(P.white, 62, 117, 16, 4); px(P.pale, 62, 117, 16, 1);
-      // Cyril: přichází zleva chůzí (east), u stolu stojí, pak zasalutuje (east) a zůstane v pozdravu
-      const arrive = 3.0, x = Math.min(34, -6 + t * (40 / arrive));
+      // stůl náboru: důstojník stojí za ním, stůl se kreslí přes jeho nohy
+      put(S.officer, 60, 138);
+      tl(R.tableD, 40, 118);
+      tl(R.flagD, 70, 104);
+      const arrive = 3.0, x = Math.min(30, -6 + t * (36 / arrive));
       if (t < arrive) put(at(S.walkE, t, 7), Math.round(x), 150);
-      else put(once(S.saluteE, t - arrive - 0.2, 7), 34, 150);
-      if (t > arrive + 1.8) { const k = (Math.sin(t * 6) + 1) / 2; px(P.gold, 33, 132, 1, 1); glow(33, 132, 6, 0.25 + 0.4 * k, '240,200,110'); }
+      else put(once(S.saluteE, t - arrive - 0.2, 7), 30, 150);
+      if (t > arrive + 1.8) { const k = (Math.sin(t * 6) + 1) / 2; px(P.gold, 29, 132, 1, 1); glow(29, 132, 6, 0.25 + 0.4 * k, '240,200,110'); }
       g.fillStyle = 'rgba(100,60,50,0.08)'; g.fillRect(0, 0, W, H);
     },
     hit(t) {
-      // noc, Den 11: nahoře zákop (pytle) a Cyril, dole za drátem raider Concordu. Raider přijde, vymění si s Cyrilem střely, Cyril padne, raider odejde, medik přijde a obvazuje.
+      // noc, Den 11: nahoře barikáda z pytlů (PixelLab), Cyril za ní; dole za drátem raider. Raider přijde, vymění střely, Cyril padne před barikádou, raider odejde, medik s lékárnou obvazuje
       field(0, H, [P.ink, P.dark, P.mud0, P.mud1], (x, y) => 0.1 + 0.28 * hash(x >> 2, y >> 2, 178));
-      const fl = (t % 6) / 6; glow(20 + fl * 55, 30, 56, 0.4 * Math.sin(fl * Math.PI), '220,230,255'); // světlice
-      bags(80, 2, -8, W + 8);
-      for (const [x, y, i] of [[18, 124, 0], [48, 128, 1], [78, 124, 2]]) put(R.broken[i], x, y); // střižený drát
-      
-      // raider: přichází zdola k drátu (0–1,8 s), stojí a střílí (1,8–3,2 s), pak odchází dolů (od 3,8 s)
-      const rx = 45;
+      const fl = (t % 6) / 6; glow(20 + fl * 55, 30, 56, 0.4 * Math.sin(fl * Math.PI), '220,230,255');
+      const bx = 8, by = 54, cx = 30;
+      for (const [x, y, i] of [[18, 124, 0], [48, 128, 1], [78, 124, 2]]) put(R.broken[i], x, y);
+      const rx = 30;
       if (t < 1.8) put(at(S.rWalkN, t, 6), rx, Math.round(186 - t * 26));
-      else if (t < 3.8) put(at(S.rFireN, t, 8), rx, 137);
-      else put(at(S.rWalkS, t, 6), rx, Math.round(137 + (t - 3.8) * 26));
-      // Cyril: do 1,0 stojí, od 1,0 do 3,2 střílí zpět, ve 3,2 je zasažen a padá (0,9 s), pak leží
-      const cx = 48, cy = 78;
-      if (t < 1.0) put(S.stand, cx, cy);
-      else if (t < 3.2) put(at(S.fireN, t, 8), cx, cy);
-      else if (t < 4.2) put(once(S.fall, t - 3.2, 8), cx, cy);
-      else put(S.lyN, cx, cy);
-      // záblesky výstřelů
-      for (const t0 of [1.9, 2.3, 2.7]) { const k = t - t0; if (k >= 0 && k < 0.15) glow(rx + 6, 124, 8, 0.8 * (1 - k / 0.15), '255,230,170'); }
-      for (const t0 of [1.3, 2.1, 2.9]) { const k = t - t0; if (k >= 0 && k < 0.15) glow(cx - 10, 88, 8, 0.8 * (1 - k / 0.15), '255,230,170'); }
-      if (t > 3.1 && t < 3.5) glow(cx, 62, 14, 0.5 * (3.5 - t) / 0.4, '220,40,40');
-      // medik přijde zleva k ležícímu (od 4,4 s), pak obvazuje
-      if (t >= 4.4) { const mx = Math.min(24, -8 + (t - 4.4) * 20); if (mx < 24) put(at(S.medE, t, 7), Math.round(mx), cy); else put(at(S.bandN, t - 6.0, 6), 24, cy); }
-      glow(36, 78, 26, 0.12, '217,143,63');
+      else if (t < 3.8) put(at(S.rFireN, t, 8), rx, 140);
+      else put(at(S.rWalkS, t, 6), rx, Math.round(140 + (t - 3.8) * 26));
+      // Cyril za barikádou (nohy zakryté) do 3,2 s; pak padá a leží před barikádou
+      const standing = t < 3.2;
+      if (standing) put(t < 1.0 ? S.stand : at(S.fireN, t, 8), cx, by + 17);
+      tl(R.barrN, bx, by); tl(R.cornerN, bx + 42, by + 1);
+      tl(R.tentN, 44, by - 22);
+      if (!standing) { if (t < 4.2) put(once(S.fall, t - 3.2, 8), cx, by + 52); else put(S.lyN, cx, by + 52); }
+      for (const t0 of [1.9, 2.3, 2.7]) { const k = t - t0; if (k >= 0 && k < 0.15) glow(rx + 6, 126, 8, 0.8 * (1 - k / 0.15), '255,230,170'); }
+      for (const t0 of [1.3, 2.1, 2.9]) { const k = t - t0; if (k >= 0 && k < 0.15) glow(cx - 10, by + 28, 8, 0.8 * (1 - k / 0.15), '255,230,170'); }
+      if (t > 3.1 && t < 3.5) glow(cx, by + 8, 14, 0.5 * (3.5 - t) / 0.4, '220,40,40');
+      // medik přijde zleva k ležícímu (od 4,4 s), pak obvazuje; lékárna mu leží vedle
+      if (t >= 4.4) { tl(R.medN, 52, by + 40); const mx = Math.min(10, -8 + (t - 4.4) * 14); if (mx < 10) put(at(S.medE, t, 7), Math.round(mx), by + 52); else put(at(S.bandN, t - 5.7, 6), 10, by + 52); }
       g.fillStyle = 'rgba(20,24,44,0.15)'; g.fillRect(0, 0, W, H);
     },
     promo(t) {
-      // úsvit, Den 16: důstojník předá rozkaz (papír s dvěma zlatými stuhami lance corporala), Cyril zasalutuje
+      // úsvit, Den 16: polní stůl s lampou (PixelLab), za ním důstojník s rozkazem, před stolem Cyril salutuje; papír s dvěma zlatými stuhami se zvedne nad stůl
       field(0, 50, ['#3a3048', '#7a5560', P.fire, P.gold], (x, y) => y / 50);
       glow(45, 50, 40, 0.5, '230,170,110');
       field(50, H, [P.mud0, P.mud1, P.mud2], (x, y) => 0.3 + 0.35 * hash(x >> 2, y >> 2, 179));
-      bags(50, 3, -8, W + 8, P.bone, P.sand);
-      put(S.officerW, 62, 134);
+      tl(R.flagD, 2, 70);
+      put(S.officer, 62, 112);
+      tl(R.mapD, 40, 96);
       const sal = t > 1.6 ? once(S.saluteE, t - 1.6, 7) : null;
-      put(sal || S.stand, 26, 134);
-      if (t > 0.4) { // papír s rozkazem mezi nimi (rozkaz se objeví v ruce důstojníka a zůstane viset)
-        const k = clamp((t - 0.4) / 0.6), px0 = 44, py0 = 98 - k * 4;
+      put(sal || S.stand, 26, 140);
+      if (t > 0.4) { const k = clamp((t - 0.4) / 0.6), px0 = 52, py0 = 94 - k * 6;
         px(P.ink, px0, py0, 14, 18); px(P.white, px0 + 1, py0 + 1, 12, 16); px(P.pale, px0 + 1, py0 + 14, 12, 3);
         for (let i = 0; i < 2; i++) { const yy = py0 + 3 + i * 5; px(P.gold, px0 + 3, yy + 2, 8, 1); px(P.gold, px0 + 4, yy + 1, 6, 1); px(P.gold, px0 + 5, yy, 4, 1); }
-        if (t > 2.4) glow(px0 + 7, py0 + 9, 12 + 3 * Math.sin(t * 8), 0.4, '240,200,110');
-      }
+        if (t > 2.4) glow(px0 + 7, py0 + 9, 12 + 3 * Math.sin(t * 8), 0.4, '240,200,110'); }
       g.fillStyle = 'rgba(100,60,50,0.08)'; g.fillRect(0, 0, W, H);
     },
     duel(t) {
-      // večer, Den 17: nahoře Cyril za pytli (fire, míří dolů), dole za drátem jdou dva nepřátelé vedle sebe; každý klekne, vymění střely s Cyrilem a padne; leží sám
+      // večer, Den 17: nahoře za barikádou Cyril (fire, míří dolů), vedle bedny s municí; dole za drátem jdou dva nepřátelé vedle sebe; každý klekne, vymění střely s Cyrilem a padne; leží sám
       field(0, 40, ['#3a3048', P.dusk, P.rust2], (x, y) => y / 40);
       field(40, H, [P.mud0, P.mud1, P.mud2], (x, y) => 0.3 + 0.38 * hash(x >> 2, y >> 2, 176));
-      bags(54, 2, 28, 108);
       for (let x = 0; x < W; x++) if (hash(x, 4, 177) < 0.5) px(P.mud3, x, 112);
       put(R.wire[0], 28, 126); put(R.wire[1], 66, 128); put(R.wire[2], 106, 126); put(R.crater, 14, 214);
-      const cx = 68, cy = 66;
-      put(at(S.dFire, t, 9), cx, cy);
-      // dva nepřátelé (x 40 a x 98): chůze 0–2,0 s od y 205 k drátu (y 150), klekají a střílí, první padá ve 3,6 s, druhý v 5,0 s; mrtví zůstávají ležet sami
+      const bx = 36, by = 48, cx = 58;
+      put(at(S.dFire, t, 9), cx, by + 17);
+      tl(R.barrU, bx, by); tl(R.cornerU, bx + 42, by + 1); tl(R.rackU, bx - 36, by - 8); tl(R.cratesU, bx + 84, by + 4);
       const foe = (x, tFire, tDie) => {
         if (t < 2.0) put(at(S.eWalk, t, 6), x, Math.round(205 - t * 27));
         else if (t < tFire) put(once(S.eKneel, t - 2.0, 8), x, 151);
@@ -165,13 +175,13 @@ export async function makeDay17Scenes(tex = {}, anims = {}) {
       };
       foe(40, 2.6, 3.6); foe(98, 3.4, 5.0);
       const flash = (x, y, t0) => { const k = t - t0; if (k >= 0 && k < 0.15) glow(x, y, 9, 0.9 * (1 - k / 0.15), '255,230,170'); };
-      const tracer = (t0, x1, y1) => { const k = t - t0; if (k < 0 || k > 0.25) return; const m = clamp(k * 4); px(P.gold, 58 + (x1 - 58) * m, 70 + (y1 - 70) * m, 1, 3); };
-      for (const t0 of [2.8, 3.1, 3.4]) flash(46, 142, t0); // první střílí nahoru
-      for (const t0 of [3.5, 4.0, 4.5]) flash(104, 142, t0); // druhý střílí nahoru
-      for (const t0 of [3.0, 3.3, 3.55]) { flash(58, 66, t0); tracer(t0, 42, 140); } // Cyril na prvního
-      for (const t0 of [4.2, 4.7, 4.95]) { flash(58, 66, t0); tracer(t0, 100, 140); } // Cyril na druhého
+      const tracer = (t0, x1, y1) => { const k = t - t0; if (k < 0 || k > 0.25) return; const m = clamp(k * 4); px(P.gold, 50 + (x1 - 50) * m, 72 + (y1 - 72) * m, 1, 3); };
+      for (const t0 of [2.8, 3.1, 3.4]) flash(46, 142, t0);
+      for (const t0 of [3.5, 4.0, 4.5]) flash(104, 142, t0);
+      for (const t0 of [3.0, 3.3, 3.55]) { flash(50, 70, t0); tracer(t0, 42, 140); }
+      for (const t0 of [4.2, 4.7, 4.95]) { flash(50, 70, t0); tracer(t0, 100, 140); }
       for (const [t0, x] of [[3.6, 40], [5.0, 98]]) if (t > t0 && t < t0 + 0.4) glow(x, 140, 14, 0.5 * (t0 + 0.4 - t) / 0.4, '220,40,40');
-      const f = (t % 4) / 4; glow(60 + f * 50, 18, 36, 0.3 * Math.sin(f * Math.PI), '220,230,255'); // světlice
+      const f = (t % 4) / 4; glow(60 + f * 50, 18, 36, 0.3 * Math.sin(f * Math.PI), '220,230,255');
       g.fillStyle = 'rgba(40,30,60,0.12)'; g.fillRect(0, 0, W, H);
     },
   };
