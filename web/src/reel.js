@@ -245,6 +245,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'front18') {
+    // Day reel Day 18 (27. 11.): příběh pastýře Karla Hiera (kaplan, Concord) podle deníku, nové filmové scény (reel-front18.js)
+    return import('./reel-front18.js').then(async ({ startDay18Reel }) => {
+      await startDay18Reel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'front17') {
     // Day reel Day 17 (26. 11.): nejdéle žijící hráč Cyril „Doc“ Zaboravljeni podle deníku, nové filmové scény (reel-front17.js)
     return import('./reel-front17.js').then(async ({ startDay17Reel }) => {

@@ -1,0 +1,23 @@
+{
+ "_": "Day reel Day 18 – noviny 27. 11. 13:00 UTC (state.day 19); hrdina = Karel Hier (winters_ist_hier, Concord, kaplan, pastýř z Port Abel, Officers' Mess, pes Sparky), deník z data/state-records; přítel Benedikt Lorenz (_lorenz_161), patron Owl Hughesjack (hughesjack02)",
+ "label": 18,
+ "fell": [74, 59],
+ "wounded": 223,
+ "beds": 38,
+ "stretchers": [20, 29],
+ "cover": [76, 87],
+ "nocare": [5, 2],
+ "nocareYesterday": [42, 43],
+ "joined": [33, 14],
+ "army": [1133, 1255],
+ "race": [226, 185],
+ "hero": {
+  "handle": "winters_ist_hier",
+  "name": "Karel Hier",
+  "sector": "V-F11",
+  "friend": "_lorenz_161",
+  "dog": "Sparky",
+  "note": "Concord chaplain · shepherd from Port Abel"
+ },
+ "patrons": ["Karel Hier (@winters_ist_hier)", "Pavel Owl Hughesjack (@hughesjack02)"]
+}

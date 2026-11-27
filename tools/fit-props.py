@@ -29,7 +29,15 @@ TARGET = {
     "mail_sack": ("w", 14),       # pytel s poštou 80 cm
     "soup_pot": ("w", 22),        # kotlík nad ohněm 1,3 m
     "map_table": ("w", 28),
-    "rifle_rack": ("h", 30),      # stojan na pušky 1,7 m (puška 1,2 m = 21 px)
+    "rifle_rack": ("h", 30),
+    "sheep": ("w", 19),           # ovce 1,1 m
+    "sheep_graze": ("w", 20),
+    "lamb": ("w", 11),            # jehně 65 cm
+    "cow": ("w", 40),             # kráva 2,3 m
+    "haystack": ("w", 34),        # kupka sena 2 m
+    "fence": ("w", 48),           # plot 2,8 m
+    "stonewall": ("w", 36),       # kamenná zídka 2,1 m
+    "crook": ("h", 28),           # pastýřská hůl 1,6 m      # stojan na pušky 1,7 m (puška 1,2 m = 21 px)
 }
 def nearest(c):
     return min(rgb, key=lambda p: (p[0] - c[0]) ** 2 + (p[1] - c[1]) ** 2 + (p[2] - c[2]) ** 2)

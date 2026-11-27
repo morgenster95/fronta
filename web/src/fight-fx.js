@@ -75,6 +75,11 @@ export async function makeFight({ anims, soldiers, tex = {} }) {
           S.from = at; S.to = end;
           seg(R, KILL, A(kR, 'die', dirR), 10, {});
         }
+      } else if (win === 'hurt') { // 27. 11.: obránce dostane lopatou a padne (přežije), raider se otočí a odejde od drátu (bez zastřelení)
+        seg(Dd, HIT + 0.05, A(kD, 'fall', dirD), 10, {});
+        seg(Dd, HIT + 1.0, A(kD, 'lying-wounded', dirD), 1, {});
+        const away = side === 1 ? 'south' : 'north';
+        seg(R, HIT + 0.5, A(kR, 'walk', away), 7, { loop: true, from: [x + dx * 13, y], to: [x + dx * 13, y + (side === 1 ? 70 : -70)], dur: 3.4 });
       } else {
         seg(R, HIT + 0.05, A(kR, 'die', dirR), 10, {});
       }

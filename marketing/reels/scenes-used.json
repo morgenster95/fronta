@@ -118,6 +118,17 @@
       "ward (lazaret, lůžka jako ve hře)",
       "office (kancelář, povýšení)"
     ],
-    "mapa (Day 17, fight-fx): raid Den 11 a střelba Den 17 na skutečné frontě; úvodní záběr = hrdina": []
+    "mapa (Day 17, fight-fx): raid Den 11 a střelba Den 17 na skutečné frontě; úvodní záběr = hrdina": [],
+    "cinema-d18.js (Day 18, 27. 11.)": [
+      "pasture (pastvina nad Port Abel, ovce, hůl)",
+      "notebook (dva listy s domem a stolem větším než dům)",
+      "farm (statek, kráva, děravá střecha)"
+    ],
+    "mapa (Day 18, fight-fx)": [
+      "příchod Karla Hiera do mezery u V-F11 (Den 10)",
+      "zázemí: pásku kaplana dostane od důstojníka (Den 16)",
+      "raid u V-F11: lopata, raider odejde, helma (Den 17)",
+      "lůžko, stužka a pes Sparky u lůžka (Den 18)"
+    ]
   }
 }
