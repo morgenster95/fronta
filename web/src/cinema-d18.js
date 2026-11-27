@@ -1,8 +1,7 @@
-// Filmové scény Day reelu Day 18 (27. 11. 2026). Kreslené scény místa, které na mapě hry není: pastvina nad Port Abel (domov hrdiny), notes se dvěma kresbami, statek.
+// Filmové scény Day reelu Day 18 (27. 11. 2026). Kreslené scény místa, které na mapě hry není: pastvina nad Port Abel (domov hrdiny), statek.
 // Pravidla (CLAUDE.md): měřítko 1:1 jako hra (voják 19×30 px, 1 px ≈ 5,8 cm), rekvizity z PixelLabu zmenšené podle skutečné velikosti (tools/fit-props.py),
 // terén v kódu paletou Trench-24 s ditheringem, žádná průhlednost postav, jen pár postav a vždy celé vidět, žádné vstupy a zmizení uprostřed scény.
 //  • pasture – úsvit nad Port Abel: kamenná zídka, ovce, jehně, kupka sena, hůl opřená o zídku; Karel jde po cestě pryč (armáda potřebuje dalšího muže)
-//  • notebook – noc u lucerny: dva listy z notesu, na každém dům a kuchyňský stůl větší než dům (kreslí se čárku po čárce, tužka se pohybuje)
 //  • farm – ráno po mrazu: kráva u plotu, statek s děravou střechou a kapkou do kbelíku (dopis z domova)
 import { off } from './cinema.js';
 import { loadImage } from './assets.js';
@@ -16,7 +15,7 @@ import wallSrc from '../../art/cine/prop_stonewall.png';
 import crookSrc from '../../art/cine/prop_crook.png';
 
 let W = 90, H = 160;
-const SIZE = { pasture: [90, 160], notebook: [90, 160], farm: [90, 160] };
+const SIZE = { pasture: [90, 160], farm: [90, 160] };
 const P = { ink: '#0e0d0c', dark: '#1c1a17', mud0: '#2b2722', mud1: '#3d3730', mud2: '#524a3f', mud3: '#6b6152', sand: '#857a68', bone: '#a39782', pale: '#c4b8a0', white: '#e3d9c3',
   steel: '#666d70', grey: '#8a9295', water: '#2a3138', navy: '#141a2c', dusk: '#4b4560', rust: '#7e3b2a', rust2: '#5c2a22', fire: '#a85a36', gold: '#d98f3f', yellow: '#c9c26a', olive: '#6f7148', olive2: '#52543a', olive3: '#8c8a5c', olive4: '#3f4230' };
 const B = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
@@ -44,24 +43,6 @@ function footOf(c) {
   return c.height;
 }
 const loadAny = (src) => loadImage(src).catch(() => null);
-
-// čáry kresby: [x0, y0, x1, y1] (celá čísla), kreslí se postupně; barva tužky = steel/ink
-const lineCells = (x0, y0, x1, y1) => { const out = []; let dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1, e = dx + dy; for (;;) { out.push([x0, y0]); if (x0 === x1 && y0 === y1) break; const e2 = 2 * e; if (e2 >= dy) { e += dy; x0 += sx; } if (e2 <= dx) { e += dx; y0 += sy; } } return out; };
-// kresba domova: malý dům (zdi, střecha, komín, dveře, okno) a kuchyňský stůl VĚTŠÍ NEŽ DŮM (deska, 4 nohy, dvě židle); souřadnice vůči (ox, oy), šířka ~64
-const homeStrokes = (ox, oy) => {
-  const S = [];
-  const L = (a, b, c, d) => S.push([ox + a, oy + b, ox + c, oy + d]);
-  L(2, 12, 2, 4); L(2, 4, 16, 4); L(16, 4, 16, 12); L(2, 12, 16, 12); // zdi domu
-  L(0, 4, 9, 0); L(9, 0, 18, 4); // střecha
-  L(13, 0, 13, 2); // komín
-  L(8, 12, 8, 8); L(8, 8, 11, 8); L(11, 8, 11, 12); // dveře
-  L(4, 6, 6, 6); L(6, 6, 6, 8); L(4, 8, 6, 8); L(4, 6, 4, 8); // okno
-  L(20, 14, 62, 14); L(20, 14, 18, 18); L(62, 14, 64, 18); L(18, 18, 64, 18); // deska stolu (větší než dům)
-  L(22, 18, 22, 32); L(60, 18, 60, 32); L(30, 18, 30, 28); L(52, 18, 52, 28); // nohy
-  L(34, 32, 34, 22); L(34, 22, 38, 22); L(38, 22, 38, 32); // židle
-  return S;
-};
-const home = (ox, oy) => homeStrokes(ox, oy).flatMap((s) => lineCells(...s));
 
 export async function makeDay18Scenes(tex = {}, anims = {}) {
   const canvas = off(W, H);
@@ -117,36 +98,6 @@ export async function makeDay18Scenes(tex = {}, anims = {}) {
       else kx = 58 + (110 - 58) * ((t - stop2) / 3.0);
       if (t >= stop1 && t < stop2) put(S.stand, 58, 150); else put(at(S.walkE, t, 7), kx, 150);
       g.fillStyle = 'rgba(100,60,50,0.05)'; g.fillRect(0, 0, W, H);
-    },
-    notebook(t) {
-      // noc, dřevěný stůl, lucerna vlevo nahoře, dva listy z notesu; kreslí se čárku po čárce (dům a stůl větší než dům) a pak list přítele
-      field(0, H, [P.ink, P.dark, P.mud0], (x, y) => 0.35 + 0.25 * hash(x >> 2, y >> 1, 33));
-      for (let y = 0; y < H; y += 17) px(P.ink, 0, y, W, 1); // spáry desek
-      const sheet = (x, y, w, h, tilt) => {
-        px(P.ink, x - 1, y - 1, w + 2, h + 2); px(P.pale, x, y, w, h);
-        for (let yy = y + 7; yy < y + h - 1; yy += 6) px(P.bone, x + 1, yy, w - 2, 1);
-        px(P.rust, x + 5, y, 1, h);
-        for (let k = 0; k < 40; k++) px(P.bone, x + 2 + Math.floor(hash(k, tilt, 5) * (w - 4)), y + 1 + Math.floor(hash(k, tilt, 6) * (h - 2)));
-      };
-      const word = (txt, x0, y0, col) => { const G = { K: '101101110101101', A: '010101111101101', R: '110101110101101', E: '111100110100111', L: '100100100100111', B: '110101110101110', N: '111101101101101', D: '110101101101110', I: '111010010010111', T: '111010010010010', H: '101101111101101', O: '111101101101111', M: '101111111101101', Z: '111001010100111' }; g.fillStyle = col; [...txt].forEach((ch, i) => { const bits = G[ch]; if (!bits) return; for (let k = 0; k < 15; k++) if (bits[k] === '1') g.fillRect(x0 + i * 4 + (k % 3), y0 + Math.floor(k / 3), 1, 1); }); };
-      sheet(4, 40, 82, 52, 1);
-      word('KAREL', 10, 43, P.rust2);
-      sheet(8, 100, 74, 52, 2);
-      word('BENEDIKT', 12, 103, P.rust2);
-      const draw = (ox, oy, t0, t1, col) => { // čárky podle času t0..t1; vrací polohu tužky
-        const cells = home(ox, oy); const n = Math.floor(cells.length * clamp((t - t0) / (t1 - t0)));
-        for (let i = 0; i < n; i++) px(col, cells[i][0], cells[i][1]);
-        return n > 0 && n < cells.length ? cells[n - 1] : null;
-      };
-      let pen = draw(14, 52, 0.6, 5.2, P.ink);
-      let pen2 = t > 5.4 ? draw(14, 112, 5.8, 8.8, P.ink) : null;
-      if (t > 5.2 && !pen2 && t < 5.8) pen2 = null;
-      const pp = pen2 || pen;
-      if (pp) { px(P.gold, pp[0] + 1, pp[1] - 1, 1, 1); px(P.mud3, pp[0] + 2, pp[1] - 2, 1, 1); px(P.mud3, pp[0] + 3, pp[1] - 3, 1, 1); px(P.rust, pp[0] + 4, pp[1] - 4, 1, 1); px(P.rust, pp[0] + 5, pp[1] - 5, 1, 1); px(P.pale, pp[0] + 6, pp[1] - 6, 1, 1); } // tužka
-      // popisky: „TABLE“ šipkou ke stolu, „HOUSE“ k domu; objeví se po dokreslení
-      
-      glow(10, 8, 70, 0.3, '240,190,110');
-      g.fillStyle = 'rgba(20,24,44,0.10)'; g.fillRect(0, 0, W, H);
     },
     farm(t) {
       // ráno po mrazu: bledá obloha, namrzlá louka, plot a kráva, vpravo statek s děravou střechou; kapka padá do kbelíku

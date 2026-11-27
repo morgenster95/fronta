@@ -66,7 +66,7 @@ export async function startDay18Reel({ cam, map, soldiers, tex, anims }) {
   const K = [[0, hRef.x - 40, fy - 30, 1.6, 'cut']];
   if (site) K.push([tt.fell - 0.01, site.x - 70, site.y - 10, 3.3, 'cut'], [tt.race - 0.01, site.x + 70, site.y - 10, 3.3]); // zoom nad 3,2: střecha zmizí a vidět jsou lůžka s raněnými
   else K.push([tt.fell, hRef.x, hRef.y, 1.4, 'cut'], [tt.race - 0.01, hRef.x, hRef.y, 1.4]);
-  K.push([tt.gap, gp.x, gp.y - 70, 4.0, 'cut'], [tt.draw - 0.01, gp.x, gp.y - 75, 4.0]);
+  K.push([tt.gap, gp.x, gp.y - 70, 4.0, 'cut'], [tt.chap - 0.01, gp.x, gp.y - 75, 4.0]);
   K.push([tt.chap, gp.x + 10, gp.y + 316, 4.0, 'cut'], [tt.raid - 0.01, gp.x + 30, gp.y + 316, 4.0]);
   K.push([tt.raid, gp.x, gp.y - 20, 4.0, 'cut'], [tt.bed - 0.01, gp.x, gp.y - 20, 4.0]);
   const pan = (l) => [l[Math.floor(l.length * 0.18)] || l[0], l[Math.floor(l.length * 0.82)] || l.at(-1)];
@@ -77,7 +77,7 @@ export async function startDay18Reel({ cam, map, soldiers, tex, anims }) {
   const spotAt = (t) => spots.find(([a, b]) => t >= a && t < b);
   const camAt = camPath(K.sort((p, q) => p[0] - q[0]));
   const sub = subtitles(vo);
-  const fx = transitions([[tt.sheep, 'black', 0.4], [tt.gap, 'whip'], [tt.draw, 'black', 0.4], [tt.chap, 'black', 0.4], [tt.raid, 'black', 0.4], [tt.bed, 'flash'], [tt.letter, 'black', 0.4], [tt.fell, 'black', 0.4], [tt.race, 'whip'], [tt.army, 'whip'], [tt.cta, 'black', 0.4]].sort((x, y) => x[0] - y[0]));
+  const fx = transitions([[tt.sheep, 'black', 0.4], [tt.gap, 'whip'], [tt.chap, 'black', 0.4], [tt.raid, 'black', 0.4], [tt.bed, 'flash'], [tt.letter, 'black', 0.4], [tt.fell, 'black', 0.4], [tt.race, 'whip'], [tt.army, 'whip'], [tt.cta, 'black', 0.4]].sort((x, y) => x[0] - y[0]));
   const SFX = [[tt.day, 'drum', 0], [tt.raid + 2.0, 'drum', 0], [tt.raid + 3.0, 'drum', 0], [tt.bonds, 'drum', 0], [tt.fell, 'drum', 0], [tt.cta, 'drum', 0], [END - 1.3, 'end', 0]];
 
   document.body.classList.add('reel');
@@ -90,11 +90,10 @@ export async function startDay18Reel({ cam, map, soldiers, tex, anims }) {
     <div id="f18-fell" class="f18-panel"><div class="t">DAY ${D.label} · CASUALTIES</div><div class="row"><span>HEGEMONY</span><b class="r">${D.fell[0]} FELL</b></div><div class="row"><span>CONCORD</span><b class="r">${D.fell[1]} FELL</b></div><div class="note">rifles and machine guns</div></div>
     <div id="f18-hosp" class="f18-panel"><div class="t">DIED WAITING FOR CARE</div><div class="row"><span>YESTERDAY</span><b class="r">${D.nocareYesterday[0] + D.nocareYesterday[1]}</b></div><div class="row"><span>TODAY</span><b class="g">${D.nocare[0] + D.nocare[1]}</b></div><div class="note">38 beds in each hospital</div></div>
     <div id="f18-race" class="f18-panel"><div class="t">THE RACE FOR THE BONE QUARRY</div><div class="row"><span>HEGEMONY</span><b>${D.race[0]}</b></div><div class="row"><span>CONCORD</span><b>${D.race[1]}</b></div><div class="note">300 wins the heights</div></div>
-    ${hero ? `<div id="f18-hero" class="f18-tag">★ ${D.hero.name.toUpperCase()}<small>${D.hero.note}</small></div><div id="f18-karel" class="f18-tag">KAREL HIER</div><div id="f18-sparky" class="f18-tag">SPARKY<small>Officers' Mess</small></div>` : ''}
-    ${friend ? `<div id="f18-friend" class="f18-tag">BENEDIKT<small>his friend</small></div>` : ''}
+    ${hero ? `<div id="f18-hero" class="f18-tag">★ ${D.hero.name.toUpperCase()}<small>${D.hero.note}</small></div><div id="f18-karel" class="f18-tag">KAREL HIER</div><div id="f18-sparky" class="f18-tag">SPARKY<small>came up with the rations</small></div>` : ''}
     <div id="f18-cap"></div>
     <div id="f18-letter" class="f18-card"><div class="k">A LETTER FROM HOME</div><div class="b"></div></div>
-    <div id="f18-bonds" class="f18-card"><div class="k">THE FRONT THANKS</div><div class="b">Karel Hier and Pavel Owl Hughesjack<br>bought War Bonds</div><div class="n">★ OFFICERS' MESS · A DOG NAMED SPARKY</div></div>
+    <div id="f18-bonds" class="f18-card"><div class="k">THE FRONT THANKS</div><div class="b">Karel Hier and Pavel Owl Hughesjack<br>bought War Bonds</div><div class="n">★ OFFICERS' MESS · THE COLONEL POURS A REAL COFFEE</div></div>
     <div id="f18-big"><div class="k">ON THE FRONT NOW</div><b>0</b><div class="p">+${D.joined[0] + D.joined[1]} yesterday</div></div>
     <div id="f18-side"><span></span></div>
     <div id="f18-cta"><div class="big">PICK A SIDE<br>HEGEMONY or CONCORD</div><div class="sm">comment it on any post<br>and your soldier joins the line</div><div class="url">mudandiron.app</div></div>
@@ -116,12 +115,12 @@ export async function startDay18Reel({ cam, map, soldiers, tex, anims }) {
   const dogImg = await loadImage(`/assets/props/dog_shepherd_sit.png`).catch(() => null);
   const dogC = dogImg ? (() => { const c = document.createElement('canvas'); c.width = dogImg.width; c.height = dogImg.height; c.getContext('2d').drawImage(dogImg, 0, 0); return c; })() : null;
   const hp0 = hero ? posOf(hero) : null;
-  if (dogC && hp0) fight.prop({ canvas: dogC, from: tt.bonds + 1.2, to: tt.letter, pos: () => [hp0.x + 26, hp0.y + 10 - dogC.height / 2 + 6] });
+  if (dogC && hp0 && !hero.dogSprite) fight.prop({ canvas: dogC, from: tt.bonds + 1.2, to: tt.letter, pos: () => [hp0.x + 26, hp0.y + 10 - dogC.height / 2 + 6] });
   const stand = nb.find((q) => q !== friend) || soldiers.find((s) => s.faction === 1); // soused v úseku V-F11: na dobu raidu zahraje Karla (skutečný Karel leží v nemocnici)
   const cx = stand ? stand.x : gp.x, cy = stand ? stand.y : gp.y;
   // 3) Den 10: Karel přijde zezadu zákopem a zastaví se v mezeře vedle souseda
   const gx = hs.x, gy = hs.y;
-  fight.puppet({ x: gx, y: gy + 100, from: tG, to: tt.draw, keys: [{ t0: tG, key: 'concord', anim: 'walk', dir: 'north', fps: 6, loop: true, move: [gx, gy, 3.4] }, { t0: tG + 3.4, key: 'concord', dir: 'north' }] });
+  fight.puppet({ x: gx, y: gy + 100, from: tG, to: tt.chap, keys: [{ t0: tG, key: 'concord', anim: 'walk', dir: 'north', fps: 6, loop: true, move: [gx, gy, 3.4] }, { t0: tG + 3.4, key: 'concord', dir: 'north' }] });
   // 4) Den 16: v zázemí od důstojníka dostane pásku kaplana a odchází jako kaplan
   const rx = gp.x, ry = gp.y + 330;
   const cvs = async (src) => { const im = await loadImage(src); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; c.getContext('2d').drawImage(im, 0, 0); return c; };
@@ -157,7 +156,7 @@ export async function startDay18Reel({ cam, map, soldiers, tex, anims }) {
     for (const pl of fr?.planeFx?.planes || []) { hide(pl.body); hide(pl.shadow); }
   };
 
-  const CAPS = [[tt.sheep, tt.gap, 'PORT ABEL', 'two weeks before'], [tt.gap, tt.draw, 'DAY 10 · V-F11', 'the gap'], [tt.draw, tt.chap, 'DAY 13', 'two sheets of paper'], [tt.chap, tt.raid, 'DAY 16', 'the chaplain'], [tt.raid, tt.bed, 'DAY 17 · V-F11', 'night raid'], [tt.bed, tt.letter, 'DAY 18', 'a bed, this time'], [tt.letter, tt.fell, 'DAY 18 · MAIL', 'from the neighbor']];
+  const CAPS = [[tt.sheep, tt.gap, 'PORT ABEL', 'two weeks before'], [tt.gap, tt.chap, 'DAY 10 · V-F11', 'the gap'], [tt.chap, tt.raid, 'DAY 16', 'the chaplain'], [tt.raid, tt.bed, 'DAY 17 · V-F11', 'night raid'], [tt.bed, tt.letter, 'DAY 18', 'a bed, this time'], [tt.letter, tt.fell, 'DAY 18 · MAIL', 'from the neighbor']];
   const LETTER = 'The fence is fixed.\nThe cow is fine.\nThe roof still leaks.';
 
   function frame(t) {
@@ -168,7 +167,7 @@ export async function startDay18Reel({ cam, map, soldiers, tex, anims }) {
     cam.set(x, y, z * (1 + 0.05 * f.punch));
     for (const q of soldiers) if (q.sprite && q.vacant && q.sprite.alpha < 1) q.sprite.alpha = 1; // žádní duchové
     fight.update(t);
-    const film0 = t >= tt.sheep && t < tt.gap ? ['pasture', t - tt.sheep] : t >= tt.draw && t < tt.chap ? ['notebook', t - tt.draw] : t >= tt.letter && t < tt.fell ? ['farm', t - tt.letter] : null;
+    const film0 = t >= tt.sheep && t < tt.gap ? ['pasture', t - tt.sheep] : t >= tt.letter && t < tt.fell ? ['farm', t - tt.letter] : null;
     if (film0) sc.draw(film0[0], film0[1]);
     show('#f18-art', film0 ? 1 : 0);
     const filmMap = t >= tt.gap && t < tt.bed && !film0; // scény na mapě: titulky nahoře (postavy uprostřed)
@@ -181,9 +180,8 @@ export async function startDay18Reel({ cam, map, soldiers, tex, anims }) {
     slam($('#f18-hosp'), t, tt.hosp + 0.4, tt.race - 0.05, 1.3, -2);
     slam($('#f18-race'), t, tt.race + 0.4, tt.army - 0.05, 1.3, -2);
     if (hero) tagAt($('#f18-hero'), { x: posOf(hero).x, y: posOf(hero).y + 10 }, cam, t < tt.sheep ? win(t, 0.0, tt.sheep - 0.05, 0.12) : (t >= tt.bed + 0.3 && t < tt.bonds ? win(t, tt.bed + 0.3, tt.bonds, 0.2) : 0), 0); // pod hrdinou (střed obrazu zabírá titulek dne)
-    if (hero && stand) tagAt($('#f18-karel'), { x: t >= tR ? cx : gx, y: (t >= tR ? cy : gy) - 34 }, cam, ((t >= tG + 1.4 && t < tt.draw) || (t >= tR && t < tt.bed)) ? 0.95 : 0, 0);
-    if (hero) tagAt($('#f18-sparky'), { x: posOf(hero).x + 26, y: posOf(hero).y - 6 }, cam, win(t, tt.bonds + 1.4, tt.letter - 0.3, 0.2) * 0.95, 0);
-    if (friend) tagAt($('#f18-friend'), { x: posOf(friend).x, y: posOf(friend).y - 34 }, cam, t >= tG && t < tt.draw ? 0.9 : 0, 0);
+    if (hero && stand) tagAt($('#f18-karel'), { x: t >= tR ? cx : gx, y: (t >= tR ? cy : gy) - 34 }, cam, ((t >= tG + 1.4 && t < tt.chap) || (t >= tR && t < tt.bed)) ? 0.95 : 0, 0);
+    if (hero) tagAt($('#f18-sparky'), { x: hero.dogSprite ? hero.dogSprite.x : posOf(hero).x + 26, y: (hero.dogSprite ? hero.dogSprite.y : posOf(hero).y) - 30 }, cam, win(t, tt.bonds + 1.4, tt.letter - 0.3, 0.2) * 0.95, 0);
     // karty: stužka a pes, dopis (píše se po znacích)
     slam($('#f18-bonds'), t, tt.bonds + 0.3, tt.letter - 0.3, 1.25, -2);
     if (t >= tt.letter + 0.5 && t < tt.fell - 0.2) { $('#f18-letter .b').innerHTML = typed(LETTER, t, tt.letter + 1.0, 20).replace(/\n/g, '<br>'); show('#f18-letter', 1); } else show('#f18-letter', 0);
