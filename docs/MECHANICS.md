@@ -661,3 +661,6 @@ Uživatel: „hodně raněných, dává smysl hlasování, které přidá nemocn
 - **Simulace (20 běhů × 3 dny na stavu 27. 11.):** dnes padlí H 230 / C 208, zasažení H 770 / C 721. Nově odhad ~230 padlých a ~600–650 zasažených, víc lehkých, míň těžkých na nosítkách.
 - **Skutečná válka (odhad):** zranění ~65 % lehce / 27 % těžce / 8 % kriticky; raněných na 1 padlého ~2:1 (u nás 3,4:1).
 - **Ověřit po novinách 28. 11.:** počet na nosítkách, padlí (nemají klesnout pod ~60 za stranu a den), poměr lehkých.
+
+## 2026-11-27 · Kontrola nových textů (NASAZENO)
+- Projito všech 474 textů z 26. 11.: opraveno 14 vět se špatným zájmenem (osoba, o které věta mluví, není voják; např. „showed {him}“ u nováčka, „{his} chest“ u pacienta, „{bs} would swap“), 4 věty o několika dnech na nosítkách (těžce raněný se teď rozhodne za den) a 1 nelogická věta v dopisech. Text t007 (šperk „shapes… posts“) smazán na pokyn uživatele (hodnocení ✗).

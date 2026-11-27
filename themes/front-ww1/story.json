@@ -1228,7 +1228,7 @@
     {
       "w": 3,
       "archetype": "rifleman",
-      "text": "A new recruit asked {name} how to hold a rifle in the cold. {name} showed {him}, then showed {him} again, slower."
+      "text": "A new recruit asked {name} how to hold a rifle in the cold. {name} showed the boy, then showed him again, slower."
     },
     {
       "w": 3,
@@ -1239,11 +1239,6 @@
       "w": 3,
       "archetype": "rifleman",
       "text": "{name} wrapped the rifle bolt in a rag to keep the dirt out. The rag was a sock. The sock was not {his}."
-    },
-    {
-      "w": 3,
-      "archetype": "rifleman",
-      "text": "On the fire step, {name} watched the wire at {sector} until the shapes in the dark stopped moving. They were posts."
     },
     {
       "w": 3,
@@ -1273,7 +1268,7 @@
     {
       "w": 3,
       "archetype": "medic",
-      "text": "{name} sewed a torn coat before sewing a torn man. The man did not mind. {He} was asleep."
+      "text": "{name} sewed a torn coat before sewing a torn man. The man did not mind. He was asleep."
     },
     {
       "w": 3,
@@ -1298,7 +1293,7 @@
     {
       "w": 3,
       "archetype": "medic",
-      "text": "A man with a cough would not report to the aid post. {name} walked up to {sector} and listened to {his} chest on the fire step."
+      "text": "A man with a cough would not report to the aid post. {name} walked up to {sector} and listened to the man's chest on the fire step."
     },
     {
       "w": 3,
@@ -1308,7 +1303,7 @@
     {
       "w": 3,
       "archetype": "medic",
-      "text": "{name} found a patient asleep on a stretcher and stood guard over {him} until the surgeon came."
+      "text": "{name} found a patient asleep on a stretcher and stood guard over the stretcher until the surgeon came."
     },
     {
       "w": 3,
@@ -1543,7 +1538,7 @@
     {
       "w": 3,
       "archetype": "runner",
-      "text": "{name} had a message for the lieutenant and found only {his} cap. The lieutenant was in the next trench. The message was delivered, late."
+      "text": "{name} had a message for the lieutenant and found only the lieutenant's cap. The lieutenant was in the next trench. The message was delivered, late."
     },
     {
       "w": 3,
@@ -1953,7 +1948,7 @@
     {
       "w": 3,
       "line": "front",
-      "text": "{name} was woken by a sentry shaking {his} boot. The sentry had nothing to say. {He} only wanted company."
+      "text": "{name} was woken by a sentry shaking {his} boot. The sentry had nothing to say. He only wanted company."
     },
     {
       "w": 3,
@@ -2170,7 +2165,7 @@
     "{name} took a splinter in the thigh at {place}. {He} limped to the aid post and refused help the whole way.",
     "A piece of metal hit {name} at {place}. It was small, but it was deep, and the medic's face said so.",
     "{name} was caught in the open at {sector}. {He} crawled the last ten yards to the trench on {his} elbows.",
-    "At {place} {name} was hit and fell without a sound. The man beside {him} thought {he} was joking until {he} saw the blood.",
+    "At {place} {name} was hit and fell without a sound. The man beside {him} thought {he} was joking until the blood showed.",
     "A hot splinter went into {name}'s arm at {sector}. {He} pulled it out and found it was still warm.",
     "{name} was wounded at {place}. {He} asked only one thing: that someone send {his} watch home if it came to that."
   ],
@@ -2316,7 +2311,7 @@
     "{a} found a blister on {b}'s heel and bound it with a strip of {as} own shirt. {b} did not argue.",
     "{a} and {b} tried to teach the squad a song in two languages. The squad learned the wrong half of each.",
     "{a} and {b} disagreed about the best way to make tea. The tea was ruined, and so was the afternoon.",
-    "{a} gave {b} the dry end of the bunk and took the wet one. {b} noticed and said, quietly, that {bs} would swap tomorrow.",
+    "{a} gave {b} the dry end of the bunk and took the wet one. {b} noticed and said, quietly, that they would swap tomorrow.",
     "{a} and {b} stood watch together and traded jokes in whispers. The jokes were old, but the whispers were new.",
     "{a} found {b}'s lost photo in the mud and wiped it clean before returning it. Neither mentioned it again.",
     "{a} and {b} built a small shelf out of a cracker box. It holds two mugs, a candle and one shared hope.",
@@ -3635,7 +3630,7 @@
     "The stitches came out of {name}'s leg this morning. The medic checked each one twice and said {he} could go back to {sector}.",
     "{name} was declared fit for duty by a surgeon who never looked up from his papers. {He} saluted anyway.",
     "The scar on {name}'s arm has closed. {He} traced it with a finger all the way back to {sector}.",
-    "A medic told {name} to rest one more day. {name} smiled, thanked {him}, and was at {sector} before lunch.",
+    "A medic told {name} to rest one more day. {name} smiled, thanked the medic, and was at {sector} before lunch.",
     "{name}'s wound is healed. The squad made a place at the fire for {him}, and nobody asked questions.",
     "The bandage came off {name}'s head today. {His} helmet no longer fits properly. {He} wears it anyway.",
     "{name} returned to {sector} limping a little. The squad pretended not to notice, and gave {him} the dry spot."
@@ -3651,7 +3646,7 @@
     "{name} was carried to the aid post and straight back out. Full. {He} waits on a stretcher by the door, holding {item}.",
     "The bearers set {name}'s stretcher down under a tarp and promised to come back. They came back with another man.",
     "{name} lay on a stretcher beside the aid post with a bandage on {his} side. A medic stopped by every hour and said the same thing: soon.",
-    "The beds were full, so {name} waited on a stretcher in the cold. A stranger put {his} own coat over {him}.",
+    "The beds were full, so {name} waited on a stretcher in the cold. A stranger put a coat over {him}.",
     "{name} was put on a stretcher in the trench behind {sector}. {He} stared up at the sky and counted the stars that came through the smoke.",
     "No bed for {name}. {He} lay on a stretcher and listened to the others breathe.",
     "The bearers set {name} down on a stretcher at the end of a long row. {He} was the twelfth man in the line.",
@@ -3788,7 +3783,7 @@
     "The guns hit {sector} hard. {name} came out of it with a shattered arm and burns along one side of {his} face.",
     "A shell burst on the parapet at {sector}. {name} was buried to the chest. It took the squad ten minutes and three shovels to get {him} out.",
     "A big shell landed behind {sector}. {name} was lifted off {his} feet and came down with a broken leg.",
-    "The trench at {sector} folded in on {name} when a shell hit. {He} came out with both arms working, and nothing else.",
+    "The trench at {sector} folded in on {name} when a shell hit. {He} came out with both arms working and one leg that would not.",
     "Shrapnel from a shell tore {name}'s coat at {sector} and the flesh under it. The bearers cut the coat off.",
     "A shell blast at {sector} left {name} bleeding from the ears. {He} could hear nothing, and no one could make {him} lie still."
   ],
@@ -3819,12 +3814,12 @@
     "The stretcher {name} lay on for so long has a dent the shape of a body. {name} is back at {sector}, and someone else is lying in that dent now.",
     "{name} survived the wound and the waiting. {He} is back at {sector}, and still will not talk about the nights outside the aid post.",
     "A medic stopped by {name}'s stretcher every few hours for a week. Today the medic found it empty. {name} had gone back to {sector}.",
-    "{name} lay four days on a stretcher in the open trench. On the fifth, {he} stood up, shook out the blanket and went back to {sector}.",
-    "No bed ever came for {name}. A tired medic changed the dressing each morning until the wound was clean. Then {he} went back to work.",
+    "{name} lay a night and a day on a stretcher in the open trench. Then {he} stood up, shook out the blanket and went back to {sector}.",
+    "No bed ever came for {name}. A tired medic changed the dressing at dawn and again at dusk until the wound was clean. Then {he} went back to work.",
     "{name} got well on a stretcher in the trench behind {sector}, with a canvas sheet for a roof and the squad for a nurse.",
     "The wound closed while {name} waited for a bed. {He} stood up one morning, folded the blanket, and walked to {sector}.",
     "A stretcher was all {name} ever had. {He} recovered on it anyway, mostly out of stubbornness.",
-    "{name} spent the week on a stretcher outside the aid post, counting the beds that never came free. {He} is on {his} feet again."
+    "{name} spent the day on a stretcher outside the aid post, counting the beds that never came free. {He} is on {his} feet again."
   ],
   "shotHit": [
     "{name} fired at a movement across the wire at {sector}. The man went down: {target}, {how}.",
