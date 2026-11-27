@@ -576,7 +576,7 @@
   "battle": {
     "_note": "Denní boj (engine/battle.js, docs/COMBAT_ROLES.md). Všechna čísla se dají ladit; dopad ukáže node tools/sim-battle.mjs --kpi (a --set klíč=hodnota). Pravděpodobnosti jsou na vojáka a den.",
     "enabled": true,
-    "balance": 13,
+    "balance": 14,
     "_balance": "verze vyvážení: zvyš při každé změně čísel, zapisuje se do denních metrik (state.battle.stats)",
     "hit": 0.015,
     "gunsAfterVictory": true,
@@ -660,12 +660,13 @@
         "_": "podpůrné role (nosič, kuchař, kaplan, spojař, runner, ženista): občas vystřelí"
       },
       "rifleman": {
-        "fire": 0.25,
+        "fire": 0.18,
         "severity": {
-          "light": 0.6,
-          "heavy": 0.2
+          "light": 0.45,
+          "heavy": 0.12
         },
         "shots": 3,
+        "_27": "27. 11. (uživatel: moc raněných, nosítka plná): puškař trefí méně (fire 0,25 → 0,18) a zásah je z 55 % lehký / 33 % těžký / 12 % kritický (dřív 40/40/20); smrtelnost těžkého zásahu 0,4 → 0,55, aby padlých nebylo míň.",
         "_24": "24. 11. (uživatel): puškař má víc nábojů a střílí celý den: 3 výstřely denně, zásahy 40 % lehce / 40 % těžce / 20 % kriticky (dřív 1 výstřel, 70/18/12)."
       },
       "machinegunner": {
@@ -737,7 +738,7 @@
         "_": "práce za den (× úroveň)"
       },
       "kill": 0.8,
-      "killHeavy": 0.4,
+      "killHeavy": 0.55,
       "shots": 1,
       "_shots19": "19. 11.: zpět na 1 výstřel denně, protože od teď střílí všichni vojáci ve všech liniích (dřív jen přední). 2 výstřely × všichni = ~110 padlých první den a do 3 dnů ~200 denně (medici by nestíhali); 1 výstřel = stabilně ~65 padlých a ~210 raněných denně při 1 400 hráčích.",
       "_shots": "18. 11. (uživatel: na 500 hráčů je ~9 padlých denně málo, cíl ~30): každý střelec střílí 2× denně (2. kolo jen kdo zůstal zdravý, obě strany naráz), smrtelnost těžký 0,7 (dřív 0,25), kritický 0,8 (dřív 0,5), kritický od odstřelovače 0,9 (dřív 0,6). Simulace: ~32 padlých a ~90 raněných denně za obě strany.",
