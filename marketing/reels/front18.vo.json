@@ -1,0 +1,90 @@
+{
+ "seconds": 96.6,
+ "voice": "en-GB-RyanNeural",
+ "lines": [
+  [
+   0.3,
+   8.24,
+   "Day eighteen. The mud froze overnight. In this bed lies a shepherd from Port Abel. His name is Karel Hier.",
+   "day"
+  ],
+  [
+   8.79,
+   4.4,
+   "Two weeks ago he kept sheep on a hill. Then the army needed one more man.",
+   "sheep"
+  ],
+  [
+   13.44,
+   5.76,
+   "On Day ten he took his place in the gap at V F eleven. Nobody told him what happened to the last man.",
+   "gap"
+  ],
+  [
+   19.45,
+   7.25,
+   "At night he drew his home for a friend. His kitchen table came out larger than the house. The friend drew the same.",
+   "draw"
+  ],
+  [
+   26.95,
+   3.65,
+   "On Day sixteen he came back from the hospital and became the chaplain of the line.",
+   "chap"
+  ],
+  [
+   30.85,
+   7.39,
+   "That night, a raider dropped into the trench. Karel took a shovel to the head. He still brought back the enemy helmet.",
+   "raid"
+  ],
+  [
+   38.49,
+   5.72,
+   "The wound turned bad. There were too few medics. This time, there was a bed.",
+   "bed"
+  ],
+  [
+   44.46,
+   7.97,
+   "From the bed he bought War Bonds for the front, like Pavel Owl Hughesjack. The Officers' Mess sent him a dog. Her name is Sparky.",
+   "bonds"
+  ],
+  [
+   52.68,
+   7.03,
+   "This morning a letter came. The fence is fixed. The cow is fine. The roof still leaks.",
+   "letter"
+  ],
+  [
+   59.96,
+   7.89,
+   "Seventy-four Hegemony soldiers fell today. Fifty-nine from Concord. Almost all of them to rifles and machine guns.",
+   "fell"
+  ],
+  [
+   68.1,
+   7.07,
+   "Only seven died waiting for care. Yesterday it was eighty-five. Both hospitals have thirty-eight beds now.",
+   "hosp"
+  ],
+  [
+   75.42,
+   7.07,
+   "At the Bone Quarry, Hegemony leads, two hundred and twenty-six to one hundred and eighty-five. Three hundred wins the heights.",
+   "race"
+  ],
+  [
+   82.74,
+   5.37,
+   "Forty-seven new soldiers came up the line. Two thousand three hundred and eighty-eight hold it now.",
+   "army"
+  ],
+  [
+   88.36,
+   4.8,
+   "Pick a side. Comment HEGEMONY or CONCORD, and your soldier joins the war.",
+   "cta"
+  ]
+ ]
+}
