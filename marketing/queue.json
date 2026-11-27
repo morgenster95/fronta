@@ -1518,6 +1518,26 @@
       "mediaDropped": [
         "reel_front17.mp4"
       ]
+    },
+    {
+      "id": "reel-front18",
+      "type": "reel",
+      "files": [
+        "reel_front18.mp4"
+      ],
+      "publishAt": "2026-11-27T16:58:00Z",
+      "caption": "DAY 18 · The shepherd of Port Abel.\n\nKarel Hier kept sheep on a hill above Port Abel. On Day 10 the army sent him to fill a gap in the line. On Day 16 he became the chaplain. In a night raid on Day 17 an enemy soldier hit him with a shovel, and he still brought back the helmet. Today he lies in a hospital bed, and a dog named Sparky will not leave his side.\n\n74 Hegemony and 59 Concord soldiers fell yesterday. Only 7 died waiting for care, down from 85. Both hospitals have 38 beds now.\n\nPick a side: comment HEGEMONY or CONCORD under any post and your soldier joins the war.\n\n+47 soldiers yesterday. 2,388 now hold the front: 1,133 Hegemony · 1,255 Concord.\n\n#pixelart #indiegame #ww1 #gamedev",
+      "_note": "Day reel Day 18: pastýř Karel Hier (schváleno uživatelem 27. 11., nasadit hned)."
+    },
+    {
+      "id": "story-reel-front18",
+      "type": "story",
+      "files": [
+        "story_reel-front18.jpg"
+      ],
+      "caption": "",
+      "publishAt": "2026-11-27T17:08:00Z",
+      "_note": "Story k položce reel-front18 (pravidlo: ke každé novince i story). "
     }
   ]
 }
