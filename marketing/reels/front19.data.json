@@ -1,0 +1,69 @@
+{
+ "_": "Day reel Day 19 – noviny 28. 11. 13:00 UTC (state.day 20); hrdina = vis.acquillae (Ulrich Acquillae, Hegemonie, medik, 6. generace rodu Acquillae, War Bonds, pes Toby), PŘEDBĚŽNÁ čísla z Day 18, po novinách přepsat",
+ "label": 19,
+ "fell": [
+  74,
+  59
+ ],
+ "wounded": 223,
+ "nocare": [
+  5,
+  2
+ ],
+ "nocareYesterday": [
+  42,
+  43
+ ],
+ "joined": [
+  33,
+  14
+ ],
+ "army": [
+  1133,
+  1255
+ ],
+ "race": [
+  226,
+  185
+ ],
+ "hero": {
+  "handle": "vis.acquillae",
+  "name": "Ulrich Acquillae",
+  "sector": "S-F10",
+  "dog": "Toby",
+  "note": "Hegemony medic · sixth of his House"
+ },
+ "five": [
+  [
+   "EDMUND",
+   "DAY 4",
+   "a direct hit"
+  ],
+  [
+   "ISIDOR",
+   "DAY 6",
+   "waited for a bed"
+  ],
+  [
+   "ROLAND",
+   "DAY 12",
+   "shot in the neck"
+  ],
+  [
+   "PAVEL",
+   "DAY 15",
+   "died on a stretcher"
+  ],
+  [
+   "CASIMIR",
+   "DAY 17",
+   "no room at the aid post"
+  ]
+ ],
+ "comment": {
+  "handle": "vis.acquillae",
+  "faction": "Hegemony",
+  "likes": 22,
+  "text": "Hegemony should establish an in-depth defense system to disperse the troops and actively counter-attack... Even if they take ground, fresh troops will always be ready to route them."
+ }
+}

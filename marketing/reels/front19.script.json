@@ -1,0 +1,66 @@
+{
+ "seconds": 100,
+ "auto": true,
+ "drums": [
+  "day",
+  [],
+  "cta"
+ ],
+ "lines": [
+  [
+   0.3,
+   "Day nineteen. This is the House of Acquillae. Six men have held the same post in eighteen days.",
+   "day"
+  ],
+  [
+   0,
+   "The first was Edmund. He came up the line with a stub of a pencil. The quartermaster pinned on his ribbon and said: don't let the mud have it.",
+   "depot"
+  ],
+  [
+   0,
+   "On Day four, a direct hit took Edmund. Then Isidor, who died waiting for a bed. Roland, shot in the neck. Pavel, on a stretcher by the aid post wall. Casimir, outside a hospital with no room.",
+   "five"
+  ],
+  [
+   0,
+   "Five men. Five times, the family sent another. The player behind them wrote this in the first week of the war.",
+   "comment"
+  ],
+  [
+   0,
+   "Toby, the dog, did not eat for two days after Casimir fell. On the third day, he walked up to the new man and sat down. That man is Ulrich. A bullet grazed his ribs last night. He found the hole in his coat first, and the wound second.",
+   "dog"
+  ],
+  [
+   0,
+   "He bought War Bonds for the front. The post at S F ten is still held.",
+   "bonds"
+  ],
+  [
+   0,
+   "Seventy-four Hegemony soldiers fell today. Fifty-nine from Concord.",
+   "fell"
+  ],
+  [
+   0,
+   "The hospitals are holding. Medics reach most of the wounded.",
+   "hosp"
+  ],
+  [
+   0,
+   "At the Bone Quarry, Hegemony leads. Three hundred wins the heights.",
+   "race"
+  ],
+  [
+   0,
+   "Forty-seven new soldiers came up the line. Two thousand three hundred and eighty-eight hold it now.",
+   "army"
+  ],
+  [
+   0,
+   "Pick a side. Comment HEGEMONY or CONCORD, and your soldier joins the war.",
+   "cta"
+  ]
+ ]
+}

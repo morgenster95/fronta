@@ -245,6 +245,14 @@ export function startReel({ name, app, cam, life, map, theme, soldiers, ui, tick
       window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
     });
   }
+  if (name === 'front19') {
+    // Day reel Day 19 (28. 11.): rod Acquillae, šest mužů na jednom stanovišti, komentář hráče (reel-front19.js)
+    return import('./reel-front19.js').then(async ({ startDay19Reel }) => {
+      await startDay19Reel({ cam, life, map, theme, soldiers, tex, anims });
+      const frame = window.__reel.frame;
+      window.__reel.frame = (t) => { frame(t); tick(t * 1000); };
+    });
+  }
   if (name === 'front18') {
     // Day reel Day 18 (27. 11.): příběh pastýře Karla Hiera (kaplan, Concord) podle deníku, nové filmové scény (reel-front18.js)
     return import('./reel-front18.js').then(async ({ startDay18Reel }) => {
